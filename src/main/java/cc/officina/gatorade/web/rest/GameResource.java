@@ -123,4 +123,18 @@ public class GameResource {
         gameService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * GET  /games/:id : get the "id" game.
+     *
+     * @param id the id of the game to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
+     */
+    @GetMapping("/playgame/{id}/playerid/{playerid}/token/{token}")
+    @Timed
+    public ResponseEntity<Game> getPlayGameConfig(@PathVariable Long id, @PathVariable Long playerId, @PathVariable String playtoken) {
+        log.debug("REST request to get Game : {}", id);
+        Game game = gameService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
+    }
 }
