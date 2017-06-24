@@ -17,7 +17,7 @@ angular
     'ngSanitize',
     'ngTouch'
   ])
-  .config(function ($routeProvider, $locationProvider) {
+  .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
@@ -39,4 +39,19 @@ angular
       });
 
       $locationProvider.hashPrefix('');
+
+    // Intercept POST requests, convert to standard form encoding
+    $httpProvider.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
+    $httpProvider.defaults.transformRequest.unshift(function (data, headersGetter) {
+      var key, result = [];
+
+      if (typeof data === "string")
+        return data;
+
+      for (key in data) {
+        if (data.hasOwnProperty(key))
+          result.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+      }
+      return result.join("&");
+    });
   });

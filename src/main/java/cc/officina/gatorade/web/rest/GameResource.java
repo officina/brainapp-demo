@@ -127,14 +127,61 @@ public class GameResource {
     /**
      * GET  /games/:id : get the "id" game.
      *
-     * @param id the id of the game to retrieve
+     * @param gameId the id of the game to retrieve
+     * @param playerId the id of the player
+     * @param playtoken the sitecoretoken
      * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
      */
-    @GetMapping("/playgame/{id}/playerid/{playerId}/playtoken/{playtoken}")
+    @GetMapping("/play")
     @Timed
-    public ResponseEntity<Game> getPlayGameConfig(@PathVariable Long id, @PathVariable Long playerId, @PathVariable String playtoken) {
-        log.debug("REST request to get Game : {}", id);
-        Game game = gameService.findOne(id);
+    public ResponseEntity<Game> getPlayGameConfig(@RequestParam Long gameId, @RequestParam Long playerId, @RequestParam String playtoken) {
+        log.debug("REST request to get Game : {}", gameId);
+        Game game = gameService.findOne(gameId);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
+    }
+
+    /**
+     * PUT  /play/updatescore: updates the score for the current attempt on the "id" game.
+     *
+     * @param gameId the id of the game to update
+     * @param attemptId the id of the attemp to update
+     * @param playerId the id of the player
+     * @param playtoken the sitecoretoken or session string (//TODO definire)
+     * @param newValue the updated score
+     * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
+     */
+    @PutMapping("/play/score")
+    @Timed
+    public ResponseEntity<Game> updateGameScore(@RequestParam Long gameId, @RequestParam Long attemptId, @RequestParam Long playerId, @RequestParam String playtoken, @RequestParam String newValue) {
+        log.debug("REST request to update score to {} for game Game : {}",newValue, gameId);
+        Game game = gameService.findOne(gameId);
+        //TODO aggiorno punteggio
+        Game result = gameService.save(game);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
+            .body(result);
+    }
+    /**
+     * PUT  /play/end: ends the current attempt on the "id" game.
+     *
+     * @param gameId the id of the game to update
+     * @param attemptId the id of the attemp to update
+     * @param playerId the id of the player
+     * @param playtoken the sitecoretoken or session string (//TODO definire)
+     * @param finalValue the final score
+     * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
+     */
+    @PutMapping("/play/end")
+    @Timed
+    public ResponseEntity<Game> endGame(@RequestParam Long gameId, @RequestParam Long attemptId, @RequestParam Long playerId, @RequestParam String playtoken, @RequestParam String finalValue) {
+        log.debug("REST request to update score to {} and end game Game : {}",finalValue, gameId);
+        Game game = gameService.findOne(gameId);
+
+        //TODO setto punteggio finale e chiudo gioco
+        Game result = gameService.save(game);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
+            .body(result);
+
     }
 }
