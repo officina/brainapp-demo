@@ -8,17 +8,14 @@
  * Controller of the desktopApp
  */
 angular.module('desktopApp')
-  .controller('PlaygameCtrl', function ($scope, $sce) {
+  .controller('PlaygameCtrl', function ($scope, $sce, GameService) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
 
-    $scope.game = {
+    $scope.game = GameService.getGame(1051, 13, "asd")
 
-      id:"gameId",
-      url:$sce.trustAsResourceUrl("https://0.s3.envato.com/files/225182752/index.html")
 
-    }
   });

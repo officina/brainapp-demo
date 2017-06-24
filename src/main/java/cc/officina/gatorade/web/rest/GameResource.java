@@ -130,7 +130,7 @@ public class GameResource {
      * @param id the id of the game to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
      */
-    @GetMapping("/playgame/{id}/playerid/{playerid}/token/{token}")
+    @GetMapping("/playgame/{id}/playerid/{playerId}/playtoken/{playtoken}")
     @Timed
     public ResponseEntity<Game> getPlayGameConfig(@PathVariable Long id, @PathVariable Long playerId, @PathVariable String playtoken) {
         log.debug("REST request to get Game : {}", id);
