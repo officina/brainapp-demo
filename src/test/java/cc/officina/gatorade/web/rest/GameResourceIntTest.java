@@ -47,6 +47,18 @@ public class GameResourceIntTest {
     private static final String DEFAULT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_CODE = "BBBBBBBBBB";
 
+    private static final String DEFAULT_ACTION_ID = "AAAAAAAAAA";
+    private static final String UPDATED_ACTION_ID = "BBBBBBBBBB";
+
+    private static final Integer DEFAULT_TYPE = 1;
+    private static final Integer UPDATED_TYPE = 2;
+
+    private static final Boolean DEFAULT_USE_LEVELS = false;
+    private static final Boolean UPDATED_USE_LEVELS = true;
+
+    private static final Long DEFAULT_LEVELS_NUMBER = 1L;
+    private static final Long UPDATED_LEVELS_NUMBER = 2L;
+
     @Autowired
     private GameRepository gameRepository;
 
@@ -89,7 +101,11 @@ public class GameResourceIntTest {
         Game game = new Game()
             .description(DEFAULT_DESCRIPTION)
             .url(DEFAULT_URL)
-            .code(DEFAULT_CODE);
+            .code(DEFAULT_CODE)
+            .actionId(DEFAULT_ACTION_ID)
+            .type(DEFAULT_TYPE)
+            .useLevels(DEFAULT_USE_LEVELS)
+            .levelsNumber(DEFAULT_LEVELS_NUMBER);
         return game;
     }
 
@@ -116,6 +132,10 @@ public class GameResourceIntTest {
         assertThat(testGame.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testGame.getUrl()).isEqualTo(DEFAULT_URL);
         assertThat(testGame.getCode()).isEqualTo(DEFAULT_CODE);
+        assertThat(testGame.getActionId()).isEqualTo(DEFAULT_ACTION_ID);
+        assertThat(testGame.getType()).isEqualTo(DEFAULT_TYPE);
+        assertThat(testGame.isUseLevels()).isEqualTo(DEFAULT_USE_LEVELS);
+        assertThat(testGame.getLevelsNumber()).isEqualTo(DEFAULT_LEVELS_NUMBER);
     }
 
     @Test
@@ -150,7 +170,11 @@ public class GameResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(game.getId().intValue())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].url").value(hasItem(DEFAULT_URL.toString())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].actionId").value(hasItem(DEFAULT_ACTION_ID.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE)))
+            .andExpect(jsonPath("$.[*].useLevels").value(hasItem(DEFAULT_USE_LEVELS.booleanValue())))
+            .andExpect(jsonPath("$.[*].levelsNumber").value(hasItem(DEFAULT_LEVELS_NUMBER.intValue())));
     }
 
     @Test
@@ -166,7 +190,11 @@ public class GameResourceIntTest {
             .andExpect(jsonPath("$.id").value(game.getId().intValue()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.url").value(DEFAULT_URL.toString()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
+            .andExpect(jsonPath("$.actionId").value(DEFAULT_ACTION_ID.toString()))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE))
+            .andExpect(jsonPath("$.useLevels").value(DEFAULT_USE_LEVELS.booleanValue()))
+            .andExpect(jsonPath("$.levelsNumber").value(DEFAULT_LEVELS_NUMBER.intValue()));
     }
 
     @Test
@@ -190,7 +218,11 @@ public class GameResourceIntTest {
         updatedGame
             .description(UPDATED_DESCRIPTION)
             .url(UPDATED_URL)
-            .code(UPDATED_CODE);
+            .code(UPDATED_CODE)
+            .actionId(UPDATED_ACTION_ID)
+            .type(UPDATED_TYPE)
+            .useLevels(UPDATED_USE_LEVELS)
+            .levelsNumber(UPDATED_LEVELS_NUMBER);
 
         restGameMockMvc.perform(put("/api/games")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -204,6 +236,10 @@ public class GameResourceIntTest {
         assertThat(testGame.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testGame.getUrl()).isEqualTo(UPDATED_URL);
         assertThat(testGame.getCode()).isEqualTo(UPDATED_CODE);
+        assertThat(testGame.getActionId()).isEqualTo(UPDATED_ACTION_ID);
+        assertThat(testGame.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testGame.isUseLevels()).isEqualTo(UPDATED_USE_LEVELS);
+        assertThat(testGame.getLevelsNumber()).isEqualTo(UPDATED_LEVELS_NUMBER);
     }
 
     @Test

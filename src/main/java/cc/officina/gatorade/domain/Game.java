@@ -1,10 +1,13 @@
 package cc.officina.gatorade.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -30,6 +33,23 @@ public class Game implements Serializable {
 
     @Column(name = "code")
     private String code;
+
+    @Column(name = "action_id")
+    private String actionId;
+
+    @Column(name = "jhi_type")
+    private Integer type;
+
+    @Column(name = "use_levels")
+    private Boolean useLevels;
+
+    @Column(name = "levels_number")
+    private Long levelsNumber;
+
+    @OneToMany(mappedBy = "game")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Match> matches = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -78,6 +98,83 @@ public class Game implements Serializable {
         this.code = code;
     }
 
+    public String getActionId() {
+        return actionId;
+    }
+
+    public Game actionId(String actionId) {
+        this.actionId = actionId;
+        return this;
+    }
+
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public Game type(Integer type) {
+        this.type = type;
+        return this;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Boolean isUseLevels() {
+        return useLevels;
+    }
+
+    public Game useLevels(Boolean useLevels) {
+        this.useLevels = useLevels;
+        return this;
+    }
+
+    public void setUseLevels(Boolean useLevels) {
+        this.useLevels = useLevels;
+    }
+
+    public Long getLevelsNumber() {
+        return levelsNumber;
+    }
+
+    public Game levelsNumber(Long levelsNumber) {
+        this.levelsNumber = levelsNumber;
+        return this;
+    }
+
+    public void setLevelsNumber(Long levelsNumber) {
+        this.levelsNumber = levelsNumber;
+    }
+
+    public Set<Match> getMatches() {
+        return matches;
+    }
+
+    public Game matches(Set<Match> matches) {
+        this.matches = matches;
+        return this;
+    }
+
+    public Game addMatches(Match match) {
+        this.matches.add(match);
+        match.setGame(this);
+        return this;
+    }
+
+    public Game removeMatches(Match match) {
+        this.matches.remove(match);
+        match.setGame(null);
+        return this;
+    }
+
+    public void setMatches(Set<Match> matches) {
+        this.matches = matches;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -105,6 +202,10 @@ public class Game implements Serializable {
             ", description='" + getDescription() + "'" +
             ", url='" + getUrl() + "'" +
             ", code='" + getCode() + "'" +
+            ", actionId='" + getActionId() + "'" +
+            ", type='" + getType() + "'" +
+            ", useLevels='" + isUseLevels() + "'" +
+            ", levelsNumber='" + getLevelsNumber() + "'" +
             "}";
     }
 }

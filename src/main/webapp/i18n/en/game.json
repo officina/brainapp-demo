@@ -17,7 +17,12 @@
             },
             "description": "Description",
             "url": "Url",
-            "code": "Code"
+            "code": "Code",
+            "actionId": "Action Id",
+            "type": "Type",
+            "useLevels": "Use Levels",
+            "levelsNumber": "Levels Number",
+            "matches": "Matches"
         }
     }
 }

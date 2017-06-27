@@ -127,6 +127,10 @@
                                 description: null,
                                 url: null,
                                 code: null,
+                                actionId: null,
+                                type: null,
+                                useLevels: null,
+                                levelsNumber: null,
                                 id: null
                             };
                         }

@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="nicola (generated)" id="1498546292998-1">
+        <addColumn tableName="game">
+            <column name="jhi_type" type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1498546292998-2">
+        <addColumn tableName="game">
+            <column name="levels_number" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1498546292998-3">
+        <addColumn tableName="game">
+            <column name="use_levels" type="boolean"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1498546292998-4">
+        <dropColumn columnName="TYPE" tableName="GAME"/>
+    </changeSet>
+</databaseChangeLog>

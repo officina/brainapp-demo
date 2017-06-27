@@ -1,0 +1,46 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "game",
+            "otherEntityName": "game",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "description"
+        },
+        {
+            "relationshipName": "template",
+            "otherEntityName": "matchTemplate",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "description"
+        },
+        {
+            "relationshipName": "attempts",
+            "otherEntityName": "attempt",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "match"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "start",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "stop",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "diffLevel",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "userId",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170627083527",
+    "dto": "no",
+    "service": "serviceImpl",
+    "entityTableName": "match",
+    "pagination": "pager"
+}

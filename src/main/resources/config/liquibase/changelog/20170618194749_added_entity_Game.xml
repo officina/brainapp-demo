@@ -33,6 +33,22 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="action_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="jhi_type" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="use_levels" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="levels_number" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         

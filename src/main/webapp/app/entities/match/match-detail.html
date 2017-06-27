@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="gatoradeApp.match.detail.title">Match</span> {{vm.match.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="gatoradeApp.match.start">Start</span></dt>
+        <dd>
+            <span>{{vm.match.start | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.match.stop">Stop</span></dt>
+        <dd>
+            <span>{{vm.match.stop | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.match.diffLevel">Diff Level</span></dt>
+        <dd>
+            <span>{{vm.match.diffLevel}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.match.userId">User Id</span></dt>
+        <dd>
+            <span>{{vm.match.userId}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.match.game">Game</span></dt>
+        <dd>
+            <a ui-sref="game-detail({id:vm.match.game.id})">{{vm.match.game.description}}</a>
+        </dd>
+        <dt><span data-translate="gatoradeApp.match.template">Template</span></dt>
+        <dd>
+            <a ui-sref="match-template-detail({id:vm.match.template.id})">{{vm.match.template.description}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="match-detail.edit({id:vm.match.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

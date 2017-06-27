@@ -123,7 +123,7 @@ public class GameResource {
         gameService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
+    
     /**
      * GET  /games/:id : get the "id" game.
      *

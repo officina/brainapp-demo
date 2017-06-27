@@ -1,6 +1,13 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipName": "matches",
+            "otherEntityName": "match",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "game"
+        }
+    ],
     "fields": [
         {
             "fieldName": "description",
@@ -13,6 +20,22 @@
         {
             "fieldName": "code",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "actionId",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "useLevels",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "levelsNumber",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170618194749",

@@ -31,6 +31,29 @@
                     ng-model="vm.game.code"
                     />
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.game.actionId" for="field_actionId">Action Id</label>
+            <input type="text" class="form-control" name="actionId" id="field_actionId"
+                    ng-model="vm.game.actionId"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.game.type" for="field_type">Type</label>
+            <input type="number" class="form-control" name="type" id="field_type"
+                    ng-model="vm.game.type"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.game.useLevels" for="field_useLevels">Use Levels</label>
+                <input type="checkbox" name="useLevels" id="field_useLevels"
+                          ng-model="vm.game.useLevels"/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.game.levelsNumber" for="field_levelsNumber">Levels Number</label>
+            <input type="number" class="form-control" name="levelsNumber" id="field_levelsNumber"
+                    ng-model="vm.game.levelsNumber"
+                    />
+        </div>
 
     </div>
     <div class="modal-footer">

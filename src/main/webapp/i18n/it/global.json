@@ -8,6 +8,9 @@
             "entities": {
                 "main": "Entità",
                 "game": "Game",
+                "matchTemplate": "Match Template",
+                "match": "Match",
+                "attempt": "Attempt",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
