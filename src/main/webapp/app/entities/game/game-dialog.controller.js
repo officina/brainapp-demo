@@ -5,14 +5,15 @@
         .module('gatoradeApp')
         .controller('GameDialogController', GameDialogController);
 
-    GameDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Game'];
+    GameDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Game', 'Match'];
 
-    function GameDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Game) {
+    function GameDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Game, Match) {
         var vm = this;
 
         vm.game = entity;
         vm.clear = clear;
         vm.save = save;
+        vm.matches = Match.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

@@ -1,0 +1,30 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "game",
+            "otherEntityName": "game",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "description"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "maxDuration",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "maxAttempt",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170626123633",
+    "dto": "no",
+    "service": "serviceImpl",
+    "entityTableName": "match_template",
+    "pagination": "pager"
+}

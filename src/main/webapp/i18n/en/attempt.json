@@ -1,0 +1,26 @@
+{
+    "gatoradeApp": {
+        "attempt" : {
+            "home": {
+                "title": "Attempts",
+                "createLabel": "Create a new Attempt",
+                "createOrEditLabel": "Create or edit a Attempt"
+            },
+            "created": "A new Attempt is created with identifier {{ param }}",
+            "updated": "A Attempt is updated with identifier {{ param }}",
+            "deleted": "A Attempt is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Attempt {{ id }}?"
+            },
+            "detail": {
+                "title": "Attempt"
+            },
+            "attemptScore": "Attempt Score",
+            "startAttempt": "Start Attempt",
+            "stopAttempt": "Stop Attempt",
+            "levelReached": "Level Reached",
+            "lastUpdate": "Last Update",
+            "match": "Match"
+        }
+    }
+}
