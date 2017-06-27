@@ -10,7 +10,7 @@
     function stateConfig($stateProvider) {
         $stateProvider.state('play', {
             parent: 'app',
-            url: '/play',
+            url: '/play/gameId/:gameId/playtoken/:playtoken',
             data: {
                 authorities: []
             },
@@ -19,11 +19,16 @@
                     templateUrl: 'app/playgame/playgame.html',
                     controller: 'PlaygameController',
                     controllerAs: 'vm'
+                },
+                'navbar@': {
+                    templateUrl: 'app/layouts/navbar/navbar2.html',
+                    controller: 'NavbarController',
+                    controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate,$translatePartialLoader) {
-                    $translatePartialLoader.addPart('play');
+                    $translatePartialLoader.addPart('home');
                     return $translate.refresh();
                 }]
             }

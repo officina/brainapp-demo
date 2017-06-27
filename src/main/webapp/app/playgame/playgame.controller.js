@@ -5,12 +5,12 @@
         .module('gatoradeApp')
         .controller('PlaygameController', PlaygameController);
 
-    PlaygameController.$inject = ['$scope', 'Principal', 'LoginService', '$state', 'PlaygameService','$http','$sce'];
+    PlaygameController.$inject = ['$scope', 'Principal', 'LoginService', '$state', 'PlaygameService','$sce', '$stateParams'];
 
-    function PlaygameController ($scope, Principal, LoginService, $state, PlaygameService, $http,$sce) {
-    	
+    function PlaygameController ($scope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams) {
+
     	console.log(PlaygameService);
-    	
+
     	// IE + others compatible event handler
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var eventer = window[eventMethod];
@@ -24,7 +24,7 @@
         },false);
 
 
-        $scope.game = {}
+        $scope.game = {url:"app/layouts/playgame/loading.html"}
 
         var updateScoreWithValue = function(value){
           PlaygameService.updateScore(1101,2,234,45)
@@ -34,11 +34,12 @@
           PlaygameService.endGame(1101,2,234,45)
         }
 
-        PlaygameService.getGame(1051, 13, "asd").then(function(response){
+        var gameId = $stateParams.gameId;
+        var playtoken = $stateParams.playtoken;
+        PlaygameService.getGame(gameId, "", playtoken).then(function(response){
           var game = response.data
           game.url = $sce.trustAsResourceUrl(response.data.url)
           $scope.game = game
-
 
         })
     }

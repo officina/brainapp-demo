@@ -339,3 +339,22 @@ ui bootstrap tweaks
 
 
 /* jhipster-needle-css-add-main JHipster will add new css style */
+#gamecontainer{
+
+    position: fixed;
+    top: 0;
+    right:0;
+    bottom:0;
+    left: 0;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+
+}
+#maingameframe
+{
+
+}
+#loadinggame{
+
+    background-color: black;
+}

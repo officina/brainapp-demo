@@ -17,7 +17,7 @@ angular.module('gatoradeApp')
       //$http.get('http://localhost:8080/api/playgame?gameId=1051&playerId=1&playtoken=asdad')
       return $http({
         method: 'GET',
-        url: 'http://localhost:8080/api/play?gameId=2552&playerId=1&playtoken=asdad'
+        url: '/api/play?gameId=' + gameId +  '&playerId=1&playtoken='+token
       })
 
 
