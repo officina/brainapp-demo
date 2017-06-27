@@ -37,7 +37,8 @@ public class Match implements Serializable {
 
     @Column(name = "user_id")
     private String userId;
-
+    
+    @JsonIgnore
     @ManyToOne
     private Game game;
 

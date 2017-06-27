@@ -1,8 +1,15 @@
 package cc.officina.gatorade.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
+import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Game;
+import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.GameService;
+import cc.officina.gatorade.service.MatchService;
+import cc.officina.gatorade.web.response.AttemptResponse;
+import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -34,9 +41,13 @@ public class GameResource {
     private static final String ENTITY_NAME = "game";
 
     private final GameService gameService;
+    private final MatchService matchService;
+    private final AttemptService attemptService;
 
-    public GameResource(GameService gameService) {
+    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService) {
         this.gameService = gameService;
+        this.matchService = matchService;
+        this.attemptService = attemptService;
     }
 
     /**
@@ -132,12 +143,29 @@ public class GameResource {
      * @param playtoken the sitecoretoken
      * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
      */
-    @GetMapping("/play")
+    @PostMapping("/play")
     @Timed
-    public ResponseEntity<Game> getPlayGameConfig(@RequestParam Long gameId, @RequestParam Long playerId, @RequestParam String playtoken) {
-        log.debug("REST request to get Game : {}", gameId);
+    public ResponseEntity<MatchResponse> startMatch(@RequestParam Long gameId, @RequestParam String playerId, @RequestParam String playtoken) {
+        log.debug("REST request to startMatch : {}", gameId);
         Game game = gameService.findOne(gameId);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
+        //TODO gestione template
+        if(game == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+gameId + " not found")).body(null);
+        else
+        	return new ResponseEntity<>(gameService.startMatch(game, null, playerId), null, HttpStatus.OK);
+    }
+    
+    @PostMapping("/play/attempt")
+    @Timed
+    public ResponseEntity<AttemptResponse> startAttempt(@RequestParam Long gameId, @RequestParam String playerId, @RequestParam Long matchId) {
+        log.debug("REST request to startAttmept : {}", gameId);
+        Game game = gameService.findOne(gameId);
+        if(game == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+gameId + " not found")).body(null);
+        Match match = matchService.findOne(matchId);
+        if(match == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+matchId + " not found")).body(null);
+        return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
 
     /**
@@ -152,14 +180,13 @@ public class GameResource {
      */
     @PutMapping("/play/score")
     @Timed
-    public ResponseEntity<Game> updateGameScore(@RequestParam Long gameId, @RequestParam Long attemptId, @RequestParam Long playerId, @RequestParam String playtoken, @RequestParam String newValue) {
+    public ResponseEntity<AttemptResponse> updateGameScore(@RequestParam Long gameId, @RequestParam Long attemptId, @RequestParam Long playerId, @RequestParam String playtoken, @RequestParam String newValue) {
         log.debug("REST request to update score to {} for game Game : {}",newValue, gameId);
-        Game game = gameService.findOne(gameId);
+        Attempt attempt = attemptService.findOne(attemptId);
         //TODO aggiorno punteggio
-        Game result = gameService.save(game);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
-            .body(result);
+        if(attempt == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+attemptId + " not found")).body(null);
+        return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, new Long(newValue)), null, HttpStatus.OK);
     }
     /**
      * PUT  /play/end: ends the current attempt on the "id" game.

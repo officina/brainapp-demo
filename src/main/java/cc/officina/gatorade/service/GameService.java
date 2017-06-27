@@ -1,6 +1,12 @@
 package cc.officina.gatorade.service;
 
+import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Game;
+import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.MatchTemplate;
+import cc.officina.gatorade.web.response.AttemptResponse;
+import cc.officina.gatorade.web.response.MatchResponse;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +45,10 @@ public interface GameService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId);
+
+	public AttemptResponse startAttempt(Game game, Match match);
+
+	public AttemptResponse updateAttemptScore(Game game, Attempt attempt, Long newValue);
 }
