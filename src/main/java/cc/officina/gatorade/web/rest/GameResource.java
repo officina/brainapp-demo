@@ -121,12 +121,6 @@ public class GameResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
 
-    /**
-     * DELETE  /games/:id : delete the "id" game.
-     *
-     * @param id the id of the game to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
     @DeleteMapping("/games/{id}")
     @Timed
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
@@ -135,14 +129,6 @@ public class GameResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
     
-    /**
-     * GET  /games/:id : get the "id" game.
-     *
-     * @param gameId the id of the game to retrieve
-     * @param playerId the id of the player
-     * @param playtoken the sitecoretoken
-     * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
-     */
     @PostMapping("/play")
     @Timed
     public ResponseEntity<MatchResponse> startMatch(@RequestParam Long gameId, @RequestParam String playerId, @RequestParam String playtoken) {
@@ -158,7 +144,7 @@ public class GameResource {
     @PostMapping("/play/attempt")
     @Timed
     public ResponseEntity<AttemptResponse> startAttempt(@RequestParam Long gameId, @RequestParam String playerId, @RequestParam Long matchId) {
-        log.debug("REST request to startAttmept : {}", gameId);
+        log.debug("REST request to startAttempt : {}", gameId);
         Game game = gameService.findOne(gameId);
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+gameId + " not found")).body(null);
@@ -168,47 +154,37 @@ public class GameResource {
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
 
-    /**
-     * PUT  /play/updatescore: updates the score for the current attempt on the "id" game.
-     *
-     * @param gameId the id of the game to update
-     * @param attemptId the id of the attemp to update
-     * @param playerId the id of the player
-     * @param playtoken the sitecoretoken or session string (//TODO definire)
-     * @param newValue the updated score
-     * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
-     */
-    @PutMapping("/play/score")
+    @PutMapping("/play/attempt/score")
     @Timed
-    public ResponseEntity<AttemptResponse> updateGameScore(@RequestParam Long gameId, @RequestParam Long attemptId, @RequestParam Long playerId, @RequestParam String playtoken, @RequestParam String newValue) {
-        log.debug("REST request to update score to {} for game Game : {}",newValue, gameId);
+    public ResponseEntity<AttemptResponse> updateGameScore(@RequestParam Long gameId, @RequestParam Long attemptId, @RequestParam String playerId, 
+    		@RequestParam String playtoken, @RequestParam String newValue) {
+        log.debug("REST request to update score to {} for game Game {} and Attempt with id {}",newValue, gameId, attemptId);
         Attempt attempt = attemptService.findOne(attemptId);
-        //TODO aggiorno punteggio
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+attemptId + " not found")).body(null);
         return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, new Long(newValue)), null, HttpStatus.OK);
     }
-    /**
-     * PUT  /play/end: ends the current attempt on the "id" game.
-     *
-     * @param gameId the id of the game to update
-     * @param attemptId the id of the attemp to update
-     * @param playerId the id of the player
-     * @param playtoken the sitecoretoken or session string (//TODO definire)
-     * @param finalValue the final score
-     * @return the ResponseEntity with status 200 (OK) and with body the game, or with status 404 (Not Found)
-     */
+    
+    @PutMapping("/play/attempt/end")
+    @Timed
+    public ResponseEntity<AttemptResponse> stopAttempt(@RequestParam Long gameId, @RequestParam Long attemptId, @RequestParam String playerId, 
+    		@RequestParam String playtoken, @RequestParam String scoreReached, @RequestParam(required=false, defaultValue="-1") String levelReached) {
+    	log.debug("REST request to stop Attempt with id {}", attemptId);
+        Attempt attempt = attemptService.findOne(attemptId);
+        if(attempt == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+attemptId + " not found")).body(null);
+        return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, new Long(scoreReached), new Long(levelReached)), null, HttpStatus.OK);
+    }
+
     @PutMapping("/play/end")
     @Timed
-    public ResponseEntity<Game> endGame(@RequestParam Long gameId, @RequestParam Long attemptId, @RequestParam Long playerId, @RequestParam String playtoken, @RequestParam String finalValue) {
-        log.debug("REST request to update score to {} and end game Game : {}",finalValue, gameId);
-        Game game = gameService.findOne(gameId);
-
-        //TODO setto punteggio finale e chiudo gioco
-        Game result = gameService.save(game);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
-            .body(result);
+    public ResponseEntity<MatchResponse> endGame(@RequestParam Long gameId, @RequestParam Long matchId, @RequestParam String playerId, @RequestParam String playtoken) {
+        log.debug("REST request to finish match {} and end game Game : {}",matchId, gameId);
+        Match match = matchService.findOne(matchId);
+        //TODO verificare se ci sono attemp pending
+        if(match == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+matchId + " not found")).body(null);
+        return new ResponseEntity<>(gameService.endMatch(match, playerId), null, HttpStatus.OK);
 
     }
 }
