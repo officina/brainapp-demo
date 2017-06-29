@@ -1,6 +1,7 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.GameService;
+import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.domain.Attempt;
@@ -12,6 +13,8 @@ import cc.officina.gatorade.repository.GameRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 
 import java.time.ZonedDateTime;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,9 @@ public class GameServiceImpl implements GameService{
     private final GameRepository gameRepository;
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
+    
+    @Inject
+    private GamificationService gamificationService;
 
     public GameServiceImpl(GameRepository gameRepository, MatchRepository matchRepository, AttemptRepository attemptRepository) {
         this.gameRepository = gameRepository;
@@ -111,6 +117,7 @@ public class GameServiceImpl implements GameService{
 		attempt.setMatch(match);
 		attempt.setStartAttempt(ZonedDateTime.now());
 		attempt.setLastUpdate(ZonedDateTime.now());
+		attempt.setAttemptScore(0l);
 		attemptRepository.saveAndFlush(attempt);
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;
@@ -123,6 +130,26 @@ public class GameServiceImpl implements GameService{
 		attempt.setLastUpdate(ZonedDateTime.now());
 		attemptRepository.saveAndFlush(attempt);
 		AttemptResponse response = new AttemptResponse(game, attempt.getMatch(), null,attempt);
+		return response;
+	}
+
+	@Override
+	public AttemptResponse stopAttempt(Game game, Attempt attempt, Long scoreReached, Long levelReached) {
+		attempt.setAttemptScore(scoreReached);
+		attempt.setLevelReached(levelReached);
+		attempt.setLastUpdate(ZonedDateTime.now());
+		attempt.setStopAttempt(ZonedDateTime.now());
+		attemptRepository.saveAndFlush(attempt);
+		AttemptResponse response = new AttemptResponse(game, attempt.getMatch(), null,attempt);
+		return response;
+	}
+
+	@Override
+	public MatchResponse endMatch(Match match, String playerId) {
+		match.setStop(ZonedDateTime.now());
+		matchRepository.save(match);
+		gamificationService.runAtion(match.getGame().getActionId());
+		MatchResponse response = new MatchResponse(match.getGame(), match, match.getTemplate());
 		return response;
 	}
 }
