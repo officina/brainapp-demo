@@ -18,8 +18,35 @@
 
         // Listen to message from child window
         eventer(messageEvent,function(e) {
-          console.log('game ended with:  ', e.data)
-          console.log("game ended! with " + e.data.gameEnd.endPoints + " points")
+            debugger;
+            console.log("received action: " + e.data.action + " for attempt: " +e.data.attempt)
+            switch (e.data.action){
+                case "UPDATE_LEVEL":
+
+                    break;
+                case "UPDATE_SCORE":
+
+                    break;
+                case "START_ATTEMPT":
+
+                    break;
+                case "STOP_ATTEMPT":
+
+                    break;
+                case "ATTEMPT_ENDED":
+
+                    break;
+                case "GAME_LOADED":
+
+                    break;
+                case "GAME_UNLOADED":
+
+                    break;
+
+                default:
+
+                    break;
+            }
           PlaygameService.updateScore(1101,2,234,45)
         },false);
 
