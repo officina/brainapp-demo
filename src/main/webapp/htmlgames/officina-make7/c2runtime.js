@@ -22801,7 +22801,7 @@ cr.plugins_.gatorade = function(runtime)
 		}
 		currentattempt.ended = new Date()
         console.log("Attempt stopped: with score " + score);
-        var m = new Gatorade.Message(operations.START_ATTEMPT, currentattempt)
+        var m = new Gatorade.Message(operations.STOP_ATTEMPT, currentattempt)
 		window.parent.postMessage(m, domain)
 		currentattempt = null
 	};

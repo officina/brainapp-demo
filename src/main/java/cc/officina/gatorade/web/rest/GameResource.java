@@ -142,6 +142,7 @@ public class GameResource {
         log.debug("REST request to startMatch : {}", request.getGameid());
         Game game = gameService.findOne(request.getGameid());
         //TODO gestione template
+        //TODO verificare se l'utente ha match sospesi
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ request.getGameid() + " not found")).body(null);
         else
@@ -151,15 +152,21 @@ public class GameResource {
     @PostMapping("/play/attempt")
     @Timed
     public ResponseEntity<AttemptResponse> startAttempt(@RequestBody Request request) {
-    	if(request.getGameid() == null || request.getPlayerid() == null || request.getMatchid() == null)
+    	if(request.getGameid() == null || request.getPlayerid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
         log.debug("REST request to startAttempt : {}", request.getGameid());
         Game game = gameService.findOne(request.getGameid());
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+request.getGameid() + " not found")).body(null);
-        Match match = matchService.findOne(request.getMatchid());
+        Match match = null;
+        if(request.getMatchid() != null)
+        	match = matchService.findOne(request.getMatchid());
         if(match == null)
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
+        {
+        	//TODO varie regole di validazione, ad esempio ricerco un match sospeso ecc
+        	match = gameService.startMatch(game, null, request.getPlayerid()).getMatch();
+//        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
+        }
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
 
