@@ -47,6 +47,7 @@
     "languages": [
       "it",
       "en"
-    ]
+    ],
+    "herokuAppName": "gatoradeapp"
   }
 }
