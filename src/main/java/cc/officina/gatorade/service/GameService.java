@@ -54,5 +54,5 @@ public interface GameService {
 
 	public AttemptResponse stopAttempt(Game game, Attempt attempt, Long scoreReached, Long levelReached);
 
-	public MatchResponse endMatch(Match match, String playerId);
+	public MatchResponse endMatch(Match match);
 }

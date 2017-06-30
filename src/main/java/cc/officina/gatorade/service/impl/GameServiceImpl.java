@@ -145,7 +145,7 @@ public class GameServiceImpl implements GameService{
 	}
 
 	@Override
-	public MatchResponse endMatch(Match match, String playerId) {
+	public MatchResponse endMatch(Match match) {
 		match.setStop(ZonedDateTime.now());
 		matchRepository.save(match);
 		gamificationService.runAtion(match.getGame().getActionId());
