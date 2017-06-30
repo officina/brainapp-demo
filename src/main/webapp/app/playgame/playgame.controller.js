@@ -10,7 +10,7 @@
     function PlaygameController ($scope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams) {
 
     	$scope.wrapperMemory = {};
-    	$scope.wrapperMemory.attempts = [];	
+    	$scope.wrapperMemory.attempts = [];
     	// IE + others compatible event handler
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var eventer = window[eventMethod];
@@ -54,7 +54,7 @@
         },false);
 
 
-        $scope.game = {url:"app/layouts/playgame/loading.html"}
+        $scope.game = {url:"htmlgames/loading.html"}
 
         var updateScoreWithValue = function(value){
           PlaygameService.updateScore(1101,2,234,45)
@@ -74,7 +74,7 @@
           $scope.wrapperMemory.player = {};
           $scope.wrapperMemory.player.playtoken = playtoken;
         })
-        
+
         var startAttempt = function(){
         	if($scope.wrapperMemory.match == undefined)
         	{

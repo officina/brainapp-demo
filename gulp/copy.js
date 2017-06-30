@@ -18,7 +18,8 @@ module.exports = {
     fonts: fonts,
     common: common,
     swagger: swagger,
-    images: images
+    images: images,
+    games: games
 }
 
 var yorc = require('../.yo-rc.json')['generator-jhipster'];
@@ -99,4 +100,11 @@ function images() {
         .pipe(plumber({errorHandler: handleErrors}))
         .pipe(changed(config.dist +  'bower_components'))
         .pipe(gulp.dest(config.dist +  'bower_components'));
+}
+
+function games() {
+    return gulp.src(config.htmlgames + '**/*.*')
+        .pipe(plumber({errorHandler: handleErrors}))
+        .pipe(changed(config.dist +  'htmlgames'))
+        .pipe(gulp.dest(config.dist +  'htmlgames'));
 }

@@ -11,7 +11,7 @@ angular.module('gatoradeApp')
   .service('PlaygameService', ['$http',function ($http) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     //noinspection JSAnnotator
-  var rootPath = 'http://localhost:8080';  
+  var rootPath = '';
     //GET GAME
   this.getGame =  function getGame(gameId, playerId, token){
 	  console.log("calling http service")
@@ -78,7 +78,7 @@ angular.module('gatoradeApp')
   };
     //END MATCH
 
-    
+
     this.updateScore = function(gameId, playerId, token, newValue){
 
       return $http({
@@ -107,5 +107,5 @@ angular.module('gatoradeApp')
         }
       })
     }
-    
+
   }]);

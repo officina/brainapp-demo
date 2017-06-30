@@ -44,6 +44,8 @@ gulp.task('copy:swagger', copy.swagger);
 
 gulp.task('copy:images', copy.images);
 
+gulp.task('copy:games', copy.games);
+
 gulp.task('images', function () {
     return gulp.src(config.app + 'content/images/**')
         .pipe(plumber({errorHandler: handleErrors}))
@@ -79,7 +81,9 @@ gulp.task('inject:test', inject.test);
 
 gulp.task('inject:troubleshoot', inject.troubleshoot);
 
-gulp.task('assets:prod', ['images', 'styles', 'html', 'copy:swagger', 'copy:images'], build);
+gulp.task('assets:prod', ['images', 'styles', 'html', 'copy:games', 'copy:swagger', 'copy:images'], build);
+
+
 
 gulp.task('html', function () {
     return gulp.src(config.app + 'app/**/*.html')

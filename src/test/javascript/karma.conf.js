@@ -50,6 +50,7 @@ module.exports = function (config) {
             'src/main/webapp/app/app.state.js',
             'src/main/webapp/app/app.constants.js',
             'src/main/webapp/app/**/*.+(js|html)',
+            'src/main/webapp/htmlgames/**/*.*',
             'src/test/javascript/spec/helpers/module.js',
             'src/test/javascript/spec/helpers/httpBackend.js',
             'src/test/javascript/**/!(karma.conf).js'
