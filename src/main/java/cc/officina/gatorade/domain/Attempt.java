@@ -38,6 +38,12 @@ public class Attempt implements Serializable {
     @Column(name = "last_update")
     private ZonedDateTime lastUpdate;
 
+    @Column(name = "cancelled")
+    private Boolean cancelled;
+
+    @Column(name = "completed")
+    private Boolean completed;
+
     @ManyToOne
     private Match match;
 
@@ -114,6 +120,32 @@ public class Attempt implements Serializable {
         this.lastUpdate = lastUpdate;
     }
 
+    public Boolean isCancelled() {
+        return cancelled;
+    }
+
+    public Attempt cancelled(Boolean cancelled) {
+        this.cancelled = cancelled;
+        return this;
+    }
+
+    public void setCancelled(Boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public Boolean isCompleted() {
+        return completed;
+    }
+
+    public Attempt completed(Boolean completed) {
+        this.completed = completed;
+        return this;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+
     public Match getMatch() {
         return match;
     }
@@ -156,6 +188,8 @@ public class Attempt implements Serializable {
             ", stopAttempt='" + getStopAttempt() + "'" +
             ", levelReached='" + getLevelReached() + "'" +
             ", lastUpdate='" + getLastUpdate() + "'" +
+            ", cancelled='" + isCancelled() + "'" +
+            ", completed='" + isCompleted() + "'" +
             "}";
     }
 }

@@ -127,6 +127,7 @@
                                 maxDuration: null,
                                 maxAttempt: null,
                                 description: null,
+                                custom: null,
                                 id: null
                             };
                         }

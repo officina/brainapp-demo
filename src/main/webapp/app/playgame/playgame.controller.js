@@ -19,25 +19,29 @@
         // Listen to message from child window
         eventer(messageEvent,function(e) {
 
-            console.log("received action: " + e.data.action + " for attempt: " +e.data.attempt);
-            console.log(e.data.attempt);
+            console.log("received action: " + e.data.action);
+            console.log(e);
             switch (e.data.action){
                 case "UPDATE_LEVEL":
 
                     break;
                 case "UPDATE_SCORE":
+                	console.log('New score: ' + e.data.attempt.score);
                 	updateAttemptScore(e.data.attempt.score);
                     break;
                 case "START_ATTEMPT":
                 	startAttempt();
-                	console.log('Creazione attempt');
+                	//console.log('Creazione attempt');
                     break;
                 case "STOP_ATTEMPT": //è un cancel attempt
-                	//stopAttempt();
-                	console.log(e.data.attempt.ended);
+                	console.log('ATTEMPT_ENDED');
+                	var endedInfo = e.data.attempt;
+                	attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "ATTEMPT_ENDED":
-
+                	console.log('ATTEMPT_ENDED');
+                	var endedInfo = e.data.attempt;
+                	attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "GAME_LOADED":
 
@@ -64,7 +68,7 @@
           PlaygameService.endGame(1101,2,234,45)
         }
 
-        var gameId = $stateParams.gameId;
+        var gameId = $stateParams.gameid;
         var playtoken = $stateParams.playtoken;
         PlaygameService.getGame(gameId, "", playtoken).then(function(response){
           var game = response.data
@@ -78,19 +82,19 @@
         var startAttempt = function(){
         	if($scope.wrapperMemory.match == undefined)
         	{
-        		PlaygameService.createAttempt(gameId, "", playtoken,null).then(function(response){
-    	          console.log(response.data);
-    	          $scope.wrapperMemory.match = response.data.match;
+        		PlaygameService.createAttempt(gameId,$stateParams.templateid, "", playtoken,null).then(function(response){
+    	          console.log($stateParams.templateid);
+    	          $scope.wrapperM	emory.match = response.data.match;
     	          $scope.wrapperMemory.currAttempt = response.data.attempt;
     	          $scope.wrapperMemory.attempts.push(response.data.attempt);
-    	          console.log('_________________________________');
+    	          console.log('WRAPPER MEMORY INIZIO');
     	          console.log($scope.wrapperMemory);
-    	          console.log('_________________________________');
+    	          console.log('WRAPPER MEMORY FINE');
     	        });
         	}
         	else
         	{
-        		PlaygameService.createAttempt(gameId, "", playtoken,$scope.wrapperMemory.match.id).then(function(response){
+        		PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken,$scope.wrapperMemory.match.id).then(function(response){
       	          console.log(response.data);
       	          $scope.wrapperMemory.match = response.data.match;
       	          $scope.wrapperMemory.currAttempt = response.data.attempt;
@@ -99,8 +103,20 @@
         	}
         };
 	    var updateAttemptScore = function(value){
+	    	console.log('dentro uopdateAttemptScore');
 	    	$scope.wrapperMemory.currAttempt.score = value;
 	    	console.log($scope.wrapperMemory.currAttempt);
 	    };
+	    
+	    var attemptEnded = function(score, level, completed, endDate){
+	    	 //function(gameId, attemptId, score, level, completed)
+	    	PlaygameService.endAttempt($scope.wrapperMemory.game.id,$scope.wrapperMemory.currAttempt.id,score,level,completed).then(function(response){
+	    		console.log('FINIO');
+	    		console.log(response);
+	    	});
+	    	console.log('WRAPPER MEMORY INIZIO');
+          console.log($scope.wrapperMemory);
+          console.log('WRAPPER MEMORY FINE');
+	    }
     }
 })();

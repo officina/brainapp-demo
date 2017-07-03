@@ -31,6 +31,9 @@ public class MatchTemplate implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "custom")
+    private Boolean custom;
+
     @ManyToOne
     private Game game;
 
@@ -81,6 +84,19 @@ public class MatchTemplate implements Serializable {
         this.description = description;
     }
 
+    public Boolean isCustom() {
+        return custom;
+    }
+
+    public MatchTemplate custom(Boolean custom) {
+        this.custom = custom;
+        return this;
+    }
+
+    public void setCustom(Boolean custom) {
+        this.custom = custom;
+    }
+
     public Game getGame() {
         return game;
     }
@@ -121,6 +137,7 @@ public class MatchTemplate implements Serializable {
             ", maxDuration='" + getMaxDuration() + "'" +
             ", maxAttempt='" + getMaxAttempt() + "'" +
             ", description='" + getDescription() + "'" +
+            ", custom='" + isCustom() + "'" +
             "}";
     }
 }

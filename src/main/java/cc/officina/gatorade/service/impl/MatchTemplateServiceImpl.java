@@ -74,4 +74,9 @@ public class MatchTemplateServiceImpl implements MatchTemplateService{
         log.debug("Request to delete MatchTemplate : {}", id);
         matchTemplateRepository.delete(id);
     }
+
+	@Override
+	public MatchTemplate findOneByGameId(Long gameId) {
+		return matchTemplateRepository.findOneByGameId(gameId);
+	}
 }

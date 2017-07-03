@@ -134,9 +134,10 @@ public class GameServiceImpl implements GameService{
 	}
 
 	@Override
-	public AttemptResponse stopAttempt(Game game, Attempt attempt, Long scoreReached, Long levelReached) {
+	public AttemptResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, Long levelReached) {
 		attempt.setAttemptScore(scoreReached);
 		attempt.setLevelReached(levelReached);
+		attempt.setCompleted(completed);
 		attempt.setLastUpdate(ZonedDateTime.now());
 		attempt.setStopAttempt(ZonedDateTime.now());
 		attemptRepository.saveAndFlush(attempt);

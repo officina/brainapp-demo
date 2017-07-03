@@ -22,6 +22,7 @@
                     <th jh-sort-by="maxDuration"><span data-translate="gatoradeApp.matchTemplate.maxDuration">Max Duration</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="maxAttempt"><span data-translate="gatoradeApp.matchTemplate.maxAttempt">Max Attempt</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="description"><span data-translate="gatoradeApp.matchTemplate.description">Description</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="custom"><span data-translate="gatoradeApp.matchTemplate.custom">Custom</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="game.description"><span data-translate="gatoradeApp.matchTemplate.game">Game</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
@@ -32,6 +33,7 @@
                     <td>{{matchTemplate.maxDuration}}</td>
                     <td>{{matchTemplate.maxAttempt}}</td>
                     <td>{{matchTemplate.description}}</td>
+                    <td>{{matchTemplate.custom}}</td>
                     <td>
                         <a ui-sref="game-detail({id:matchTemplate.game.id})">{{matchTemplate.game.description}}</a>
                     </td>

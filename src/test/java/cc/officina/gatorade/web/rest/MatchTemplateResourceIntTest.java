@@ -47,6 +47,9 @@ public class MatchTemplateResourceIntTest {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
+    private static final Boolean DEFAULT_CUSTOM = false;
+    private static final Boolean UPDATED_CUSTOM = true;
+
     @Autowired
     private MatchTemplateRepository matchTemplateRepository;
 
@@ -89,7 +92,8 @@ public class MatchTemplateResourceIntTest {
         MatchTemplate matchTemplate = new MatchTemplate()
             .maxDuration(DEFAULT_MAX_DURATION)
             .maxAttempt(DEFAULT_MAX_ATTEMPT)
-            .description(DEFAULT_DESCRIPTION);
+            .description(DEFAULT_DESCRIPTION)
+            .custom(DEFAULT_CUSTOM);
         return matchTemplate;
     }
 
@@ -116,6 +120,7 @@ public class MatchTemplateResourceIntTest {
         assertThat(testMatchTemplate.getMaxDuration()).isEqualTo(DEFAULT_MAX_DURATION);
         assertThat(testMatchTemplate.getMaxAttempt()).isEqualTo(DEFAULT_MAX_ATTEMPT);
         assertThat(testMatchTemplate.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testMatchTemplate.isCustom()).isEqualTo(DEFAULT_CUSTOM);
     }
 
     @Test
@@ -150,7 +155,8 @@ public class MatchTemplateResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(matchTemplate.getId().intValue())))
             .andExpect(jsonPath("$.[*].maxDuration").value(hasItem(DEFAULT_MAX_DURATION.intValue())))
             .andExpect(jsonPath("$.[*].maxAttempt").value(hasItem(DEFAULT_MAX_ATTEMPT.intValue())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].custom").value(hasItem(DEFAULT_CUSTOM.booleanValue())));
     }
 
     @Test
@@ -166,7 +172,8 @@ public class MatchTemplateResourceIntTest {
             .andExpect(jsonPath("$.id").value(matchTemplate.getId().intValue()))
             .andExpect(jsonPath("$.maxDuration").value(DEFAULT_MAX_DURATION.intValue()))
             .andExpect(jsonPath("$.maxAttempt").value(DEFAULT_MAX_ATTEMPT.intValue()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
+            .andExpect(jsonPath("$.custom").value(DEFAULT_CUSTOM.booleanValue()));
     }
 
     @Test
@@ -190,7 +197,8 @@ public class MatchTemplateResourceIntTest {
         updatedMatchTemplate
             .maxDuration(UPDATED_MAX_DURATION)
             .maxAttempt(UPDATED_MAX_ATTEMPT)
-            .description(UPDATED_DESCRIPTION);
+            .description(UPDATED_DESCRIPTION)
+            .custom(UPDATED_CUSTOM);
 
         restMatchTemplateMockMvc.perform(put("/api/match-templates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -204,6 +212,7 @@ public class MatchTemplateResourceIntTest {
         assertThat(testMatchTemplate.getMaxDuration()).isEqualTo(UPDATED_MAX_DURATION);
         assertThat(testMatchTemplate.getMaxAttempt()).isEqualTo(UPDATED_MAX_ATTEMPT);
         assertThat(testMatchTemplate.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testMatchTemplate.isCustom()).isEqualTo(UPDATED_CUSTOM);
     }
 
     @Test

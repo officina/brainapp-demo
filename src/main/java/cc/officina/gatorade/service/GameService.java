@@ -52,7 +52,7 @@ public interface GameService {
 
 	public AttemptResponse updateAttemptScore(Game game, Attempt attempt, Long newValue);
 
-	public AttemptResponse stopAttempt(Game game, Attempt attempt, Long scoreReached, Long levelReached);
+	public AttemptResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, Long levelReached);
 
 	public MatchResponse endMatch(Match match);
 }

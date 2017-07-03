@@ -129,6 +129,8 @@
                                 stopAttempt: null,
                                 levelReached: null,
                                 lastUpdate: null,
+                                cancelled: null,
+                                completed: null,
                                 id: null
                             };
                         }

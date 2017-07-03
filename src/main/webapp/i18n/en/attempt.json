@@ -20,6 +20,8 @@
             "stopAttempt": "Stop Attempt",
             "levelReached": "Level Reached",
             "lastUpdate": "Last Update",
+            "cancelled": "Cancelled",
+            "completed": "Completed",
             "match": "Match"
         }
     }

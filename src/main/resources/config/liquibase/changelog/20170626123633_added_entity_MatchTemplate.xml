@@ -33,6 +33,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="custom" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
             <column name="game_id" type="bigint">
                 <constraints nullable="true" />
             </column>

@@ -24,6 +24,8 @@
                     <th jh-sort-by="stopAttempt"><span data-translate="gatoradeApp.attempt.stopAttempt">Stop Attempt</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="levelReached"><span data-translate="gatoradeApp.attempt.levelReached">Level Reached</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="lastUpdate"><span data-translate="gatoradeApp.attempt.lastUpdate">Last Update</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="cancelled"><span data-translate="gatoradeApp.attempt.cancelled">Cancelled</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="completed"><span data-translate="gatoradeApp.attempt.completed">Completed</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="match.id"><span data-translate="gatoradeApp.attempt.match">Match</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
@@ -36,6 +38,8 @@
                     <td>{{attempt.stopAttempt | date:'medium'}}</td>
                     <td>{{attempt.levelReached}}</td>
                     <td>{{attempt.lastUpdate | date:'medium'}}</td>
+                    <td>{{attempt.cancelled}}</td>
+                    <td>{{attempt.completed}}</td>
                     <td>
                         <a ui-sref="match-detail({id:attempt.match.id})">{{attempt.match.id}}</a>
                     </td>

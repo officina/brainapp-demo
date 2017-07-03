@@ -4,6 +4,7 @@ import cc.officina.gatorade.domain.MatchTemplate;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 
 
 /**
@@ -12,5 +13,8 @@ import org.springframework.data.jpa.repository.*;
 @SuppressWarnings("unused")
 @Repository
 public interface MatchTemplateRepository extends JpaRepository<MatchTemplate,Long> {
+
+	@Query("select m from MatchTemplate m where m.game.id = :gameId")
+	public MatchTemplate findOneByGameId(@Param("gameId")Long gameId);
     
 }

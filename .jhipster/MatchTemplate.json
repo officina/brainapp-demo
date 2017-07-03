@@ -20,6 +20,10 @@
         {
             "fieldName": "description",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "custom",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170626123633",

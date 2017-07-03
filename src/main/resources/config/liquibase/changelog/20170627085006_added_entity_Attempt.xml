@@ -41,6 +41,14 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="cancelled" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="completed" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
             <column name="match_id" type="bigint">
                 <constraints nullable="true" />
             </column>

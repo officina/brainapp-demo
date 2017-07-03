@@ -12,7 +12,7 @@
 
 eureka:
     instance:
-        hostname: gatoradeapp.herokuapp.com
+        hostname: gatorade-app.herokuapp.com
         non-secure-port: 80
         prefer-ip-address: false
     client:

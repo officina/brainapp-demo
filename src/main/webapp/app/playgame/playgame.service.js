@@ -34,12 +34,13 @@ angular.module('gatoradeApp')
 	  })
   };
     //CREATE ATTEMPT
-  this.createAttempt = function(gameId,playerId,token,matchId){
+  this.createAttempt = function(gameId, templateId,playerId,token,matchId){
 	  return $http({
       	method: 'POST',
       	url: rootPath +'/api/play/attempt',
       	data:{
         	gameid:gameId,
+        	templateid:templateId,
         	playerid:playerId,
         	playtoken:token,
         	matchid: matchId
@@ -63,16 +64,16 @@ angular.module('gatoradeApp')
 	  })
   };
     //CLOSE ATTEMPT
-  this.updateAttemptScore = function(gameId,playerId,token,matchId,attemptId){
+  this.endAttempt = function(gameId, attemptId, score, level, completed){
 	  return $http({
       	method: 'PUT',
       	url: rootPath +'/api/play/attempt/end',
       	data:{
         	gameid:gameId,
-        	playerid: playerId,
-        	token:token,
-        	matchid:matchId,
-      		attemptid:attemptId
+      		attemptid:attemptId,
+      		score:score,
+      		level:level,
+      		completed:completed
         }
 	  })
   };

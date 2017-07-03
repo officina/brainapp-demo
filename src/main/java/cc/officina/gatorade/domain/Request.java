@@ -9,6 +9,7 @@ public class Request {
 	private String playtoken;
 	private Long score;
 	private Long level;
+	private boolean completed;
 	public Long getGameid() {
 		return gameid;
 	}
@@ -57,5 +58,10 @@ public class Request {
 	public void setLevel(Long level) {
 		this.level = level;
 	}
-	
+	public boolean isCompleted() {
+		return completed;
+	}
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
 }

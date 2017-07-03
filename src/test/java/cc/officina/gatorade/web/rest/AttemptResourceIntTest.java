@@ -58,6 +58,12 @@ public class AttemptResourceIntTest {
     private static final ZonedDateTime DEFAULT_LAST_UPDATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_LAST_UPDATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
+    private static final Boolean DEFAULT_CANCELLED = false;
+    private static final Boolean UPDATED_CANCELLED = true;
+
+    private static final Boolean DEFAULT_COMPLETED = false;
+    private static final Boolean UPDATED_COMPLETED = true;
+
     @Autowired
     private AttemptRepository attemptRepository;
 
@@ -102,7 +108,9 @@ public class AttemptResourceIntTest {
             .startAttempt(DEFAULT_START_ATTEMPT)
             .stopAttempt(DEFAULT_STOP_ATTEMPT)
             .levelReached(DEFAULT_LEVEL_REACHED)
-            .lastUpdate(DEFAULT_LAST_UPDATE);
+            .lastUpdate(DEFAULT_LAST_UPDATE)
+            .cancelled(DEFAULT_CANCELLED)
+            .completed(DEFAULT_COMPLETED);
         return attempt;
     }
 
@@ -131,6 +139,8 @@ public class AttemptResourceIntTest {
         assertThat(testAttempt.getStopAttempt()).isEqualTo(DEFAULT_STOP_ATTEMPT);
         assertThat(testAttempt.getLevelReached()).isEqualTo(DEFAULT_LEVEL_REACHED);
         assertThat(testAttempt.getLastUpdate()).isEqualTo(DEFAULT_LAST_UPDATE);
+        assertThat(testAttempt.isCancelled()).isEqualTo(DEFAULT_CANCELLED);
+        assertThat(testAttempt.isCompleted()).isEqualTo(DEFAULT_COMPLETED);
     }
 
     @Test
@@ -167,7 +177,9 @@ public class AttemptResourceIntTest {
             .andExpect(jsonPath("$.[*].startAttempt").value(hasItem(sameInstant(DEFAULT_START_ATTEMPT))))
             .andExpect(jsonPath("$.[*].stopAttempt").value(hasItem(sameInstant(DEFAULT_STOP_ATTEMPT))))
             .andExpect(jsonPath("$.[*].levelReached").value(hasItem(DEFAULT_LEVEL_REACHED.intValue())))
-            .andExpect(jsonPath("$.[*].lastUpdate").value(hasItem(sameInstant(DEFAULT_LAST_UPDATE))));
+            .andExpect(jsonPath("$.[*].lastUpdate").value(hasItem(sameInstant(DEFAULT_LAST_UPDATE))))
+            .andExpect(jsonPath("$.[*].cancelled").value(hasItem(DEFAULT_CANCELLED.booleanValue())))
+            .andExpect(jsonPath("$.[*].completed").value(hasItem(DEFAULT_COMPLETED.booleanValue())));
     }
 
     @Test
@@ -185,7 +197,9 @@ public class AttemptResourceIntTest {
             .andExpect(jsonPath("$.startAttempt").value(sameInstant(DEFAULT_START_ATTEMPT)))
             .andExpect(jsonPath("$.stopAttempt").value(sameInstant(DEFAULT_STOP_ATTEMPT)))
             .andExpect(jsonPath("$.levelReached").value(DEFAULT_LEVEL_REACHED.intValue()))
-            .andExpect(jsonPath("$.lastUpdate").value(sameInstant(DEFAULT_LAST_UPDATE)));
+            .andExpect(jsonPath("$.lastUpdate").value(sameInstant(DEFAULT_LAST_UPDATE)))
+            .andExpect(jsonPath("$.cancelled").value(DEFAULT_CANCELLED.booleanValue()))
+            .andExpect(jsonPath("$.completed").value(DEFAULT_COMPLETED.booleanValue()));
     }
 
     @Test
@@ -211,7 +225,9 @@ public class AttemptResourceIntTest {
             .startAttempt(UPDATED_START_ATTEMPT)
             .stopAttempt(UPDATED_STOP_ATTEMPT)
             .levelReached(UPDATED_LEVEL_REACHED)
-            .lastUpdate(UPDATED_LAST_UPDATE);
+            .lastUpdate(UPDATED_LAST_UPDATE)
+            .cancelled(UPDATED_CANCELLED)
+            .completed(UPDATED_COMPLETED);
 
         restAttemptMockMvc.perform(put("/api/attempts")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -227,6 +243,8 @@ public class AttemptResourceIntTest {
         assertThat(testAttempt.getStopAttempt()).isEqualTo(UPDATED_STOP_ATTEMPT);
         assertThat(testAttempt.getLevelReached()).isEqualTo(UPDATED_LEVEL_REACHED);
         assertThat(testAttempt.getLastUpdate()).isEqualTo(UPDATED_LAST_UPDATE);
+        assertThat(testAttempt.isCancelled()).isEqualTo(UPDATED_CANCELLED);
+        assertThat(testAttempt.isCompleted()).isEqualTo(UPDATED_COMPLETED);
     }
 
     @Test

@@ -24,6 +24,14 @@
         <dd>
             <span>{{vm.attempt.lastUpdate | date:'medium'}}</span>
         </dd>
+        <dt><span data-translate="gatoradeApp.attempt.cancelled">Cancelled</span></dt>
+        <dd>
+            <span>{{vm.attempt.cancelled}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.attempt.completed">Completed</span></dt>
+        <dd>
+            <span>{{vm.attempt.completed}}</span>
+        </dd>
         <dt><span data-translate="gatoradeApp.attempt.match">Match</span></dt>
         <dd>
             <a ui-sref="match-detail({id:vm.attempt.match.id})">{{vm.attempt.match.id}}</a>

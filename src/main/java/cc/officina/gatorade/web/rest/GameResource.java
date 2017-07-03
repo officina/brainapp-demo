@@ -5,10 +5,12 @@ import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.MatchTemplate;
 import cc.officina.gatorade.domain.Request;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.MatchService;
+import cc.officina.gatorade.service.MatchTemplateService;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
@@ -47,11 +49,13 @@ public class GameResource {
     private final GameService gameService;
     private final MatchService matchService;
     private final AttemptService attemptService;
+    private final MatchTemplateService templateService;
 
-    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService) {
+    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService) {
         this.gameService = gameService;
         this.matchService = matchService;
         this.attemptService = attemptService;
+        this.templateService = templateService;
     }
 
     /**
@@ -137,16 +141,20 @@ public class GameResource {
     @Timed
     public ResponseEntity<MatchResponse> startMatch(@RequestBody Request request) {
 
-    	if(request.getGameid() == null || request.getPlayerid() == null)
+    	if(request.getGameid() == null || request.getPlayerid() == null || request.getTemplateid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
         log.debug("REST request to startMatch : {}", request.getGameid());
         Game game = gameService.findOne(request.getGameid());
+        MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         //TODO gestione template
         //TODO verificare se l'utente ha match sospesi
+        if(template == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
+        
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ request.getGameid() + " not found")).body(null);
         else
-        	return new ResponseEntity<>(gameService.startMatch(game, null, request.getPlayerid()), null, HttpStatus.OK);
+        	return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid()), null, HttpStatus.OK);
     }
     
     @PostMapping("/play/attempt")
@@ -156,16 +164,20 @@ public class GameResource {
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
         log.debug("REST request to startAttempt : {}", request.getGameid());
         Game game = gameService.findOne(request.getGameid());
+        //TODO gestione template, al momento recupero il primo template disponibile per il gameid
+        MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+request.getGameid() + " not found")).body(null);
+        if(template == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
+        
         Match match = null;
         if(request.getMatchid() != null)
         	match = matchService.findOne(request.getMatchid());
         if(match == null)
         {
         	//TODO varie regole di validazione, ad esempio ricerco un match sospeso ecc
-        	match = gameService.startMatch(game, null, request.getPlayerid()).getMatch();
-//        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
+        	match = gameService.startMatch(game, template, request.getPlayerid()).getMatch();
         }
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
@@ -191,7 +203,7 @@ public class GameResource {
         Attempt attempt = attemptService.findOne(request.getAttemptid());
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
-        return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.getScore(), request.getLevel()), null, HttpStatus.OK);
+        return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel()), null, HttpStatus.OK);
     }
 
     @PutMapping("/play/end")

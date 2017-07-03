@@ -28,6 +28,14 @@
         {
             "fieldName": "lastUpdate",
             "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "cancelled",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "completed",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170627085006",

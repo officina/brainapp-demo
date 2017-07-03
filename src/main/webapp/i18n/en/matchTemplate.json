@@ -18,6 +18,7 @@
             "maxDuration": "Max Duration",
             "maxAttempt": "Max Attempt",
             "description": "Description",
+            "custom": "Custom",
             "game": "Game"
         }
     }
