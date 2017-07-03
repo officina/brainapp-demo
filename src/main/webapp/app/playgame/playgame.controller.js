@@ -84,7 +84,7 @@
         	{
         		PlaygameService.createAttempt(gameId,$stateParams.templateid, "", playtoken,null).then(function(response){
     	          console.log($stateParams.templateid);
-    	          $scope.wrapperM	emory.match = response.data.match;
+    	          $scope.wrapperMemory.match = response.data.match;
     	          $scope.wrapperMemory.currAttempt = response.data.attempt;
     	          $scope.wrapperMemory.attempts.push(response.data.attempt);
     	          console.log('WRAPPER MEMORY INIZIO');
