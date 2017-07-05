@@ -27340,7 +27340,6 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Sprite.prototype.cnds.IsOutsideLayout,
 	cr.plugins_.Sprite.prototype.acts.SetOpacity,
 	cr.plugins_.Sprite.prototype.cnds.IsOnLayer,
-	cr.system_object.prototype.acts.ResetGlobals,
 	cr.system_object.prototype.cnds.CompareVar,
 	cr.plugins_.gatorade.prototype.acts.startAttempt,
 	cr.plugins_.Mouse.prototype.cnds.IsOverObject,
