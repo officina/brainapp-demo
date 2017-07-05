@@ -64,6 +64,8 @@
     "test": "gulp test"
   },
   "dependencies": {
+    "angular-generator": "0.0.5",
+    "generator-angular": "^0.16.0",
     "parse-filepath": "^1.0.1"
   }
 }
