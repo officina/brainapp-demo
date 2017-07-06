@@ -46,6 +46,8 @@ public class CacheConfiguration {
             cm.createCache(cc.officina.gatorade.domain.Attempt.class.getName(), jcacheConfiguration);
             cm.createCache(cc.officina.gatorade.domain.Match.class.getName() + ".attempts", jcacheConfiguration);
             cm.createCache(cc.officina.gatorade.domain.Game.class.getName() + ".matches", jcacheConfiguration);
+            cm.createCache(cc.officina.gatorade.domain.Session.class.getName(), jcacheConfiguration);
+            cm.createCache(cc.officina.gatorade.domain.Session.class.getName() + ".matches", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

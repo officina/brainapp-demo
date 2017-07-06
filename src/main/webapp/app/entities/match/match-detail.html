@@ -20,6 +20,14 @@
         <dd>
             <span>{{vm.match.userId}}</span>
         </dd>
+        <dt><span data-translate="gatoradeApp.match.lastStart">Last Start</span></dt>
+        <dd>
+            <span>{{vm.match.lastStart | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.match.timeSpent">Time Spent</span></dt>
+        <dd>
+            <span>{{vm.match.timeSpent}}</span>
+        </dd>
         <dt><span data-translate="gatoradeApp.match.game">Game</span></dt>
         <dd>
             <a ui-sref="game-detail({id:vm.match.game.id})">{{vm.match.game.description}}</a>
@@ -27,6 +35,10 @@
         <dt><span data-translate="gatoradeApp.match.template">Template</span></dt>
         <dd>
             <a ui-sref="match-template-detail({id:vm.match.template.id})">{{vm.match.template.description}}</a>
+        </dd>
+        <dt><span data-translate="gatoradeApp.match.session">Session</span></dt>
+        <dd>
+            <a ui-sref="session-detail({id:vm.match.session.id})">{{vm.match.session.id}}</a>
         </dd>
     </dl>
 

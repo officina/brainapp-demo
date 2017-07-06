@@ -18,6 +18,7 @@
                         data = angular.fromJson(data);
                         data.start = DateUtils.convertDateTimeFromServer(data.start);
                         data.stop = DateUtils.convertDateTimeFromServer(data.stop);
+                        data.lastStart = DateUtils.convertDateTimeFromServer(data.lastStart);
                     }
                     return data;
                 }

@@ -20,5 +20,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="match_template"/>
 
+        <addForeignKeyConstraint baseColumnNames="session_id"
+                                 baseTableName="match"
+                                 constraintName="fk_match_session_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="session"/>
+
     </changeSet>
 </databaseChangeLog>

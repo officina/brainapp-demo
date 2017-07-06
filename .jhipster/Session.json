@@ -1,0 +1,30 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "matches",
+            "otherEntityName": "match",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "session"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "startDate",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "endDate",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "extId",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20170705100048",
+    "dto": "no",
+    "service": "serviceImpl",
+    "entityTableName": "session",
+    "pagination": "pager"
+}

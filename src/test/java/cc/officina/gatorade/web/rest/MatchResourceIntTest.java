@@ -55,6 +55,12 @@ public class MatchResourceIntTest {
     private static final String DEFAULT_USER_ID = "AAAAAAAAAA";
     private static final String UPDATED_USER_ID = "BBBBBBBBBB";
 
+    private static final ZonedDateTime DEFAULT_LAST_START = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_LAST_START = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final Long DEFAULT_TIME_SPENT = 1L;
+    private static final Long UPDATED_TIME_SPENT = 2L;
+
     @Autowired
     private MatchRepository matchRepository;
 
@@ -98,7 +104,9 @@ public class MatchResourceIntTest {
             .start(DEFAULT_START)
             .stop(DEFAULT_STOP)
             .diffLevel(DEFAULT_DIFF_LEVEL)
-            .userId(DEFAULT_USER_ID);
+            .userId(DEFAULT_USER_ID)
+            .lastStart(DEFAULT_LAST_START)
+            .timeSpent(DEFAULT_TIME_SPENT);
         return match;
     }
 
@@ -126,6 +134,8 @@ public class MatchResourceIntTest {
         assertThat(testMatch.getStop()).isEqualTo(DEFAULT_STOP);
         assertThat(testMatch.getDiffLevel()).isEqualTo(DEFAULT_DIFF_LEVEL);
         assertThat(testMatch.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testMatch.getLastStart()).isEqualTo(DEFAULT_LAST_START);
+        assertThat(testMatch.getTimeSpent()).isEqualTo(DEFAULT_TIME_SPENT);
     }
 
     @Test
@@ -161,7 +171,9 @@ public class MatchResourceIntTest {
             .andExpect(jsonPath("$.[*].start").value(hasItem(sameInstant(DEFAULT_START))))
             .andExpect(jsonPath("$.[*].stop").value(hasItem(sameInstant(DEFAULT_STOP))))
             .andExpect(jsonPath("$.[*].diffLevel").value(hasItem(DEFAULT_DIFF_LEVEL.intValue())))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.toString())));
+            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.toString())))
+            .andExpect(jsonPath("$.[*].lastStart").value(hasItem(sameInstant(DEFAULT_LAST_START))))
+            .andExpect(jsonPath("$.[*].timeSpent").value(hasItem(DEFAULT_TIME_SPENT.intValue())));
     }
 
     @Test
@@ -178,7 +190,9 @@ public class MatchResourceIntTest {
             .andExpect(jsonPath("$.start").value(sameInstant(DEFAULT_START)))
             .andExpect(jsonPath("$.stop").value(sameInstant(DEFAULT_STOP)))
             .andExpect(jsonPath("$.diffLevel").value(DEFAULT_DIFF_LEVEL.intValue()))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID.toString()));
+            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID.toString()))
+            .andExpect(jsonPath("$.lastStart").value(sameInstant(DEFAULT_LAST_START)))
+            .andExpect(jsonPath("$.timeSpent").value(DEFAULT_TIME_SPENT.intValue()));
     }
 
     @Test
@@ -203,7 +217,9 @@ public class MatchResourceIntTest {
             .start(UPDATED_START)
             .stop(UPDATED_STOP)
             .diffLevel(UPDATED_DIFF_LEVEL)
-            .userId(UPDATED_USER_ID);
+            .userId(UPDATED_USER_ID)
+            .lastStart(UPDATED_LAST_START)
+            .timeSpent(UPDATED_TIME_SPENT);
 
         restMatchMockMvc.perform(put("/api/matches")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -218,6 +234,8 @@ public class MatchResourceIntTest {
         assertThat(testMatch.getStop()).isEqualTo(UPDATED_STOP);
         assertThat(testMatch.getDiffLevel()).isEqualTo(UPDATED_DIFF_LEVEL);
         assertThat(testMatch.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testMatch.getLastStart()).isEqualTo(UPDATED_LAST_START);
+        assertThat(testMatch.getTimeSpent()).isEqualTo(UPDATED_TIME_SPENT);
     }
 
     @Test

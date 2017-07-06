@@ -3,6 +3,8 @@ package cc.officina.gatorade.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -33,7 +35,7 @@ public class Attempt implements Serializable {
     private ZonedDateTime stopAttempt;
 
     @Column(name = "level_reached")
-    private Long levelReached;
+    private String levelReached;
 
     @Column(name = "last_update")
     private ZonedDateTime lastUpdate;
@@ -43,8 +45,9 @@ public class Attempt implements Serializable {
 
     @Column(name = "completed")
     private Boolean completed;
-
+    
     @ManyToOne
+    @JsonIgnore
     private Match match;
 
     public Long getId() {
@@ -94,16 +97,16 @@ public class Attempt implements Serializable {
         this.stopAttempt = stopAttempt;
     }
 
-    public Long getLevelReached() {
+    public String getLevelReached() {
         return levelReached;
     }
 
-    public Attempt levelReached(Long levelReached) {
+    public Attempt levelReached(String levelReached) {
         this.levelReached = levelReached;
         return this;
     }
 
-    public void setLevelReached(Long levelReached) {
+    public void setLevelReached(String levelReached) {
         this.levelReached = levelReached;
     }
 

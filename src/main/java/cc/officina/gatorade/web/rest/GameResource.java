@@ -7,10 +7,12 @@ import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.MatchTemplate;
 import cc.officina.gatorade.domain.Request;
+import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.service.MatchTemplateService;
+import cc.officina.gatorade.service.SessionService;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
@@ -27,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -50,12 +53,14 @@ public class GameResource {
     private final MatchService matchService;
     private final AttemptService attemptService;
     private final MatchTemplateService templateService;
+    private final SessionService sessionService;
 
-    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService) {
+    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService) {
         this.gameService = gameService;
         this.matchService = matchService;
         this.attemptService = attemptService;
         this.templateService = templateService;
+        this.sessionService = sessionService;
     }
 
     /**
@@ -128,6 +133,20 @@ public class GameResource {
         Game game = gameService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
+    
+    @GetMapping("/gamesinit/{id}/{extid}/{playerid}")
+    @Timed
+    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable Long extid, @PathVariable String playerid) {
+        log.debug("REST game init fro game with id = " + id + " and extI = " + extid);
+        Game game = gameService.findOne(id);
+        if(game == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ id + " not found")).body(null);
+        
+        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid);
+        if(! validateSession)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with ext_id " + extid + " is invalid.")).body(null);
+        return new ResponseEntity<>(game, null, HttpStatus.OK);
+    }
 
     @DeleteMapping("/games/{id}")
     @Timed
@@ -141,49 +160,57 @@ public class GameResource {
     @Timed
     public ResponseEntity<MatchResponse> startMatch(@RequestBody Request request) {
 
-    	if(request.getGameid() == null || request.getPlayerid() == null || request.getTemplateid() == null)
+    	if(request.getGameid() == null || request.getPlayerid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
         log.debug("REST request to startMatch : {}", request.getGameid());
+        Session session = sessionService.findOneByExtId(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
+        if(session == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
+        
         Game game = gameService.findOne(request.getGameid());
+        if(game == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ request.getGameid() + " not found")).body(null);
+        
         MatchTemplate template = templateService.findOneByGameId(request.getGameid());
-        //TODO gestione template
-        //TODO verificare se l'utente ha match sospesi
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
         
-        if(game == null)
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ request.getGameid() + " not found")).body(null);
-        else
-        	return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid()), null, HttpStatus.OK);
+        return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session), null, HttpStatus.OK);
     }
     
     @PostMapping("/play/attempt")
     @Timed
+    @Transactional
     public ResponseEntity<AttemptResponse> startAttempt(@RequestBody Request request) {
-    	if(request.getGameid() == null || request.getPlayerid() == null)
-			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
+    	if(request.getGameid() == null || request.getPlayerid() == null || request.getSessionid() == null)
+			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody2", "Malformed body")).body(null);
         log.debug("REST request to startAttempt : {}", request.getGameid());
         Game game = gameService.findOne(request.getGameid());
-        //TODO gestione template, al momento recupero il primo template disponibile per il gameid
-        MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+request.getGameid() + " not found")).body(null);
+        
+        MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
+        
+        Session session = sessionService.findOneByExtId(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
+        if(session == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
         
         Match match = null;
         if(request.getMatchid() != null)
         	match = matchService.findOne(request.getMatchid());
         if(match == null)
         {
-        	//TODO varie regole di validazione, ad esempio ricerco un match sospeso ecc
-        	match = gameService.startMatch(game, template, request.getPlayerid()).getMatch();
+        	match = gameService.startMatch(game, template, request.getPlayerid(),session).getMatch();
         }
+        match.getAttempts().size();
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
 
     @PutMapping("/play/attempt/score")
     @Timed
+    @Transactional
 	public ResponseEntity<AttemptResponse> updateGameScore(@RequestBody Request request) {
     	if(request.getGameid() == null || request.getPlayerid() == null || request.getAttemptid() == null || request.getScore() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
@@ -196,27 +223,33 @@ public class GameResource {
     
     @PutMapping("/play/attempt/end")
     @Timed
-    public ResponseEntity<AttemptResponse> stopAttempt(@RequestBody Request request) {
+    @Transactional
+    public ResponseEntity<MatchResponse> stopAttempt(@RequestBody Request request) {
     	if(request.getAttemptid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
     	log.debug("REST request to stop Attempt with id {}", request.getAttemptid());
         Attempt attempt = attemptService.findOne(request.getAttemptid());
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
-        return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel()), null, HttpStatus.OK);
+        attempt.getMatch().getAttempts().size();
+        return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);
     }
 
     @PutMapping("/play/end")
     @Timed
-    public ResponseEntity<MatchResponse> endGame(@RequestBody Request request) {
+    @Transactional
+    public ResponseEntity<MatchResponse> endMatch(@RequestBody Request request) {
     	if(request.getGameid() == null || request.getMatchid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
         log.debug("REST request to finish match {} and end game Game : {}",request.getMatchid(), request.getGameid());
         Match match = matchService.findOne(request.getMatchid());
+        Attempt lastAttempt = null;
+        if(request.getAttemptid() != null)
+        	lastAttempt = attemptService.findOne(request.getAttemptid());
         //TODO verificare se ci sono attemp pending
         if(match == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
-        return new ResponseEntity<>(gameService.endMatch(match), null, HttpStatus.OK);
+        return new ResponseEntity<>(gameService.endMatch(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
 
     }
 }

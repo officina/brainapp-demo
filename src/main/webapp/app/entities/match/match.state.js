@@ -128,6 +128,8 @@
                                 stop: null,
                                 diffLevel: null,
                                 userId: null,
+                                lastStart: null,
+                                timeSpent: null,
                                 id: null
                             };
                         }

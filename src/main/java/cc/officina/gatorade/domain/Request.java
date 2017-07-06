@@ -8,8 +8,10 @@ public class Request {
 	private String playerid;
 	private String playtoken;
 	private Long score;
-	private Long level;
+	private String level;
 	private boolean completed;
+	private Long sessionid;
+	private boolean endmatch;
 	public Long getGameid() {
 		return gameid;
 	}
@@ -47,15 +49,21 @@ public class Request {
 		this.playtoken = playtoken;
 	}
 	public Long getScore() {
-		return score;
+		if(this.score != null)
+			return score;
+		else
+			return -1l;
 	}
 	public void setScore(Long score) {
 		this.score = score;
 	}
-	public Long getLevel() {
-		return level;
+	public String getLevel() {
+		if(level != null)
+			return level;
+		else
+			return "";
 	}
-	public void setLevel(Long level) {
+	public void setLevel(String level) {
 		this.level = level;
 	}
 	public boolean isCompleted() {
@@ -63,5 +71,17 @@ public class Request {
 	}
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
+	}
+	public Long getSessionid() {
+		return sessionid;
+	}
+	public void setSessionid(Long sessionId) {
+		this.sessionid = sessionId;
+	}
+	public boolean isEndmatch() {
+		return endmatch;
+	}
+	public void setEndmatch(boolean endmatch) {
+		this.endmatch = endmatch;
 	}
 }

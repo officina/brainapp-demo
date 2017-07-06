@@ -52,8 +52,8 @@ public class AttemptResourceIntTest {
     private static final ZonedDateTime DEFAULT_STOP_ATTEMPT = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_STOP_ATTEMPT = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final Long DEFAULT_LEVEL_REACHED = 1L;
-    private static final Long UPDATED_LEVEL_REACHED = 2L;
+    private static final String DEFAULT_LEVEL_REACHED = "AAAAAAAAAA";
+    private static final String UPDATED_LEVEL_REACHED = "BBBBBBBBBB";
 
     private static final ZonedDateTime DEFAULT_LAST_UPDATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_LAST_UPDATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
@@ -176,7 +176,7 @@ public class AttemptResourceIntTest {
             .andExpect(jsonPath("$.[*].attemptScore").value(hasItem(DEFAULT_ATTEMPT_SCORE.intValue())))
             .andExpect(jsonPath("$.[*].startAttempt").value(hasItem(sameInstant(DEFAULT_START_ATTEMPT))))
             .andExpect(jsonPath("$.[*].stopAttempt").value(hasItem(sameInstant(DEFAULT_STOP_ATTEMPT))))
-            .andExpect(jsonPath("$.[*].levelReached").value(hasItem(DEFAULT_LEVEL_REACHED.intValue())))
+            .andExpect(jsonPath("$.[*].levelReached").value(hasItem(DEFAULT_LEVEL_REACHED.toString())))
             .andExpect(jsonPath("$.[*].lastUpdate").value(hasItem(sameInstant(DEFAULT_LAST_UPDATE))))
             .andExpect(jsonPath("$.[*].cancelled").value(hasItem(DEFAULT_CANCELLED.booleanValue())))
             .andExpect(jsonPath("$.[*].completed").value(hasItem(DEFAULT_COMPLETED.booleanValue())));
@@ -196,7 +196,7 @@ public class AttemptResourceIntTest {
             .andExpect(jsonPath("$.attemptScore").value(DEFAULT_ATTEMPT_SCORE.intValue()))
             .andExpect(jsonPath("$.startAttempt").value(sameInstant(DEFAULT_START_ATTEMPT)))
             .andExpect(jsonPath("$.stopAttempt").value(sameInstant(DEFAULT_STOP_ATTEMPT)))
-            .andExpect(jsonPath("$.levelReached").value(DEFAULT_LEVEL_REACHED.intValue()))
+            .andExpect(jsonPath("$.levelReached").value(DEFAULT_LEVEL_REACHED.toString()))
             .andExpect(jsonPath("$.lastUpdate").value(sameInstant(DEFAULT_LAST_UPDATE)))
             .andExpect(jsonPath("$.cancelled").value(DEFAULT_CANCELLED.booleanValue()))
             .andExpect(jsonPath("$.completed").value(DEFAULT_COMPLETED.booleanValue()));

@@ -23,7 +23,7 @@
         },
         {
             "fieldName": "levelReached",
-            "fieldType": "Long"
+            "fieldType": "String"
         },
         {
             "fieldName": "lastUpdate",

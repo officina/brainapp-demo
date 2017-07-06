@@ -5,9 +5,9 @@
         .module('gatoradeApp')
         .controller('MatchDialogController', MatchDialogController);
 
-    MatchDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Match', 'Game', 'MatchTemplate', 'Attempt'];
+    MatchDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Match', 'Game', 'MatchTemplate', 'Attempt', 'Session'];
 
-    function MatchDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Match, Game, MatchTemplate, Attempt) {
+    function MatchDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Match, Game, MatchTemplate, Attempt, Session) {
         var vm = this;
 
         vm.match = entity;
@@ -18,6 +18,7 @@
         vm.games = Game.query();
         vm.matchtemplates = MatchTemplate.query();
         vm.attempts = Attempt.query();
+        vm.sessions = Session.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -48,6 +49,7 @@
 
         vm.datePickerOpenStatus.start = false;
         vm.datePickerOpenStatus.stop = false;
+        vm.datePickerOpenStatus.lastStart = false;
 
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;

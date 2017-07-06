@@ -4,6 +4,7 @@ import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.MatchTemplate;
+import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 
@@ -46,13 +47,13 @@ public interface GameService {
      */
     void delete(Long id);
 
-	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId);
+	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session);
 
 	public AttemptResponse startAttempt(Game game, Match match);
 
 	public AttemptResponse updateAttemptScore(Game game, Attempt attempt, Long newValue);
 
-	public AttemptResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, Long levelReached);
+	public MatchResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, String levelReached, boolean endMatch);
 
-	public MatchResponse endMatch(Match match);
+	public MatchResponse endMatch(Game game, Match match, Attempt lastAttempt, Long score, String level);
 }

@@ -33,7 +33,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="level_reached" type="bigint">
+            <column name="level_reached" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 

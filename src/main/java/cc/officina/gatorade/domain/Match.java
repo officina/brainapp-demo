@@ -37,7 +37,13 @@ public class Match implements Serializable {
 
     @Column(name = "user_id")
     private String userId;
-    
+
+    @Column(name = "last_start")
+    private ZonedDateTime lastStart;
+
+    @Column(name = "time_spent")
+    private Long timeSpent;
+
     @ManyToOne
     private Game game;
 
@@ -48,6 +54,9 @@ public class Match implements Serializable {
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Attempt> attempts = new HashSet<>();
+
+    @ManyToOne
+    private Session session;
 
     public Long getId() {
         return id;
@@ -109,6 +118,32 @@ public class Match implements Serializable {
         this.userId = userId;
     }
 
+    public ZonedDateTime getLastStart() {
+        return lastStart;
+    }
+
+    public Match lastStart(ZonedDateTime lastStart) {
+        this.lastStart = lastStart;
+        return this;
+    }
+
+    public void setLastStart(ZonedDateTime lastStart) {
+        this.lastStart = lastStart;
+    }
+
+    public Long getTimeSpent() {
+        return timeSpent;
+    }
+
+    public Match timeSpent(Long timeSpent) {
+        this.timeSpent = timeSpent;
+        return this;
+    }
+
+    public void setTimeSpent(Long timeSpent) {
+        this.timeSpent = timeSpent;
+    }
+
     public Game getGame() {
         return game;
     }
@@ -160,6 +195,19 @@ public class Match implements Serializable {
         this.attempts = attempts;
     }
 
+    public Session getSession() {
+        return session;
+    }
+
+    public Match session(Session session) {
+        this.session = session;
+        return this;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -188,6 +236,8 @@ public class Match implements Serializable {
             ", stop='" + getStop() + "'" +
             ", diffLevel='" + getDiffLevel() + "'" +
             ", userId='" + getUserId() + "'" +
+            ", lastStart='" + getLastStart() + "'" +
+            ", timeSpent='" + getTimeSpent() + "'" +
             "}";
     }
 }

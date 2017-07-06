@@ -8,11 +8,13 @@ import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.MatchTemplate;
+import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.GameRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 import javax.inject.Inject;
 
@@ -98,16 +100,29 @@ public class GameServiceImpl implements GameService{
     }
 
 	@Override
-	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId) {
+	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session) {
 		//TODO verificare presenza match già aperti e relativa logica da implementare
-		Match match = new Match();
-		match.setTemplate(template);
-		match.setUserId(playerId);
-		match.setStart(ZonedDateTime.now());
-		match.setGame(game);
-		matchRepository.save(match);
-		MatchResponse response = new MatchResponse(game,match,template);
-		return response;
+		Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
+		ZonedDateTime now = ZonedDateTime.now();
+		if(oldOne == null)
+		{
+			Match match = new Match();
+			match.setTemplate(template);
+			match.setUserId(playerId);
+			match.setStart(now);
+			match.setGame(game);
+			match.setSession(session);
+			match.setLastStart(now);
+			match.setTimeSpent(0l);
+			matchRepository.save(match);
+			return new MatchResponse(game,match,template);
+		}
+		else
+		{
+			oldOne.setLastStart(now);
+		}
+		log.info(""+oldOne.getAttempts().size());
+		return new MatchResponse(game,oldOne,template);
 	}
 
 	@Override
@@ -118,6 +133,8 @@ public class GameServiceImpl implements GameService{
 		attempt.setStartAttempt(ZonedDateTime.now());
 		attempt.setLastUpdate(ZonedDateTime.now());
 		attempt.setAttemptScore(0l);
+		attempt.setCompleted(false);
+		attempt.setCancelled(false);
 		attemptRepository.saveAndFlush(attempt);
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;
@@ -134,23 +151,44 @@ public class GameServiceImpl implements GameService{
 	}
 
 	@Override
-	public AttemptResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, Long levelReached) {
+	public MatchResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, String levelReached, boolean endMatch) {
 		attempt.setAttemptScore(scoreReached);
 		attempt.setLevelReached(levelReached);
 		attempt.setCompleted(completed);
 		attempt.setLastUpdate(ZonedDateTime.now());
 		attempt.setStopAttempt(ZonedDateTime.now());
 		attemptRepository.saveAndFlush(attempt);
-		AttemptResponse response = new AttemptResponse(game, attempt.getMatch(), null,attempt);
+		if(endMatch)
+		{
+			attempt.getMatch().setStop(ZonedDateTime.now());
+			matchRepository.saveAndFlush(attempt.getMatch());
+		}
+		MatchResponse response = new MatchResponse(game, attempt.getMatch(), attempt.getMatch().getTemplate());
 		return response;
 	}
 
 	@Override
-	public MatchResponse endMatch(Match match) {
-		match.setStop(ZonedDateTime.now());
-		matchRepository.save(match);
-		gamificationService.runAtion(match.getGame().getActionId());
-		MatchResponse response = new MatchResponse(match.getGame(), match, match.getTemplate());
+	public MatchResponse endMatch(Game game, Match match, Attempt lastAttempt, Long score, String level) {
+		ZonedDateTime now = ZonedDateTime.now();
+		match.getAttempts().size();
+		if(lastAttempt != null)
+		{
+			lastAttempt.setAttemptScore(score);
+			lastAttempt.setLevelReached(level);
+			//i assume che un attempt chiuso in concomitanza al match risulta non completato
+			lastAttempt.setCompleted(false);
+			lastAttempt.setLastUpdate(now);
+			lastAttempt.setStopAttempt(now);
+			attemptRepository.saveAndFlush(lastAttempt);
+		}
+		match.setStop(now);
+		System.out.println(match.getLastStart());
+		System.out.println(now);
+		System.out.println(ChronoUnit.SECONDS.between(match.getLastStart(), now));
+		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
+		matchRepository.saveAndFlush(match);
+		
+		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;
 	}
 }

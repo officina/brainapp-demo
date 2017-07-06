@@ -141,3 +141,5 @@ Desktop.ini
 ######################
 .eslintcache
 gradle/wrapper/gradle-wrapper.jar
+
+package-lock.json

@@ -37,6 +37,14 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="last_start" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="time_spent" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
             <column name="game_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -45,10 +53,15 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="session_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="match" columnName="jhi_start" columnDataType="datetime"/>
         <dropDefaultValue tableName="match" columnName="jhi_stop" columnDataType="datetime"/>
+        <dropDefaultValue tableName="match" columnName="last_start" columnDataType="datetime"/>
         
     </changeSet>
 </databaseChangeLog>

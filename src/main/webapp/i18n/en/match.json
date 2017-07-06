@@ -19,9 +19,12 @@
             "stop": "Stop",
             "diffLevel": "Diff Level",
             "userId": "User Id",
+            "lastStart": "Last Start",
+            "timeSpent": "Time Spent",
             "game": "Game",
             "template": "Template",
-            "attempts": "Attempts"
+            "attempts": "Attempts",
+            "session": "Session"
         }
     }
 }

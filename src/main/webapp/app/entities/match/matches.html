@@ -23,8 +23,11 @@
                     <th jh-sort-by="stop"><span data-translate="gatoradeApp.match.stop">Stop</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="diffLevel"><span data-translate="gatoradeApp.match.diffLevel">Diff Level</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="userId"><span data-translate="gatoradeApp.match.userId">User Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="lastStart"><span data-translate="gatoradeApp.match.lastStart">Last Start</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="timeSpent"><span data-translate="gatoradeApp.match.timeSpent">Time Spent</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="game.description"><span data-translate="gatoradeApp.match.game">Game</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="template.description"><span data-translate="gatoradeApp.match.template">Template</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="session.id"><span data-translate="gatoradeApp.match.session">Session</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -35,11 +38,16 @@
                     <td>{{match.stop | date:'medium'}}</td>
                     <td>{{match.diffLevel}}</td>
                     <td>{{match.userId}}</td>
+                    <td>{{match.lastStart | date:'medium'}}</td>
+                    <td>{{match.timeSpent}}</td>
                     <td>
                         <a ui-sref="game-detail({id:match.game.id})">{{match.game.description}}</a>
                     </td>
                     <td>
                         <a ui-sref="match-template-detail({id:match.template.id})">{{match.template.description}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="session-detail({id:match.session.id})">{{match.session.id}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

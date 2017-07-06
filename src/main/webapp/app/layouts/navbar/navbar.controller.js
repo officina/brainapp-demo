@@ -5,14 +5,14 @@
         .module('gatoradeApp')
         .controller('NavbarController', NavbarController);
 
-    NavbarController.$inject = ['$state', 'Auth', 'Principal', 'ProfileService', 'LoginService'];
+    NavbarController.$inject = ['$scope', '$rootScope', '$timeout', '$state', 'Auth', 'Principal', 'ProfileService', 'LoginService'];
 
-    function NavbarController ($state, Auth, Principal, ProfileService, LoginService) {
+    function NavbarController ($state, $rootScope, $timeout, $scope, Auth, Principal, ProfileService, LoginService) {
         var vm = this;
-
         vm.isNavbarCollapsed = true;
         vm.isAuthenticated = Principal.isAuthenticated;
-
+        vm.countdownVal = 50; 
+        
         ProfileService.getProfileInfo().then(function(response) {
             vm.inProduction = response.inProduction;
             vm.swaggerEnabled = response.swaggerEnabled;
@@ -23,10 +23,24 @@
         vm.toggleNavbar = toggleNavbar;
         vm.collapseNavbar = collapseNavbar;
         vm.$state = $state;
-
+        vm.startClock = startClock;
+        vm.countDownCallbackFunction = countDownCallbackFunction;
+        
+        function countDownCallbackFunction() {
+            $timeout(function() {
+            	$rootScope.countDownCallbackFunction();
+            });
+        }
+        
         function login() {
             collapseNavbar();
             LoginService.open();
+        }
+        
+        function startClock() {
+            console.log('ppp');
+            $rootScope.$broadcast('timer-add-cd-seconds', 5);
+            //st('timer-stop');
         }
 
         function logout() {

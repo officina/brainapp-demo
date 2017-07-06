@@ -18,6 +18,12 @@
             "otherEntityName": "attempt",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "match"
+        },
+        {
+            "relationshipName": "session",
+            "otherEntityName": "session",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
         }
     ],
     "fields": [
@@ -36,6 +42,14 @@
         {
             "fieldName": "userId",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "lastStart",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "timeSpent",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170627083527",

@@ -45,6 +45,22 @@
                     ng-model="vm.match.userId"
                     />
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.match.lastStart" for="field_lastStart">Last Start</label>
+                <div class="input-group">
+                    <input id="field_lastStart" type="text" class="form-control" name="lastStart" datetime-picker="{{dateformat}}" ng-model="vm.match.lastStart" is-open="vm.datePickerOpenStatus.lastStart"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('lastStart')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.match.timeSpent" for="field_timeSpent">Time Spent</label>
+            <input type="number" class="form-control" name="timeSpent" id="field_timeSpent"
+                    ng-model="vm.match.timeSpent"
+                    />
+        </div>
 
         <div class="form-group">
             <label data-translate="gatoradeApp.match.game" for="field_game">Game</label>
@@ -55,6 +71,12 @@
         <div class="form-group">
             <label data-translate="gatoradeApp.match.template" for="field_template">Template</label>
             <select class="form-control" id="field_template" name="template" ng-model="vm.match.template" ng-options="matchTemplate as matchTemplate.description for matchTemplate in vm.matchtemplates track by matchTemplate.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="gatoradeApp.match.session" for="field_session">Session</label>
+            <select class="form-control" id="field_session" name="session" ng-model="vm.match.session" ng-options="session as session.id for session in vm.sessions track by session.id">
                 <option value=""></option>
             </select>
         </div>

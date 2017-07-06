@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('Match Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockMatch, MockGame, MockMatchTemplate, MockAttempt;
+        var MockEntity, MockPreviousState, MockMatch, MockGame, MockMatchTemplate, MockAttempt, MockSession;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -16,6 +16,7 @@ describe('Controller Tests', function() {
             MockGame = jasmine.createSpy('MockGame');
             MockMatchTemplate = jasmine.createSpy('MockMatchTemplate');
             MockAttempt = jasmine.createSpy('MockAttempt');
+            MockSession = jasmine.createSpy('MockSession');
             
 
             var locals = {
@@ -26,7 +27,8 @@ describe('Controller Tests', function() {
                 'Match': MockMatch,
                 'Game': MockGame,
                 'MatchTemplate': MockMatchTemplate,
-                'Attempt': MockAttempt
+                'Attempt': MockAttempt,
+                'Session': MockSession
             };
             createController = function() {
                 $injector.get('$controller')("MatchDetailController", locals);
