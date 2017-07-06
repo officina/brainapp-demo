@@ -20,7 +20,7 @@
         eventer(messageEvent,function(e) {
 
             console.log("received action: " + e.data.action);
-            console.log(e);
+            //console.log(e);
             switch (e.data.action){
                 case "UPDATE_LEVEL":
 
