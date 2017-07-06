@@ -64,16 +64,16 @@ liquibase:
 #
 # Then, modify the server.ssl properties so your "server" configuration looks like:
 #
-# server:
-#    port: 8443
-#    ssl:
-#        key-store: keystore.p12
-#        key-store-password: <your-password>
-#        keyStoreType: PKCS12
-#        keyAlias: Gatorade
+#server:
+   
 # ===================================================================
 server:
-    port: 8181
+    port: 8443
+    ssl:
+        key-store: nowr.pfx
+        key-store-password: officina001 
+        keyStoreType: PKCS12
+        #keyAlias: Gatorade
 
 # ===================================================================
 # JHipster specific properties

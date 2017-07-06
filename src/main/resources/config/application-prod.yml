@@ -21,9 +21,9 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://localhost:5432/Gatorade
-        username: Gatorade
-        password:
+        url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
+        username: gatorade
+        password: q#w$Brnf^9#8&8gdBs255!r
     jpa:
         database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
@@ -63,7 +63,7 @@ liquibase:
 #        keyAlias: Gatorade
 # ===================================================================
 server:
-    port: 8080
+    port: 80
     compression:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
