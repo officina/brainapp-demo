@@ -68,11 +68,11 @@ liquibase:
    
 # ===================================================================
 server:
-    port: 8443
-    ssl:
-        key-store: nowr.pfx
-        key-store-password: officina001 
-        keyStoreType: PKCS12
+    port: 8181
+    #ssl:
+        #key-store: nowr.pfx
+        #key-store-password: officina001 
+        #keyStoreType: PKCS12
         #keyAlias: Gatorade
 
 # ===================================================================
