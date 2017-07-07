@@ -22239,6 +22239,7 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Audio.prototype.acts.SetSilent,
 	cr.plugins_.Audio.prototype.cnds.IsSilent,
 	cr.plugins_.Audio.prototype.acts.SetMasterVolume,
+	cr.plugins_.WebStorage.prototype.cnds.LocalStorageExists,
 	cr.plugins_.WebStorage.prototype.exps.LocalValue,
-	cr.plugins_.WebStorage.prototype.cnds.LocalStorageExists
+	cr.system_object.prototype.cnds.OnLoadFinished
 ];};
