@@ -16,8 +16,6 @@ import cc.officina.gatorade.repository.MatchRepository;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -40,9 +38,6 @@ public class GameServiceImpl implements GameService{
     private final GameRepository gameRepository;
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
-    
-    @Inject
-    private GamificationService gamificationService;
 
     public GameServiceImpl(GameRepository gameRepository, MatchRepository matchRepository, AttemptRepository attemptRepository) {
         this.gameRepository = gameRepository;

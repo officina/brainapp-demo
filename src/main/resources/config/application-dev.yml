@@ -26,15 +26,21 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:h2:file:./build/h2db/db/gatorade;DB_CLOSE_DELAY=-1
-        username: Gatorade
-        password:
+        #url: jdbc:h2:file:./build/h2db/db/gatorade;DB_CLOSE_DELAY=-1
+        #username: Gatorade
+        #password:
+        #url: jdbc:postgresql://localhost:5432/gatorade
+       # username: gatorade
+        #password:
+        url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
+        username: gatorade
+        password: q#w$Brnf^9#8&8gdBs255!r
     h2:
         console:
             enabled: false
     jpa:
-        database-platform: io.github.jhipster.domain.util.FixedH2Dialect
-        database: H2
+        database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
+        database: POSTGRESQL
         show-sql: true
         properties:
             hibernate.id.new_generator_mappings: true
