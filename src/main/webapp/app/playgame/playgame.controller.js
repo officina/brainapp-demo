@@ -37,6 +37,7 @@
                     break;
                 case "ATTEMPT_ENDED":
                 	var endedInfo = e.data.attempt;
+                	console.log("Punteggio da aggiornare "+ endedInfo.score);
                 	attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "GAME_LOADED":
