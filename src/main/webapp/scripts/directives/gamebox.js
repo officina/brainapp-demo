@@ -17,7 +17,7 @@ angular.module('gatoradeApp')
 
           var script = myIframe.contentWindow.document.createElement("script");
           script.type = "text/javascript";
-          script.src = "../../bower_components/iframe-resizer/js/iframeResizer.contentWindow.min.js";
+          script.src = "htmlgames/ifrszr.js";
           <!-- iframe resizer-->
 
           myIframe.onload = function(){

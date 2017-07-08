@@ -19,7 +19,7 @@ angular.module('gatoradeApp')
       	url: rootPath + '/api/games/' + gameId +  '?userid='+userid+'&playtoken='+token
       })
   };
-  
+
   //GAME AUTH
   this.getGameInit =  function getGame(gameId, userid, extid){
       return $http({
@@ -27,7 +27,7 @@ angular.module('gatoradeApp')
       	url: rootPath + '/api/gamesinit/' + gameId +  '/' + extid + '/' + userid
       })
   };
-  
+
     //CREATE MATCH
   this.createMatch = function(gameId, templateId, playerId,token, sessionId){
 	  return $http({
