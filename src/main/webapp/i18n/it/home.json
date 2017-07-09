@@ -1,19 +1,15 @@
 {
     "home": {
-        "title": "Benvenuto, Java Hipster!",
-        "subtitle": "Questa è la tua home page",
+        "title": "Welcome to Gatorade, the game integrator!",
+        "subtitle": "This is the admin page",
         "logged": {
             "message": "Autenticato come \"{{username}}\"."
         },
-        "question": "In caso di domande su JHipster:",
+        "question": "Per qualsiasi domanda:",
         "link": {
-            "homepage": "Homepage JHipster",
-            "stackoverflow": "JHipster su Stack Overflow",
-            "bugtracker": "JHipster tracciamento errori",
-            "chat": "Chat room pubblica di JHipster",
-            "follow": "segui @java_hipster su Twitter"
+            "homepage": "Home page"
         },
-        "like": "Se ti piace JHipster, non dimenticarti di darci una stella su",
-        "github": "GitHub"
+        "like": "",
+        "github": ""
     }
 }

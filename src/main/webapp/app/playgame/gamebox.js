@@ -14,10 +14,10 @@ angular.module('gatoradeApp')
       link: function postLink(scope, element, attrs) {
 
           var myIframe = element.find("iframe")[0]
-
+            debugger;
           var script = myIframe.contentWindow.document.createElement("script");
           script.type = "text/javascript";
-          script.src = "htmlgames/ifrszr.js";
+          script.src = "../iframeResizer.contentWindow.min.js";
           <!-- iframe resizer-->
 
           myIframe.onload = function(){
