@@ -134,7 +134,7 @@ public class GameResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
     
-    @GetMapping("/gamesinit/{id}/{extid}/{playerid}")
+    @GetMapping("/play/{id}/init/{extid}/{playerid}")
     @Timed
     public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable Long extid, @PathVariable String playerid) {
         log.debug("REST game init fro game with id = " + id + " and extI = " + extid);
