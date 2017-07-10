@@ -18,7 +18,10 @@
             "startDate": "Start Date",
             "endDate": "End Date",
             "extId": "Ext Id",
-            "matches": "Matches"
+            "poRoot": "Po Root",
+            "elaborated": "Elaborated",
+            "matches": "Matches",
+            "game": "Game"
         }
     }
 }

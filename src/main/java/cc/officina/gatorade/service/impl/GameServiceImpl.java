@@ -38,11 +38,14 @@ public class GameServiceImpl implements GameService{
     private final GameRepository gameRepository;
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
+    private final GamificationService gamificationService;
 
-    public GameServiceImpl(GameRepository gameRepository, MatchRepository matchRepository, AttemptRepository attemptRepository) {
+    public GameServiceImpl(GameRepository gameRepository, MatchRepository matchRepository, 
+    		AttemptRepository attemptRepository,GamificationService gamificationService) {
         this.gameRepository = gameRepository;
         this.matchRepository = matchRepository;
         this.attemptRepository = attemptRepository;
+        this.gamificationService = gamificationService;
     }
 
     /**
@@ -177,12 +180,9 @@ public class GameServiceImpl implements GameService{
 			attemptRepository.saveAndFlush(lastAttempt);
 		}
 		match.setStop(now);
-		System.out.println(match.getLastStart());
-		System.out.println(now);
-		System.out.println(ChronoUnit.SECONDS.between(match.getLastStart(), now));
 		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 		matchRepository.saveAndFlush(match);
-		
+		gamificationService.runAction(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;
 	}

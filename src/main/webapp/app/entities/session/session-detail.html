@@ -16,6 +16,18 @@
         <dd>
             <span>{{vm.session.extId}}</span>
         </dd>
+        <dt><span data-translate="gatoradeApp.session.poRoot">Po Root</span></dt>
+        <dd>
+            <span>{{vm.session.poRoot}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.session.elaborated">Elaborated</span></dt>
+        <dd>
+            <span>{{vm.session.elaborated}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.session.game">Game</span></dt>
+        <dd>
+            <a ui-sref="game-detail({id:vm.session.game.id})">{{vm.session.game.description}}</a>
+        </dd>
     </dl>
 
     <button type="submit"

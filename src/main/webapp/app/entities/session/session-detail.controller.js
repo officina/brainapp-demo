@@ -5,9 +5,9 @@
         .module('gatoradeApp')
         .controller('SessionDetailController', SessionDetailController);
 
-    SessionDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Session', 'Match'];
+    SessionDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Session', 'Match', 'Game'];
 
-    function SessionDetailController($scope, $rootScope, $stateParams, previousState, entity, Session, Match) {
+    function SessionDetailController($scope, $rootScope, $stateParams, previousState, entity, Session, Match, Game) {
         var vm = this;
 
         vm.session = entity;

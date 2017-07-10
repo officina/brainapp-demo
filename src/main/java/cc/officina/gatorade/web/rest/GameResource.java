@@ -10,6 +10,7 @@ import cc.officina.gatorade.domain.Request;
 import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.GameService;
+import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.service.MatchTemplateService;
 import cc.officina.gatorade.service.SessionService;
@@ -54,13 +55,16 @@ public class GameResource {
     private final AttemptService attemptService;
     private final MatchTemplateService templateService;
     private final SessionService sessionService;
+    private final GamificationService gamificationService;
 
-    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService) {
+    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService,  
+    				GamificationService gamificationService) {
         this.gameService = gameService;
         this.matchService = matchService;
         this.attemptService = attemptService;
         this.templateService = templateService;
         this.sessionService = sessionService;
+        this.gamificationService = gamificationService;
     }
 
     /**

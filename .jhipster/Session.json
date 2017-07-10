@@ -6,6 +6,14 @@
             "otherEntityName": "match",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "session"
+        },
+        {
+            "relationshipName": "game",
+            "otherEntityName": "game",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "description",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "session"
         }
     ],
     "fields": [
@@ -20,6 +28,14 @@
         {
             "fieldName": "extId",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "poRoot",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "elaborated",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170705100048",

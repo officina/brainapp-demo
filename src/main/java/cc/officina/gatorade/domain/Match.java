@@ -240,4 +240,26 @@ public class Match implements Serializable {
             ", timeSpent='" + getTimeSpent() + "'" +
             "}";
     }
+
+	public String getMaxScore() {
+		Long max = 0l;
+		for(Attempt a : this.getAttempts())
+		{
+			if(a.getAttemptScore() > max)
+				max = a.getAttemptScore();
+		}
+		return max.toString();
+	}
+
+	public String getMeanScore() {
+		if(this.getAttempts().size() == 0)
+			return 0+"";
+		Long mean = 0l;
+		for(Attempt a : this.getAttempts())
+		{
+			mean = mean + a.getAttemptScore();
+		}
+		mean = mean / this.getAttempts().size();
+		return mean.toString();
+	}
 }

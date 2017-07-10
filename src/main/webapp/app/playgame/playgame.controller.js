@@ -26,7 +26,7 @@
                 case "UPDATE_LEVEL":
                     break;
                 case "UPDATE_SCORE":
-                	updateAttemptScore(e.data.attempt.score);
+                	updateAttemptScore(e.data.attempt.score. e.data.attempt.level);
                     break;
                 case "START_ATTEMPT":
                 	startAttempt();
@@ -38,6 +38,7 @@
                 case "ATTEMPT_ENDED":
                 	var endedInfo = e.data.attempt;
                 	console.log("Punteggio da aggiornare "+ endedInfo.score);
+                	console.log("Livello raggiunto "+ endedInfo.level);
                 	attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "GAME_LOADED":
@@ -105,9 +106,11 @@
       	          	$scope.wrapperMemory.attempts.push(response.data.attempt);
       	        });
         	}
+        	$rootScope.$broadcast('timer-start');
         };
-	    var updateAttemptScore = function(value){
-	    	$scope.wrapperMemory.currAttempt.score = value;
+	    var updateAttemptScore = function(score, level){
+	    	$scope.wrapperMemory.currAttempt.score = score;
+	    	$scope.wrapperMemory.currAttempt.level = level;
 	    };
 	    
 	    var attemptEnded = function(score, level, completed, endDate){
@@ -122,7 +125,6 @@
 	    	var currAttemptId = null;
 	    	var currAttemptScore = null;
 	    	var currAttemptLevel = null;
-	    	console.log($scope.wrapperMemory);
 	    	if($scope.wrapperMemory.currAttempt != undefined)
 	    	{
 	    		var currAttemptId = $scope.wrapperMemory.currAttempt.id;

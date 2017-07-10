@@ -22,6 +22,9 @@
                     <th jh-sort-by="startDate"><span data-translate="gatoradeApp.session.startDate">Start Date</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="endDate"><span data-translate="gatoradeApp.session.endDate">End Date</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="extId"><span data-translate="gatoradeApp.session.extId">Ext Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="poRoot"><span data-translate="gatoradeApp.session.poRoot">Po Root</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="elaborated"><span data-translate="gatoradeApp.session.elaborated">Elaborated</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="game.description"><span data-translate="gatoradeApp.session.game">Game</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -31,6 +34,11 @@
                     <td>{{session.startDate | date:'medium'}}</td>
                     <td>{{session.endDate | date:'medium'}}</td>
                     <td>{{session.extId}}</td>
+                    <td>{{session.poRoot}}</td>
+                    <td>{{session.elaborated}}</td>
+                    <td>
+                        <a ui-sref="game-detail({id:session.game.id})">{{session.game.description}}</a>
+                    </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

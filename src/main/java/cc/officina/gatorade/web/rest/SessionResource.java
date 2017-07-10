@@ -53,7 +53,7 @@ public class SessionResource {
         if (session.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new session cannot already have an ID")).body(null);
         }
-        Session result = sessionService.save(session);
+        Session result = sessionService.saveAndSchedule(session.getGame(), session);
         return ResponseEntity.created(new URI("/api/sessions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

@@ -127,6 +127,8 @@
                                 startDate: null,
                                 endDate: null,
                                 extId: null,
+                                poRoot: null,
+                                elaborated: null,
                                 id: null
                             };
                         }
