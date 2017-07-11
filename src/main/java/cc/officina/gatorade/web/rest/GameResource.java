@@ -247,9 +247,12 @@ public class GameResource {
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
         log.debug("REST request to finish match {} and end game Game : {}",request.getMatchid(), request.getGameid());
         Match match = matchService.findOne(request.getMatchid());
+        match.getAttempts().size();
         Attempt lastAttempt = null;
         if(request.getAttemptid() != null)
         	lastAttempt = attemptService.findOne(request.getAttemptid());
+        if(request.getLevel() != null)
+        	lastAttempt.setLevelReached(request.getLevel());
         //TODO verificare se ci sono attemp pending
         if(match == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);

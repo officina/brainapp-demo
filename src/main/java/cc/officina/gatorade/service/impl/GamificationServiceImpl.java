@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +61,12 @@ public class GamificationServiceImpl implements GamificationService{
         tasks = new HashMap<Long,Timer>();
         po = new PlayOff(poClientId, poClientSecret, null, "v2","playoff.cc");
     }
+    
+    @PostConstruct
+	public void init() {
+	   log.debug("GamificationService init");
+	   po = new PlayOff(poClientId, poClientSecret, null, "v2", poDomain);
+	}
 
 	public void schedule(Game game, Session session)
 	{
@@ -73,12 +82,12 @@ public class GamificationServiceImpl implements GamificationService{
 
 	@Override
 	public void runAction(Match match) {
-		HashMap<String, String> params = getParamsByType(match);
-		LinkedTreeMap<String, Object> requestBody = new LinkedTreeMap<>();
-		params.put("player_id", match.getUserId());
-		Object response = null;
-		String path = "/runtime/actions/"+match.getGame().getActionId()+"/play";
 		try {
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("player_id", match.getUserId());
+			LinkedTreeMap<String, Object> requestBody = getRequestByType(match);
+			Object response = null;
+			String path = "/runtime/actions/"+match.getGame().getActionId()+"/play";
 			response = po.post(path, params, requestBody);
 		} catch (IOException | PlayOffException e) {
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
@@ -87,7 +96,7 @@ public class GamificationServiceImpl implements GamificationService{
 		}
 	}
 
-	private HashMap<String, String> getParamsByType(Match match) {
+	private LinkedTreeMap<String, Object> getRequestByType(Match match) {
 		switch (match.getGame().getType()) {
 		case POINT:
 			return paramsPerPointGame(match);
@@ -98,16 +107,22 @@ public class GamificationServiceImpl implements GamificationService{
 		}
 	}
 
-	private HashMap<String, String> paramsPerLevelGame(Match match) {
-		HashMap<String, String> result = new HashMap<String, String>();
+	private LinkedTreeMap<String, Object> paramsPerLevelGame(Match match) {
+		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
+		HashMap<String,Object> variables = new HashMap<String,Object>();
+		variables.put("punteggioPartita", match.getMaxLevel());
+//		variables.put("numeroTentativi", match.getAttempts().size()+"");
+		result.put("variables", variables);
 		return result;
 	}
 
-	private HashMap<String, String> paramsPerPointGame(Match match) {
-		HashMap<String, String> result = new HashMap<String, String>();
-		result.put("punteggioPartita", match.getMaxScore());
-		result.put("numeroTentativi", match.getAttempts().size()+"");
-		result.put("punteggioMedio", match.getMeanScore());
+	private LinkedTreeMap<String, Object> paramsPerPointGame(Match match) {	
+		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
+		HashMap<String,Object> variables = new HashMap<String,Object>();
+		variables.put("punteggioPartita", match.getMaxScore());
+//		variables.put("numeroTentativi", match.getAttempts().size()+"");
+//		variables.put("punteggioMedio", match.getMeanScore());
+		result.put("variables", variables);
 		return result;
 	}
 	
