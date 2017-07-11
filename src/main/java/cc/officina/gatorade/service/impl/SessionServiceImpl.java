@@ -1,6 +1,8 @@
 package cc.officina.gatorade.service.impl;
 
+import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.SessionService;
+import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.SessionRepository;
 import org.slf4j.Logger;
@@ -21,9 +23,11 @@ public class SessionServiceImpl implements SessionService{
     private final Logger log = LoggerFactory.getLogger(SessionServiceImpl.class);
 
     private final SessionRepository sessionRepository;
+    private final GamificationService gamificationService;
 
-    public SessionServiceImpl(SessionRepository sessionRepository) {
+    public SessionServiceImpl(SessionRepository sessionRepository, GamificationService gamificationService) {
         this.sessionRepository = sessionRepository;
+        this.gamificationService = gamificationService;
     }
 
     /**
@@ -88,5 +92,12 @@ public class SessionServiceImpl implements SessionService{
 	@Override
 	public Session findOneByExtId(Long extSessionId) {
 		return sessionRepository.findByExtId(extSessionId);
+	}
+
+	@Override
+	public Session saveAndSchedule(Game game, Session session) {
+		session.setElaborated(false);
+		gamificationService.schedule(game, session);
+		return sessionRepository.save(session);
 	}
 }

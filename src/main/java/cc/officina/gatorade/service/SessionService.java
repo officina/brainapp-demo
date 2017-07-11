@@ -1,5 +1,6 @@
 package cc.officina.gatorade.service;
 
+import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,4 +44,6 @@ public interface SessionService {
 	public boolean validateSessionAndUser(Long extid, String playerid);
 
 	public Session findOneByExtId(Long sessionid);
+
+	public Session saveAndSchedule(Game game, Session session);
 }

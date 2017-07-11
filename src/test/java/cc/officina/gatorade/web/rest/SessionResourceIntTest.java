@@ -52,6 +52,12 @@ public class SessionResourceIntTest {
     private static final Long DEFAULT_EXT_ID = 1L;
     private static final Long UPDATED_EXT_ID = 2L;
 
+    private static final String DEFAULT_PO_ROOT = "AAAAAAAAAA";
+    private static final String UPDATED_PO_ROOT = "BBBBBBBBBB";
+
+    private static final Boolean DEFAULT_ELABORATED = false;
+    private static final Boolean UPDATED_ELABORATED = true;
+
     @Autowired
     private SessionRepository sessionRepository;
 
@@ -94,7 +100,9 @@ public class SessionResourceIntTest {
         Session session = new Session()
             .startDate(DEFAULT_START_DATE)
             .endDate(DEFAULT_END_DATE)
-            .extId(DEFAULT_EXT_ID);
+            .extId(DEFAULT_EXT_ID)
+            .poRoot(DEFAULT_PO_ROOT)
+            .elaborated(DEFAULT_ELABORATED);
         return session;
     }
 
@@ -121,6 +129,8 @@ public class SessionResourceIntTest {
         assertThat(testSession.getStartDate()).isEqualTo(DEFAULT_START_DATE);
         assertThat(testSession.getEndDate()).isEqualTo(DEFAULT_END_DATE);
         assertThat(testSession.getExtId()).isEqualTo(DEFAULT_EXT_ID);
+        assertThat(testSession.getPoRoot()).isEqualTo(DEFAULT_PO_ROOT);
+        assertThat(testSession.isElaborated()).isEqualTo(DEFAULT_ELABORATED);
     }
 
     @Test
@@ -155,7 +165,9 @@ public class SessionResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(session.getId().intValue())))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(sameInstant(DEFAULT_START_DATE))))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(sameInstant(DEFAULT_END_DATE))))
-            .andExpect(jsonPath("$.[*].extId").value(hasItem(DEFAULT_EXT_ID.intValue())));
+            .andExpect(jsonPath("$.[*].extId").value(hasItem(DEFAULT_EXT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].poRoot").value(hasItem(DEFAULT_PO_ROOT.toString())))
+            .andExpect(jsonPath("$.[*].elaborated").value(hasItem(DEFAULT_ELABORATED.booleanValue())));
     }
 
     @Test
@@ -171,7 +183,9 @@ public class SessionResourceIntTest {
             .andExpect(jsonPath("$.id").value(session.getId().intValue()))
             .andExpect(jsonPath("$.startDate").value(sameInstant(DEFAULT_START_DATE)))
             .andExpect(jsonPath("$.endDate").value(sameInstant(DEFAULT_END_DATE)))
-            .andExpect(jsonPath("$.extId").value(DEFAULT_EXT_ID.intValue()));
+            .andExpect(jsonPath("$.extId").value(DEFAULT_EXT_ID.intValue()))
+            .andExpect(jsonPath("$.poRoot").value(DEFAULT_PO_ROOT.toString()))
+            .andExpect(jsonPath("$.elaborated").value(DEFAULT_ELABORATED.booleanValue()));
     }
 
     @Test
@@ -195,7 +209,9 @@ public class SessionResourceIntTest {
         updatedSession
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
-            .extId(UPDATED_EXT_ID);
+            .extId(UPDATED_EXT_ID)
+            .poRoot(UPDATED_PO_ROOT)
+            .elaborated(UPDATED_ELABORATED);
 
         restSessionMockMvc.perform(put("/api/sessions")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -209,6 +225,8 @@ public class SessionResourceIntTest {
         assertThat(testSession.getStartDate()).isEqualTo(UPDATED_START_DATE);
         assertThat(testSession.getEndDate()).isEqualTo(UPDATED_END_DATE);
         assertThat(testSession.getExtId()).isEqualTo(UPDATED_EXT_ID);
+        assertThat(testSession.getPoRoot()).isEqualTo(UPDATED_PO_ROOT);
+        assertThat(testSession.isElaborated()).isEqualTo(UPDATED_ELABORATED);
     }
 
     @Test

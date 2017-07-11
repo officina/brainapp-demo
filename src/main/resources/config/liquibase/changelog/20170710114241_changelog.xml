@@ -1,0 +1,182 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="nicola (generated)" id="1499679779603-1">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-2">
+        <createTable tableName="attempt">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="attemptPK"/>
+            </column>
+            <column name="attempt_score" type="BIGINT"/>
+            <column name="cancelled" type="BOOLEAN"/>
+            <column name="completed" type="BOOLEAN"/>
+            <column name="last_update" type="TIMESTAMP"/>
+            <column name="level_reached" type="VARCHAR(255)"/>
+            <column name="start_attempt" type="TIMESTAMP"/>
+            <column name="stop_attempt" type="TIMESTAMP"/>
+            <column name="match_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-3">
+        <createTable tableName="game">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="gamePK"/>
+            </column>
+            <column name="action_id" type="VARCHAR(255)"/>
+            <column name="code" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="levels_number" type="BIGINT"/>
+            <column name="jhi_type" type="INT"/>
+            <column name="url" type="VARCHAR(255)"/>
+            <column name="use_levels" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-4">
+        <createTable tableName="jhi_authority">
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-5">
+        <createTable tableName="jhi_persistent_audit_event">
+            <column autoIncrement="true" name="event_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="jhi_persistent_audit_eventPK"/>
+            </column>
+            <column name="event_date" type="TIMESTAMP"/>
+            <column name="event_type" type="VARCHAR(255)"/>
+            <column name="principal" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-6">
+        <createTable tableName="jhi_persistent_audit_evt_data">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-7">
+        <createTable tableName="jhi_user">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="jhi_userPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="activated" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activation_key" type="VARCHAR(20)"/>
+            <column name="email" type="VARCHAR(100)"/>
+            <column name="first_name" type="VARCHAR(50)"/>
+            <column name="image_url" type="VARCHAR(256)"/>
+            <column name="lang_key" type="VARCHAR(5)"/>
+            <column name="last_name" type="VARCHAR(50)"/>
+            <column name="login" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(60)"/>
+            <column name="reset_date" type="TIMESTAMP"/>
+            <column name="reset_key" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-8">
+        <createTable tableName="jhi_user_authority">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="authority_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-9">
+        <createTable tableName="match">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="matchPK"/>
+            </column>
+            <column name="diff_level" type="BIGINT"/>
+            <column name="last_start" type="TIMESTAMP"/>
+            <column name="jhi_start" type="TIMESTAMP"/>
+            <column name="jhi_stop" type="TIMESTAMP"/>
+            <column name="time_spent" type="BIGINT"/>
+            <column name="user_id" type="VARCHAR(255)"/>
+            <column name="game_id" type="BIGINT"/>
+            <column name="session_id" type="BIGINT"/>
+            <column name="template_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-10">
+        <createTable tableName="match_template">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="match_templatePK"/>
+            </column>
+            <column name="custom" type="BOOLEAN"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="max_attempt" type="BIGINT"/>
+            <column name="max_duration" type="BIGINT"/>
+            <column name="game_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-11">
+        <createTable tableName="session">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="sessionPK"/>
+            </column>
+            <column name="end_date" type="TIMESTAMP"/>
+            <column name="ext_id" type="BIGINT"/>
+            <column name="start_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-12">
+        <addPrimaryKey columnNames="event_id, name" tableName="jhi_persistent_audit_evt_data"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-13">
+        <addPrimaryKey columnNames="user_id, authority_name" tableName="jhi_user_authority"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-14">
+        <addPrimaryKey columnNames="name" constraintName="jhi_authorityPK" tableName="jhi_authority"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-15">
+        <addUniqueConstraint columnNames="email" constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-16">
+        <addUniqueConstraint columnNames="login" constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-17">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="jhi_user_authority" constraintName="FK290okww5jujghp4el5i7mgwu0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-18">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="jhi_persistent_audit_evt_data" constraintName="FK2ehnyx2si4tjd2nt4q7y40v8m" deferrable="false" initiallyDeferred="false" referencedColumnNames="event_id" referencedTableName="jhi_persistent_audit_event"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-19">
+        <addForeignKeyConstraint baseColumnNames="authority_name" baseTableName="jhi_user_authority" constraintName="FK4psxl0jtx6nr7rhqbynr6itoc" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="jhi_authority"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-20">
+        <addForeignKeyConstraint baseColumnNames="game_id" baseTableName="match" constraintName="FK6ottsctm66l6tfxgxwf6s53nc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="game"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-21">
+        <addForeignKeyConstraint baseColumnNames="match_id" baseTableName="attempt" constraintName="FK74gmw6v84udhc65np9t4jcws2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="match"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-22">
+        <addForeignKeyConstraint baseColumnNames="game_id" baseTableName="match_template" constraintName="FK93hr3o9njgojje0e1fg39p4ni" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="game"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-23">
+        <addForeignKeyConstraint baseColumnNames="template_id" baseTableName="match" constraintName="FK9pt693h5gvdps0irc822mmsdx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="match_template"/>
+    </changeSet>
+    <changeSet author="nicola (generated)" id="1499679779603-24">
+        <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="match" constraintName="FKaitf8efqlh296tvrbdgm4qjn4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="session"/>
+    </changeSet>
+</databaseChangeLog>

@@ -38,7 +38,7 @@ public class Game implements Serializable {
     private String actionId;
 
     @Column(name = "jhi_type")
-    private Integer type;
+    private GameType type;
 
     @Column(name = "use_levels")
     private Boolean useLevels;
@@ -111,16 +111,16 @@ public class Game implements Serializable {
         this.actionId = actionId;
     }
 
-    public Integer getType() {
+    public GameType getType() {
         return type;
     }
 
-    public Game type(Integer type) {
+    public Game type(GameType type) {
         this.type = type;
         return this;
     }
 
-    public void setType(Integer type) {
+    public void setType(GameType type) {
         this.type = type;
     }
 

@@ -35,10 +35,20 @@ public class Session implements Serializable {
     @Column(name = "ext_id")
     private Long extId;
 
+    @Column(name = "po_root")
+    private String poRoot;
+
+    @Column(name = "elaborated")
+    private Boolean elaborated;
+
     @OneToMany(mappedBy = "session")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Match> matches = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Game game;
 
     public Long getId() {
         return id;
@@ -78,8 +88,39 @@ public class Session implements Serializable {
         return extId;
     }
 
+    public Session extId(Long extId) {
+        this.extId = extId;
+        return this;
+    }
+
     public void setExtId(Long extId) {
         this.extId = extId;
+    }
+
+    public String getPoRoot() {
+        return poRoot;
+    }
+
+    public Session poRoot(String poRoot) {
+        this.poRoot = poRoot;
+        return this;
+    }
+
+    public void setPoRoot(String poRoot) {
+        this.poRoot = poRoot;
+    }
+
+    public Boolean isElaborated() {
+        return elaborated;
+    }
+
+    public Session elaborated(Boolean elaborated) {
+        this.elaborated = elaborated;
+        return this;
+    }
+
+    public void setElaborated(Boolean elaborated) {
+        this.elaborated = elaborated;
     }
 
     public Set<Match> getMatches() {
@@ -105,6 +146,19 @@ public class Session implements Serializable {
 
     public void setMatches(Set<Match> matches) {
         this.matches = matches;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public Session game(Game game) {
+        this.game = game;
+        return this;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     @Override
@@ -134,6 +188,8 @@ public class Session implements Serializable {
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +
             ", extId='" + getExtId() + "'" +
+            ", poRoot='" + getPoRoot() + "'" +
+            ", elaborated='" + isElaborated() + "'" +
             "}";
     }
 }

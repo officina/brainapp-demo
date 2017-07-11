@@ -38,9 +38,7 @@
         }
         
         function startClock() {
-            console.log('ppp');
             $rootScope.$broadcast('timer-add-cd-seconds', 5);
-            //st('timer-stop');
         }
 
         function logout() {

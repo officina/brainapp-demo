@@ -24,7 +24,7 @@ angular.module('gatoradeApp')
   this.getGameInit =  function getGame(gameId, userid, extid){
       return $http({
       	method: 'GET',
-      	url: rootPath + '/api/gamesinit/' + gameId +  '/' + extid + '/' + userid
+      	url: rootPath + '/api/play/' + gameId +  '/init/' + extid + '/' + userid
       })
   };
 
