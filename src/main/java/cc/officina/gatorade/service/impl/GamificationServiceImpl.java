@@ -64,7 +64,7 @@ public class GamificationServiceImpl implements GamificationService{
     
     @PostConstruct
 	public void init() {
-	   log.debug("GamificationService init");
+	   log.info("GamificationService init for " + poDomain);
 	   po = new PlayOff(poClientId, poClientSecret, null, "v2", poDomain);
 	}
 
@@ -89,6 +89,7 @@ public class GamificationServiceImpl implements GamificationService{
 			Object response = null;
 			String path = "/runtime/actions/"+match.getGame().getActionId()+"/play";
 			response = po.post(path, params, requestBody);
+			System.out.println(response.toString());
 		} catch (IOException | PlayOffException e) {
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
 			log.error(e.getMessage());
@@ -108,9 +109,11 @@ public class GamificationServiceImpl implements GamificationService{
 	}
 
 	private LinkedTreeMap<String, Object> paramsPerLevelGame(Match match) {
+		log.error("Calcolo max level");
 		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
 		HashMap<String,Object> variables = new HashMap<String,Object>();
-		variables.put("punteggioPartita", match.getMaxLevel());
+		variables.put("punteggio", 5);
+//		variables.put("punteggio", match.getMaxLevel());
 //		variables.put("numeroTentativi", match.getAttempts().size()+"");
 		result.put("variables", variables);
 		return result;
@@ -119,7 +122,7 @@ public class GamificationServiceImpl implements GamificationService{
 	private LinkedTreeMap<String, Object> paramsPerPointGame(Match match) {	
 		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
 		HashMap<String,Object> variables = new HashMap<String,Object>();
-		variables.put("punteggioPartita", match.getMaxScore());
+		variables.put("punteggio", match.getMaxScore());
 //		variables.put("numeroTentativi", match.getAttempts().size()+"");
 //		variables.put("punteggioMedio", match.getMeanScore());
 		result.put("variables", variables);

@@ -142,6 +142,7 @@
 	    }
 
 	    $scope.countDownCallbackFunction = function() {
+	    	console.log('time spent!!!');
 	    	$scope.matchEnded();
         };
 

@@ -50,7 +50,7 @@ public class Match implements Serializable {
     @ManyToOne
     private MatchTemplate template;
 
-    @OneToMany(mappedBy = "match")
+    @OneToMany(mappedBy = "match", fetch = FetchType.EAGER)
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONE)
     private Set<Attempt> attempts = new HashSet<>();
@@ -266,8 +266,6 @@ public class Match implements Serializable {
 	@JsonIgnore
 	public String getMaxLevel() {
 		Long max = 0l;
-		System.out.println(this.getAttempts().size());
-		
 		for(Attempt a : this.getAttempts())
 		{
 			if(a != null && a.getLevelReached() != null && Long.parseLong(a.getLevelReached()) > max)

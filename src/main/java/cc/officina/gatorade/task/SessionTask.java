@@ -43,22 +43,30 @@ public class SessionTask extends TimerTask {
 	
 	@Override
 	public void run() {
-		System.out.println("INIZIO BASH");
+		log.info("START EXECUTION of batch for game " + game.getId() + " and session " + session.getId());
 		// estraggo gli n utenti campione, utilizzare una mappa consente di evitare doppioni
 		Map<String, Match> samples = new HashMap<String, Match>();
 		List<Match> matches = new ArrayList<Match>();
 		matches.addAll(game.getMatches());
-		while(samples.size() < numUsers+1 && samples.size() < matches.size())
+		while(matches.size() > 0 && samples.size() <= numUsers && samples.size() < matches.size())
 		{
-			Match randomMatch = matches.get(new Random().nextInt(matches.size()));
+			int index = new Random().nextInt(matches.size());
+			Match randomMatch = matches.get(index);
 			samples.put(randomMatch.getUserId(), randomMatch);
+			matches.remove(index);
 		}
+		
+		int numPlayer = 1;
 		
 		for(Match match : samples.values())
 		{
+			String newId = match.getSession().getPoRoot()+"_"+String.format("%02d", numPlayer);
+			log.info("Match of user " + match.getUserId() + " used for fake-user " + newId);
+			match.setUserId(newId);
 			gamificationService.runAction(match);
+			numPlayer++;
 		}
-		System.out.println("FINE BASH");
+		log.info("END EXECUTION of batch for game " + game.getId() + " and session " + session.getId());
 	}
 
 }
