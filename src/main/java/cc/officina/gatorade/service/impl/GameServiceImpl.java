@@ -177,11 +177,11 @@ public class GameServiceImpl implements GameService{
 			lastAttempt.setCompleted(false);
 			lastAttempt.setLastUpdate(now);
 			lastAttempt.setStopAttempt(now);
-			attemptRepository.saveAndFlush(lastAttempt);
+			attemptRepository.save(lastAttempt);
 		}
 		match.setStop(now);
 		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
-		matchRepository.saveAndFlush(match);
+//		matchRepository.saveAndFlush(match);
 		gamificationService.runAction(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;

@@ -25,9 +25,10 @@
 
             switch (e.data.action){
                 case "UPDATE_LEVEL":
+                	updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
                     break;
                 case "UPDATE_SCORE":
-                	updateAttemptScore(e.data.attempt.score. e.data.attempt.level);
+                	updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
                     break;
                 case "START_ATTEMPT":
                 	startAttempt();
@@ -127,7 +128,9 @@
         	}
         	$rootScope.$broadcast('timer-start');
         };
+        
 	    var updateAttemptScore = function(score, level){
+	    	console.log("aggiornamento : " + level)
 	    	$scope.wrapperMemory.currAttempt.score = score;
 	    	$scope.wrapperMemory.currAttempt.level = level;
 	    };
@@ -158,6 +161,7 @@
 	    }
 
 	    $scope.countDownCallbackFunction = function() {
+	    	console.log('time spent!!!');
 	    	$scope.matchEnded();
         };
 
@@ -184,9 +188,10 @@
             if($scope.wrapperMemory.currAttempt != undefined)
 	    	{
             	dataPut.attemptid = $scope.wrapperMemory.currAttempt.id;
-            	dataPut.level = $scope.wrapperMemory.currAttempt.score;
-            	dataPut.score = $scope.wrapperMemory.currAttempt.level;
+            	dataPut.score = $scope.wrapperMemory.currAttempt.score;
+            	dataPut.level = $scope.wrapperMemory.currAttempt.level;
 	    	}
+            console.log('Sto inviando questo valore: ' + $scope.wrapperMemory.currAttempt.level)
     		http.send(JSON.stringify(dataPut));
             if(typeof beforeUnloadTimeout !=='undefined' && beforeUnloadTimeout != 0)
                 clearTimeout(beforeUnloadTimeout);

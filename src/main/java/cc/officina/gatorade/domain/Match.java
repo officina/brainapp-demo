@@ -50,9 +50,9 @@ public class Match implements Serializable {
     @ManyToOne
     private MatchTemplate template;
 
-    @OneToMany(mappedBy = "match")
+    @OneToMany(mappedBy = "match", fetch = FetchType.EAGER)
     @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.NONE)
     private Set<Attempt> attempts = new HashSet<>();
 
     @ManyToOne
@@ -261,5 +261,17 @@ public class Match implements Serializable {
 		}
 		mean = mean / this.getAttempts().size();
 		return mean.toString();
+	}
+
+	@JsonIgnore
+	public String getMaxLevel() {
+		Long max = 0l;
+		for(Attempt a : this.getAttempts())
+		{
+			if(a != null && a.getLevelReached() != null && Long.parseLong(a.getLevelReached()) > max)
+				//TODO: gestione livelli di tipi differenti
+				max = Long.parseLong(a.getLevelReached());
+		}
+		return max.toString();
 	}
 }
