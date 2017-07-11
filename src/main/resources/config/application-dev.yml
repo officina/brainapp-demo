@@ -27,14 +27,15 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         #url: jdbc:h2:file:./build/h2db/db/gatorade;DB_CLOSE_DELAY=-1
-        username: gatorade
-        password:
-        url: jdbc:postgresql://localhost:5432/gatorade
-       # username: gatorade
-        #password:
-        #url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
         #username: gatorade
-        #password: q#w$Brnf^9#8&8gdBs255!r
+        #password:
+
+        #local postresql
+        #url: jdbc:postgresql://192.168.1.41:5432/gatorade
+        #online postgres
+        url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
+        username: gatorade
+        password: q#w$Brnf^9#8&8gdBs255!r
     h2:
         console:
             enabled: false
@@ -74,7 +75,7 @@ liquibase:
 
 # ===================================================================
 server:
-    port: 8181
+    port: 8080
     #ssl:
         #key-store: nowr.pfx
         #key-store-password: officina001
@@ -145,4 +146,4 @@ application:
 playoff:
     client:
         id: ZDRiMjkxMjAtNDNlNS00ZDQxLTkzYWEtMWJjNzE2NDE4MGVl
-        secret: MzE1NmVkNzAtNjI3Yi00N2E3LWJiNjEtYzNkNmEyMzA0ODdkNmYyMDIxOTAtNjVhNy0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli 
+        secret: MzE1NmVkNzAtNjI3Yi00N2E3LWJiNjEtYzNkNmEyMzA0ODdkNmYyMDIxOTAtNjVhNy0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
