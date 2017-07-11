@@ -369,43 +369,32 @@ ui bootstrap tweaks
 }
 #game-header {
 
-    background-color: rgba(153,0,0,0.8);
+    background-color: transparent;
 
-    margin-top: 10px;
-    margin-right: auto;
-    margin-left: auto;
-    margin-bottom: 10;
+    pointer-events: none;
 
-    height: 20px;
+    width: 100%;
+    display: table-cell;
+
     color: white;
-
+    vertical-align: middle;
     position: absolute;
-
+    left:0px;
+    top:0px;
 
 
     white-space: nowrap;
-    min-width: 200px;
-    max-width: 250px;
+
     z-index: 9999;
-    box-shadow: 0 0 30px #888;
-    moz-box-shadow: 0 0 10px #888;
-    webkit-box-shadow: 0 0 10px #888;
-    /*Padded for readability, you can write the following at one line:*/
-    filter: progid:DXImageTransform.Microsoft.Gradient(
-        GradientType=1,
-        startColorStr="#E6FFFFFF",
-        endColorStr="#E6FFFFFF");
 
-    /*Similarly: */
-    filter: progid:DXImageTransform.Microsoft.Gradient(
-        GradientType=1,
-        startColorStr="#E6FFFFFF",
-        endColorStr="#E6FFFFFF");
-    border-radius: 5px;
+
 }
+.countdown{
 
-#game-header closed{
 
-    height: 0px;
+}
+#game-header div.progress{
+    height: 5px!important;
+    background: rgba(0,0,0,0);
 }
 

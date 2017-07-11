@@ -5,12 +5,13 @@
         .module('gatoradeApp')
         .controller('PlaygameController', PlaygameController);
 
-    PlaygameController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'PlaygameService','$sce', '$stateParams'];
+    PlaygameController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'PlaygameService','$sce', '$stateParams','$interval'];
 
-    function PlaygameController ($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams,timer) {
+    function PlaygameController ($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams,timer, $interval) {
 
     	$scope.wrapperMemory = {};
     	$scope.wrapperMemory.attempts = [];
+    	$scope.timerOn = true
     	// IE + others compatible event handler
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var eventer = window[eventMethod];
@@ -52,7 +53,24 @@
 
 
         $scope.game = {url:"htmlgames/loading.html"}
+        $scope.$on('timer-tick', function (event, args) {
 
+            if (args.seconds !== undefined){
+                var myEl = angular.element( document.querySelector( '#game-header' ) );
+                var timeToEnd = (args.minutes*60+args.seconds)
+
+                var total =  (timeToEnd*100/$scope.wrapperMemory.match.template.maxDuration)
+
+                $scope.progressBar = total <=100? total: 100
+                console.log($scope.progressBar)
+
+                //console.log("minutes: " + args.minutes +" seconds: " +args.seconds)
+
+
+
+            }
+            //console.log("seconds: " + args.seconds +  "minutes:  " +args.minutes);//$scope.timerConsole += $scope.timerType  + ' - event.name = '+ event.name + ', timeoutId = ' + args.timeoutId + ', millis = ' + args.millis +'\n';
+        });
         var gameId = $stateParams.gameid;
         var playtoken = $stateParams.playtoken;
 
@@ -66,6 +84,7 @@
           PlaygameService.createMatch($stateParams.gameid,null,$stateParams.playtoken,$stateParams.playtoken, $stateParams.extsessionid).then(function(response){
         	  $scope.wrapperMemory.match = response.data.match;
     		  var timeSpent = $scope.wrapperMemory.match.timeSpent;
+
     		  if(timeSpent < $scope.wrapperMemory.match.template.maxDuration)
         	  {
     			  var myTime = $scope.wrapperMemory.match.template.maxDuration-timeSpent;

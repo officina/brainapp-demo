@@ -1,5 +1,12 @@
-<div id="game-header">
-    <b style="margin: 10px;">Time left: </b><timer interval="1000" countdown="9990" finish-callback="countDownCallbackFunction()">{{hours}}:{{minutes}}:{{seconds}}</timer>
+<div id="game-header" ng-show="true">
+    <timer interval="1000" countdown="timeToEnd" finish-callback="countDownCallbackFunction()" >{{progressBar}}
+        <div class="progress  active {{displayProgressActive}}">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{progressBar}}" aria-valuemin="0" aria-valuemax="100"
+                 ng-attr-style="width: {{progressBar}}%;">
+                <span class="sr-only">{{progressBar}}% Complete</span>
+        </div>
+        </div>
+    </timer>
 </div>
 <div id="gamecontainer" class="embed-container">
     <gamebox game="{{game}}" ></gamebox>
