@@ -140,7 +140,7 @@ public class GameResource {
     
     @GetMapping("/play/{id}/init/{extid}/{playerid}")
     @Timed
-    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable Long extid, @PathVariable String playerid) {
+    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable String extid, @PathVariable String playerid) {
         log.debug("REST game init fro game with id = " + id + " and extI = " + extid);
         Game game = gameService.findOne(id);
         if(game == null)

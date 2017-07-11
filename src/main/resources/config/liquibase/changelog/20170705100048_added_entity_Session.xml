@@ -29,16 +29,19 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="ext_id" type="bigint">
+            <column name="ext_id" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 
-<!--             <column name="po_root" type="varchar(255)"> -->
-<!--                 <constraints nullable="true" /> -->
-<!--             </column> -->
+            <column name="po_root" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
 
             <column name="elaborated" type="boolean">
                 <constraints nullable="true" />
+            </column>
+            <column name="game_id" type="bigint">
+                <constraints unique="true" nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>

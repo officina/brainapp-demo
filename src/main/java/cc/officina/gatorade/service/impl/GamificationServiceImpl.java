@@ -46,6 +46,8 @@ public class GamificationServiceImpl implements GamificationService{
     private String poClientId;
 	@Value("${playoff.client.secret}")
     private String poClientSecret;
+	@Value("${playoff.client.domain}")
+    private String poDomain;
 	
 	private Map<Long,Timer> tasks;
     

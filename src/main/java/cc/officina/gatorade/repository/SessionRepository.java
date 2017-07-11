@@ -16,6 +16,6 @@ import org.springframework.data.repository.query.Param;
 public interface SessionRepository extends JpaRepository<Session,Long> {
 	
 	@Query("select s from Session s where s.extId = :extid")
-	public Session findByExtId(@Param("extid")Long extid);
+	public Session findByExtId(@Param("extid")String extid);
 
 }

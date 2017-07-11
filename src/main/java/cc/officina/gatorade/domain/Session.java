@@ -33,7 +33,7 @@ public class Session implements Serializable {
     private ZonedDateTime endDate;
 
     @Column(name = "ext_id")
-    private Long extId;
+    private String extId;
 
     @Column(name = "po_root")
     private String poRoot;
@@ -84,16 +84,16 @@ public class Session implements Serializable {
         this.endDate = endDate;
     }
 
-    public Long getExtId() {
+    public String getExtId() {
         return extId;
     }
 
-    public Session extId(Long extId) {
+    public Session extId(String extId) {
         this.extId = extId;
         return this;
     }
 
-    public void setExtId(Long extId) {
+    public void setExtId(String extId) {
         this.extId = extId;
     }
 

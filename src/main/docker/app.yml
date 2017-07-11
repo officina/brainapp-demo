@@ -1,6 +1,6 @@
 version: '2'
 services:
-    gatorade-app:
+    gatoradeapp:
         image: gatorade
         environment:
             - SPRING_PROFILES_ACTIVE=prod,swagger

@@ -10,7 +10,7 @@ public class Request {
 	private Long score;
 	private String level;
 	private boolean completed;
-	private Long sessionid;
+	private String sessionid;
 	private boolean endmatch;
 	public Long getGameid() {
 		return gameid;
@@ -72,10 +72,10 @@ public class Request {
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
-	public Long getSessionid() {
+	public String getSessionid() {
 		return sessionid;
 	}
-	public void setSessionid(Long sessionId) {
+	public void setSessionid(String sessionId) {
 		this.sessionid = sessionId;
 	}
 	public boolean isEndmatch() {
