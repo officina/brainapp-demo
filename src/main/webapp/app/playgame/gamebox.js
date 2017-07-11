@@ -14,7 +14,6 @@ angular.module('gatoradeApp')
       link: function postLink(scope, element, attrs) {
 
           var myIframe = element.find("iframe")[0]
-            debugger;
           var script = myIframe.contentWindow.document.createElement("script");
           script.type = "text/javascript";
           script.src = "../iframeResizer.contentWindow.min.js";
@@ -27,8 +26,7 @@ angular.module('gatoradeApp')
                   jQuery('#maingameframe').iFrameResize( [{
                       log:true,
                       //enablePublicMethods     : true,
-                      checkOrigin: false,
-                      heightCalculationMethod : 'lowestElement'
+                      checkOrigin: false
                   }] );
               });
           }
