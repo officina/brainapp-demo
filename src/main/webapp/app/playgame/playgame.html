@@ -1,4 +1,8 @@
+<div id="game-header">
 
+        <b style="margin: 10px;">Time left: </b><timer interval="1000" countdown="9990" finish-callback="vm.countDownCallbackFunction()">{{hours}}:{{minutes}}:{{seconds}}</timer>
+
+</div>
 <div id="gamecontainer" class="embed-container">
     <gamebox game="{{game}}" ></gamebox>
 </div>
