@@ -15,13 +15,13 @@
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var eventer = window[eventMethod];
         var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-        
+
         // Listen to message from child window
         eventer(messageEvent,function(e) {
 
             console.log("RECEIVED ACTION: " + e.data.action);
             console.log(e.data);
-            
+
             switch (e.data.action){
                 case "UPDATE_LEVEL":
                 	updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
@@ -56,7 +56,7 @@
 
         var gameId = $stateParams.gameid;
         var playtoken = $stateParams.playtoken;
-        
+
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid).then(function(response){
           var game = response.data
           game.url = $sce.trustAsResourceUrl(response.data.url)
@@ -71,7 +71,7 @@
         	  {
     			  var myTime = $scope.wrapperMemory.match.template.maxDuration-timeSpent;
     			  console.log('Start a new session with a duration ' + myTime);
-        		  $rootScope.$broadcast('timer-set-countdown-seconds', myTime);
+        		  $scope.$broadcast('timer-set-countdown-seconds', myTime);
         	  }
     		  else
     		  {
@@ -88,7 +88,7 @@
 
         var startAttempt = function(){
         	if($scope.wrapperMemory.match == undefined)
-        	{	
+        	{
         		console.log("creo attempt SENZA match");
         		PlaygameService.createAttempt(gameId,$stateParams.templateid, "qwqwqwqw", playtoken, null, $stateParams.extsessionid).then(function(response){
         			console.log(response.data);
@@ -115,14 +115,14 @@
 	    	$scope.wrapperMemory.currAttempt.score = score;
 	    	$scope.wrapperMemory.currAttempt.level = level;
 	    };
-	    
+
 	    var attemptEnded = function(score, level, completed, endDate){
 	    	PlaygameService.endAttempt($scope.wrapperMemory.game.id,$scope.wrapperMemory.currAttempt.id,score,level,completed,false).then(function(response){
 	    		console.log('Attempt ended');
 	    		console.log(response);
 	    	});
 	    }
-	    
+
 	   $scope.matchEnded = function(){
 		   	console.log('Inside end match');
 	    	var currAttemptId = null;
@@ -140,8 +140,8 @@
 	    		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "timeout"});
 	    	});
 	    }
-	    
-	    $rootScope.countDownCallbackFunction = function() {
+
+	    $scope.countDownCallbackFunction = function() {
 	    	$scope.matchEnded();
         };
 
