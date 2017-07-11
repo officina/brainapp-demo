@@ -144,5 +144,6 @@ jhipster:
 application:
 playoff:
     client:
+        domain: playoff.cc
         id: ZDRiMjkxMjAtNDNlNS00ZDQxLTkzYWEtMWJjNzE2NDE4MGVl
-        secret: MzE1NmVkNzAtNjI3Yi00N2E3LWJiNjEtYzNkNmEyMzA0ODdkNmYyMDIxOTAtNjVhNy0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli 
+        secret: MzE1NmVkNzAtNjI3Yi00N2E3LWJiNjEtYzNkNmEyMzA0ODdkNmYyMDIxOTAtNjVhNy0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
