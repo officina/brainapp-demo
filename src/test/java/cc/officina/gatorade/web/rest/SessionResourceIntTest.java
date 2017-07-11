@@ -49,8 +49,8 @@ public class SessionResourceIntTest {
     private static final ZonedDateTime DEFAULT_END_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_END_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final Long DEFAULT_EXT_ID = 1L;
-    private static final Long UPDATED_EXT_ID = 2L;
+    private static final String DEFAULT_EXT_ID = "AAAAAAAAAA";
+    private static final String UPDATED_EXT_ID = "BBBBBBBBBB";
 
     private static final String DEFAULT_PO_ROOT = "AAAAAAAAAA";
     private static final String UPDATED_PO_ROOT = "BBBBBBBBBB";
@@ -165,7 +165,7 @@ public class SessionResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(session.getId().intValue())))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(sameInstant(DEFAULT_START_DATE))))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(sameInstant(DEFAULT_END_DATE))))
-            .andExpect(jsonPath("$.[*].extId").value(hasItem(DEFAULT_EXT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].extId").value(hasItem(DEFAULT_EXT_ID.toString())))
             .andExpect(jsonPath("$.[*].poRoot").value(hasItem(DEFAULT_PO_ROOT.toString())))
             .andExpect(jsonPath("$.[*].elaborated").value(hasItem(DEFAULT_ELABORATED.booleanValue())));
     }
@@ -183,7 +183,7 @@ public class SessionResourceIntTest {
             .andExpect(jsonPath("$.id").value(session.getId().intValue()))
             .andExpect(jsonPath("$.startDate").value(sameInstant(DEFAULT_START_DATE)))
             .andExpect(jsonPath("$.endDate").value(sameInstant(DEFAULT_END_DATE)))
-            .andExpect(jsonPath("$.extId").value(DEFAULT_EXT_ID.intValue()))
+            .andExpect(jsonPath("$.extId").value(DEFAULT_EXT_ID.toString()))
             .andExpect(jsonPath("$.poRoot").value(DEFAULT_PO_ROOT.toString()))
             .andExpect(jsonPath("$.elaborated").value(DEFAULT_ELABORATED.booleanValue()));
     }

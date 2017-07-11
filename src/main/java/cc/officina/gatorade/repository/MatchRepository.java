@@ -23,6 +23,6 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
 	public Match findOneByPlayerAndSession(@Param("gameId")Long gameId, @Param("templateId")Long templateId, @Param("playerId")String playerId, @Param("sessionid")Long sessionId);
 	
 	@Query("select m from Match m where m.session.extId=:extId")
-	public List<Match> findUserByExtId(@Param("extId")Long extId);
+	public List<Match> findUserByExtId(@Param("extId")String extId);
     
 }

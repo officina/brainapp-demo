@@ -80,7 +80,7 @@ public class SessionServiceImpl implements SessionService{
     }
 
 	@Override
-	public boolean validateSessionAndUser(Long extid, String playerid) {
+	public boolean validateSessionAndUser(String extid, String playerid) {
 		// qui va implementata tutta la logica di validazione della sessione e del player
 		boolean result = false;
 		Session session = sessionRepository.findByExtId(extid);
@@ -90,7 +90,7 @@ public class SessionServiceImpl implements SessionService{
 	}
 
 	@Override
-	public Session findOneByExtId(Long extSessionId) {
+	public Session findOneByExtId(String extSessionId) {
 		return sessionRepository.findByExtId(extSessionId);
 	}
 

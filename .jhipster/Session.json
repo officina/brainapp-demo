@@ -27,7 +27,7 @@
         },
         {
             "fieldName": "extId",
-            "fieldType": "Long"
+            "fieldType": "String"
         },
         {
             "fieldName": "poRoot",
