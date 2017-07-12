@@ -80,7 +80,7 @@ public class GamificationServiceImpl implements GamificationService{
 			String path = "/runtime/actions/"+match.getGame().getActionId()+"/play";
 			response = po.post(path, params, requestBody);
 			log.debug(response.toString());
-		} catch (IOException | PlayOffException e) {
+		} catch (Exception e) {
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
 			log.error(e.getMessage());
 			e.printStackTrace();

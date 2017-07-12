@@ -27,14 +27,17 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         #url: jdbc:h2:file:./build/h2db/db/gatorade;DB_CLOSE_DELAY=-1
-        username: gatorade
-        password:
+        #username: gatorade
+        #password:
 
         #local postresql
         url: jdbc:postgresql://localhost:5432/gatorade
+        username: gatorade
+        password:
+        
         #online postgres
         #url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
-       # username: gatorade
+        #username: gatorade
         #password: q#w$Brnf^9#8&8gdBs255!r
     h2:
         console:

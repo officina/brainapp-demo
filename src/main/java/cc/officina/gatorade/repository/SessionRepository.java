@@ -21,6 +21,9 @@ public interface SessionRepository extends JpaRepository<Session,Long> {
 	@Query("select s from Session s where s.extId = :extid")
 	public Session findByExtId(@Param("extid")String extid);
 	
+	@Query("select s from Session s where s.extId = :extid and s.endDate > :now and s.startDate < :now")
+	public Session findValidByExtId(@Param("extid")String extid,@Param("now")ZonedDateTime now);
+	
 	@Query("select s from Session s where s.elaborated = false and s.endDate < :now")
 	public List<Session> findPendingSessions(@Param("now")ZonedDateTime now);
 

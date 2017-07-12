@@ -39,4 +39,5 @@ public interface MatchService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+    public Match findByUserAndId(String userId, Long id);
 }

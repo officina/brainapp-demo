@@ -1,6 +1,7 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.GamificationService;
+import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.service.SessionService;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
@@ -33,12 +34,14 @@ public class SessionServiceImpl implements SessionService{
 
     private final SessionRepository sessionRepository;
     private final GamificationService gamificationService;
+    private final MatchService matchService;
     
     private final int numUsers = 5; 
     	
-    public SessionServiceImpl(SessionRepository sessionRepository, GamificationService gamificationService) {
+    public SessionServiceImpl(SessionRepository sessionRepository, GamificationService gamificationService, MatchService matchService) {
         this.sessionRepository = sessionRepository;
         this.gamificationService = gamificationService;
+        this.matchService = matchService;
     }
 
     /**
@@ -92,9 +95,15 @@ public class SessionServiceImpl implements SessionService{
 
 	@Override
 	public boolean validateSessionAndUser(String extid, String playerid) {
-		// qui va implementata tutta la logica di validazione della sessione e del player
+		// TODO: implementazione logica validaione sessione e player
 		boolean result = false;
-		Session session = sessionRepository.findByExtId(extid);
+		Session session = sessionRepository.findValidByExtId(extid,ZonedDateTime.now());
+		if(session == null)
+			return false;
+		Match match = matchService.findByUserAndId(playerid, session.getId());
+		//se esiste già un match la chiamata viene invaliata
+		if(match != null && match.getAttempts() != null && match.getAttempts().size() > 0)
+			return false;
 		if(session != null)
 			result = true;
 		return result;

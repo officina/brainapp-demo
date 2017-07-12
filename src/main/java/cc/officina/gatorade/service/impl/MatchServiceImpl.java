@@ -74,4 +74,9 @@ public class MatchServiceImpl implements MatchService{
         log.debug("Request to delete Match : {}", id);
         matchRepository.delete(id);
     }
+
+	@Override
+	public Match findByUserAndId(String userId, Long sessionId) {
+		return matchRepository.findByUserAndSessionId(userId, sessionId);
+	}
 }
