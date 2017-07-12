@@ -101,8 +101,10 @@ public class SessionServiceImpl implements SessionService{
 		if(session == null)
 			return false;
 		List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
-		if(matches != null && matches.size() > 0)
-			return false;
+		
+		if(matches == null || matches.size() == 0)
+			return true;
+		
 		for(Match match : matches)
 		{
 			//se esiste già un match la chiamata viene invaliata
