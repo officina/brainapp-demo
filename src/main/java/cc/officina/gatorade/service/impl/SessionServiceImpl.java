@@ -3,8 +3,17 @@ package cc.officina.gatorade.service.impl;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.SessionService;
 import cc.officina.gatorade.domain.Game;
+import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.SessionRepository;
+
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -24,7 +33,9 @@ public class SessionServiceImpl implements SessionService{
 
     private final SessionRepository sessionRepository;
     private final GamificationService gamificationService;
-
+    
+    private final int numUsers = 5; 
+    	
     public SessionServiceImpl(SessionRepository sessionRepository, GamificationService gamificationService) {
         this.sessionRepository = sessionRepository;
         this.gamificationService = gamificationService;
@@ -97,7 +108,18 @@ public class SessionServiceImpl implements SessionService{
 	@Override
 	public Session saveAndSchedule(Game game, Session session) {
 		session.setElaborated(false);
-		gamificationService.schedule(game, session);
+//		gamificationService.schedule(game, session);
 		return sessionRepository.save(session);
+	}
+
+	@Override
+	public List<Session> findPending(ZonedDateTime now) {
+		return sessionRepository.findPendingSessions(now);
+	}
+
+	@Override
+	@Transactional
+	public void elaborate(Session session) {
+		gamificationService.elaborate(session);
 	}
 }

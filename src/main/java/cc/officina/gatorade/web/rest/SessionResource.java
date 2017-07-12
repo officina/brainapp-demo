@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -122,5 +123,20 @@ public class SessionResource {
         log.debug("REST request to delete Session : {}", id);
         sessionService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    @PutMapping("/sessions/elaborate/{id}")
+    @Timed
+    @Transactional
+    public ResponseEntity<Session> elaborateSession(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to elaborate Session with id " + id);
+        Session session = sessionService.findOne(id);
+        if (session.getId() == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("notFound", "SessionNotFound", "Session not found")).body(null);
+        }
+        sessionService.elaborate(session);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
+            .body(null);
     }
 }

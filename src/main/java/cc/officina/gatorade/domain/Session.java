@@ -41,7 +41,7 @@ public class Session implements Serializable {
     @Column(name = "elaborated")
     private Boolean elaborated;
 
-    @OneToMany(mappedBy = "session")
+    @OneToMany(mappedBy = "session", fetch = FetchType.EAGER)
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Match> matches = new HashSet<>();
