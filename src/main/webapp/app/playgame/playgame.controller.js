@@ -66,7 +66,7 @@
                 $scope.progressBar = total <=100? total: 100
                 
                 var tk = args.seconds % 30;
-                if(tk == 0)
+                if($scope.wrapperMemory.currAttempt != undefined && tk == 0)
                 {
                 	console.log('score/level update vs server')
                 	//this.updateAttemptScore = function(gameId,playerId,token,matchId,attemptId,level,score){
