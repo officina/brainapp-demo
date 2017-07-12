@@ -4,6 +4,9 @@ import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Session;
 import org.springframework.stereotype.Repository;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
@@ -17,5 +20,8 @@ public interface SessionRepository extends JpaRepository<Session,Long> {
 	
 	@Query("select s from Session s where s.extId = :extid")
 	public Session findByExtId(@Param("extid")String extid);
+	
+	@Query("select s from Session s where s.elaborated = false and s.endDate < :now")
+	public List<Session> findPendingSessions(@Param("now")ZonedDateTime now);
 
 }

@@ -2,6 +2,10 @@ package cc.officina.gatorade.service;
 
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Session;
+
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -46,4 +50,8 @@ public interface SessionService {
 	public Session findOneByExtId(String extid);
 
 	public Session saveAndSchedule(Game game, Session session);
+	
+	public void elaborate(Session session);
+	
+	public List<Session> findPending(ZonedDateTime now);
 }

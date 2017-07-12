@@ -8,6 +8,8 @@ import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 
+import java.time.ZonedDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +18,9 @@ import org.springframework.data.domain.Pageable;
  */
 public interface GamificationService {
 
-	public void schedule(Game game, Session session);
+//	public void schedule(Game game, Session session);
 
 	public void runAction(Match match);
+	public void elaborate(Session s);
+	public void elaboratePending(ZonedDateTime now);
 }

@@ -27,15 +27,15 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         #url: jdbc:h2:file:./build/h2db/db/gatorade;DB_CLOSE_DELAY=-1
-        #username: gatorade
-        #password:
+        username: gatorade
+        password:
 
         #local postresql
-        #url: jdbc:postgresql://192.168.1.41:5432/gatorade
+        url: jdbc:postgresql://localhost:5432/gatorade
         #online postgres
-        url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
-        username: gatorade
-        password: q#w$Brnf^9#8&8gdBs255!r
+        #url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
+       # username: gatorade
+        #password: q#w$Brnf^9#8&8gdBs255!r
     h2:
         console:
             enabled: false
@@ -145,9 +145,6 @@ jhipster:
 application:
 playoff:
     client:
-        #domain: playoff.cc
-        #id: ZDRiMjkxMjAtNDNlNS00ZDQxLTkzYWEtMWJjNzE2NDE4MGVl
-        #secret: MzE1NmVkNzAtNjI3Yi00N2E3LWJiNjEtYzNkNmEyMzA0ODdkNmYyMDIxOTAtNjVhNy0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
         domain: playoffgenerali.it
         id: N2EyYjZiNzQtNmZkYi00NWJmLWE2NzUtM2FmNWY0MWIzNjI3
         secret: Y2YzMmNmODItZDY3ZC00M2ZkLWIyZjYtZWFlNTc1ZjBmNWM3YzZkYTJiMjAtNjY0Ni0xMWU3LWIyZDYtMDNkMjcwZjA0ZGQ2
