@@ -44,24 +44,24 @@ public class GamificationServiceImpl implements GamificationService{
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
     private static PlayOff po;
-    
+
     @Value("${playoff.client.id}")
     private String poClientId;
 	@Value("${playoff.client.secret}")
     private String poClientSecret;
 	@Value("${playoff.client.domain}")
     private String poDomain;
-	
+
 	private Map<Long,Timer> tasks;
-    
+
     public GamificationServiceImpl(GameRepository gameRepository, MatchRepository matchRepository, AttemptRepository attemptRepository) {
         this.gameRepository = gameRepository;
         this.matchRepository = matchRepository;
         this.attemptRepository = attemptRepository;
         tasks = new HashMap<Long,Timer>();
-        po = new PlayOff(poClientId, poClientSecret, null, "v2","playoff.cc");
+        po = new PlayOff(poClientId, poClientSecret, null, "v2","playoffgenerali.it");
     }
-    
+
     @PostConstruct
 	public void init() {
 	   log.info("GamificationService init for " + poDomain);
@@ -119,7 +119,7 @@ public class GamificationServiceImpl implements GamificationService{
 		return result;
 	}
 
-	private LinkedTreeMap<String, Object> paramsPerPointGame(Match match) {	
+	private LinkedTreeMap<String, Object> paramsPerPointGame(Match match) {
 		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
 		HashMap<String,Object> variables = new HashMap<String,Object>();
 		variables.put("punteggio", match.getMaxScore());
@@ -128,6 +128,6 @@ public class GamificationServiceImpl implements GamificationService{
 		result.put("variables", variables);
 		return result;
 	}
-	
-	
+
+
 }

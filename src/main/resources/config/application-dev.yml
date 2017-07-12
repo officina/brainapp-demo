@@ -145,6 +145,9 @@ jhipster:
 application:
 playoff:
     client:
-        domain: playoff.cc
-        id: ZDRiMjkxMjAtNDNlNS00ZDQxLTkzYWEtMWJjNzE2NDE4MGVl
-        secret: MzE1NmVkNzAtNjI3Yi00N2E3LWJiNjEtYzNkNmEyMzA0ODdkNmYyMDIxOTAtNjVhNy0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
+        #domain: playoff.cc
+        #id: ZDRiMjkxMjAtNDNlNS00ZDQxLTkzYWEtMWJjNzE2NDE4MGVl
+        #secret: MzE1NmVkNzAtNjI3Yi00N2E3LWJiNjEtYzNkNmEyMzA0ODdkNmYyMDIxOTAtNjVhNy0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
+        domain: playoffgenerali.it
+        id: N2EyYjZiNzQtNmZkYi00NWJmLWE2NzUtM2FmNWY0MWIzNjI3
+        secret: Y2YzMmNmODItZDY3ZC00M2ZkLWIyZjYtZWFlNTc1ZjBmNWM3YzZkYTJiMjAtNjY0Ni0xMWU3LWIyZDYtMDNkMjcwZjA0ZGQ2

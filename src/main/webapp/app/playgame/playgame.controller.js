@@ -58,12 +58,14 @@
 
             if (args.seconds !== undefined){
                 var myEl = angular.element( document.querySelector( '#game-header' ) );
+                console.log	("minuti:args.minutes"+args.minutes)
+                console.log	("minuti:args.seconds"+args.seconds)
                 var timeToEnd = (args.minutes*60+args.seconds)
 
                 var total =  (timeToEnd*100/$scope.wrapperMemory.match.template.maxDuration)
 
                 $scope.progressBar = total <=100? total: 100
-                console.log($scope.progressBar)
+
 
                 //console.log("minutes: " + args.minutes +" seconds: " +args.seconds)
 
@@ -126,9 +128,9 @@
       	          	$scope.wrapperMemory.attempts.push(response.data.attempt);
       	        });
         	}
-        	$rootScope.$broadcast('timer-start');
+        	$scope.$broadcast('timer-start');
         };
-        
+
 	    var updateAttemptScore = function(score, level){
 	    	console.log("aggiornamento : " + level)
 	    	$scope.wrapperMemory.currAttempt.score = score;
