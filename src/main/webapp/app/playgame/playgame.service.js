@@ -58,7 +58,7 @@ angular.module('gatoradeApp')
 	  })
   };
     //UPDATE ATTEMPT
-  this.updateAttempt = function(gameId,playerId,token,matchId,attemptId,level,score){
+  this.updateAttemptScore = function(gameId,playerId,token,matchId,attemptId,level,score){
 	  return $http({
       	method: 'PUT',
       	url: rootPath +'/api/play/attempt/score',

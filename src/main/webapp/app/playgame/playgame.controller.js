@@ -12,6 +12,7 @@
     	$scope.wrapperMemory = {};
     	$scope.wrapperMemory.attempts = [];
     	$scope.timerOn = true
+    	$scope.updateCount = 0;
     	// IE + others compatible event handler
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var eventer = window[eventMethod];
@@ -58,21 +59,24 @@
 
             if (args.seconds !== undefined){
                 var myEl = angular.element( document.querySelector( '#game-header' ) );
-                console.log	("minuti:args.minutes"+args.minutes)
-                console.log	("minuti:args.seconds"+args.seconds)
+                console.log('Seconds before next server update ' + args.seconds % 30);
+                
                 var timeToEnd = (args.minutes*60+args.seconds)
-
                 var total =  (timeToEnd*100/$scope.wrapperMemory.match.template.maxDuration)
-
                 $scope.progressBar = total <=100? total: 100
-
-
-                //console.log("minutes: " + args.minutes +" seconds: " +args.seconds)
-
-
-
+                
+                var tk = args.seconds % 30;
+                if(tk == 0)
+                {
+                	console.log('score/level update vs server')
+                	//this.updateAttemptScore = function(gameId,playerId,token,matchId,attemptId,level,score){
+                	PlaygameService.updateAttemptScore($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, 
+                			$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.score, $scope.wrapperMemory.currAttempt.level).then(function(response){
+        	    		console.log('Score/Level updated');
+        	    	});
+                }
             }
-            //console.log("seconds: " + args.seconds +  "minutes:  " +args.minutes);//$scope.timerConsole += $scope.timerType  + ' - event.name = '+ event.name + ', timeoutId = ' + args.timeoutId + ', millis = ' + args.millis +'\n';
+
         });
         var gameId = $stateParams.gameid;
         var playtoken = $stateParams.playtoken;
@@ -132,7 +136,8 @@
         };
 
 	    var updateAttemptScore = function(score, level){
-	    	console.log("aggiornamento : " + level)
+	    	console.log("updateAttemptScore");
+	    	$scope.updateCount = $scope.updateCount + 1;
 	    	$scope.wrapperMemory.currAttempt.score = score;
 	    	$scope.wrapperMemory.currAttempt.level = level;
 	    };
@@ -175,6 +180,7 @@
             },500);
             return 'are you sure';
         });
+        
         $(window).bind('unload', function() {
             var http = new XMLHttpRequest();
             http.open("PUT", '/api/play/end', false);

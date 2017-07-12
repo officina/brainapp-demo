@@ -1,6 +1,9 @@
 package cc.officina.gatorade.service;
 
 import cc.officina.gatorade.domain.Match;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,5 +42,5 @@ public interface MatchService {
      *  @param id the id of the entity
      */
     void delete(Long id);
-    public Match findByUserAndId(String userId, Long id);
+    public List<Match> findByUserAndId(String userId, Long id);
 }

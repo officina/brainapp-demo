@@ -215,14 +215,14 @@ public class GameResource {
     @PutMapping("/play/attempt/score")
     @Timed
     @Transactional
-	public ResponseEntity<AttemptResponse> updateGameScore(@RequestBody Request request) {
-    	if(request.getGameid() == null || request.getPlayerid() == null || request.getAttemptid() == null || request.getScore() == null)
+	public ResponseEntity<AttemptResponse> updateAttemptScore(@RequestBody Request request) {
+    	if(request.getGameid() == null || request.getPlayerid() == null || request.getAttemptid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-    	log.debug("REST request to update score to {} for game Game {} and Attempt with id {}",request.getScore(), request.getGameid(), request.getAttemptid());
+    	log.debug("REST request to update score for game Game {} and Attempt with id {}", request.getGameid(), request.getAttemptid());
         Attempt attempt = attemptService.findOne(request.getAttemptid());
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
-        return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, new Long(request.getScore())), null, HttpStatus.OK);
+        return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
     }
     
     @PutMapping("/play/attempt/end")

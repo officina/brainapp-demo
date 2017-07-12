@@ -3,6 +3,9 @@ package cc.officina.gatorade.service.impl;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.repository.MatchRepository;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -76,7 +79,7 @@ public class MatchServiceImpl implements MatchService{
     }
 
 	@Override
-	public Match findByUserAndId(String userId, Long sessionId) {
+	public List<Match> findByUserAndId(String userId, Long sessionId) {
 		return matchRepository.findByUserAndSessionId(userId, sessionId);
 	}
 }

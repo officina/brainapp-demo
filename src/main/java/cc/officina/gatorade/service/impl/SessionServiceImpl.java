@@ -100,10 +100,16 @@ public class SessionServiceImpl implements SessionService{
 		Session session = sessionRepository.findValidByExtId(extid,ZonedDateTime.now());
 		if(session == null)
 			return false;
-		Match match = matchService.findByUserAndId(playerid, session.getId());
-		//se esiste già un match la chiamata viene invaliata
-		if(match != null && match.getAttempts() != null && match.getAttempts().size() > 0)
+		List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
+		if(matches != null && matches.size() > 0)
 			return false;
+		for(Match match : matches)
+		{
+			//se esiste già un match la chiamata viene invaliata
+			if(match != null && match.getAttempts() != null && match.getAttempts().size() > 0)
+				return false;
+		}
+
 		if(session != null)
 			result = true;
 		return result;
