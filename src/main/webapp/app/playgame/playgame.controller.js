@@ -22,32 +22,36 @@
         var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
         var handle = function(e){
 
-            console.log("RECEIVED ACTION: " + e.data.action);
-            console.log(e);
-
             switch (e.data.action){
                 case "UPDATE_LEVEL":
+                	console.log('UPDATE_LEVEL');
                     updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
                     break;
                 case "UPDATE_SCORE":
+                	console.log('UPDATE_SCORE');
                     updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
                     break;
                 case "START_ATTEMPT":
+                	console.log('START_ATTEMPT');
                     startAttempt();
                     break;
                 case "STOP_ATTEMPT": //è un cancel attempt
+                	console.log('STOP_ATTEMPT');
                     var endedInfo = e.data.attempt;
                     attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "ATTEMPT_ENDED":
+                	console.log('ATTEMPT_ENDED');
                     var endedInfo = e.data.attempt;
                     console.log("Punteggio da aggiornare "+ endedInfo.score);
                     console.log("Livello raggiunto "+ endedInfo.level);
                     attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "GAME_LOADED":
+                	console.log('GAME_LOAD');
                     break;
                 case "GAME_UNLOADED":
+                	console.log('GAME_UNLOAD');
                     break;
                 default:
                     break;
@@ -109,7 +113,7 @@
           })
         })
         .catch(function(error) {
-        	console.log('erro on validation');
+        	console.log('error on validation');
         	console.log(error);
         	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "invalidSession"});
         });
@@ -121,8 +125,10 @@
         		PlaygameService.createAttempt(gameId,$stateParams.templateid, "qwqwqwqw", playtoken, null, $stateParams.extsessionid).then(function(response){
         			console.log(response.data);
         			$scope.wrapperMemory.match = response.data.match;
-    	          $scope.wrapperMemory.currAttempt = response.data.attempt;
-    	          $scope.wrapperMemory.attempts.push(response.data.attempt);
+        			$scope.wrapperMemory.currAttempt = response.data.attempt;
+        			$scope.wrapperMemory.currAttempt.score = 0;
+        	        $scope.wrapperMemory.currAttempt.level = 0;
+        	        $scope.wrapperMemory.attempts.push(response.data.attempt);
     	        });
         	}
         	else
@@ -132,7 +138,9 @@
         			console.log(response.data);
       	          	$scope.wrapperMemory.match = response.data.match;
       	          	$scope.wrapperMemory.currAttempt = response.data.attempt;
-      	          	$scope.wrapperMemory.attempts.push(response.data.attempt);
+      	          	$scope.wrapperMemory.currAttempt.score = 0;
+      	          	$scope.wrapperMemory.currAttempt.level = 0;
+      	        	$scope.wrapperMemory.attempts.push(response.data.attempt);
       	        });
         	}
         	$scope.$broadcast('timer-start');
@@ -140,6 +148,9 @@
 
 	    var updateAttemptScore = function(score, level){
 	    	console.log("updateAttemptScore");
+	    	console.log($scope.wrapperMemory.currAttempt);
+	    	if($scope.wrapperMemory.currAttempt == undefined)
+	    		return;
 	    	$scope.updateCount = $scope.updateCount + 1;
 	    	$scope.wrapperMemory.currAttempt.score = score;
 	    	$scope.wrapperMemory.currAttempt.level = level;
