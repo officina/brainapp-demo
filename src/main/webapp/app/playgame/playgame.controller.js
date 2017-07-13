@@ -199,7 +199,7 @@
             	dataPut.score = $scope.wrapperMemory.currAttempt.score;
             	dataPut.level = $scope.wrapperMemory.currAttempt.level;
 	    	}
-            console.log('Sto inviando questo valore: ' + $scope.wrapperMemory.currAttempt.level)
+            console.log('Sending new value: ' + $scope.wrapperMemory.currAttempt.level)
     		http.send(JSON.stringify(dataPut));
             if(typeof beforeUnloadTimeout !=='undefined' && beforeUnloadTimeout != 0)
                 clearTimeout(beforeUnloadTimeout);
