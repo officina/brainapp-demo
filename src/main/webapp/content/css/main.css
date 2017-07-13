@@ -394,7 +394,7 @@ ui bootstrap tweaks
 
 }
 #game-header div.progress{
-    height: 5px!important;
+    height: 10px!important;
     background: rgba(0,0,0,0);
 }
 

@@ -14,9 +14,13 @@
     	$scope.timerOn = true
     	$scope.updateCount = 0;
     	// IE + others compatible event handler
-        var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-        var eventer = window[eventMethod];
-        var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+        var addEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+        var removeEventMethod = window.removeEventListener ? "removeEventListener" : "detachEvent";
+        var addEvent = window[addEventMethod];
+        var removeEvent = window[removeEventMethod];
+
+        var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
+
         var handle = function(e){
 
             console.log("RECEIVED ACTION: " + e.data.action);
@@ -38,8 +42,8 @@
                     break;
                 case "ATTEMPT_ENDED":
                     var endedInfo = e.data.attempt;
-                    console.log("Punteggio da aggiornare "+ endedInfo.score);
-                    console.log("Livello raggiunto "+ endedInfo.level);
+                    //console.log("Punteggio da aggiornare "+ endedInfo.score);
+                    //console.log("Livello raggiunto "+ endedInfo.level);
                     attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "GAME_LOADED":
@@ -51,8 +55,12 @@
             }
         }
         // Listen to message from child window
-        eventer(messageEvent, handle,false);
+        addEvent(eventName, handle,false);
 
+        $scope.$on('$locationChangeStart', function (event, next, current) {
+            
+            removeEvent(eventName, handle);
+        });
 
         $scope.game = {url:"htmlgames/loading.html"}
         $scope.$on('timer-tick', function (event, args) {
@@ -201,8 +209,10 @@
 	    	}
             console.log('Sending new value: ' + $scope.wrapperMemory.currAttempt.level)
     		http.send(JSON.stringify(dataPut));
-            if(typeof beforeUnloadTimeout !=='undefined' && beforeUnloadTimeout != 0)
+            if(typeof beforeUnloadTimeout !=='undefined' && beforeUnloadTimeout != 0) {
                 clearTimeout(beforeUnloadTimeout);
+            }
+            removeEvent(eventName, handle)
         });
     }
 })();
