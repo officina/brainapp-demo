@@ -17,32 +17,30 @@
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var eventer = window[eventMethod];
         var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-
-        // Listen to message from child window
-        eventer(messageEvent,function(e) {
+        var handle = function(e){
 
             console.log("RECEIVED ACTION: " + e.data.action);
             console.log(e.data);
 
             switch (e.data.action){
                 case "UPDATE_LEVEL":
-                	updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
+                    updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
                     break;
                 case "UPDATE_SCORE":
-                	updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
+                    updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
                     break;
                 case "START_ATTEMPT":
-                	startAttempt();
+                    startAttempt();
                     break;
                 case "STOP_ATTEMPT": //è un cancel attempt
-                	var endedInfo = e.data.attempt;
-                	attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
+                    var endedInfo = e.data.attempt;
+                    attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "ATTEMPT_ENDED":
-                	var endedInfo = e.data.attempt;
-                	console.log("Punteggio da aggiornare "+ endedInfo.score);
-                	console.log("Livello raggiunto "+ endedInfo.level);
-                	attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
+                    var endedInfo = e.data.attempt;
+                    console.log("Punteggio da aggiornare "+ endedInfo.score);
+                    console.log("Livello raggiunto "+ endedInfo.level);
+                    attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "GAME_LOADED":
                     break;
@@ -51,7 +49,9 @@
                 default:
                     break;
             }
-        },false);
+        }
+        // Listen to message from child window
+        eventer(messageEvent, handle,false);
 
 
         $scope.game = {url:"htmlgames/loading.html"}
@@ -60,17 +60,17 @@
             if (args.seconds !== undefined){
                 var myEl = angular.element( document.querySelector( '#game-header' ) );
                 console.log('Seconds before next server update ' + args.seconds % 30);
-                
+
                 var timeToEnd = (args.minutes*60+args.seconds)
                 var total =  (timeToEnd*100/$scope.wrapperMemory.match.template.maxDuration)
                 $scope.progressBar = total <=100? total: 100
-                
+
                 var tk = args.seconds % 30;
                 if($scope.wrapperMemory.currAttempt != undefined && tk == 0)
                 {
                 	console.log('score/level update vs server')
                 	//this.updateAttemptScore = function(gameId,playerId,token,matchId,attemptId,level,score){
-                	PlaygameService.updateAttemptScore($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, 
+                	PlaygameService.updateAttemptScore($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id,
                 			$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.score, $scope.wrapperMemory.currAttempt.level).then(function(response){
         	    		console.log('Score/Level updated');
         	    	});
@@ -180,7 +180,7 @@
             },500);
             return 'are you sure';
         });
-        
+
         $(window).bind('unload', function() {
             var http = new XMLHttpRequest();
             http.open("PUT", '/api/play/end', false);
