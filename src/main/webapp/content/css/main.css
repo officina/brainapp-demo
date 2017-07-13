@@ -397,4 +397,19 @@ ui bootstrap tweaks
     height: 10px!important;
     background: rgba(0,0,0,0);
 }
+.arcade-bg div{
+    width: 100%;
 
+    height: 100%;
+}
+.arcade{
+    font-family: 'Press Start 2P', cursive;
+}
+.officina{
+    color: #990000;
+}
+.full-width {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+}

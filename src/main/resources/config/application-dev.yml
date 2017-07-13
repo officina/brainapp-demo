@@ -31,14 +31,14 @@ spring:
         #password:
 
         #local postresql
-        url: jdbc:postgresql://localhost:5432/gatorade
-        username: gatorade
-        password:
-        
-        #online postgres
-        #url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
+        #url: jdbc:postgresql://localhost:5432/gatorade
         #username: gatorade
-        #password: q#w$Brnf^9#8&8gdBs255!r
+        #password:
+
+        #online postgres
+        url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade
+        username: gatorade
+        password: q#w$Brnf^9#8&8gdBs255!r
     h2:
         console:
             enabled: false
