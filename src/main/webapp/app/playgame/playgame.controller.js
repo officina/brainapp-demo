@@ -213,6 +213,7 @@
         	dataPut.attemptid = $scope.wrapperMemory.currAttempt.id;
         	dataPut.score = $scope.wrapperMemory.currAttempt.score;
         	dataPut.level = $scope.wrapperMemory.currAttempt.level;
+        	dataPut.matchid = $scope.wrapperMemory.match.id;
             console.log('Sending new value: ' + $scope.wrapperMemory.currAttempt.level)
     		http.send(JSON.stringify(dataPut));
             if(typeof beforeUnloadTimeout !=='undefined' && beforeUnloadTimeout != 0)
