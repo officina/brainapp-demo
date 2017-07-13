@@ -129,7 +129,8 @@ public class GamificationServiceImpl implements GamificationService{
 		// estraggo gli n utenti campione, utilizzare una mappa consente di evitare doppioni
 		Map<String, Match> samples = new HashMap<String, Match>();
 		List<Match> matches = new ArrayList<Match>();
-		matches.addAll(s.getGame().getMatches());
+		log.info("MAtches size for elaboration: " + s.getMatches().size());
+		matches.addAll(s.getMatches());
 		while(matches.size() > 0 && samples.size() < numUsers && samples.size() < matches.size())
 		{
 			int index = new Random().nextInt(matches.size());
@@ -154,6 +155,7 @@ public class GamificationServiceImpl implements GamificationService{
 	}
 
 	@Override
+	@Transactional
 	public void elaboratePending(ZonedDateTime now) {
 		List<Session> sessions = sessionRepository.findPendingSessions(now);
 		for(Session s : sessions)
