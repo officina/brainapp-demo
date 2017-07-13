@@ -9,7 +9,7 @@
 
     function PlaygameController ($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams,timer, $interval) {
 
-    	
+
     	$scope.wrapperMemory = {};
     	$scope.wrapperMemory.attempts = [];
     	$scope.timerOn = true
@@ -201,7 +201,7 @@
             beforeUnloadTimeout = setTimeout(function() {
                 console.log('settimeout function');
             },500);
-            return 'are you sure';
+            return 'Se chiudi la finestra o cambi indirizzo la tua sessione sarà invalidata! Vuoi procedere comunque?';
         });
 
         $(window).bind('unload', function() {
