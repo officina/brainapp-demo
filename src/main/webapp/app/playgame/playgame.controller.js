@@ -8,12 +8,15 @@
     PlaygameController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'PlaygameService','$sce', '$stateParams','$interval'];
 
     function PlaygameController ($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams,timer, $interval) {
-
+    	
+    	window.removeEventListener("message",null,false);
+    	
     	$scope.wrapperMemory = {};
     	$scope.wrapperMemory.attempts = [];
     	$scope.timerOn = true
     	$scope.updateCount = 0;
     	// IE + others compatible event handler
+    	console.log(window.addEventListener);
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var eventer = window[eventMethod];
         var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
@@ -22,7 +25,7 @@
         eventer(messageEvent,function(e) {
 
             console.log("RECEIVED ACTION: " + e.data.action);
-            console.log(e.data);
+            console.log(e);
 
             switch (e.data.action){
                 case "UPDATE_LEVEL":
@@ -142,7 +145,9 @@
 	    	$scope.wrapperMemory.currAttempt.level = level;
 	    };
 
+	    
 	    var attemptEnded = function(score, level, completed, endDate){
+	    	console.log(score + ' -- ' + level);
 	    	PlaygameService.endAttempt($scope.wrapperMemory.game.id,$scope.wrapperMemory.currAttempt.id,score,level,completed,false).then(function(response){
 	    		console.log('Attempt ended');
 	    		console.log(response);
@@ -160,7 +165,6 @@
 		    	var currAttemptScore = $scope.wrapperMemory.currAttempt.score;
 		    	var currAttemptLevel = $scope.wrapperMemory.currAttempt.level;
 	    	}
-
 	    	PlaygameService.endMatch($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, currAttemptId, currAttemptScore, currAttemptLevel).then(function(response){
 	    		console.log('Match ended');
 	    		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "timeout"});
@@ -182,6 +186,12 @@
         });
         
         $(window).bind('unload', function() {
+        	console.log('event');
+        	if($scope.wrapperMemory.currAttempt == undefined)
+	    	{
+        		console.log("put request for attempt closure non necessary");
+        		return;
+	    	}
             var http = new XMLHttpRequest();
             http.open("PUT", '/api/play/end', false);
             http.setRequestHeader("Content-type", "application/json");
@@ -189,16 +199,9 @@
             dataPut.gameid = $scope.wrapperMemory.game.id;
             dataPut.playerid = "";
             dataPut.token = $stateParams.playtoken;
-            dataPut.matchid = $scope.wrapperMemory.match.id;
-            dataPut.attemptid = null;
-            dataPut.level = null;
-            dataPut.score = null;
-            if($scope.wrapperMemory.currAttempt != undefined)
-	    	{
-            	dataPut.attemptid = $scope.wrapperMemory.currAttempt.id;
-            	dataPut.score = $scope.wrapperMemory.currAttempt.score;
-            	dataPut.level = $scope.wrapperMemory.currAttempt.level;
-	    	}
+        	dataPut.attemptid = $scope.wrapperMemory.currAttempt.id;
+        	dataPut.score = $scope.wrapperMemory.currAttempt.score;
+        	dataPut.level = $scope.wrapperMemory.currAttempt.level;
             console.log('Sending new value: ' + $scope.wrapperMemory.currAttempt.level)
     		http.send(JSON.stringify(dataPut));
             if(typeof beforeUnloadTimeout !=='undefined' && beforeUnloadTimeout != 0)
