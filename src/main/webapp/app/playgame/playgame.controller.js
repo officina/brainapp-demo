@@ -23,7 +23,7 @@
         var gameId = $stateParams.gameid;
         var playtoken = $stateParams.playtoken;
         var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
-
+        var useLevels = false;
 
         var handle = function(e){
 
@@ -99,12 +99,16 @@
         });
 
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid).then(function(response){
-          var game = response.data
-          game.url = $sce.trustAsResourceUrl(response.data.url)
-          $scope.game = game
+          var game = response.data;
+          game.url = $sce.trustAsResourceUrl(response.data.url);
+          $scope.game = game;
           $scope.wrapperMemory.game = game;
           $scope.wrapperMemory.player = {};
           $scope.wrapperMemory.player.playtoken = playtoken;
+          if($scope.game.type == 'LEVEL')
+          {
+        	  useLevels = true;
+          }
           PlaygameService.createMatch($stateParams.gameid,null,$stateParams.playtoken,$stateParams.playtoken, $stateParams.extsessionid).then(function(response){
         	  $scope.wrapperMemory.match = response.data.match;
     		  var timeSpent = $scope.wrapperMemory.match.timeSpent;
@@ -166,11 +170,17 @@
 	    	$scope.wrapperMemory.currAttempt.level = level;
 	    };
 
-
 	    var attemptEnded = function(score, level, completed, endDate){
-	    	console.log(score + ' -- ' + level);
-	    	console.log($scope.wrapperMemory);
-	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,score,level,completed,false).then(function(response){
+	    	var trueLevel = 0;
+	    	var trueScore = 0;
+	    	if(useLevels) {
+	    		trueLevel = score;
+	    	}
+	    	else{
+	    		trueScore = score;
+	    	}
+	    	console.log('Attempt ended');
+	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false).then(function(response){
 	    		console.log('Attempt ended');
 	    		console.log(response);
 	    	});
