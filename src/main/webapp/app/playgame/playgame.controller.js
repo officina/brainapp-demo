@@ -20,7 +20,8 @@
         var removeEventMethod = window.removeEventListener ? "removeEventListener" : "detachEvent";
         var addEvent = window[addEventMethod];
         var removeEvent = window[removeEventMethod];
-
+        var gameId = $stateParams.gameid;
+        var playtoken = $stateParams.playtoken;
         var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
 
 
@@ -47,8 +48,6 @@
                 case "ATTEMPT_ENDED":
                 	console.log('ATTEMPT_ENDED');
                     var endedInfo = e.data.attempt;
-                    //console.log("Punteggio da aggiornare "+ endedInfo.score);
-                    //console.log("Livello raggiunto "+ endedInfo.level);
                     attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
                 case "GAME_LOADED":
@@ -98,8 +97,6 @@
             }
 
         });
-        var gameId = $stateParams.gameid;
-        var playtoken = $stateParams.playtoken;
 
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid).then(function(response){
           var game = response.data
@@ -172,7 +169,8 @@
 
 	    var attemptEnded = function(score, level, completed, endDate){
 	    	console.log(score + ' -- ' + level);
-	    	PlaygameService.endAttempt($scope.wrapperMemory.game.id,$scope.wrapperMemory.currAttempt.id,score,level,completed,false).then(function(response){
+	    	console.log($scope.wrapperMemory);
+	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,score,level,completed,false).then(function(response){
 	    		console.log('Attempt ended');
 	    		console.log(response);
 	    	});
