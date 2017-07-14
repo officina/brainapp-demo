@@ -26,7 +26,9 @@ angular.module('gatoradeApp')
                   jQuery('#maingameframe').iFrameResize( [{
                       log:true,
                       //enablePublicMethods     : true,
-                      checkOrigin: false
+                      heightCalculationMethod:'bodyScroll',
+
+                      checkOrigin: true
                   }] );
               });
           }

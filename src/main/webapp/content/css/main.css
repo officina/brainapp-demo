@@ -393,9 +393,11 @@ ui bootstrap tweaks
 
 
 }
-#game-header div.progress{
-    height: 10px!important;
-    background: rgba(0,0,0,0);
+
+#game-header div.progress .bar{
+
+    background: #990000;
+
 }
 .arcade-bg div{
     width: 100%;
@@ -413,3 +415,6 @@ ui bootstrap tweaks
     min-width: 100%;
     max-width: 100%;
 }
+.progress {background: rgba(245, 245, 245, 0); border: 0px solid rgba(245, 245, 245, 1); border-radius: 6px; height: 10px;}
+.progress-bar-custom {background: rgba(153, 0, 0, 1); background: -webkit-linear-gradient(top, rgba(222, 0, 33, 1) 0%, rgba(153, 0, 0, 1) 100%); background: linear-gradient(to bottom, rgba(222, 0, 33, 1) 0%, rgba(153, 0, 0, 1) 100%);}
+.progress-striped .progress-bar-custom {background-color: rgba(153, 0, 0, 1); background-image: -webkit-gradient(linear,0 100%,100% 0,color-stop(0.25,rgba(255, 255, 255, 0.15),color-stop(0.25,transparent),color-stop(0.5,transparent),color-stop(0.5,rgba(255, 255, 255, 0.15)),color-stop(0.75,rgba(255, 255, 255, 0.15)),color-stop(0.75,transparent),to(transparent))); background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent); background-image: linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent); background-size: 10px 10px;}
