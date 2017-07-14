@@ -145,7 +145,9 @@ public class GameResource {
         Game game = gameService.findOne(id);
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ id + " not found")).body(null);
-        
+        MatchTemplate template = templateService.findOneByGameId(id);
+        if(template == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No tempate founded for game with id "+ id)).body(null);
         boolean validateSession = sessionService.validateSessionAndUser(extid, playerid);
         if(! validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with ext_id " + extid + " is invalid.")).body(null);
