@@ -14,6 +14,7 @@
     	$scope.wrapperMemory.attempts = [];
     	$scope.timerOn = true
     	$scope.updateCount = 0;
+    	$scope.lastProgress = 101;
     	// IE + others compatible event handler
 
         var addEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
@@ -40,7 +41,7 @@
                 	console.log('START_ATTEMPT');
                     startAttempt();
                     break;
-                case "STOP_ATTEMPT": //è un cancel attempt
+                case "STOP_ATTEMPT": // è un cancel attempt
                 	console.log('STOP_ATTEMPT');
                     var endedInfo = e.data.attempt;
                     attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
@@ -79,16 +80,22 @@
             if (args.seconds !== undefined){
                 var myEl = angular.element( document.querySelector( '#game-header' ) );
                 console.log('Seconds before next server update ' + args.seconds % 30);
-
                 var timeToEnd = (args.minutes*60+args.seconds)
-                var total =  (timeToEnd*100/$scope.wrapperMemory.match.template.maxDuration)
+                var total =  (timeToEnd*100/$scope.wrapperMemory.match.template.maxDuration);
                 $scope.progressBar = total <=100? total: 100
+
+                console.log('|*****************************');
+                console.log('total: ' +total);
+                console.log('min : ' + args.minutes);
+                console.log('seconds: ' + args.seconds);
+                console.log('max : ' + $scope.wrapperMemory.match.template.maxDuration);
+                console.log($scope.progressBar);
+                console.log('|*****************************');
 
                 var tk = args.seconds % 30;
                 if($scope.wrapperMemory.currAttempt != undefined && tk == 0)
                 {
                 	console.log('score/level update vs server')
-                	//this.updateAttemptScore = function(gameId,playerId,token,matchId,attemptId,level,score){
                 	PlaygameService.updateAttemptScore($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id,
                 			$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.score, $scope.wrapperMemory.currAttempt.level).then(function(response){
         	    		console.log('Score/Level updated');
