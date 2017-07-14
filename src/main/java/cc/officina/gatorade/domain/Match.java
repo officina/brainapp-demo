@@ -279,7 +279,7 @@ public class Match implements Serializable {
 			}
 			catch(Exception e)
 			{
-				System.out.println(e.getMessage());
+				System.out.println("Errore nel calcolo del maxLevel: " + e.getMessage());
 			}
 		}
 		return max.toString();

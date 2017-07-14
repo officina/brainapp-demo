@@ -131,6 +131,7 @@ public class GameServiceImpl implements GameService{
 		attempt.setStartAttempt(ZonedDateTime.now());
 		attempt.setLastUpdate(ZonedDateTime.now());
 		attempt.setAttemptScore(0l);
+		attempt.setLevelReached("0");
 		attempt.setCompleted(false);
 		attempt.setCancelled(false);
 		attemptRepository.saveAndFlush(attempt);
