@@ -46,9 +46,10 @@ public class GamificationServiceImpl implements GamificationService{
 
     private final SessionRepository sessionRepository;
     private static PlayOff po;
-    private static int interval = 1000; //intervallo di esecuzione del thread in secondi
-    private static int numUsers = 2;
-    
+    @Value("${elaboration.interval}")
+    private int interval; //intervallo di esecuzione del thread in secondi
+    @Value("${elaboration.numUsers}")
+    private int numUsers;
     @Value("${playoff.client.id}")
     private String poClientId;
 	@Value("${playoff.client.secret}")
@@ -67,7 +68,7 @@ public class GamificationServiceImpl implements GamificationService{
 	   po = new PlayOff(poClientId, poClientSecret, null, "v2", poDomain);
 	   log.info("Attivazione batch");
 	   Timer task = new Timer();
-	   task.schedule(new SessionTask(this), 10*1000, 20*1000);
+	   task.schedule(new SessionTask(this), 0, interval*1000);
 	}
 
 	@Override
@@ -99,12 +100,12 @@ public class GamificationServiceImpl implements GamificationService{
 	}
 
 	private LinkedTreeMap<String, Object> paramsPerLevelGame(Match match) {
-		log.error("Calcolo max level");
 		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
 		HashMap<String,Object> variables = new HashMap<String,Object>();
-		variables.put("punteggio", 5);
-//		variables.put("punteggio", match.getMaxLevel());
-//		variables.put("numeroTentativi", match.getAttempts().size()+"");
+		variables.put("punteggio", match.getMaxScore());
+		variables.put("livello", match.getMaxLevel());
+		variables.put("tentativi", match.getAttempts().size());
+		variables.put("punteggioMedio", match.getMeanScore());
 		result.put("variables", variables);
 		return result;
 	}
@@ -113,8 +114,9 @@ public class GamificationServiceImpl implements GamificationService{
 		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
 		HashMap<String,Object> variables = new HashMap<String,Object>();
 		variables.put("punteggio", match.getMaxScore());
-//		variables.put("numeroTentativi", match.getAttempts().size()+"");
-//		variables.put("punteggioMedio", match.getMeanScore());
+		variables.put("livello", match.getMaxLevel());
+		variables.put("tentativi", match.getAttempts().size());
+		variables.put("punteggioMedio", match.getMeanScore());
 		result.put("variables", variables);
 		return result;
 	}
@@ -135,7 +137,9 @@ public class GamificationServiceImpl implements GamificationService{
 		{
 			int index = new Random().nextInt(matches.size());
 			Match randomMatch = matches.get(index);
-			samples.put(randomMatch.getUserId(), randomMatch);
+			//aggiungo solo se effettivamente lo user ha eseguito almeno una chiamata
+			if(randomMatch.getAttempts().size() > 0)
+				samples.put(randomMatch.getUserId(), randomMatch);
 			matches.remove(index);
 		}
 		

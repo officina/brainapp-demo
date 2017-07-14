@@ -1,8 +1,13 @@
 package cc.officina.gatorade.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import cc.officina.gatorade.service.impl.GamificationServiceImpl;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,7 +25,6 @@ import java.util.Objects;
 public class Match implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
@@ -268,9 +272,15 @@ public class Match implements Serializable {
 		Long max = 0l;
 		for(Attempt a : this.getAttempts())
 		{
-			if(a != null && a.getLevelReached() != null && Long.parseLong(a.getLevelReached()) > max)
-				//TODO: gestione livelli di tipi differenti
-				max = Long.parseLong(a.getLevelReached());
+			try
+			{
+				if(a != null && a.getLevelReached() != null && Long.parseLong(a.getLevelReached()) > max)
+					max = Long.parseLong(a.getLevelReached());
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
 		}
 		return max.toString();
 	}

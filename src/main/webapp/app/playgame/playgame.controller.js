@@ -65,7 +65,12 @@
         addEvent(eventName, handle,false);
 
         $scope.$on('$locationChangeStart', function (event, next, current) {
-
+        	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
+					$stateParams.playtoken, 
+					$scope.wrapperMemory.match.id, 
+					$scope.wrapperMemory.currAttempt.id,
+					$scope.wrapperMemory.currAttempt.score, 
+					$scope.wrapperMemory.currAttempt.level);
             removeEvent(eventName, handle);
         });
 
@@ -211,20 +216,14 @@
         		console.log("put request for attempt closure non necessary");
         		return;
 	    	}
-            var http = new XMLHttpRequest();
-            http.open("PUT", '/api/play/end', false);
-            http.setRequestHeader("Content-type", "application/json");
-            var dataPut = {};
-            dataPut.gameid = $scope.wrapperMemory.game.id;
-            dataPut.playerid = "";
-            dataPut.token = $stateParams.playtoken;
-        	dataPut.attemptid = $scope.wrapperMemory.currAttempt.id;
-        	dataPut.score = $scope.wrapperMemory.currAttempt.score;
-        	dataPut.level = $scope.wrapperMemory.currAttempt.level;
-        	dataPut.matchid = $scope.wrapperMemory.match.id;
-            console.log('Sending new value: ' + $scope.wrapperMemory.currAttempt.level)
-    		http.send(JSON.stringify(dataPut));
-            if(typeof beforeUnloadTimeout !=='undefined' && beforeUnloadTimeout != 0) {
+        	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
+        									$stateParams.playtoken, 
+        									$scope.wrapperMemory.match.id, 
+        									$scope.wrapperMemory.currAttempt.id,
+        									$scope.wrapperMemory.currAttempt.score, 
+        									$scope.wrapperMemory.currAttempt.level);
+        	
+            if(typeof beforeUnloadTimeout != 'undefined' && beforeUnloadTimeout != 0) {
                 clearTimeout(beforeUnloadTimeout);
             }
             removeEvent(eventName, handle)
