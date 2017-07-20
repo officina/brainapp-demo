@@ -65,6 +65,8 @@ public class GamificationServiceImpl implements GamificationService{
     @PostConstruct
 	public void init() {
 	   log.info("GamificationService init for " + poDomain);
+	   log.info("GamificationService init clientId " + poClientId);
+	   log.info("GamificationService init clientSecret " + poClientSecret);
 	   po = new PlayOff(poClientId, poClientSecret, null, "v2", poDomain);
 	   log.info("Attivazione batch");
 	   Timer task = new Timer();
@@ -107,6 +109,7 @@ public class GamificationServiceImpl implements GamificationService{
 		variables.put("tentativi", match.getAttempts().size());
 		variables.put("punteggioMedio", match.getMeanScore());
 		result.put("variables", variables);
+		log.info("Points to playoff: " + match.getMaxScore());
 		return result;
 	}
 
@@ -118,6 +121,7 @@ public class GamificationServiceImpl implements GamificationService{
 		variables.put("tentativi", match.getAttempts().size());
 		variables.put("punteggioMedio", match.getMeanScore());
 		result.put("variables", variables);
+		log.info("Points to playoff: " + match.getMaxScore());
 		return result;
 	}
 	
@@ -133,16 +137,25 @@ public class GamificationServiceImpl implements GamificationService{
 		List<Match> matches = new ArrayList<Match>();
 		log.info("MAtches size for elaboration: " + s.getMatches().size());
 		matches.addAll(s.getMatches());
-		while(matches.size() > 0 && samples.size() < numUsers && samples.size() < matches.size())
+		if(s.getMatches().size() <= numUsers)
 		{
-			int index = new Random().nextInt(matches.size());
-			Match randomMatch = matches.get(index);
-			//aggiungo solo se effettivamente lo user ha eseguito almeno una chiamata
-			if(randomMatch.getAttempts().size() > 0)
-				samples.put(randomMatch.getUserId(), randomMatch);
-			matches.remove(index);
+			for(Match m : matches) {
+				
+				samples.put(m.getUserId(),m);
+			}
 		}
-		
+		else
+		{
+			while(matches.size() > 0 && samples.size() < numUsers && matches.size() > 0)
+			{
+				int index = new Random().nextInt(matches.size());
+				Match randomMatch = matches.get(index);
+				//aggiungo solo se effettivamente lo user ha eseguito almeno una chiamata
+				if(randomMatch.getAttempts().size() > 0)
+					samples.put(randomMatch.getUserId(), randomMatch);
+				matches.remove(index);
+			}
+		}
 		int numPlayer = 1;
 		
 		for(Match match : samples.values())
@@ -157,7 +170,7 @@ public class GamificationServiceImpl implements GamificationService{
 		}
 		log.info("Elaboration of session with id = " + s.getId() + " - END");
 	}
-
+	// 
 	@Override
 	@Transactional
 	public void elaboratePending(ZonedDateTime now) {
