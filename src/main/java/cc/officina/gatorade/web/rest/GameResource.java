@@ -141,7 +141,7 @@ public class GameResource {
     @GetMapping("/play/{id}/init/{extid}/{playerid}")
     @Timed
     public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable String extid, @PathVariable String playerid) {
-        log.debug("REST game init fro game with id = " + id + " and extI = " + extid);
+        log.info("REST game init fro game with id = " + id + " and extI = " + extid);
         Game game = gameService.findOne(id);
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ id + " not found")).body(null);
@@ -168,7 +168,7 @@ public class GameResource {
 
     	if(request.getGameid() == null || request.getPlayerid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-        log.debug("REST request to startMatch : {}", request.getGameid());
+        log.info("REST request to startMatch : {}", request.getGameid());
         Session session = sessionService.findOneByExtId(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
@@ -180,8 +180,8 @@ public class GameResource {
         MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
-        
-        return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session), null, HttpStatus.OK);
+        // non passo per ora il matchToken, o meglio passo -1
+        return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
     }
     
     @PostMapping("/play/attempt")
@@ -190,7 +190,7 @@ public class GameResource {
     public ResponseEntity<AttemptResponse> startAttempt(@RequestBody Request request) {
     	if(request.getGameid() == null || request.getPlayerid() == null || request.getSessionid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody2", "Malformed body")).body(null);
-        log.debug("REST request to startAttempt : {}", request.getGameid());
+        log.info("REST request to startAttempt for game" + request.getGameid() + " and match with id " + request.getMatchid());
         Game game = gameService.findOne(request.getGameid());
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+request.getGameid() + " not found")).body(null);
@@ -199,7 +199,7 @@ public class GameResource {
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
         
-        Session session = sessionService.findOneByExtId(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
+        Session session = sessionService.findOneByExtId(request.getSessionid());
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
         
@@ -208,20 +208,38 @@ public class GameResource {
         	match = matchService.findOne(request.getMatchid());
         if(match == null)
         {
-        	match = gameService.startMatch(game, template, request.getPlayerid(),session).getMatch();
+        	match = gameService.startMatch(game, template, request.getPlayerid(),session, request.getMatchtoken()).getMatch();
+        }
+        else
+        {
+        	if((!match.getMatchToken().equals(request.getMatchtoken())) && match.getMatchToken() > -1)
+        	{
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+        	}
+        	else
+        	{
+        		match.setMatchToken(request.getMatchtoken());
+        		matchService.save(match);
+        	}
         }
         match.getAttempts().size();
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
-
+    
     @PutMapping("/play/attempt/score")
     @Timed
     @Transactional
 	public ResponseEntity<AttemptResponse> updateAttemptScore(@RequestBody Request request) {
     	if(request.getGameid() == null || request.getPlayerid() == null || request.getAttemptid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-    	log.debug("REST request to update score for game Game {} and Attempt with id {}", request.getGameid(), request.getAttemptid());
-        Attempt attempt = attemptService.findOne(request.getAttemptid());
+    	log.info("REST request to update score for game Game with id " + request.getGameid()+", attempt " + request.getAttemptid());
+    	log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
+       
+    	Attempt attempt = attemptService.findOne(request.getAttemptid());
+        
+        if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+        
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
         return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
@@ -233,10 +251,14 @@ public class GameResource {
     public ResponseEntity<MatchResponse> stopAttempt(@RequestBody Request request) {
     	if(request.getAttemptid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-    	log.debug("REST request to stop Attempt with id {}", request.getAttemptid());
+    	log.info("REST request to stop Attempt with id {}", request.getAttemptid());
         Attempt attempt = attemptService.findOne(request.getAttemptid());
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
+        
+        if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+        
         attempt.getMatch().getAttempts().size();
         return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);
     }
@@ -247,8 +269,10 @@ public class GameResource {
     public ResponseEntity<MatchResponse> endMatch(@RequestBody Request request) {
     	if(request.getGameid() == null || request.getMatchid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-        log.debug("REST request to finish match {} and end game Game : {}",request.getMatchid(), request.getGameid());
+        log.info("REST request to finish match {} and end game Game : {}",request.getMatchid(), request.getGameid());
         Match match = matchService.findOne(request.getMatchid());
+        if(match == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
         match.getAttempts().size();
         Attempt lastAttempt = null;
         if(request.getAttemptid() != null)
@@ -256,8 +280,10 @@ public class GameResource {
         if(request.getLevel() != null)
         	lastAttempt.setLevelReached(request.getLevel());
         //TODO verificare se ci sono attemp pending
-        if(match == null)
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
+        if(!match.getMatchToken().equals(request.getMatchtoken()))
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+        
+        
         return new ResponseEntity<>(gameService.endMatch(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
 
     }

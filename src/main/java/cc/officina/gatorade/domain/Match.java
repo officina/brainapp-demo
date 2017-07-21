@@ -61,6 +61,12 @@ public class Match implements Serializable {
 
     @ManyToOne
     private Session session;
+    
+    @Column(name = "elaborated")
+    private boolean elaborated;
+    
+    @Column(name = "match_token")
+    private Long matchToken;
 
     public Long getId() {
         return id;
@@ -211,8 +217,28 @@ public class Match implements Serializable {
     public void setSession(Session session) {
         this.session = session;
     }
+    
+    public boolean isElaborated() {
+		return elaborated;
+	}
 
-    @Override
+	public void setElaborated(boolean elaborated) {
+		this.elaborated = elaborated;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Long getMatchToken() {
+		return matchToken;
+	}
+
+	public void setMatchToken(Long matchToken) {
+		this.matchToken = matchToken;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

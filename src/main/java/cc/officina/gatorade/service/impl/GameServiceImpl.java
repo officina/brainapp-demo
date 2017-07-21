@@ -98,7 +98,7 @@ public class GameServiceImpl implements GameService{
     }
 
 	@Override
-	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session) {
+	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
 		//TODO verificare presenza match già aperti e relativa logica da implementare
 		Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
 		ZonedDateTime now = ZonedDateTime.now();
@@ -112,6 +112,8 @@ public class GameServiceImpl implements GameService{
 			match.setSession(session);
 			match.setLastStart(now);
 			match.setTimeSpent(0l);
+			match.setElaborated(false);
+			match.setMatchToken(matchToken);
 			matchRepository.save(match);
 			return new MatchResponse(game,match,template);
 		}
@@ -171,19 +173,24 @@ public class GameServiceImpl implements GameService{
 	public MatchResponse endMatch(Game game, Match match, Attempt lastAttempt, Long score, String level) {
 		ZonedDateTime now = ZonedDateTime.now();
 		match.getAttempts().size();
+		if(match.isElaborated())
+		{
+			return new MatchResponse(game, match, match.getTemplate());
+		}
 		if(lastAttempt != null)
 		{
 			lastAttempt.setAttemptScore(score);
 			lastAttempt.setLevelReached(level);
-			//i assume che un attempt chiuso in concomitanza al match risulta non completato
+			//si assume che un attempt chiuso in concomitanza al match risulta non completato
 			lastAttempt.setCompleted(false);
 			lastAttempt.setLastUpdate(now);
 			lastAttempt.setStopAttempt(now);
-			attemptRepository.save(lastAttempt);
+//			attemptRepository.saveAndFlush(lastAttempt);
 		}
 		match.setStop(now);
+		match.setElaborated(true);
 		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
-//		matchRepository.saveAndFlush(match);
+		matchRepository.saveAndFlush(match);
 		gamificationService.runAction(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;

@@ -137,24 +137,14 @@ public class GamificationServiceImpl implements GamificationService{
 		List<Match> matches = new ArrayList<Match>();
 		log.info("MAtches size for elaboration: " + s.getMatches().size());
 		matches.addAll(s.getMatches());
-		if(s.getMatches().size() <= numUsers)
+		while(matches.size() > 0 && samples.size() < numUsers && matches.size() > 0)
 		{
-			for(Match m : matches) {
-				
-				samples.put(m.getUserId(),m);
-			}
-		}
-		else
-		{
-			while(matches.size() > 0 && samples.size() < numUsers && matches.size() > 0)
-			{
-				int index = new Random().nextInt(matches.size());
-				Match randomMatch = matches.get(index);
-				//aggiungo solo se effettivamente lo user ha eseguito almeno una chiamata
-				if(randomMatch.getAttempts().size() > 0)
-					samples.put(randomMatch.getUserId(), randomMatch);
-				matches.remove(index);
-			}
+			int index = new Random().nextInt(matches.size());
+			Match randomMatch = matches.get(index);
+			//aggiungo solo se effettivamente lo user ha eseguito almeno una chiamata
+			if(randomMatch.getAttempts().size() > 0)
+				samples.put(randomMatch.getUserId(), randomMatch);
+			matches.remove(index);
 		}
 		int numPlayer = 1;
 		

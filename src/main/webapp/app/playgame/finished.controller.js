@@ -26,6 +26,10 @@
     			$scope.message1 = 'La tua partita è terminata. ';
     	    	$scope.message2 = 'Grazie per aver giocato!';
     			break
+    		case 'invalidMatch':
+    			$scope.message1 = 'La tua partita è stata invalidata. ';
+    	    	$scope.message2 = 'Non fare il furbo :-)';
+    			break
     	}
     }
 })();

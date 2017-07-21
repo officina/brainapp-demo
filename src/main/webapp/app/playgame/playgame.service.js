@@ -29,7 +29,7 @@ angular.module('gatoradeApp')
   };
 
     //CREATE MATCH
-  this.createMatch = function(gameId, templateId, playerId,token, sessionId){
+  this.createMatch = function(gameId, templateId, playerId,token, sessionId, matchToken){
 	  return $http({
       	method: 'POST',
       	url: rootPath+'/api/play',
@@ -38,12 +38,13 @@ angular.module('gatoradeApp')
         	templateid: templateId,
         	playerid:playerId,
         	playtoken:token,
-        	sessionid: sessionId
+        	sessionid: sessionId,
+        	matchtoken: matchToken
         }
 	  })
   };
     //CREATE ATTEMPT
-  this.createAttempt = function(gameId,templateId,playerId,token,matchId,sessionId){
+  this.createAttempt = function(gameId,templateId,playerId,token,matchId,sessionId, matchToken){
 	  return $http({
       	method: 'POST',
       	url: rootPath +'/api/play/attempt',
@@ -53,12 +54,13 @@ angular.module('gatoradeApp')
         	playerid:playerId,
         	playtoken:token,
         	matchid: matchId,
-        	sessionid : sessionId
+        	sessionid: sessionId,
+        	matchtoken: matchToken
         }
 	  })
   };
     //UPDATE ATTEMPT
-  this.updateAttemptScore = function(gameId,playerId,token,matchId,attemptId,score,level){
+  this.updateAttemptScore = function(gameId,playerId,token,matchId,attemptId,score,level, matchToken){
 	  return $http({
       	method: 'PUT',
       	url: rootPath +'/api/play/attempt/score',
@@ -69,12 +71,13 @@ angular.module('gatoradeApp')
         	matchid:matchId,
       		attemptid:attemptId,
         	level:level,
-        	score:score
+        	score:score,
+        	matchtoken: matchToken
         }
 	  })
   };
     //CLOSE ATTEMPT
-  this.endAttempt = function(gameId, attemptId, score, level, completed, endMatch){
+  this.endAttempt = function(gameId, attemptId, score, level, completed, endMatch, matchToken){
 	  return $http({
       	method: 'PUT',
       	url: rootPath +'/api/play/attempt/end',
@@ -84,29 +87,14 @@ angular.module('gatoradeApp')
       		score:score,
       		level:level,
       		completed:completed,
-      		endmatch:endMatch
+      		endmatch:endMatch,
+      		matchtoken: matchToken
         }
 	  })
   };
 
-
-    this.updateScore = function(gameId, playerId, token, newValue){
-
-      return $http({
-        method: 'PUT',
-        url: rootPath + '/api/play/score',
-        data:{
-          gameId:1101,
-          attemptId:1,
-          playerId:1,
-          playtoken:"",
-          newValue:32
-        }
-      })
-    }
-
     //END MATCH
-    this.endMatch = function(gameId, playerId, token, matchId, attemptId, score, level){
+    this.endMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken){
       return $http({
         method: 'PUT',
         url: rootPath + '/api/play/end',
@@ -117,12 +105,13 @@ angular.module('gatoradeApp')
           matchid:matchId,
           attemptid:attemptId,
           score:score,
-          level:level
+          level:level,
+          matchtoken: matchToken
         }
       })
     }
     
-    this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level){
+    this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken){
         var http = new XMLHttpRequest();
         http.open("PUT", '/api/play/end', false);
         http.setRequestHeader("Content-type", "application/json");
@@ -134,6 +123,7 @@ angular.module('gatoradeApp')
     	dataPut.attemptid = attemptId;
     	dataPut.score = score;
     	dataPut.level = level;
+    	dataPut.matchtoken = matchToken;
 		http.send(JSON.stringify(dataPut));
     }
 

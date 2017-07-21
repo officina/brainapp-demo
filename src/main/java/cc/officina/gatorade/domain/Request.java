@@ -12,6 +12,7 @@ public class Request {
 	private boolean completed;
 	private String sessionid;
 	private boolean endmatch;
+	private Long matchtoken;
 	public Long getGameid() {
 		return gameid;
 	}
@@ -61,7 +62,7 @@ public class Request {
 		if(level != null)
 			return level;
 		else
-			return "";
+			return "0";
 	}
 	public void setLevel(String level) {
 		this.level = level;
@@ -84,4 +85,11 @@ public class Request {
 	public void setEndmatch(boolean endmatch) {
 		this.endmatch = endmatch;
 	}
+	public Long getMatchtoken() {
+		return matchtoken;
+	}
+	public void setMatchToken(Long matchtoken) {
+		this.matchtoken = matchtoken;
+	}
+	
 }
