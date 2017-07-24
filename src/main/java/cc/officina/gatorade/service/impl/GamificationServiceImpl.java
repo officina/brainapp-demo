@@ -135,7 +135,7 @@ public class GamificationServiceImpl implements GamificationService{
 		// estraggo gli n utenti campione, utilizzare una mappa consente di evitare doppioni
 		Map<String, Match> samples = new HashMap<String, Match>();
 		List<Match> matches = new ArrayList<Match>();
-		log.info("MAtches size for elaboration: " + s.getMatches().size());
+		log.info("Matches size for elaboration: " + s.getMatches().size());
 		matches.addAll(s.getMatches());
 		while(matches.size() > 0 && samples.size() < numUsers && matches.size() > 0)
 		{
