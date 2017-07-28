@@ -22231,6 +22231,8 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Sprite.prototype.acts.SetX,
 	cr.plugins_.Sprite.prototype.exps.X,
 	cr.plugins_.Sprite.prototype.acts.SetAnim,
+	cr.plugins_.gatorade.prototype.acts.updateLevel,
+	cr.system_object.prototype.exps.str,
 	cr.behaviors.Pin.prototype.acts.Pin,
 	cr.plugins_.Spritefont2.prototype.cnds.CompareX,
 	cr.plugins_.Spritefont2.prototype.acts.SetX,
@@ -22240,6 +22242,5 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Audio.prototype.cnds.IsSilent,
 	cr.plugins_.Audio.prototype.acts.SetMasterVolume,
 	cr.plugins_.WebStorage.prototype.exps.LocalValue,
-	cr.system_object.prototype.cnds.OnLoadFinished,
-	cr.plugins_.WebStorage.prototype.cnds.LocalStorageExists
+	cr.system_object.prototype.cnds.OnLoadFinished
 ];};
