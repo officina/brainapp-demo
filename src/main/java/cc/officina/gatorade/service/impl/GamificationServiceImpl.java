@@ -104,12 +104,13 @@ public class GamificationServiceImpl implements GamificationService{
 	private LinkedTreeMap<String, Object> paramsPerLevelGame(Match match) {
 		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
 		HashMap<String,Object> variables = new HashMap<String,Object>();
-		variables.put("punteggio", match.getMaxScore());
-		variables.put("livello", match.getMaxLevel());
+		//per scelta di design, il livello viene passato nella variabile punteggio
+		variables.put("livello", "0");
+		variables.put("punteggio", match.getMaxLevel());
 		variables.put("tentativi", match.getAttempts().size());
 		variables.put("punteggioMedio", match.getMeanScore());
 		result.put("variables", variables);
-		log.info("Points to playoff: " + match.getMaxScore());
+		log.info("Level to playoff: " + match.getMaxLevel());
 		return result;
 	}
 

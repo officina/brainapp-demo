@@ -79,11 +79,11 @@ liquibase:
 # ===================================================================
 server:
     port: 8080
-    #ssl:
-        #key-store: nowr.pfx
-        #key-store-password: officina001
-        #keyStoreType: PKCS12
-        #keyAlias: Gatorade
+#    ssl:
+#        key-store: nowr.pfx
+#        key-store-password: officina001
+#        keyStoreType: PKCS12
+#        keyAlias: Gatorade
 
 # ===================================================================
 # JHipster specific properties
@@ -149,5 +149,5 @@ application:
 playoff:
     client:
         domain: playoff.cc
-        id: MTdhODQ2ZWQtZGQ0OS00Yjk5LWJiOWEtMTUxYjFhY2YzYjky
-        secret: N2I1MjQ2OGEtNjY1ZS00ZDU2LWFjMGMtZjA5MmUwNjQ4MjJjNWZmMThkMTAtNjU1OS0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
+        id: MDY5MTlkN2QtMGJhNC00ZjNkLTljNjUtZGJmNTJjZTBmNjhi
+        secret: MjI1ZDA2ZGItOTA0Mi00MjdlLWEwNjctZjNlODJkZWRkNDljOTEzYWI4MjAtNzM3Mi0xMWU3LWE3NjktNWYxYjQ4ZWZhMGY1

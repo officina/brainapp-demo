@@ -145,7 +145,8 @@ public class GameServiceImpl implements GameService{
 	public AttemptResponse updateAttemptScore(Game game, Attempt attempt, Long newScore, String newLevel) {
 		//TODO verificare presenza attempt già aperti e relativa logica da implementare
 		attempt.setAttemptScore(newScore);
-		attempt.setLevelReached(newLevel);
+		if(Long.parseLong(newLevel) > Long.parseLong(attempt.getLevelReached()))
+			attempt.setLevelReached(newLevel);
 		attempt.setLastUpdate(ZonedDateTime.now());
 		attemptRepository.saveAndFlush(attempt);
 		AttemptResponse response = new AttemptResponse(game, attempt.getMatch(), null,attempt);
