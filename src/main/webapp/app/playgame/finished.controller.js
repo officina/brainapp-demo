@@ -20,7 +20,7 @@
     	{
     		case 'invalidSession':
     			$scope.message1 = 'Nessuna sessione di gioco attiva.';
-    	    	$scope.message2 = 'Riprova più tardi!';
+    	    	$scope.message2 = 'Grazie per aver giocato!';
     			break;
     		case 'timeout':
     			$scope.message1 = 'La tua partita è terminata. ';
@@ -28,7 +28,7 @@
     			break
     		case 'invalidMatch':
     			$scope.message1 = 'La tua partita è stata invalidata. ';
-    	    	$scope.message2 = 'Non fare il furbo :-)';
+    	    	$scope.message2 = 'Grazie per aver giocato!';
     			break
     	}
     }
