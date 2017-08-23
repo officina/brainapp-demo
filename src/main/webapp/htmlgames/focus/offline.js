@@ -1,0 +1,33 @@
+﻿{
+	"version": 1503494686,
+	"fileList": [
+		"data.js",
+		"c2runtime.js",
+		"jquery-2.1.1.min.js",
+		"offlineClient.js",
+		"images/timebar.png",
+		"images/ui_blackoverlay-sheet0.png",
+		"images/ui_checkbox-sheet0.png",
+		"images/ui_button-sheet0.png",
+		"images/ui_dialog.png",
+		"images/ui_image-sheet0.png",
+		"images/ui_animation-sheet0.png",
+		"images/ui_animation-sheet1.png",
+		"media/click.m4a",
+		"media/click.ogg",
+		"media/false.m4a",
+		"media/false.ogg",
+		"media/true.m4a",
+		"media/true.ogg",
+		"icon-16.png",
+		"icon-32.png",
+		"icon-114.png",
+		"icon-128.png",
+		"icon-256.png",
+		"loading-logo.png",
+		"varelaround-regular-webfont.woff",
+		"varelaround-regular-webfont.woff2",
+		"stylesheet.css",
+		"config.txt"
+	]
+}
