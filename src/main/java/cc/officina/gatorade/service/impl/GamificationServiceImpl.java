@@ -92,12 +92,14 @@ public class GamificationServiceImpl implements GamificationService{
 
 	private LinkedTreeMap<String, Object> getRequestByType(Match match) {
 		switch (match.getGame().getType()) {
-		case POINT:
-			return paramsPerPointGame(match);
-		case LEVEL:
-			return paramsPerLevelGame(match);
-		default:
-			return null;
+			case POINT:
+				return paramsPerPointGame(match);
+			case MINPOINT:
+				return paramsPerMinPointGame(match);
+			case LEVEL:
+				return paramsPerLevelGame(match);
+			default:
+				return null;
 		}
 	}
 
@@ -119,6 +121,18 @@ public class GamificationServiceImpl implements GamificationService{
 		HashMap<String,Object> variables = new HashMap<String,Object>();
 		variables.put("punteggio", match.getMaxScore());
 		variables.put("livello", match.getMaxLevel());
+		variables.put("tentativi", match.getAttempts().size());
+		variables.put("punteggioMedio", match.getMeanScore());
+		result.put("variables", variables);
+		log.info("Points to playoff: " + match.getMaxScore());
+		return result;
+	}
+	
+	private LinkedTreeMap<String, Object> paramsPerMinPointGame(Match match) {	
+		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
+		HashMap<String,Object> variables = new HashMap<String,Object>();
+		variables.put("punteggio", match.getMinScore());
+		variables.put("livello", "0");
 		variables.put("tentativi", match.getAttempts().size());
 		variables.put("punteggioMedio", match.getMeanScore());
 		result.put("variables", variables);

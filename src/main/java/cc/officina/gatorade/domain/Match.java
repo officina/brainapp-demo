@@ -280,6 +280,16 @@ public class Match implements Serializable {
 		}
 		return max.toString();
 	}
+	
+	public String getMinScore() {
+		Long min = 0l;
+		for(Attempt a : this.getAttempts())
+		{
+			if(a.getAttemptScore() < min)
+				min = a.getAttemptScore();
+		}
+		return min.toString();
+	}
 
 	public String getMeanScore() {
 		if(this.getAttempts().size() == 0)

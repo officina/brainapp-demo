@@ -149,5 +149,5 @@ application:
 playoff:
     client:
         domain: playoff.cc
-        id: MDQ2ZGJmMjMtZWNhZC00OWM3LTk2NjAtOTdhODc4ZjkwOTBj
-        secret: Yzg1MmNkMjEtYWI2Yi00YzA1LTk0MTktNWZhZDhhZTk2NDg2MTNhNTBiOTAtNzFmMS0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
+        id: MDY5MTlkN2QtMGJhNC00ZjNkLTljNjUtZGJmNTJjZTBmNjhi
+        secret: MjI1ZDA2ZGItOTA0Mi00MjdlLWEwNjctZjNlODJkZWRkNDljOTEzYWI4MjAtNzM3Mi0xMWU3LWE3NjktNWYxYjQ4ZWZhMGY1
