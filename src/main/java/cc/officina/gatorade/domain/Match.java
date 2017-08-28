@@ -275,19 +275,21 @@ public class Match implements Serializable {
 		Long max = 0l;
 		for(Attempt a : this.getAttempts())
 		{
-			if(a.getAttemptScore() > max)
+			if(a.isCompleted() && (a.getAttemptScore() > max))
 				max = a.getAttemptScore();
 		}
 		return max.toString();
 	}
 	
 	public String getMinScore() {
-		Long min = 0l;
+		Long min = null;
 		for(Attempt a : this.getAttempts())
 		{
-			if(a.getAttemptScore() < min)
+			if(a.isCompleted() && (min == null || a.getAttemptScore() < min))
 				min = a.getAttemptScore();
 		}
+		if(min == null)
+			min = 0l;
 		return min.toString();
 	}
 
