@@ -148,7 +148,7 @@ public class GameResource {
         MatchTemplate template = templateService.findOneByGameId(id);
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No tempate founded for game with id "+ id)).body(null);
-        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid);
+        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id);
         if(! validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with ext_id " + extid + " is invalid.")).body(null);
         return new ResponseEntity<>(game, null, HttpStatus.OK);
@@ -198,7 +198,7 @@ public class GameResource {
         MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
-        
+        	
         Session session = sessionService.findOneByExtId(request.getSessionid());
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);

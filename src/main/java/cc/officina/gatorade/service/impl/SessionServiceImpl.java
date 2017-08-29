@@ -94,10 +94,10 @@ public class SessionServiceImpl implements SessionService{
     }
 
 	@Override
-	public boolean validateSessionAndUser(String extid, String playerid) {
+	public boolean validateSessionAndUser(String extid, String playerid, Long gameid) {
 		// TODO: implementazione logica validaione sessione e player
 		boolean result = false;
-		Session session = sessionRepository.findValidByExtId(extid,ZonedDateTime.now());
+		Session session = sessionRepository.findValidByExtId(extid,ZonedDateTime.now(), gameid);
 		if(session == null)
 			return false;
 		List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
@@ -120,6 +120,11 @@ public class SessionServiceImpl implements SessionService{
 	@Override
 	public Session findOneByExtId(String extSessionId) {
 		return sessionRepository.findByExtId(extSessionId);
+	}
+	
+	@Override
+	public Session findOneByExtId(String extid, Long gameid) {
+		return sessionRepository.findByExtId(extid, gameid);
 	}
 
 	@Override
