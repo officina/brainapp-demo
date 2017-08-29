@@ -25742,11 +25742,11 @@ cr.behaviors.destroy = function(runtime)
 	};
 }());
 cr.getObjectRefTable = function () { return [
+	cr.plugins_.Cocoon_Canvasplus,
+	cr.plugins_.ATPAds,
 	cr.plugins_.AJAX,
 	cr.plugins_.Audio,
-	cr.plugins_.Cocoon_Canvasplus,
 	cr.plugins_.Browser,
-	cr.plugins_.ATPAds,
 	cr.plugins_.Function,
 	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,
