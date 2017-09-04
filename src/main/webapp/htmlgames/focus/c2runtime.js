@@ -25788,10 +25788,10 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
 }());
 cr.getObjectRefTable = function () { return [
 	cr.plugins_.NinePatch,
-	cr.plugins_.AJAX,
 	cr.plugins_.admob,
-	cr.plugins_.Audio,
+	cr.plugins_.AJAX,
 	cr.plugins_.Browser,
+	cr.plugins_.Audio,
 	cr.plugins_.Dictionary,
 	cr.plugins_.Function,
 	cr.plugins_.gatorade,
