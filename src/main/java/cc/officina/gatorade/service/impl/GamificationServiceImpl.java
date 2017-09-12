@@ -136,7 +136,7 @@ public class GamificationServiceImpl implements GamificationService{
 		variables.put("tentativi", match.getAttempts().size());
 		variables.put("punteggioMedio", match.getMeanScore());
 		result.put("variables", variables);
-		log.info("Points to playoff: " + match.getMaxScore());
+		log.info("Points to playoff: " + match.getMinScore());
 		return result;
 	}
 	

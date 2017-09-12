@@ -61,10 +61,10 @@ public class Match implements Serializable {
 
     @ManyToOne
     private Session session;
-    
+
     @Column(name = "elaborated")
     private boolean elaborated;
-    
+
     @Column(name = "match_token")
     private Long matchToken;
 
@@ -217,7 +217,7 @@ public class Match implements Serializable {
     public void setSession(Session session) {
         this.session = session;
     }
-    
+
     public boolean isElaborated() {
 		return elaborated;
 	}
@@ -280,18 +280,34 @@ public class Match implements Serializable {
 		}
 		return max.toString();
 	}
-	
+
 	public String getMinScore() {
 		Long min = null;
 		for(Attempt a : this.getAttempts())
 		{
-			if(a.isCompleted() && (min == null || a.getAttemptScore() < min))
+			if(a.isCompleted() && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
 				min = a.getAttemptScore();
 		}
 		if(min == null)
-			min = 0l;
+			min = 9999l; //TODO @nick verifica qual è il valore più pulito da mettere (es. Long.Max_value) che sia coerente con tipo dato da passare a playoff?
+
 		return min.toString();
 	}
+
+/*
+    public String getMinScore() {
+        Long min = null;
+        for(Attempt a : this.getAttempts())
+        {
+            if(a.isCompleted() && (min == null || a.getAttemptScore() < min))
+                min = a.getAttemptScore();
+        }
+        if(min == null)
+            min = 0l;
+        return min.toString();
+    }
+*/
+
 
 	public String getMeanScore() {
 		if(this.getAttempts().size() == 0)
