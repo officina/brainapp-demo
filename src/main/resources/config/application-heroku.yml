@@ -32,6 +32,3 @@ playoff:
         domain: playoff.cc
         id: MDQ2ZGJmMjMtZWNhZC00OWM3LTk2NjAtOTdhODc4ZjkwOTBj
         secret: Yzg1MmNkMjEtYWI2Yi00YzA1LTk0MTktNWZhZDhhZTk2NDg2MTNhNTBiOTAtNzFmMS0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
-elaboration:
-    interval: 300
-    numUsers: 15
