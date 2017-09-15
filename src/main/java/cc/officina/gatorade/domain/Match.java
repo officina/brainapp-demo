@@ -275,7 +275,7 @@ public class Match implements Serializable {
 		Long max = 0l;
 		for(Attempt a : this.getAttempts())
 		{
-			if(a.isCompleted() && (a.getAttemptScore() > max))
+			if((a.isCompleted() || this.game.isLastAttemptValid()) && (a.getAttemptScore() > max))
 				max = a.getAttemptScore();
 		}
 		return max.toString();

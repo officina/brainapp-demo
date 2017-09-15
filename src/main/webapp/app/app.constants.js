@@ -4,6 +4,6 @@
     angular
         .module('gatoradeApp')
         .constant('VERSION', "1.0.9")
-        .constant('DEBUG_INFO_ENABLED', false)
+        .constant('DEBUG_INFO_ENABLED', true)
 ;
 })();
