@@ -165,7 +165,8 @@ public class GamificationServiceImpl implements GamificationService{
 		
 		for(Match match : samples.values())
 		{
-			String newId = match.getSession().getPoRoot()+"_"+String.format("%02d", numPlayer);
+//			String newId = match.getSession().getPoRoot()+"_"+String.format("%02d", numPlayer);
+			String newId = match.getSession().getPoRoot();
 			String oldId = match.getUserId();
 			log.info("Match of user " + oldId + " used for fake-user " + newId);
 			match.setUserId(newId);
