@@ -5,5 +5,6 @@
         .module('gatoradeApp')
         .constant('VERSION', "1.1.0")
         .constant('DEBUG_INFO_ENABLED', false)
+
 ;
 })();

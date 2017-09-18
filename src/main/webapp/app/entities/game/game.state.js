@@ -131,6 +131,7 @@
                                 type: null,
                                 useLevels: null,
                                 levelsNumber: null,
+                                lastAttemptValid: null,
                                 id: null
                             };
                         }
