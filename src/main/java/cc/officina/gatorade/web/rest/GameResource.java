@@ -251,7 +251,8 @@ public class GameResource {
     public ResponseEntity<MatchResponse> stopAttempt(@RequestBody Request request) {
     	if(request.getAttemptid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-    	log.info("REST request to stop Attempt with id {}", request.getAttemptid());
+    	log.info("REST request to end attemtp for game Game with id " + request.getGameid()+", attempt " + request.getAttemptid());
+    	log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
         Attempt attempt = attemptService.findOne(request.getAttemptid());
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
@@ -270,6 +271,8 @@ public class GameResource {
     	if(request.getGameid() == null || request.getMatchid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
         log.info("REST request to finish match {} and end game Game : {}",request.getMatchid(), request.getGameid());
+        if(request.getAttemptid() == null)
+        	log.info("No attempt update");
         Match match = matchService.findOne(request.getMatchid());
         if(match == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
@@ -277,9 +280,7 @@ public class GameResource {
         Attempt lastAttempt = null;
         if(request.getAttemptid() != null)
         	lastAttempt = attemptService.findOne(request.getAttemptid());
-        if(request.getLevel() != null)
-        	lastAttempt.setLevelReached(request.getLevel());
-        //TODO verificare se ci sono attemp pending
+        
         if(!match.getMatchToken().equals(request.getMatchtoken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
         
