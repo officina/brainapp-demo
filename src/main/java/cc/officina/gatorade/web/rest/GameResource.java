@@ -270,7 +270,8 @@ public class GameResource {
     public ResponseEntity<MatchResponse> endMatch(@RequestBody Request request) {
     	if(request.getGameid() == null || request.getMatchid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-        log.info("REST request to finish match {} and end game Game : {}",request.getMatchid(), request.getGameid());
+        log.info("REST request to finish match with id " + request.getMatchid() + " and game with id " + request.getGameid());
+        log.info("Score (not validated): " + request.getScore() + " - Level (not validated): " + request.getLevel());
         if(request.getAttemptid() == null)
         	log.info("No attempt update");
         Match match = matchService.findOne(request.getMatchid());
