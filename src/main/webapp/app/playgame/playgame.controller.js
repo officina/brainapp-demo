@@ -240,16 +240,24 @@
         	console.log('event');
         	if($scope.wrapperMemory.currAttempt == undefined)
 	    	{
-        		console.log("put request for attempt closure non necessary");
-        		return;
+        		PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
+						$stateParams.playtoken, 
+						$scope.wrapperMemory.match.id, 
+						undefined,
+						undefined, 
+						undefined,
+						$scope.matchToken);
 	    	}
-        	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
-        									$stateParams.playtoken, 
-        									$scope.wrapperMemory.match.id, 
-        									$scope.wrapperMemory.currAttempt.id,
-        									$scope.wrapperMemory.currAttempt.score, 
-        									$scope.wrapperMemory.currAttempt.level,
-        									$scope.matchToken);
+        	else
+        	{
+	        	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
+	        									$stateParams.playtoken, 
+	        									$scope.wrapperMemory.match.id, 
+	        									$scope.wrapperMemory.currAttempt.id,
+	        									$scope.wrapperMemory.currAttempt.score, 
+	        									$scope.wrapperMemory.currAttempt.level,
+	        									$scope.matchToken);
+        	}
         	
             if(typeof beforeUnloadTimeout != 'undefined' && beforeUnloadTimeout != 0) {
                 clearTimeout(beforeUnloadTimeout);
