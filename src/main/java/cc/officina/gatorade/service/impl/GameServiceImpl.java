@@ -114,6 +114,7 @@ public class GameServiceImpl implements GameService{
 			match.setTimeSpent(0l);
 			match.setElaborated(false);
 			match.setMatchToken(matchToken);
+			match.setUsedToPO(false);
 			matchRepository.save(match);
 			return new MatchResponse(game,match,template);
 		}
