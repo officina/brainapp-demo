@@ -1,6 +1,7 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.GamificationService;
+import cc.officina.gatorade.service.MailService;
 import cc.officina.gatorade.service.SessionService;
 import cc.officina.gatorade.task.SessionTask;
 import cc.playoff.sdk.PlayOff;
@@ -45,6 +46,8 @@ public class GamificationServiceImpl implements GamificationService{
     private final Logger log = LoggerFactory.getLogger(GamificationServiceImpl.class);
 
     private final SessionRepository sessionRepository;
+    private final MatchRepository matchRepository;
+    private final MailService mailService;
     private static PlayOff po;
     @Value("${elaboration.interval}")
     private int interval; //intervallo di esecuzione del thread in secondi
@@ -57,8 +60,10 @@ public class GamificationServiceImpl implements GamificationService{
 	@Value("${playoff.client.domain}")
     private String poDomain;
 
-    public GamificationServiceImpl(SessionRepository sessionRepository) {
+    public GamificationServiceImpl(SessionRepository sessionRepository, MatchRepository matchRepository, MailService mailService) {
         this.sessionRepository = sessionRepository;
+        this.matchRepository = matchRepository;
+        this.mailService = mailService;
         po = new PlayOff(poClientId, poClientSecret, null, "v2","playoff.cc");
     }
     
@@ -76,6 +81,11 @@ public class GamificationServiceImpl implements GamificationService{
 	@Override
 	public void runAction(Match match) {
 		try {
+			if(!checkMatchValidity(match))
+			{
+				log.info("Match with id " + match.getId() + " not valid for Playoff.");
+				return;
+			}
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("player_id", match.getUserId());
 			LinkedTreeMap<String, Object> requestBody = getRequestByType(match);
@@ -157,23 +167,25 @@ public class GamificationServiceImpl implements GamificationService{
 			int index = new Random().nextInt(matches.size());
 			Match randomMatch = matches.get(index);
 			//aggiungo solo se effettivamente lo user ha eseguito almeno una chiamata
-			if(randomMatch.getAttempts().size() > 0)
+			if(randomMatch.getAttempts().size() > 0 && checkPOUser(randomMatch) && checkMatchValidity(randomMatch))
 				samples.put(randomMatch.getUserId(), randomMatch);
 			matches.remove(index);
 		}
-		int numPlayer = 1;
+//		int numPlayer = 1;
 		
 		for(Match match : samples.values())
 		{
 //			String newId = match.getSession().getPoRoot()+"_"+String.format("%02d", numPlayer);
 			String newId = match.getSession().getPoRoot();
 			String oldId = match.getUserId();
-			log.info("Match of user " + oldId + " used for fake-user " + newId);
+			log.info("Match of user " + oldId + " used as fake match");
 			match.setUserId(newId);
 			runAction(match);
 			match.setUserId(oldId);
-			numPlayer++;
+			match.setUsedToPO(true);
+//			numPlayer++;
 		}
+		matchRepository.save(samples.values());
 		log.info("Elaboration of session with id = " + s.getId() + " - END");
 	}
 	// 
@@ -186,6 +198,55 @@ public class GamificationServiceImpl implements GamificationService{
 			elaborate(s);
 		}
 		
+	}
+	
+	private boolean checkPOUser(Match match) {
+		try {
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("player_id", match.getUserId());
+			String path = "/runtime/player/";
+			Object response = po.get(path, params);
+			//non va in eccezione la get, quindi il player esiste
+			return true;
+		} catch (Exception e) {
+			//vado in eccezione, lo user non esiste
+			log.error("Error for playerId " + match.getUserId() + " on check");
+			log.error(e.getMessage());
+			mailService.sendMatchNotValidAlert(match, "Eccezione playoff: " + e.getMessage());
+			return false;
+		}
+	}
+	
+	/*
+	 * UN MATCH VIENE RITENUTO VALIDO QUANDO (determinato con Milani il 19/09/2017):
+	 * NEL CASO MINPOINT: se il punteggio e non nullo e diverso da zero
+	 * NEL CASO POINT: se il punteggio massimo è non nullo
+	 * NEL CASO MAX LEVEL: se il massimo livello e non nullo
+	 */
+	private boolean checkMatchValidity(Match match) {
+		boolean flag = true;
+		switch (match.getGame().getType()) {
+		case POINT:
+			//un match a max point è sempre valido
+			break;
+		case MINPOINT:
+			String tempMin = match.getMinScore();
+			if(tempMin == null || tempMin.equalsIgnoreCase("0"))
+				flag = false;
+			break;
+		case LEVEL:
+			String tempLevel = match.getMaxLevel();
+			if(tempLevel == null)
+				flag = false;
+			break;
+		}
+		
+		if(!flag)
+		{
+			mailService.sendMatchNotValidAlert(match, "Anomalia nei punteggi");
+		}
+		
+		return flag;
 	}
 	
 	
