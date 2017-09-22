@@ -1,13 +1,8 @@
 package cc.officina.gatorade.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import cc.officina.gatorade.service.impl.GamificationServiceImpl;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,6 +20,7 @@ import java.util.Objects;
 public class Match implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
@@ -48,6 +44,15 @@ public class Match implements Serializable {
     @Column(name = "time_spent")
     private Long timeSpent;
 
+    @Column(name = "used_to_po")
+    private Boolean usedToPO;
+
+    @Column(name = "elaborated")
+    private Boolean elaborated;
+
+    @Column(name = "match_token")
+    private Long matchToken;
+
     @ManyToOne
     private Game game;
 
@@ -61,12 +66,6 @@ public class Match implements Serializable {
 
     @ManyToOne
     private Session session;
-
-    @Column(name = "elaborated")
-    private boolean elaborated;
-
-    @Column(name = "match_token")
-    private Long matchToken;
 
     public Long getId() {
         return id;
@@ -154,6 +153,45 @@ public class Match implements Serializable {
         this.timeSpent = timeSpent;
     }
 
+    public Boolean isUsedToPO() {
+        return usedToPO;
+    }
+
+    public Match usedToPO(Boolean usedToPO) {
+        this.usedToPO = usedToPO;
+        return this;
+    }
+
+    public void setUsedToPO(Boolean usedToPO) {
+        this.usedToPO = usedToPO;
+    }
+
+    public Boolean isElaborated() {
+        return elaborated;
+    }
+
+    public Match elaborated(Boolean elaborated) {
+        this.elaborated = elaborated;
+        return this;
+    }
+
+    public void setElaborated(Boolean elaborated) {
+        this.elaborated = elaborated;
+    }
+
+    public Long getMatchToken() {
+        return matchToken;
+    }
+
+    public Match matchToken(Long matchToken) {
+        this.matchToken = matchToken;
+        return this;
+    }
+
+    public void setMatchToken(Long matchToken) {
+        this.matchToken = matchToken;
+    }
+
     public Game getGame() {
         return game;
     }
@@ -218,27 +256,7 @@ public class Match implements Serializable {
         this.session = session;
     }
 
-    public boolean isElaborated() {
-		return elaborated;
-	}
-
-	public void setElaborated(boolean elaborated) {
-		this.elaborated = elaborated;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public Long getMatchToken() {
-		return matchToken;
-	}
-
-	public void setMatchToken(Long matchToken) {
-		this.matchToken = matchToken;
-	}
-
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -268,30 +286,39 @@ public class Match implements Serializable {
             ", userId='" + getUserId() + "'" +
             ", lastStart='" + getLastStart() + "'" +
             ", timeSpent='" + getTimeSpent() + "'" +
+            ", usedToPO='" + isUsedToPO() + "'" +
+            ", elaborated='" + isElaborated() + "'" +
+            ", matchToken='" + getMatchToken() + "'" +
             "}";
     }
-
-	public String getMaxScore() {
+    
+    @JsonIgnore
+    public String getMaxScore() {
 		Long max = 0l;
 		for(Attempt a : this.getAttempts())
 		{
-			if(a.isCompleted() && (a.getAttemptScore() > max))
+			if((a.isCompleted() || this.game.isLastAttemptValid()) && a.getAttemptScore() != null && (a.getAttemptScore() > max))	
 				max = a.getAttemptScore();
 		}
-		return max.toString();
+		//nel caso di max_score un attempt a zero e un match con tutti 0 è considerato valido
+		if(max == null)
+			return null;
+		else
+			return max.toString();
 	}
-
+    
+    @JsonIgnore
 	public String getMinScore() {
 		Long min = null;
-		for(Attempt a : this.getAttempts())
+		for(Attempt a : this.attempts)
 		{
-			if(a.isCompleted() && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
+			if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
 				min = a.getAttemptScore();
 		}
 		if(min == null)
-			min = 9999l; //TODO @nick verifica qual è il valore più pulito da mettere (es. Long.Max_value) che sia coerente con tipo dato da passare a playoff?
-
-		return min.toString();
+			return null;
+		else
+			return min.toString();
 	}
 
 /*
@@ -308,7 +335,7 @@ public class Match implements Serializable {
     }
 */
 
-
+	@JsonIgnore
 	public String getMeanScore() {
 		if(this.getAttempts().size() == 0)
 			return 0+"";

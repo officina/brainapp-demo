@@ -46,7 +46,10 @@ public class Game implements Serializable {
     @Column(name = "levels_number")
     private Long levelsNumber;
 
-    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+    @Column(name = "last_attempt_valid")
+    private Boolean lastAttemptValid;
+
+    @OneToMany(mappedBy = "game")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Match> matches = new HashSet<>();
@@ -150,6 +153,19 @@ public class Game implements Serializable {
         this.levelsNumber = levelsNumber;
     }
 
+    public Boolean isLastAttemptValid() {
+        return lastAttemptValid;
+    }
+
+    public Game lastAttemptValid(Boolean lastAttemptValid) {
+        this.lastAttemptValid = lastAttemptValid;
+        return this;
+    }
+
+    public void setLastAttemptValid(Boolean lastAttemptValid) {
+        this.lastAttemptValid = lastAttemptValid;
+    }
+
     public Set<Match> getMatches() {
         return matches;
     }
@@ -206,6 +222,7 @@ public class Game implements Serializable {
             ", type='" + getType() + "'" +
             ", useLevels='" + isUseLevels() + "'" +
             ", levelsNumber='" + getLevelsNumber() + "'" +
+            ", lastAttemptValid='" + isLastAttemptValid() + "'" +
             "}";
     }
 }
