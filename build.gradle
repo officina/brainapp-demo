@@ -100,7 +100,13 @@ apply from: 'gradle/heroku.gradle'
 
 if (project.hasProperty('prod')) {
     apply from: 'gradle/profile_prod.gradle'
-} else {
+}
+
+if (project.hasProperty('stag')) {
+    apply from: 'gradle/profile_stag.gradle'
+}
+
+if (project.hasProperty('dev')) {
     apply from: 'gradle/profile_dev.gradle'
 }
 

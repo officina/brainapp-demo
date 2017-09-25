@@ -127,5 +127,5 @@ application:
 playoff:
     client:
         domain: playoffgenerali.it
-        id: NGZjNzA0OGEtZmUxMy00ZjUyLTk0ZTctNmIxYmQ1YzBiMTY3
-        secret: YTMzZmU4ZDAtZDMyZC00ZWZlLTg2ODEtYWQ4OTlkMmI1NDQ3MjUyMDQ1ODAtNzE0YS0xMWU3LTlkOGUtODU0ZGJlNDkzODI2
+        id: NDJhMGYxNDQtZGEzMC00MmNmLWIyMzQtZTFmZDU4YTM4MGZk
+        secret: YWUwMTRmMjAtNjE0ZS00YTcwLWI0YjAtZmI5MmI2MzdkYjZhZDUxMjc3YjAtYTFmYi0xMWU3LWJiZjYtNWYyYWQxNWUyN2Uy
