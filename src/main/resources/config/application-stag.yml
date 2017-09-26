@@ -1,0 +1,26 @@
+# ===================================================================
+# Spring Boot configuration for the "dev" profile.
+#
+# This configuration overrides the application.yml file.
+#
+# More information on profiles: https://jhipster.github.io/profiles/
+# More information on configuration properties: https://jhipster.github.io/common-application-properties/
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+spring:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade_stag
+        username: gatorade
+        password: q#w$Brnf^9#8&8gdBs255!r
+playoff:
+    client:
+        domain: playoffgenerali.it
+        id: ZGM4NzI2Y2QtZDJkMy00MTc1LTgxMTYtNzk3NjE0YzVmZDc4
+        secret: YTIyOTliODItMmRjYy00OWMxLThmYjAtMWFjMmUzODRkMTBjNmViYWFiNDAtYTFmYi0xMWU3LTljZDUtYjcxYTBlNTA1M2Y4
