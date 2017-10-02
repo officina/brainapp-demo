@@ -261,6 +261,7 @@ public class GamificationServiceImpl implements GamificationService{
 				log.info("Match of user " + oldId + " used as fake match");
 				m.setUserId(newId);
 				runAction(m);
+				m.setUserId(oldId);
 			}
 		}
 		
