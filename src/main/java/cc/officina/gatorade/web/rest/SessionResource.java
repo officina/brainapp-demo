@@ -179,4 +179,23 @@ public class SessionResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
             .body(null);
     }
+    
+    @PutMapping("/sessions/ri-elaborate/{id}")
+    @Timed
+    @Transactional
+    public ResponseEntity<Session> riElaborateSession(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to ri-elaborate Session with id " + id);
+        // questo metodo elabora la sessione inviando i match con "used_to_po" uguale a true
+        Session session = sessionService.findOne(id);
+        if (session == null || session.getId() == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("notFound", "SessionNotFound", "Session not found")).body(null);
+        }
+        //elabora anche sessioni con il flag "Elaborate" a true
+        sessionService.rielaborate(session);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
+            .body(null);
+    }
+    
+    
 }

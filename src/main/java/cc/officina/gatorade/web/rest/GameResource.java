@@ -289,4 +289,30 @@ public class GameResource {
         return new ResponseEntity<>(gameService.endMatch(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
 
     }
+    
+    @PutMapping("/play/restore-end")
+    @Timed
+    @Transactional
+    public ResponseEntity<MatchResponse> endMatchRestore(@RequestBody Request request) {
+    	if(request.getGameid() == null || request.getMatchid() == null)
+			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
+        log.info("REST request to finish match (RESTORE) with id " + request.getMatchid() + " and game with id " + request.getGameid());
+        log.info("Score (not validated): " + request.getScore() + " - Level (not validated): " + request.getLevel());
+        if(request.getAttemptid() == null)
+        	log.info("No attempt update");
+        Match match = matchService.findOne(request.getMatchid());
+        if(match == null)
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
+        match.getAttempts().size();
+        Attempt lastAttempt = null;
+        if(request.getAttemptid() != null)
+        	lastAttempt = attemptService.findOne(request.getAttemptid());
+        
+        if(!match.getMatchToken().equals(request.getMatchtoken()))
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+        
+        
+        return new ResponseEntity<>(gameService.endMatchRestore(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
+
+    }
 }
