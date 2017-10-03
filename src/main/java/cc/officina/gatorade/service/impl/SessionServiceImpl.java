@@ -144,4 +144,9 @@ public class SessionServiceImpl implements SessionService{
 	public void elaborate(Session session) {
 		gamificationService.elaborate(session);
 	}
+
+	@Override
+	public void rielaborate(Session session) {
+		gamificationService.riElaborate(session);
+	}
 }

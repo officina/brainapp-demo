@@ -248,6 +248,24 @@ public class GamificationServiceImpl implements GamificationService{
 		
 		return flag;
 	}
+
+	@Override
+	public void riElaborate(Session session) {
+		log.debug("Rielaborate session");
+		for(Match m : session.getMatches())
+		{
+			if(m.isUsedToPO())
+			{
+				String newId = m.getSession().getPoRoot();
+				String oldId = m.getUserId();
+				log.info("Match of user " + oldId + " used as fake match");
+				m.setUserId(newId);
+				runAction(m);
+				m.setUserId(oldId);
+			}
+		}
+		
+	}
 	
 	
 }
