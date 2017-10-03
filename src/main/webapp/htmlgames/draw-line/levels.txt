@@ -1,19 +1,3 @@
-Open "Levels.txt" from Project bar > File. Then add your own level like this:
-
-::Level,Horizontal Slots,Vertical Slots/
-[A table of numbers which separated with "," character.This table's width=Horizontal Slots & table's height=Vertical Slots]
-
-For Example:
-::4,5,4/
-5,6,0,0,0,
-0,0,3,6,0,
-0,0,1,0,0,
-5,0,3,1,0,
-
-When we use any number between 1-6, actually we tell to the game to make a "Goal" with a frame = that number
-
-
-
 ::1,2,2/
 0,0,
 3,3,
@@ -104,7 +88,7 @@ When we use any number between 1-6, actually we tell to the game to make a "Goal
 1,0,0,0,0,
 0,0,0,0,3,
 0,0,1,0,2,
-::16,6,8/
+::16,6,7/
 0,6,5,0,0,0,
 6,0,0,0,0,0,
 4,5,0,0,0,0,
@@ -112,4 +96,37 @@ When we use any number between 1-6, actually we tell to the game to make a "Goal
 1,0,0,0,0,0,
 0,0,0,0,3,0,
 0,0,1,0,2,0,
-0,0,0,0,0,0,
+::17,7,7/
+0,6,5,0,0,0,0
+6,0,0,0,0,0,0
+4,5,0,0,0,0,0
+0,4,3,2,0,0,0
+1,0,0,0,0,0,0
+0,0,0,0,3,0,0
+0,0,1,0,2,0,0
+::18,8,7/
+0,6,5,0,0,0,0,0
+6,0,0,0,0,0,0,0
+4,5,0,0,0,0,0,0
+0,4,3,2,0,0,0,0
+1,0,0,0,0,0,0,0
+0,0,0,0,3,0,0,0
+0,0,1,0,2,0,0,0
+::19,9,7/
+0,6,5,0,0,0,0,0,0
+6,0,0,0,0,0,0,0,0
+4,5,0,0,0,0,0,0,0
+0,4,3,2,0,0,0,0,0
+1,0,0,0,0,0,0,0,0
+0,0,0,0,3,0,0,0,0
+0,0,1,0,2,0,0,0,0
+::20,9,9/
+0,6,5,0,0,0,0,0,0
+6,0,0,0,0,0,0,0,0
+4,5,0,0,0,0,0,0,0
+0,4,3,2,0,0,0,0,0
+1,0,0,0,0,0,0,0,0
+0,0,0,0,3,0,0,0,0
+0,0,1,0,2,0,0,0,0
+0,0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0,0
