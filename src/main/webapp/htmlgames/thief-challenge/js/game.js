@@ -49,7 +49,7 @@ var resultTitleText = 'GAME OVER'; //result title text
 var resultScoreText = '[NUMBER]PTS'; //result score text
 
 //Social share, [SCORE] will replace with game score
-var shareEnable = true; //toggle share
+var shareEnable = false; //toggle share
 var shareText = 'SHARE YOUR SCORE'; //social share message
 var shareTitle = 'Highscore on Thief Challenge Game is [SCORE]PTS.';//social share score title
 var shareMessage = '[SCORE]PTS is mine new highscore on Thief Challenge Game! Try it now!'; //social share score message
