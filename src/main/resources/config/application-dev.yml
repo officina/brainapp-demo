@@ -31,14 +31,19 @@ spring:
         #password:
 
         #LOCALE
-        #url: jdbc:postgresql://localhost:5432/gatorade
+        url: jdbc:postgresql://localhost:5432/gatorade8
+        username: gatorade
+        password:
+        
+        #STAGING
+        #url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade_stag
         #username: gatorade
-        #password:
+        #password: q#w$Brnf^9#8&8gdBs255!r
 
         #TEST
-        url: jdbc:postgresql://zjflpurwczqdzv:695f78b043529198eb1aa92bda58f145522c31d0c49718d7d0ef4086d7e03f9f@ec2-79-125-125-97.eu-west-1.compute.amazonaws.com:5432/d7o80bgmpkc8cc
-        username: zjflpurwczqdzv
-        password: 695f78b043529198eb1aa92bda58f145522c31d0c49718d7d0ef4086d7e03f9f
+        #url: jdbc:postgresql://zjflpurwczqdzv:695f78b043529198eb1aa92bda58f145522c31d0c49718d7d0ef4086d7e03f9f@ec2-79-125-125-97.eu-west-1.compute.amazonaws.com:5432/d7o80bgmpkc8cc
+        #username: zjflpurwczqdzv
+        #password: 695f78b043529198eb1aa92bda58f145522c31d0c49718d7d0ef4086d7e03f9f
     h2:
         console:
             enabled: false
@@ -148,6 +153,10 @@ jhipster:
 application:
 playoff:
     client:
-        domain: playoff.cc
-        id: MDY5MTlkN2QtMGJhNC00ZjNkLTljNjUtZGJmNTJjZTBmNjhi
-        secret: MjI1ZDA2ZGItOTA0Mi00MjdlLWEwNjctZjNlODJkZWRkNDljOTEzYWI4MjAtNzM3Mi0xMWU3LWE3NjktNWYxYjQ4ZWZhMGY1
+        domain: playoffgenerali.it
+        #id: MDY5MTlkN2QtMGJhNC00ZjNkLTljNjUtZGJmNTJjZTBmNjhi
+        #secret: MjI1ZDA2ZGItOTA0Mi00MjdlLWEwNjctZjNlODJkZWRkNDljOTEzYWI4MjAtNzM3Mi0xMWU3LWE3NjktNWYxYjQ4ZWZhMGY1
+        id: ZDhjMWIxYWEtNTM4Mi00NGU5LWJmOGYtNmVmZDZiZDE1NjZm
+        secret: N2VkMGI3ODYtYWVhMy00Yzg3LTgwNDItNDUyYjc5OWZjMzE2NzRmMWM1NzAtYTc1NS0xMWU3LTg1NzctZjc2ZDQ0YmI4ZjVh
+        #id: MDQ2ZGJmMjMtZWNhZC00OWM3LTk2NjAtOTdhODc4ZjkwOTBj
+        #secret: Yzg1MmNkMjEtYWI2Yi00YzA1LTk0MTktNWZhZDhhZTk2NDg2MTNhNTBiOTAtNzFmMS0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli

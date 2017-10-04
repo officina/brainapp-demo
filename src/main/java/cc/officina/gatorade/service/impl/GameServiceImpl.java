@@ -114,6 +114,7 @@ public class GameServiceImpl implements GameService{
 			match.setTimeSpent(0l);
 			match.setElaborated(false);
 			match.setMatchToken(matchToken);
+			match.setUsedToPO(false);
 			matchRepository.save(match);
 			return new MatchResponse(game,match,template);
 		}
@@ -197,6 +198,15 @@ public class GameServiceImpl implements GameService{
 		match.setElaborated(true);
 		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 		matchRepository.saveAndFlush(match);
+		gamificationService.runAction(match);
+		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
+		return response;
+	}
+	
+	@Override
+	public MatchResponse endMatchRestore(Game game, Match match, Attempt lastAttempt, Long score, String level) {
+		ZonedDateTime now = ZonedDateTime.now();
+		match.getAttempts().size();
 		gamificationService.runAction(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;

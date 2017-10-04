@@ -107,4 +107,4 @@ application:
 
 elaboration:
     interval: 300
-    numUsers: 9
+    numUsers: 7

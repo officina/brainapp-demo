@@ -22,6 +22,7 @@
             "type": "Type",
             "useLevels": "Use Levels",
             "levelsNumber": "Levels Number",
+            "lastAttemptValid": "Last Attempt Valid",
             "matches": "Matches"
         }
     }

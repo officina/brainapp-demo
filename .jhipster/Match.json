@@ -50,6 +50,18 @@
         {
             "fieldName": "timeSpent",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "usedToPO",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "elaborated",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "matchToken",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170627083527",

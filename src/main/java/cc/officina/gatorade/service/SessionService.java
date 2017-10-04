@@ -56,4 +56,6 @@ public interface SessionService {
 	public void elaborate(Session session);
 	
 	public List<Session> findPending(ZonedDateTime now);
+
+	public void rielaborate(Session session);
 }

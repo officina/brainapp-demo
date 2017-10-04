@@ -1,5 +1,6 @@
 package cc.officina.gatorade.service;
 
+import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.User;
 
 import io.github.jhipster.config.JHipsterProperties;
@@ -102,5 +103,13 @@ public class MailService {
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "passwordResetEmail", "email.reset.title");
+    }
+    
+    @Async
+    public void sendMatchNotValidAlert(Match match, String additionalMessage)
+    {
+    	log.debug("Sending match invalid alert '{}'", match);
+    	String content = "Individuato match non valido con id " + match.getId() + ". Informazioni: " + additionalMessage;
+    	sendEmail("nicola.zambon@officina.cc", "Gatorade Alert - Match non valido", content, false, false);
     }
 }

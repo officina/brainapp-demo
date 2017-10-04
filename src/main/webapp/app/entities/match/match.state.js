@@ -130,6 +130,9 @@
                                 userId: null,
                                 lastStart: null,
                                 timeSpent: null,
+                                usedToPO: null,
+                                elaborated: null,
+                                matchToken: null,
                                 id: null
                             };
                         }

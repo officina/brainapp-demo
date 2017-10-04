@@ -45,6 +45,18 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="used_to_po" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="elaborated" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="match_token" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
             <column name="game_id" type="bigint">
                 <constraints nullable="true" />
             </column>
