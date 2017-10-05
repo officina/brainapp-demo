@@ -152,7 +152,7 @@ public class GameResource {
         if(template == null)
         {
         	log.info("Session not valid - not template found for game with id " + id);
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No tempate founded for game with id "+ id)).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No template founded for game with id "+ id)).body(null);
         }
         boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id);
         if(! validateSession)

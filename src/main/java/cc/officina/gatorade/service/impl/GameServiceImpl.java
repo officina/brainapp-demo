@@ -102,7 +102,7 @@ public class GameServiceImpl implements GameService{
 		//TODO verificare presenza match già aperti e relativa logica da implementare
 		Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
 		ZonedDateTime now = ZonedDateTime.now();
-		if(oldOne == null)
+		if(oldOne == null || !oldOne.getValid())
 		{
 			Match match = new Match();
 			match.setTemplate(template);
