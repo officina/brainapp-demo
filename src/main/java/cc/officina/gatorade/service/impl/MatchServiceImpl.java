@@ -1,6 +1,7 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.MatchService;
+import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.repository.MatchRepository;
 
@@ -81,5 +82,15 @@ public class MatchServiceImpl implements MatchService{
 	@Override
 	public List<Match> findByUserAndId(String userId, Long sessionId) {
 		return matchRepository.findByUserAndSessionId(userId, sessionId);
+	}
+
+	@Override
+	public Match resetMatch(Match match) {
+		match.setValid(false);
+		for(Attempt a : match.getAttempts())
+		{
+			a.setValid(false);
+		}
+		return null;
 	}
 }

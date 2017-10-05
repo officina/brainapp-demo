@@ -133,6 +133,7 @@
                                 usedToPO: null,
                                 elaborated: null,
                                 matchToken: null,
+                                valid: null,
                                 id: null
                             };
                         }

@@ -115,6 +115,7 @@ public class GameServiceImpl implements GameService{
 			match.setElaborated(false);
 			match.setMatchToken(matchToken);
 			match.setUsedToPO(false);
+			match.setValid(true);
 			matchRepository.save(match);
 			return new MatchResponse(game,match,template);
 		}
@@ -137,6 +138,7 @@ public class GameServiceImpl implements GameService{
 		attempt.setLevelReached("0");
 		attempt.setCompleted(false);
 		attempt.setCancelled(false);
+		attempt.setValid(true);
 		attemptRepository.saveAndFlush(attempt);
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;

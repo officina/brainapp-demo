@@ -45,6 +45,9 @@ public class Attempt implements Serializable {
 
     @Column(name = "completed")
     private Boolean completed;
+
+    @Column(name = "valid")
+    private Boolean valid;
     
     @ManyToOne
     @JsonIgnore
@@ -161,8 +164,24 @@ public class Attempt implements Serializable {
     public void setMatch(Match match) {
         this.match = match;
     }
+    
+    public Boolean getValid() {
+		return valid;
+	}
 
-    @Override
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
+
+	public Boolean getCancelled() {
+		return cancelled;
+	}
+
+	public Boolean getCompleted() {
+		return completed;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
