@@ -127,7 +127,7 @@ public class MatchResource {
     @PutMapping("/matches/{id}/reset")
     @Timed
     public ResponseEntity<Match> resetMatch(@PathVariable Long id) throws URISyntaxException {
-        log.debug("REST request to reset Match with id " + id);
+        log.info("REST request to reset Match with id " + id);
         Match match = matchService.findOne(id);
         if (match == null) {
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);

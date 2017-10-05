@@ -3,6 +3,7 @@ package cc.officina.gatorade.service.impl;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 
 import java.util.List;
@@ -25,9 +26,11 @@ public class MatchServiceImpl implements MatchService{
     private final Logger log = LoggerFactory.getLogger(MatchServiceImpl.class);
 
     private final MatchRepository matchRepository;
-
-    public MatchServiceImpl(MatchRepository matchRepository) {
+    private final AttemptRepository attemptRepository;
+    
+    public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository) {
         this.matchRepository = matchRepository;
+        this.attemptRepository = attemptRepository;
     }
 
     /**
@@ -91,6 +94,8 @@ public class MatchServiceImpl implements MatchService{
 		{
 			a.setValid(false);
 		}
-		return null;
+		attemptRepository.save(match.getAttempts());
+		matchRepository.save(match);
+		return match;
 	}
 }
