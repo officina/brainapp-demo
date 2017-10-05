@@ -99,6 +99,30 @@ public class GamificationServiceImpl implements GamificationService{
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void runResetAction(Match match) {
+		try {
+			if(!checkMatchValidity(match))
+			{
+				log.info("Match with id " + match.getId() + " not valid for Playoff.");
+				return;
+			}
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("player_id", match.getUserId());
+			LinkedTreeMap<String, Object> requestBody = getRequestByType(match);
+			Object response = null;
+			//la action
+			String path = "/runtime/actions/"+match.getGame().getActionId()+"_reset/play";
+			response = po.post(path, params, requestBody);
+			log.debug(response.toString());
+		} catch (Exception e) {
+			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
+			log.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
 
 	private LinkedTreeMap<String, Object> getRequestByType(Match match) {
 		switch (match.getGame().getType()) {
@@ -166,8 +190,8 @@ public class GamificationServiceImpl implements GamificationService{
 		{
 			int index = new Random().nextInt(matches.size());
 			Match randomMatch = matches.get(index);
-			//aggiungo solo se effettivamente lo user ha eseguito almeno una chiamata
-			if(randomMatch.getAttempts().size() > 0 && checkPOUser(randomMatch) && checkMatchValidity(randomMatch))
+			//aggiungo solo se effettivamente lo user ha eseguito almeno una giocata ed il match è valido
+			if(randomMatch.getAttempts().size() > 0 && checkPOUser(randomMatch) && checkMatchValidity(randomMatch) && randomMatch.getValid())
 				samples.put(randomMatch.getUserId(), randomMatch);
 			matches.remove(index);
 		}
@@ -266,6 +290,4 @@ public class GamificationServiceImpl implements GamificationService{
 		}
 		
 	}
-	
-	
 }
