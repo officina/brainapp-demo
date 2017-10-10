@@ -319,8 +319,7 @@ public class Match implements Serializable {
 			}
 			catch (Exception e)
 			{
-				System.out.println(e.getMessage());
-				System.out.println("Erro for attempt with id " + a.getId());
+				e.getMessage();
 			}
 		}
 		if(min == null)
