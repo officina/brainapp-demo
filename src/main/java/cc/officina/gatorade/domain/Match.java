@@ -312,8 +312,16 @@ public class Match implements Serializable {
 		Long min = null;
 		for(Attempt a : this.attempts)
 		{
-			if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
-				min = a.getAttemptScore();
+			try
+			{
+				if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
+					min = a.getAttemptScore();
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+				System.out.println("Erro for attempt with id " + a.getId());
+			}
 		}
 		if(min == null)
 			return null;
