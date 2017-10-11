@@ -199,7 +199,7 @@
 	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken).then(function(response){
 	    		//chiuso l'attempt, il current è null
 	    		$scope.wrapperMemory.currAttempt = undefined;
-	    		console.log('Attempt ended');
+	    		console.log('Attempt ended inside callback');
 	    		console.log(response);
 	    	});
 	    }
