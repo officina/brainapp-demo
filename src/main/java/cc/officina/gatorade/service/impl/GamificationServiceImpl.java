@@ -193,7 +193,7 @@ public class GamificationServiceImpl implements GamificationService{
 			//aggiungo solo se effettivamente lo user ha eseguito almeno una giocata ed il match è valido
 			if(!randomMatch.getValid())
 				log.info("Match not valid");
-			if(randomMatch.getAttempts().size() > 0 && checkPOUser(randomMatch) && checkMatchValidity(randomMatch) && randomMatch.getValid())
+			if(randomMatch.getAttempts().size() > 0 && randomMatch.getValid() && checkPOUser(randomMatch) && checkMatchValidity(randomMatch))
 				samples.put(randomMatch.getUserId(), randomMatch);
 			matches.remove(index);
 		}
