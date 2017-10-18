@@ -73,9 +73,9 @@ public class GamificationServiceImpl implements GamificationService{
 	   log.info("GamificationService init clientId " + poClientId);
 	   log.info("GamificationService init clientSecret " + poClientSecret);
 	   po = new PlayOff(poClientId, poClientSecret, null, "v2", poDomain);
-	   log.info("Attivazione batch");
-	   Timer task = new Timer();
-	   task.schedule(new SessionTask(this), 0, interval*1000);
+//	   log.info("Attivazione batch");
+//	   Timer task = new Timer();
+//	   task.schedule(new SessionTask(this), 0, interval*1000);
 	}
 
 	@Override
@@ -277,9 +277,10 @@ public class GamificationServiceImpl implements GamificationService{
 
 	@Override
 	public void riElaborate(Session session) {
-		log.debug("Rielaborate session");
+		log.info("Rielaborate session");
 		for(Match m : session.getMatches())
 		{
+			System.out.println("Match con id = " + m.getId() + " e flag " + m.getUsedToPO());
 			if(m.isUsedToPO())
 			{
 				String newId = m.getSession().getPoRoot();
@@ -289,6 +290,7 @@ public class GamificationServiceImpl implements GamificationService{
 				runAction(m);
 				m.setUserId(oldId);
 			}
+			System.out.println("DOPO - Match con id = " + m.getId() + " e flag " + m.getUsedToPO());
 		}
 		
 	}
