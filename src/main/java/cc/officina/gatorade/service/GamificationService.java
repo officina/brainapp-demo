@@ -24,4 +24,5 @@ public interface GamificationService {
 	public void elaborate(Session s);
 	public void elaboratePending(ZonedDateTime now);
 	public void riElaborate(Session session);
+	public void runResetAction(Match match);
 }

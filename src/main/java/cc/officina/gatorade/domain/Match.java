@@ -66,6 +66,8 @@ public class Match implements Serializable {
 
     @ManyToOne
     private Session session;
+    
+    private Boolean valid;
 
     public Long getId() {
         return id;
@@ -256,7 +258,23 @@ public class Match implements Serializable {
         this.session = session;
     }
 
-    @Override
+    public Boolean getValid() {
+		return valid;
+	}
+
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
+
+	public Boolean getUsedToPO() {
+		return usedToPO;
+	}
+
+	public Boolean getElaborated() {
+		return elaborated;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -312,8 +330,15 @@ public class Match implements Serializable {
 		Long min = null;
 		for(Attempt a : this.attempts)
 		{
-			if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
-				min = a.getAttemptScore();
+			try
+			{
+				if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
+					min = a.getAttemptScore();
+			}
+			catch (Exception e)
+			{
+				e.getMessage();
+			}
 		}
 		if(min == null)
 			return null;

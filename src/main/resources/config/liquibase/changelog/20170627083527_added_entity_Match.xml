@@ -57,6 +57,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="valid" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
             <column name="game_id" type="bigint">
                 <constraints nullable="true" />
             </column>

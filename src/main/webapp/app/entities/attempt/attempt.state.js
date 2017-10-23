@@ -131,6 +131,7 @@
                                 lastUpdate: null,
                                 cancelled: null,
                                 completed: null,
+                                valid: null,
                                 id: null
                             };
                         }

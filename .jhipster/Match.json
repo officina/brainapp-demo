@@ -62,6 +62,10 @@
         {
             "fieldName": "matchToken",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "valid",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170627083527",

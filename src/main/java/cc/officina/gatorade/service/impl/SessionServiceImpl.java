@@ -99,7 +99,10 @@ public class SessionServiceImpl implements SessionService{
 		boolean result = false;
 		Session session = sessionRepository.findValidByExtId(extid,ZonedDateTime.now(), gameid);
 		if(session == null)
+		{
+			log.info("Session not valid - session (by extid) not found");
 			return false;
+		}
 		List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
 		
 		if(matches == null || matches.size() == 0)
@@ -108,8 +111,11 @@ public class SessionServiceImpl implements SessionService{
 		for(Match match : matches)
 		{
 			//se esiste già un match la chiamata viene invaliata
-			if(match != null && match.getAttempts() != null && match.getAttempts().size() > 0)
+			if(match != null && match.getValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
+			{
+				log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
 				return false;
+			}
 		}
 
 		if(session != null)

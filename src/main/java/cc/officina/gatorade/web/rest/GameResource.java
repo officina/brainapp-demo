@@ -141,13 +141,19 @@ public class GameResource {
     @GetMapping("/play/{id}/init/{extid}/{playerid}")
     @Timed
     public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable String extid, @PathVariable String playerid) {
-        log.info("REST game init fro game with id = " + id + " and extI = " + extid);
+        log.info("REST game init for game with id = " + id + ", extId = " + extid + " and playerid = " + playerid);
         Game game = gameService.findOne(id);
         if(game == null)
+        {
+        	log.info("Session not valid - game not found");
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ id + " not found")).body(null);
+        }
         MatchTemplate template = templateService.findOneByGameId(id);
         if(template == null)
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No tempate founded for game with id "+ id)).body(null);
+        {
+        	log.info("Session not valid - not template found for game with id " + id);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No template founded for game with id "+ id)).body(null);
+        }
         boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id);
         if(! validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with ext_id " + extid + " is invalid.")).body(null);
@@ -190,7 +196,7 @@ public class GameResource {
     public ResponseEntity<AttemptResponse> startAttempt(@RequestBody Request request) {
     	if(request.getGameid() == null || request.getPlayerid() == null || request.getSessionid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody2", "Malformed body")).body(null);
-        log.info("REST request to startAttempt for game" + request.getGameid() + " and match with id " + request.getMatchid());
+        log.info("REST request to startAttempt for game " + request.getGameid() + " and match with id " + request.getMatchid());
         Game game = gameService.findOne(request.getGameid());
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+request.getGameid() + " not found")).body(null);

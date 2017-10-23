@@ -24190,8 +24190,8 @@ cr.plugins_.gatorade = function(runtime)
 }());
 cr.getObjectRefTable = function () { return [
 	cr.plugins_.AJAX,
-	cr.plugins_.Audio,
 	cr.plugins_.Browser,
+	cr.plugins_.Audio,
 	cr.plugins_.Function,
 	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,
@@ -24257,12 +24257,12 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.AddVar,
 	cr.system_object.prototype.acts.SetLayerOpacity,
 	cr.system_object.prototype.acts.SetLayerVisible,
+	cr.plugins_.gatorade.prototype.acts.updateLevel,
 	cr.plugins_.LocalStorage.prototype.acts.SetItem,
 	cr.system_object.prototype.cnds.LayerVisible,
 	cr.system_object.prototype.acts.ResetGlobals,
 	cr.system_object.prototype.acts.RestartLayout,
 	cr.plugins_.Function.prototype.exps.Param,
-	cr.plugins_.gatorade.prototype.acts.updateScore,
 	cr.plugins_.Sprite.prototype.acts.SetScale,
 	cr.system_object.prototype.exps.layoutname,
 	cr.plugins_.Sprite.prototype.acts.SetSize,

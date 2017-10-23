@@ -23,8 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
-
 
 /**
  * Service Implementation for managing Game.
@@ -102,7 +100,7 @@ public class GameServiceImpl implements GameService{
 		//TODO verificare presenza match già aperti e relativa logica da implementare
 		Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
 		ZonedDateTime now = ZonedDateTime.now();
-		if(oldOne == null)
+		if(oldOne == null || !oldOne.getValid())
 		{
 			Match match = new Match();
 			match.setTemplate(template);
@@ -115,6 +113,7 @@ public class GameServiceImpl implements GameService{
 			match.setElaborated(false);
 			match.setMatchToken(matchToken);
 			match.setUsedToPO(false);
+			match.setValid(true);
 			matchRepository.save(match);
 			return new MatchResponse(game,match,template);
 		}
@@ -137,7 +136,9 @@ public class GameServiceImpl implements GameService{
 		attempt.setLevelReached("0");
 		attempt.setCompleted(false);
 		attempt.setCancelled(false);
+		attempt.setValid(true);
 		attemptRepository.saveAndFlush(attempt);
+		log.info("New attempt created with id = " + attempt.getId());
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;
 	}

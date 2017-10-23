@@ -73,9 +73,9 @@ public class GamificationServiceImpl implements GamificationService{
 	   log.info("GamificationService init clientId " + poClientId);
 	   log.info("GamificationService init clientSecret " + poClientSecret);
 	   po = new PlayOff(poClientId, poClientSecret, null, "v2", poDomain);
-	   log.info("Attivazione batch");
-	   Timer task = new Timer();
-	   task.schedule(new SessionTask(this), 0, interval*1000);
+//	   log.info("Attivazione batch");
+//	   Timer task = new Timer();
+//	   task.schedule(new SessionTask(this), 0, interval*1000);
 	}
 
 	@Override
@@ -98,6 +98,30 @@ public class GamificationServiceImpl implements GamificationService{
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void runResetAction(Match match) {
+		try {
+			if(!checkMatchValidity(match))
+			{
+				log.info("Match with id " + match.getId() + " not valid for Playoff.");
+				return;
+			}
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("player_id", match.getUserId());
+			LinkedTreeMap<String, Object> requestBody = getRequestByType(match);
+			Object response = null;
+			//la action
+			String path = "/runtime/actions/"+match.getGame().getActionId()+"_reset/play";
+			response = po.post(path, params, requestBody);
+			log.debug(response.toString());
+		} catch (Exception e) {
+			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
+			log.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
 	}
 
 	private LinkedTreeMap<String, Object> getRequestByType(Match match) {
@@ -166,8 +190,10 @@ public class GamificationServiceImpl implements GamificationService{
 		{
 			int index = new Random().nextInt(matches.size());
 			Match randomMatch = matches.get(index);
-			//aggiungo solo se effettivamente lo user ha eseguito almeno una chiamata
-			if(randomMatch.getAttempts().size() > 0 && checkPOUser(randomMatch) && checkMatchValidity(randomMatch))
+			//aggiungo solo se effettivamente lo user ha eseguito almeno una giocata ed il match è valido
+			if(!randomMatch.getValid())
+				log.info("Match not valid");
+			if(randomMatch.getAttempts().size() > 0 && randomMatch.getValid() && checkPOUser(randomMatch) && checkMatchValidity(randomMatch))
 				samples.put(randomMatch.getUserId(), randomMatch);
 			matches.remove(index);
 		}
@@ -251,9 +277,10 @@ public class GamificationServiceImpl implements GamificationService{
 
 	@Override
 	public void riElaborate(Session session) {
-		log.debug("Rielaborate session");
+		log.info("Rielaborate session");
 		for(Match m : session.getMatches())
 		{
+			System.out.println("Match con id = " + m.getId() + " e flag " + m.getUsedToPO());
 			if(m.isUsedToPO())
 			{
 				String newId = m.getSession().getPoRoot();
@@ -263,9 +290,8 @@ public class GamificationServiceImpl implements GamificationService{
 				runAction(m);
 				m.setUserId(oldId);
 			}
+			System.out.println("DOPO - Match con id = " + m.getId() + " e flag " + m.getUsedToPO());
 		}
 		
 	}
-	
-	
 }
