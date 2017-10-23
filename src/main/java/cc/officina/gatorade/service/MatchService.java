@@ -43,4 +43,6 @@ public interface MatchService {
      */
     void delete(Long id);
     public List<Match> findByUserAndId(String userId, Long id);
+
+	public Match resetMatch(Match match);
 }

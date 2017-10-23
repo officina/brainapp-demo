@@ -123,4 +123,18 @@ public class MatchResource {
         matchService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    
+    @PutMapping("/matches/{id}/reset")
+    @Timed
+    public ResponseEntity<Match> resetMatch(@PathVariable Long id) throws URISyntaxException {
+        log.info("REST request to reset Match with id " + id);
+        Match match = matchService.findOne(id);
+        if (match == null) {
+            return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
+        }
+        Match result = matchService.resetMatch(match);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, match.getId().toString()))
+            .body(result);
+    }
 }

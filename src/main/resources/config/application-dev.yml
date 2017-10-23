@@ -31,7 +31,7 @@ spring:
         #password:
 
         #LOCALE
-        url: jdbc:postgresql://localhost:5432/gatorade8
+        url: jdbc:postgresql://localhost:5432/gatorade002
         username: gatorade
         password:
         
@@ -154,9 +154,5 @@ application:
 playoff:
     client:
         domain: playoffgenerali.it
-        #id: MDY5MTlkN2QtMGJhNC00ZjNkLTljNjUtZGJmNTJjZTBmNjhi
-        #secret: MjI1ZDA2ZGItOTA0Mi00MjdlLWEwNjctZjNlODJkZWRkNDljOTEzYWI4MjAtNzM3Mi0xMWU3LWE3NjktNWYxYjQ4ZWZhMGY1
-        id: ZDhjMWIxYWEtNTM4Mi00NGU5LWJmOGYtNmVmZDZiZDE1NjZm
-        secret: N2VkMGI3ODYtYWVhMy00Yzg3LTgwNDItNDUyYjc5OWZjMzE2NzRmMWM1NzAtYTc1NS0xMWU3LTg1NzctZjc2ZDQ0YmI4ZjVh
-        #id: MDQ2ZGJmMjMtZWNhZC00OWM3LTk2NjAtOTdhODc4ZjkwOTBj
-        #secret: Yzg1MmNkMjEtYWI2Yi00YzA1LTk0MTktNWZhZDhhZTk2NDg2MTNhNTBiOTAtNzFmMS0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
+        id: N2M3YzU0NGItYjA2Ny00ZjBkLWIzYWEtOTVmYjY3YWMyMzBm
+        secret: ZDM0YmRiNTEtN2NkYi00ZThhLTkwN2YtYzQ1NDczZGZkZmZjNDNiYTA1ZDAtYjI3Mi0xMWU3LWEzNTQtMjc0OWFlYzRjZjAz

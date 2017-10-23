@@ -66,6 +66,8 @@ public class Match implements Serializable {
 
     @ManyToOne
     private Session session;
+    
+    private Boolean valid;
 
     public Long getId() {
         return id;
@@ -256,7 +258,23 @@ public class Match implements Serializable {
         this.session = session;
     }
 
-    @Override
+    public Boolean getValid() {
+		return valid;
+	}
+
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
+
+	public Boolean getUsedToPO() {
+		return usedToPO;
+	}
+
+	public Boolean getElaborated() {
+		return elaborated;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
