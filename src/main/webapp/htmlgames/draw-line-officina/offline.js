@@ -27,6 +27,6 @@
 		"icon-128.png",
 		"icon-256.png",
 		"loading-logo.png",
-		"levels.txt"
+		"levels_officina_20171011.txt"
 	]
 }
