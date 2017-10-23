@@ -138,6 +138,7 @@ public class GameServiceImpl implements GameService{
 		attempt.setCancelled(false);
 		attempt.setValid(true);
 		attemptRepository.saveAndFlush(attempt);
+		log.info("New attempt created with id = " + attempt.getId());
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;
 	}

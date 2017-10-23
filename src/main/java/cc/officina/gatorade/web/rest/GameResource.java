@@ -196,7 +196,7 @@ public class GameResource {
     public ResponseEntity<AttemptResponse> startAttempt(@RequestBody Request request) {
     	if(request.getGameid() == null || request.getPlayerid() == null || request.getSessionid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody2", "Malformed body")).body(null);
-        log.info("REST request to startAttempt for game" + request.getGameid() + " and match with id " + request.getMatchid());
+        log.info("REST request to startAttempt for game " + request.getGameid() + " and match with id " + request.getMatchid());
         Game game = gameService.findOne(request.getGameid());
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+request.getGameid() + " not found")).body(null);
