@@ -21,6 +21,7 @@ import { FuseIfOnDomDirective } from '../directives/fuse-if-on-dom/fuse-if-on-do
 import { FuseMaterialColorPickerComponent } from '../components/material-color-picker/material-color-picker.component';
 import { FuseTranslationLoaderService } from '../services/translation-loader.service';
 import { CookieService } from 'ngx-cookie-service';
+import { MarkdownModule } from 'angular2-markdown';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
@@ -43,7 +44,8 @@ import { TranslateModule } from '@ngx-translate/core';
         ReactiveFormsModule,
         ColorPickerModule,
         NgxDnDModule,
-        NgxDatatableModule
+        NgxDatatableModule,
+        MarkdownModule
     ],
     exports        : [
         FlexLayoutModule,
@@ -62,6 +64,7 @@ import { TranslateModule } from '@ngx-translate/core';
         NgxDatatableModule,
         FuseIfOnDomDirective,
         FuseMaterialColorPickerComponent,
+        MarkdownModule,
         TranslateModule
     ],
     entryComponents: [
