@@ -203,6 +203,7 @@ function CGame(oData){
                         _oInterface.viewScore(_iScore);
                     }
                 }
+                updateScore(_iScore);
             }else{
                 createjs.Tween.get(container ).to({x: startpos.x, y: startpos.y, scaleX: 0.7, scaleY: 0.7  }, (200), createjs.Ease.cubicOut).call(function() {});
             }
@@ -422,7 +423,6 @@ function CGame(oData){
 
     SCORE_OBJECT_PLACED = oData.score_object_placed;
     SCORE_ROW_COL_DELETED = oData.score_row_col_deleted;
-
     this._init();
 
 }
