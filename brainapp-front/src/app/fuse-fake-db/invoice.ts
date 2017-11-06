@@ -9,7 +9,7 @@ export class InvoiceFakeDb
             'website': 'www.fuseinc.com'
         },
         'client'  : {
-            'title'  : 'John Doe',
+            'title'  : 'Mario Rossi',
             'address': '9301 Wood Street Philadelphia, PA 19111',
             'phone'  : '+55 552 455 87',
             'email'  : 'johndoe@mail.com'

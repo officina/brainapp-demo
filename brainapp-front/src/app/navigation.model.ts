@@ -22,7 +22,13 @@ export class NavigationModel
                                 'title': 'Project',
                                 'type' : 'item',
                                 'url'  : '/apps/dashboards/project'
-                            }
+                            },
+                          {'id'   : 'profile',
+                          'title': 'Profile',
+                          'type' : 'item',
+                          'icon' : 'person',
+                          'url'  : '/pages/profile'
+                        }
                         ]
                     },
                     {
@@ -32,79 +38,79 @@ export class NavigationModel
                         'icon' : 'today',
                         'url'  : '/apps/calendar'
                     },
-                    {
-                        'id'      : 'e-commerce',
-                        'title'   : 'E-Commerce',
-                        'type'    : 'collapse',
-                        'icon'    : 'shopping_cart',
-                        'children': [
-                            {
-                                'id'   : 'dashboard',
-                                'title': 'Dashboard',
-                                'type' : 'item',
-                                'url'  : '/apps/e-commerce/dashboard'
-                            },
-                            {
-                                'id'        : 'products',
-                                'title'     : 'Products',
-                                'type'      : 'item',
-                                'url'       : '/apps/e-commerce/products',
-                                'exactMatch': true
-                            },
-                            {
-                                'id'        : 'productDetail',
-                                'title'     : 'Product Detail',
-                                'type'      : 'item',
-                                'url'       : '/apps/e-commerce/products/1/printed-dress',
-                                'exactMatch': true
-                            },
-                            {
-                                'id'        : 'orders',
-                                'title'     : 'Orders',
-                                'type'      : 'item',
-                                'url'       : '/apps/e-commerce/orders',
-                                'exactMatch': true
-                            },
-                            {
-                                'id'        : 'orderDetail',
-                                'title'     : 'Order Detail',
-                                'type'      : 'item',
-                                'url'       : '/apps/e-commerce/orders/1',
-                                'exactMatch': true
-                            }
-                        ]
-                    },
-                    {
-                        'id'   : 'mail',
-                        'title': 'Mail',
-                        'type' : 'item',
-                        'icon' : 'email',
-                        'url'  : '/apps/mail',
-                        'badge': {
-                            'title': 25,
-                            'bg'   : '#F44336',
-                            'fg'   : '#FFFFFF'
-                        }
-                    },
-                    {
-                        'id'   : 'chat',
-                        'title': 'Chat',
-                        'type' : 'item',
-                        'icon' : 'chat',
-                        'url'  : '/apps/chat',
-                        'badge': {
-                            'title': 13,
-                            'bg'   : '#09d261',
-                            'fg'   : '#FFFFFF'
-                        }
-                    },
-                    {
-                        'id'   : 'file-manager',
-                        'title': 'File Manager',
-                        'type' : 'item',
-                        'icon' : 'folder',
-                        'url'  : '/apps/file-manager'
-                    },
+                    // {
+                    //     'id'      : 'e-commerce',
+                    //     'title'   : 'E-Commerce',
+                    //     'type'    : 'collapse',
+                    //     'icon'    : 'shopping_cart',
+                    //     'children': [
+                    //         {
+                    //             'id'   : 'dashboard',
+                    //             'title': 'Dashboard',
+                    //             'type' : 'item',
+                    //             'url'  : '/apps/e-commerce/dashboard'
+                    //         },
+                    //         {
+                    //             'id'        : 'products',
+                    //             'title'     : 'Products',
+                    //             'type'      : 'item',
+                    //             'url'       : '/apps/e-commerce/products',
+                    //             'exactMatch': true
+                    //         },
+                    //         {
+                    //             'id'        : 'productDetail',
+                    //             'title'     : 'Product Detail',
+                    //             'type'      : 'item',
+                    //             'url'       : '/apps/e-commerce/products/1/printed-dress',
+                    //             'exactMatch': true
+                    //         },
+                    //         {
+                    //             'id'        : 'orders',
+                    //             'title'     : 'Orders',
+                    //             'type'      : 'item',
+                    //             'url'       : '/apps/e-commerce/orders',
+                    //             'exactMatch': true
+                    //         },
+                    //         {
+                    //             'id'        : 'orderDetail',
+                    //             'title'     : 'Order Detail',
+                    //             'type'      : 'item',
+                    //             'url'       : '/apps/e-commerce/orders/1',
+                    //             'exactMatch': true
+                    //         }
+                    //     ]
+                    // },
+                    // {
+                    //     'id'   : 'mail',
+                    //     'title': 'Mail',
+                    //     'type' : 'item',
+                    //     'icon' : 'email',
+                    //     'url'  : '/apps/mail',
+                    //     'badge': {
+                    //         'title': 25,
+                    //         'bg'   : '#F44336',
+                    //         'fg'   : '#FFFFFF'
+                    //     }
+                    // },
+                    // {
+                    //     'id'   : 'chat',
+                    //     'title': 'Chat',
+                    //     'type' : 'item',
+                    //     'icon' : 'chat',
+                    //     'url'  : '/apps/chat',
+                    //     'badge': {
+                    //         'title': 13,
+                    //         'bg'   : '#09d261',
+                    //         'fg'   : '#FFFFFF'
+                    //     }
+                    // },
+                    // {
+                    //     'id'   : 'file-manager',
+                    //     'title': 'File Manager',
+                    //     'type' : 'item',
+                    //     'icon' : 'folder',
+                    //     'url'  : '/apps/file-manager'
+                    // },
                     {
                         'id'   : 'contacts',
                         'title': 'Contacts',
@@ -112,18 +118,18 @@ export class NavigationModel
                         'icon' : 'account_box',
                         'url'  : '/apps/contacts'
                     },
-                    {
-                        'id'   : 'to-do',
-                        'title': 'To-Do',
-                        'type' : 'item',
-                        'icon' : 'check_box',
-                        'url'  : '/apps/todo',
-                        'badge': {
-                            'title': 3,
-                            'bg'   : '#FF6F00',
-                            'fg'   : '#FFFFFF'
-                        }
-                    },
+                    // {
+                    //     'id'   : 'to-do',
+                    //     'title': 'To-Do',
+                    //     'type' : 'item',
+                    //     'icon' : 'check_box',
+                    //     'url'  : '/apps/todo',
+                    //     'badge': {
+                    //         'title': 3,
+                    //         'bg'   : '#FF6F00',
+                    //         'fg'   : '#FFFFFF'
+                    //     }
+                    // },
                     {
                         'id'   : 'scrumboard',
                         'title': 'Scrumboard',

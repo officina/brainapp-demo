@@ -24,14 +24,14 @@ import { MarkdownModule } from 'angular2-markdown';
 import { TranslateModule } from '@ngx-translate/core';
 
 const appRoutes: Routes = [
-    {
-        path        : 'apps/mail',
-        loadChildren: './main/content/apps/mail/mail.module#FuseMailModule'
-    },
-    {
-        path        : 'apps/chat',
-        loadChildren: './main/content/apps/chat/chat.module#FuseChatModule'
-    },
+    // {
+    //     path        : 'apps/mail',
+    //     loadChildren: './main/content/apps/mail/mail.module#FuseMailModule'
+    // },
+    // {
+    //     path        : 'apps/chat',
+    //     loadChildren: './main/content/apps/chat/chat.module#FuseChatModule'
+    // },
     {
         path        : 'apps/calendar',
         loadChildren: './main/content/apps/calendar/calendar.module#FuseCalendarModule'
@@ -48,14 +48,14 @@ const appRoutes: Routes = [
     //     path        : 'apps/file-manager',
     //     loadChildren: './main/content/apps/file-manager/file-manager.module#FuseFileManagerModule'
     // },
-    {
-        path        : 'apps/contacts',
-        loadChildren: './main/content/apps/contacts/contacts.module#FuseContactsModule'
-    },
-    {
-        path        : 'apps/scrumboard',
-        loadChildren: './main/content/apps/scrumboard/scrumboard.module#FuseScrumboardModule'
-    },
+    // {
+    //     path        : 'apps/contacts',
+    //     loadChildren: './main/content/apps/contacts/contacts.module#FuseContactsModule'
+    // },
+    // {
+    //     path        : 'apps/scrumboard',
+    //     loadChildren: './main/content/apps/scrumboard/scrumboard.module#FuseScrumboardModule'
+    // },
     {
         path      : '**',
         redirectTo: 'apps/dashboards/project'
