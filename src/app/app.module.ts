@@ -36,18 +36,18 @@ const appRoutes: Routes = [
         path        : 'apps/calendar',
         loadChildren: './main/content/apps/calendar/calendar.module#FuseCalendarModule'
     },
-    {
-        path        : 'apps/e-commerce',
-        loadChildren: './main/content/apps/e-commerce/e-commerce.module#FuseEcommerceModule'
-    },
-    {
-        path        : 'apps/todo',
-        loadChildren: './main/content/apps/todo/todo.module#FuseTodoModule'
-    },
-    {
-        path        : 'apps/file-manager',
-        loadChildren: './main/content/apps/file-manager/file-manager.module#FuseFileManagerModule'
-    },
+    // {
+    //     path        : 'apps/e-commerce',
+    //     loadChildren: './main/content/apps/e-commerce/e-commerce.module#FuseEcommerceModule'
+    // },
+    // {
+    //     path        : 'apps/todo',
+    //     loadChildren: './main/content/apps/todo/todo.module#FuseTodoModule'
+    // },
+    // {
+    //     path        : 'apps/file-manager',
+    //     loadChildren: './main/content/apps/file-manager/file-manager.module#FuseFileManagerModule'
+    // },
     {
         path        : 'apps/contacts',
         loadChildren: './main/content/apps/contacts/contacts.module#FuseContactsModule'
