@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import {ExampleDataSource} from "../../../../../../../assets/angular-material-examples/table-basic/table-basic-example";
+import {ExampleDataSource} from '../../../../../../../assets/angular-material-examples/table-basic/table-basic-example';
 
 @Component({
   selector: 'app-ranking',
