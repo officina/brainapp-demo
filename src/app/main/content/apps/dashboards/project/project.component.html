@@ -43,7 +43,7 @@
 
                         <div class="widget-group p-12" fxLayout="row" fxFlex="100" fxLayoutWrap *fuseIfOnDom [@animateStagger]="{value:'50'}">
 
-                            <!-- WIDGET 1 card girevole con selettore-->
+                            <!-- WIDGET 1 recap tasks-->
                             <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
 
                                 <!-- Front -->
@@ -97,7 +97,7 @@
                             </fuse-widget>
                             <!-- / WIDGET 1 -->
 
-                            <!-- WIDGET 2 card girevole -->
+                            <!-- WIDGET 2 creativity ranking -->
                             <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
 
                                 <!-- Front -->
@@ -140,7 +140,7 @@
                             </fuse-widget>
                             <!-- / WIDGET 2 -->
 
-                            <!-- WIDGET 3 -->
+                            <!-- WIDGET 3 ps ranking-->
                             <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
 
                                 <!-- Front -->
@@ -184,7 +184,7 @@
                             </fuse-widget>
                             <!-- / WIDGET 3 -->
 
-                            <!-- WIDGET 4 -->
+                            <!-- WIDGET 4 logic ranking-->
                             <fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
 
                                 <!-- Front -->
@@ -404,8 +404,9 @@
                         <!--classifica-->
 
                         <!-- WIDGET GROUP -->
-                        <div class="widget-group" fxLayout="row" fxFlex="100" fxLayoutWrap *fuseIfOnDom [@animateStagger]="{value:'50'}">
-                        <h1>Andare su url /components/angular-material/data-table</h1>
+                        <!--<div class="widget-group" fxLayout="row" fxFlex="100" fxLayoutWrap *fuseIfOnDom [@animateStagger]="{value:'50'}">-->
+                        <!--<h1>Andare su url /components/angular-material/data-table</h1>-->
+                          <app-ranking></app-ranking>
                             <!--&lt;!&ndash; WIDGET 8 &ndash;&gt;-->
                             <!--<fuse-widget [@animate]="{value:'*',params:{y:'100%'}}" class="widget" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50">-->
 
@@ -589,7 +590,7 @@
                             <!--</fuse-widget>-->
                             <!--&lt;!&ndash; / WIDGET 10 &ndash;&gt;-->
 
-                        </div>
+                        <!--</div>-->
                         <!-- / WIDGET GROUP -->
 
                     </mat-tab>

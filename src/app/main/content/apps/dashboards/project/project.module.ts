@@ -5,6 +5,7 @@ import { SharedModule } from '../../../../../core/modules/shared.module';
 import { ProjectsDashboardService } from './projects.service';
 import { FuseWidgetModule } from '../../../../../core/components/widget/widget.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { RankingComponent } from './ranking/ranking.component';
 
 const routes: Routes = [
     {
@@ -24,7 +25,8 @@ const routes: Routes = [
         NgxChartsModule
     ],
     declarations: [
-        FuseProjectComponent
+        FuseProjectComponent,
+        RankingComponent
     ],
     providers   : [
         ProjectsDashboardService
