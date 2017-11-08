@@ -15,12 +15,32 @@
                 height: 400px;
                 min-height: 400px;
             }
-
+            .term {
+              font-size: 15px;
+            }
+          .price {
+            //padding: 0px !important;
+            height: 25px;
+          }
+          .value {
+            justify-content: space-around;
+            margin-top: 5px;
+            font-size: 15px;
+            }
+            .package-type {
+              padding: 15px 0px;
+            }
+            .ptside {
+              max-height: 250px;
+              width: 200px;
+            }
             .hero-text {
-                margin: 128px 24px;
+                margin: 0 auto;
+                align-content: start !important;
+                justify-content: start !important;
 
                 @include media-breakpoint-down('xs') {
-                    margin: 64px 24px;
+                    margin: 24px 24px;
                 }
 
                 .h1 {
@@ -52,9 +72,10 @@
 
         .price-tables {
             flex: 1 0 auto;
-            //margin-top: -192px;
-            background-color: red;
-            height: 100vh;
+            height: 150px;
+            margin-top: -415px;
+            //background-color: red;
+            //height: 100vh;
 
             @include media-breakpoint-down('xs') {
                 //margin-top: -128px;
