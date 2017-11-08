@@ -80,7 +80,14 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
                     'type' : 'nav-item',
                     'icon' : 'check_box',
                     'url'  : '/apps/todo'
-                }
+                },
+                {
+                  'id': 'chat',
+                  'title': 'Chat',
+                  'type': 'nav-item',
+                  'icon': 'chat',
+                  'url': '/apps/chat',
+                },
             ];
         }
 

@@ -47,6 +47,8 @@ export class FuseRegister2Component implements OnInit
 
         this.registerForm.valueChanges.subscribe(() => {
             this.onRegisterFormValuesChanged();
+          // console.log(this.registerForm.value);
+
         });
     }
 

@@ -1,8 +1,8 @@
 <div id="about" class="p-24" fxLayout="row" fxLayoutWrap>
-
+<!--colonna di sinistra-->
     <div class="about-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="65"
          *fuseIfOnDom [@animateStagger]="{value:'50'}">
-
+<!--General Info-->
         <div class="profile-box info-box general" fxLayout="column"
              [@animate]="{value:'*',params:{y:'100%'}}">
 
@@ -37,7 +37,7 @@
             </div>
 
         </div>
-
+<!--Work Info -->
         <div class="profile-box info-box work" fxLayout="column"
              [@animate]="{value:'*',params:{y:'100%'}}">
 
@@ -67,7 +67,7 @@
                 </div>
             </div>
         </div>
-
+<!--Contact Info-->
         <div class="profile-box info-box contact" fxLayout="column"
              [@animate]="{value:'*',params:{y:'100%'}}">
 
@@ -103,10 +103,10 @@
         </div>
 
     </div>
-
+<!--colonna di destra-->
     <div class="about-sidebar" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="35"
          *fuseIfOnDom [@animateStagger]="{value:'50'}">
-
+<!--Friends box-->
         <div class="profile-box friends" fxLayout="column"
              [@animate]="{value:'*',params:{y:'100%'}}">
 
@@ -124,7 +124,7 @@
             </div>
 
         </div>
-
+<!--Joined Groups-->
         <div class="profile-box groups" fxLayout="column"
              [@animate]="{value:'*',params:{y:'100%'}}">
 
