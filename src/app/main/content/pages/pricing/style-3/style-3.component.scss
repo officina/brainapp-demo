@@ -52,10 +52,12 @@
 
         .price-tables {
             flex: 1 0 auto;
-            margin-top: -192px;
+            //margin-top: -192px;
+            background-color: red;
+            height: 100vh;
 
             @include media-breakpoint-down('xs') {
-                margin-top: -128px;
+                //margin-top: -128px;
             }
 
             .price-table {
