@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Parity with number</title>
+    <script src="scripts/production.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Poiret+One|Open+Sans' rel='stylesheet' type='text/css'>
+    <link href="styles/style.css" rel="stylesheet" type="text/css" />
+    <link href="styles/mobile.css" rel="stylesheet" type="text/css" media="screen and (max-device-width:800px)" />
+    <meta name="viewport" content="initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+  </head>
+  <body style=" background-image: url('bg.jpg');">
+    <div id="container" >
+      <p id="title" class="light poiret center">Parity with number</p>
+      <div id="box" style="background-image: url('bg.jpg') !important;">
+        <div id="overlay">
+          <h1></h1>
+          <div id="content"></div>
+          <div id="holder">
+            <button> </button>
+          </div>
+        </div>
+        <div id="swipeArea"></div>
+        <div class="dSelected" id="selector"></div>
+        <div id="introtutorial"></div>
+        <table id="board">
+          <tbody id="board_body">
+            <tr>
+              <td class="cell center" data-x="0" data-y="0">4</td>
+              <td class="cell center" data-x="1" data-y="0">4</td>
+              <td class="cell center" data-x="2" data-y="0">4</td>
+            </tr>
+            <tr>
+              <td class="cell center" data-x="0" data-y="1">4</td>
+              <td class="cell center" data-x="1" data-y="1">4</td>
+              <td class="cell center" data-x="2" data-y="1">4</td>
+            </tr>
+            <tr>
+              <td class="cell center" data-x="0" data-y="2">4</td>
+              <td class="cell center selected" data-x="1" data-y="2">4</td>
+              <td class="cell center" data-x="2" data-y="2">4</td>
+            </tr>
+            <tr>
+              <td colspan="2"><a id="level" href="#" class="light poiret left">level #</a></td>
+              <td colspan="2" class="right">
+                <a id="reset" href="#" class="poiret"><img src="images/reset.png" style="width:7vh;" /></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="text-align:center;margin:1vh;">
+      </div>
+    </div>
+  </body>
+</html>
