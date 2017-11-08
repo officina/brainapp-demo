@@ -23,12 +23,31 @@ export class NavigationModel
                                 'type' : 'item',
                                 'url'  : '/apps/dashboards/project'
                             },
+                            {
+                                'id'   : 'full-width',
+                                'title': 'Full Width',
+                                'type' : 'item',
+                                'url'  : '/ui/page-layouts/carded/full-width'
+                            },
                           {'id'   : 'profile',
                           'title': 'Profile',
                           'type' : 'item',
                           'icon' : 'person',
                           'url'  : '/pages/profile'
-                        }
+                        },
+                          {
+                            'id'   : 'login-v2',
+                            'title': 'Login v2',
+                            'type' : 'item',
+                            'url'  : '/pages/auth/login-2'
+                          },
+                          {
+                            'id'   : 'register-v2',
+                            'title': 'Register v2',
+                            'type' : 'item',
+                            'url'  : '/pages/auth/register-2'
+                          },
+
                         ]
                     },
                     {
@@ -92,18 +111,18 @@ export class NavigationModel
                     //         'fg'   : '#FFFFFF'
                     //     }
                     // },
-                    // {
-                    //     'id'   : 'chat',
-                    //     'title': 'Chat',
-                    //     'type' : 'item',
-                    //     'icon' : 'chat',
-                    //     'url'  : '/apps/chat',
-                    //     'badge': {
-                    //         'title': 13,
-                    //         'bg'   : '#09d261',
-                    //         'fg'   : '#FFFFFF'
-                    //     }
-                    // },
+                    {
+                        'id'   : 'chat',
+                        'title': 'Chat',
+                        'type' : 'item',
+                        'icon' : 'chat',
+                        'url'  : '/apps/chat',
+                        'badge': {
+                            'title': 13,
+                            'bg'   : '#09d261',
+                            'fg'   : '#FFFFFF'
+                        }
+                    },
                     // {
                     //     'id'   : 'file-manager',
                     //     'title': 'File Manager',

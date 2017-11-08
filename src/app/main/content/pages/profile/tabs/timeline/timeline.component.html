@@ -1,6 +1,34 @@
 <div id="timeline" class="p-24" fxLayout="row" fxLayoutWrap>
 
-    <div class="timeline-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="55" fxFlex.gt-md="65"
+    <div class="timeline-sidebar" fxLayout="column" fxFlex="100" fxFlex.gt-sm="25" fxFlex.gt-md="25">
+      <div class="profile-box latest-activity" fxLayout="column"
+         *fuseIfOnDom [@animate]="{value:'*',params:{delay:'200ms',y:'100%'}}">
+
+        <header class="mat-accent-bg" fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="title">My Stats</div>
+            <!--<div class="more secondary-text">See All</div>-->
+        </header>
+
+        <div class="content" fxLayout="row" fxLayoutWrap>
+          <div class="activities">
+            <!--<div class="activity" fxLayout="row" fxLayoutAlign="start start"-->
+                 <!--*ngFor="let activity of timeline.activities">-->
+              <!--<img [src]="activity.user.avatar" class="avatar" alt="{{activity.user.name}}"/>-->
+
+              <!--<div fxLayout="column">-->
+                <!--<div>-->
+                  <!--<span class="username">{{activity.user.name}}</span>-->
+                  <!--<span class="message"> {{activity.message}}</span>-->
+                <!--</div>-->
+                <!--<span class="time secondary-text">{{activity.time}}</span>-->
+              <!--</div>-->
+            <!--</div>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="50"
          *fuseIfOnDom [@animateStagger]="{value:'50'}">
 
         <div class="profile-box add-post"
@@ -134,13 +162,13 @@
         </div>
     </div>
 
-    <div class="timeline-sidebar" fxLayout="column" fxFlex="100" fxFlex.gt-sm="45" fxFlex.gt-md="35">
+    <div class="timeline-sidebar" fxLayout="column" fxFlex="100" fxFlex.gt-sm="25" fxFlex.gt-md="25">
 
         <div class="profile-box latest-activity" fxLayout="column"
              *fuseIfOnDom [@animate]="{value:'*',params:{delay:'200ms',y:'100%'}}">
 
             <header class="mat-accent-bg" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="title">Latest Activity</div>
+                <div class="title">Lab Activity</div>
                 <div class="more secondary-text">See All</div>
             </header>
 
