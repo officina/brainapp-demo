@@ -132,6 +132,7 @@
                                 useLevels: null,
                                 levelsNumber: null,
                                 lastAttemptValid: null,
+                                defaultScore: null,
                                 id: null
                             };
                         }
