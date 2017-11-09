@@ -102,11 +102,11 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
                 'url'  : '/pages/pricing/style-3'
               },
               {
-                'id'   : 'full-width',
-                'title': 'Full Width',
+                'id'   : 'blank',
+                'title': 'Blank',
                 'type' : 'item',
                 'icon' : 'email',
-                'url'  : '/ui/page-layouts/carded/full-width'
+                'url'  : '/ui/page-layouts/blank'
               },
               {
                 'id'   : 'login-v2',
