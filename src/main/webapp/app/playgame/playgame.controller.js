@@ -52,6 +52,11 @@
                     var endedInfo = e.data.attempt;
                     attemptEnded(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
                     break;
+                case "ATTEMPT_RESTARTED":
+                	console.log('ATTEMPT_RESTARTED');
+                	var endedInfo = e.data.attempt;
+                    attemptRestarted(endedInfo.score, endedInfo.level, endedInfo.completed, endedInfo.ended);
+                    break;
                 case "GAME_LOADED":
                 	console.log('GAME_LOAD');
                     break;
@@ -76,8 +81,8 @@
         });
 
         $scope.game = {url:"htmlgames/loading.html"}
+        
         $scope.$on('timer-tick', function (event, args) {
-
             if (args.seconds !== undefined){
                 var myEl = angular.element( document.querySelector( '#game-header' ) );
                 var timeToEnd = (args.minutes*60+args.seconds)
@@ -142,12 +147,7 @@
         	{
         		console.log("creo attempt SENZA match");
         		PlaygameService.createAttempt(gameId,$stateParams.templateid, "", playtoken, null, $stateParams.extsessionid,$scope.matchToken).then(function(response){
-        			console.log(response.data);
-        			$scope.wrapperMemory.match = response.data.match;
-        			$scope.wrapperMemory.currAttempt = response.data.attempt;
-        			$scope.wrapperMemory.currAttempt.score = 0;
-        	        $scope.wrapperMemory.currAttempt.level = 0;
-        	        $scope.wrapperMemory.attempts.push(response.data.attempt);
+        	        refreshWrapperMemory(response.data.match,response.data.attempt);
     	        })
     	        .catch(function(error) {
     	        	console.log('error on validation');
@@ -161,12 +161,7 @@
         	{
         		console.log("creo attempt CON match");
         		PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken,$scope.wrapperMemory.match.id, $stateParams.extsessionid,$scope.matchToken).then(function(response){
-        			console.log(response.data);
-      	          	$scope.wrapperMemory.match = response.data.match;
-      	          	$scope.wrapperMemory.currAttempt = response.data.attempt;
-      	          	$scope.wrapperMemory.currAttempt.score = 0;
-      	          	$scope.wrapperMemory.currAttempt.level = 0;
-      	        	$scope.wrapperMemory.attempts.push(response.data.attempt);
+        			refreshWrapperMemory(response.data.match,response.data.attempt);
       	        })
 	      	    .catch(function(error) {
 	              	console.log('error on validation');
@@ -200,8 +195,35 @@
 	    		//chiuso l'attempt, il current è null
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt ended inside callback');
+	    		startAttempt();
+	    	});
+	    }
+	    
+	    var attemptRestarted = function(score, level, completed, endDate){
+	    	var trueLevel = 0;
+	    	var trueScore = 0;
+	    	if(useLevels) {
+	    		trueLevel = score;
+	    	}
+	    	else{
+	    		trueScore = score;
+	    	}
+	    	console.log('Attempt ended');
+	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken).then(function(response){
+	    		//chiuso l'attempt, il current è null
+	    		$scope.wrapperMemory.currAttempt = undefined;
+	    		console.log('Attempt ended inside callback');
 	    		console.log(response);
 	    	});
+	    }
+	    
+	    var refreshWrapperMemory = function(match, attempt)
+	    {
+	    	$scope.wrapperMemory.match = match;
+			$scope.wrapperMemory.currAttempt = attempt;
+			$scope.wrapperMemory.currAttempt.score = 0;
+	        $scope.wrapperMemory.currAttempt.level = 0;
+	        $scope.wrapperMemory.attempts.push(attempt);
 	    }
 
 	   $scope.matchEnded = function(){
