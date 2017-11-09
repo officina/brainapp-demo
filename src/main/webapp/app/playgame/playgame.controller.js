@@ -216,6 +216,9 @@
 	    		//chiuso l'attempt, il current è null
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
+	    		console.log('----------------------------');
+	    		console.log($scope.wrapperMemory.attempts);
+	    		console.log('----------------------------');
 	    		console.log('Attempt restarted inside callback');
 	    		console.log(response);
 	    		startAttempt();
