@@ -377,6 +377,7 @@ function CGame(oData){
                 oSoundGameOver.volume = 0.4;
             }
         }
+        attemptEnded(_iScore)
     };
 
     this.gameOver = function(){
