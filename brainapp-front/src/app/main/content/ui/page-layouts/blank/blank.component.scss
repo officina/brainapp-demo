@@ -20,24 +20,30 @@ $padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  //text-align: center;
 }
 .left {
   display: flex;
   justify-content: space-between;
-  left: 150px;
+  width: 500px;
+  align-self: center;
 }
 .right {
-
+align-self: center;
 }
 .game-title {
   color: white;
-  font-size: 2em;
   letter-spacing: 2px;
+  margin-left: 220px;
+  & h1 {
+    font-size: 40px;
+  }
 }
 .btnpos {
   position: absolute;
-  right: 10px;
-  top: 140px;
+  right: 80px;
+  margin-top: -20px;
+  //top: 120px;
 }
 .btn {
   width: 200px !important;
