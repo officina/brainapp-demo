@@ -5,8 +5,15 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20170627085006_added_entity_Attempt.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
-    <include file="config/liquibase/changelog/20170627085006_added_entity_constraints_Attempt.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/01_added_entity_Game.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/02_added_entity_Match.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/03_added_entity_Attempt.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/04_added_entity_Session.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/05_added_entity_MatchTemplate.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/06_added_entity_constraints_MatchTemplate.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/07_added_entity_constraints_Match.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/08_added_entity_constraints_Attempt.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/09_added_entity_constraints_Session.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
