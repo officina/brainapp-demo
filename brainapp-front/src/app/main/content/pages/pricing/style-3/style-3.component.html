@@ -93,7 +93,7 @@
               </div>
             </div>
 
-            <button mat-raised-button class="cta-button" color="accent">Gioca</button>
+            <button mat-raised-button class="cta-button" color="accent">VAI ALLA SFIDA</button>
 
             <!--<div class="note">30 day free trial to start</div>-->
 
@@ -162,37 +162,27 @@
 
     <!-- CONTENT -->
     <div class="content" fxLayout="column">
-
         <div class="leaderboards" fxLayout="row" fxLayoutWrap>
-
-            <div class="table-users">
+          <div class="table-users">
             <div class="capo">Global</div>
 
             <table cellspacing="0">
-              <tr>
+
                 <mat-tab-group dynamicHeight="true">
-                  <th>
                     <mat-tab label="Complessiva">
-                      <!--<app-complessiva></app-complessiva>-->
+                      <app-complessiva></app-complessiva>
                     </mat-tab>
-                  </th>
-                  <th>
                     <mat-tab label="Logica">
-                      <!--<app-logica></app-logica>-->
+                      <app-logica></app-logica>
                     </mat-tab>
-                  </th>
-                  <th>
                     <mat-tab label="Creatività">
-                      <!--<app-creativita></app-creativita>-->
+                      <app-creativita></app-creativita>
                     </mat-tab>
-                  </th>
-                  <th>
                     <mat-tab label="Problem Solving">
-                      <!--<app-problemsolving></app-problemsolving>-->
+                      <app-problemsolving></app-problemsolving>
                     </mat-tab>
-                  </th>
                 </mat-tab-group>
-              </tr>
+
 
             </table>
           </div>
@@ -201,58 +191,33 @@
 
             <table cellspacing="0">
               <tr>
-                <th>Rank</th>
-                <th>User</th>
-                <th></th>
-                <th>Problem Solving</th>
-                <th>Logic</th>
-                <th>Creativity</th>
+                <mat-tab-group dynamicHeight="true">
+                  <th>
+                    <mat-tab label="Complessiva">
+                      <app-complessiva></app-complessiva>
+                    </mat-tab>
+                  </th>
+                  <th>
+                    <mat-tab label="Logica">
+                      <app-logica></app-logica>
+                    </mat-tab>
+                  </th>
+                  <th>
+                    <mat-tab label="Creatività">
+                      <app-creativita></app-creativita>
+                    </mat-tab>
+                  </th>
+                  <th>
+                    <mat-tab label="Problem Solving">
+                      <app-problemsolving></app-problemsolving>
+                    </mat-tab>
+                  </th>
+                </mat-tab-group>
               </tr>
 
-              <tr>
-                <td>1</td>
-                <td><img src="http://lorempixel.com/100/100/people/1" alt="" /></td>
-                <td>Jane Doe</td>
-                <td>5</td>
-                <td>7</td>
-                <td>8</td>
-              </tr>
-
-              <tr>
-                <td>2</td>
-                <td><img src="http://lorempixel.com/100/100/sports/2" alt="" /></td>
-                <td>Jane Doe</td>
-                <td>8</td>
-                <td>3</td>
-                <td>5</td>
-              </tr>
-
-              <tr>
-                <td>3</td>
-                <td><img src="http://lorempixel.com/100/100/people/9" alt="" /></td>
-                <td>Jane Doe</td>
-                <td>4</td>
-                <td>4</td>
-                <td>4</td>
-              </tr>
-
-              <tr>
-                <td>4</td>
-                <td><img src="http://lorempixel.com/100/100/people/3" alt="" /></td>
-                <td>Jane Doe</td>
-                <td>4</td>
-                <td>4</td>
-                <td>4</td>
-              </tr>
             </table>
           </div>
-
-
-
-
-
         </div>
-
     </div>
 
 </div>
