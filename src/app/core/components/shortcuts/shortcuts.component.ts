@@ -96,14 +96,14 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
                 },
               {
                 'id'   : 'style-3',
-                'title': 'Style 3',
+                'title': 'LAB',
                 'type' : 'item',
                 'icon' : 'email',
                 'url'  : '/pages/pricing/style-3'
               },
               {
                 'id'   : 'blank',
-                'title': 'Blank',
+                'title': 'GAME',
                 'type' : 'item',
                 'icon' : 'email',
                 'url'  : '/ui/page-layouts/blank'
