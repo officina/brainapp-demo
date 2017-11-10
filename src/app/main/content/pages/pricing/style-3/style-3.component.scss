@@ -129,6 +129,13 @@
             }
         }
     }
+  .mat-tab-group {
+    padding: 0 !important;
+    width: 500px;
+  }
+  label {
+    padding: 0 !important;
+  }
   $baseColor: #0E2A3B;
   $borderRadius: 10px;
   $imageBig: 100px;

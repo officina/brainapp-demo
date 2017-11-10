@@ -14,9 +14,20 @@ $padding: 10px;
 }
 .game-pic {
   height: 300px !important;
-  width: 600px;
+  width: 100vw;
   border: 1px solid red;
-  margin-bottom: 20px;
+}
+.btnpos {
+  position: absolute;
+  right: 10px;
+  top: 140px;
+}
+.btn {
+  width: 200px !important;
+  height: 45px !important;
+  font-size: 1.5em;
+  letter-spacing: 2px;
+;
 }
 .game-descr {
   width: 600px;
