@@ -41,6 +41,14 @@ public class CacheConfiguration {
             cm.createCache(cc.officina.brainapp.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(cc.officina.brainapp.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(cc.officina.brainapp.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(cc.officina.brainapp.domain.Game.class.getName(), jcacheConfiguration);
+            cm.createCache(cc.officina.brainapp.domain.Game.class.getName() + ".matches", jcacheConfiguration);
+            cm.createCache(cc.officina.brainapp.domain.Match.class.getName(), jcacheConfiguration);
+            cm.createCache(cc.officina.brainapp.domain.MatchTemplate.class.getName(), jcacheConfiguration);
+            cm.createCache(cc.officina.brainapp.domain.Session.class.getName(), jcacheConfiguration);
+            cm.createCache(cc.officina.brainapp.domain.Session.class.getName() + ".matches", jcacheConfiguration);
+            cm.createCache(cc.officina.brainapp.domain.Attempt.class.getName(), jcacheConfiguration);
+            cm.createCache(cc.officina.brainapp.domain.Match.class.getName() + ".attempts", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

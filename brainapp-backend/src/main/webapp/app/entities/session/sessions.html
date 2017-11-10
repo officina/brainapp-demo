@@ -1,0 +1,72 @@
+<div>
+    <h2 data-translate="brainappbackendApp.session.home.title">Sessions</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="session.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="brainappbackendApp.session.home.createLabel">
+                        Create new Session
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="startDate"><span data-translate="brainappbackendApp.session.startDate">Start Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="endDate"><span data-translate="brainappbackendApp.session.endDate">End Date</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="extId"><span data-translate="brainappbackendApp.session.extId">Ext Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="poRoot"><span data-translate="brainappbackendApp.session.poRoot">Po Root</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="elaborated"><span data-translate="brainappbackendApp.session.elaborated">Elaborated</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="game.description"><span data-translate="brainappbackendApp.session.game">Game</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="session in vm.sessions track by session.id">
+                    <td><a ui-sref="session-detail({id:session.id})">{{session.id}}</a></td>
+                    <td>{{session.startDate | date:'medium'}}</td>
+                    <td>{{session.endDate | date:'medium'}}</td>
+                    <td>{{session.extId}}</td>
+                    <td>{{session.poRoot}}</td>
+                    <td>{{session.elaborated}}</td>
+                    <td>
+                        <a ui-sref="game-detail({id:session.game.id})">{{session.game.description}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="session-detail({id:session.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="session.edit({id:session.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="session.delete({id:session.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>
