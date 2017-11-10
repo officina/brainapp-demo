@@ -7,7 +7,6 @@ $padding: 10px;
   background-color: rgba(220,220,220,0.3);
 }
 .game {
-  //width: 600px;
   flex-grow: 2;
   padding: $padding;
 
@@ -15,7 +14,25 @@ $padding: 10px;
 .game-pic {
   height: 300px !important;
   width: 100vw;
-  border: 1px solid red;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.left {
+  display: flex;
+  justify-content: space-between;
+  left: 150px;
+}
+.right {
+
+}
+.game-title {
+  color: white;
+  font-size: 2em;
+  letter-spacing: 2px;
 }
 .btnpos {
   position: absolute;
@@ -27,20 +44,31 @@ $padding: 10px;
   height: 45px !important;
   font-size: 1.5em;
   letter-spacing: 2px;
-;
+}
+.logo {
+  height: 180px;
+  width: 180px;
+  padding: 10px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  border: 3px solid white;
+  position: absolute;
+  top: 60px;
+  left: 20px;
 }
 .game-descr {
   width: 600px;
-  background-color: #ffffff;
-  border: 1px solid red;
   padding: $padding;
 }
 .leaderboard {
   flex-grow: 1;
   position: sticky;
   top: 500px;
-  padding: $padding;
+  //margin: $padding;
   width: 400px;
+  background-color: white;
 }
 $baseColor: #0E2A3B;
 $borderRadius: 10px;
@@ -74,10 +102,10 @@ img {
 }
 
 table {
-  width: 400px;
+  //width: 400px;
 
   td, th {
-    color: darken($baseColor, 10%);
+    //color: darken($baseColor, 10%);
     padding: $padding;
   }
 
@@ -100,51 +128,12 @@ table {
   }
 
   tr {
-    border-bottom: pink solid 1px;
     &:nth-child(2n) { background-color: white; }
     //&:nth-child(2n+1) { background-color: lighten($baseColor, 55%) }
   }
 }
 
-@media screen and (max-width: 700px) {
-  table, tr, td { display: block; }
 
-  td {
-    &:first-child {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: $imageBig;
-    }
-
-    &:not(:first-child) {
-      clear: both;
-      margin-left: $imageBig;
-      padding: 4px 20px 4px 90px;
-      position: relative;
-      text-align: left;
-
-      &:before {
-        color: lighten($baseColor, 30%);
-        content: '';
-        display: block;
-        left: 0;
-        position: absolute;
-      }
-    }
-
-    &:nth-child(2):before { content: 'Name:'; }
-    &:nth-child(3):before { content: 'Email:'; }
-    &:nth-child(4):before { content: 'Phone:'; }
-    &:nth-child(5):before { content: 'Comments:'; }
-  }
-
-  tr {
-    padding: $padding 0;
-    position: relative;
-    &:first-child { display: none; }
-  }
-}
 
 @media screen and (max-width: 500px) {
   .capo {

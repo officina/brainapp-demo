@@ -8,8 +8,11 @@
             padding: 24px;
             height: 600px;
             min-height: 600px;
-            background: #1A237E;
-            background: linear-gradient(to right, #0E2A3B 0%, #34306B 100%);
+          linear-gradient : (-225deg, rgba(0,101,168,0.6) 0%, rgba(0,36,61,0.6) 50%) !important;
+          background-size: cover;
+          background-position: center;
+            //background: #1A237E;
+            //background: linear-gradient(to right, #0E2A3B 0%, #34306B 100%);
 
             @include media-breakpoint-down('xs') {
                 height: 400px;
@@ -36,6 +39,9 @@
             }
             .package-type {
               padding: 15px 0px;
+              background-size: cover;
+              background-position: center;
+              height: 120px;
             }
             .ptside {
               max-height: 250px;
