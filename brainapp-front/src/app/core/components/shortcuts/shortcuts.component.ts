@@ -80,7 +80,48 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
                     'type' : 'nav-item',
                     'icon' : 'check_box',
                     'url'  : '/apps/todo'
-                }
+                },
+                {
+                  'id': 'chat',
+                  'title': 'Chat',
+                  'type': 'nav-item',
+                  'icon': 'chat',
+                  'url': '/apps/chat',
+                },
+                { 'id': 'profile',
+                  'title': 'Profile',
+                  'type' : 'item',
+                  'icon' : 'person',
+                  'url'  : '/pages/profile'
+                },
+              {
+                'id'   : 'style-3',
+                'title': 'Style 3',
+                'type' : 'item',
+                'icon' : 'email',
+                'url'  : '/pages/pricing/style-3'
+              },
+              {
+                'id'   : 'blank',
+                'title': 'Blank',
+                'type' : 'item',
+                'icon' : 'email',
+                'url'  : '/ui/page-layouts/blank'
+              },
+              {
+                'id'   : 'login-v2',
+                'title': 'Login v2',
+                'type' : 'item',
+                'icon' : 'email',
+                'url'  : '/pages/auth/login-2'
+              },
+              {
+                'id'   : 'register-v2',
+                'title': 'Register v2',
+                'type' : 'item',
+                'icon' : 'email',
+                'url'  : '/pages/auth/register-2'
+              },
             ];
         }
 
