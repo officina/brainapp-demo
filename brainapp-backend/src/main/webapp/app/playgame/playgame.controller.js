@@ -111,6 +111,8 @@
           var game = response.data;
           game.url = $sce.trustAsResourceUrl(response.data.url);
           $scope.game = game;
+          console.log(game.url);
+//          console.log($sce.trustAsResourceUrl(response.data.url));
           $scope.wrapperMemory.game = game;
           $scope.wrapperMemory.player = {};
           $scope.wrapperMemory.player.playtoken = playtoken;

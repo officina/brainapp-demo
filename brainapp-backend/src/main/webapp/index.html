@@ -18,6 +18,7 @@
     <!-- build:css content/css/main.css -->
     <link rel="stylesheet" href="content/css/main.css">
     <!-- endbuild -->
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="manifest" href="manifest.webapp" />
 </head>
@@ -28,13 +29,11 @@
     <page-ribbon></page-ribbon>
     <div ui-view="navbar" ng-cloak></div>
     <div class="container">
-        <div class="well" ui-view="content">
+        <div class="" ui-view="content">
             <!-- Angular views -->
         </div>
 
-        <div class="footer" ng-cloak>
-            <p data-translate="footer">This is your footer</p>
-        </div>
+
     </div>
     <noscript>
         <h1>You must enable javascript to view this page.</h1>
@@ -92,7 +91,7 @@
     <!-- build:js app/app.js  -->
     <!-- inject:js -->
     <script src="app/app.module.js"></script>
-        <script src="app/start/start.state.js"></script>
+    <script src="app/start/start.state.js"></script>
     <script src="app/start/start.controller.js"></script>
     <script src="app/services/user/user.service.js"></script>
     <script src="app/services/profiles/profile.service.js"></script>
@@ -111,6 +110,8 @@
     <script src="app/playgame/playgame.state.js"></script>
     <script src="app/playgame/playgame.service.js"></script>
     <script src="app/playgame/playgame.controller.js"></script>
+    <script src="app/playgame/gamebox.js"></script>
+    <script src="app/playgame/finished.controller.js"></script>
     <script src="app/layouts/navbar/navbar.controller.js"></script>
     <script src="app/layouts/navbar/active-menu.directive.js"></script>
     <script src="app/layouts/error/error.state.js"></script>

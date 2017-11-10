@@ -30,7 +30,9 @@
     "ngInfiniteScroll": "1.3.0",
     "swagger-ui": "2.1.5",
     "iframe-resizer": "^3.5.14",
-    "angular-timer": "^1.3.5"
+    "angular-timer": "^1.3.5",
+    "moment": "momentjs#^2.19.1",
+    "humanize-duration": "^3.12.0"
   },
   "devDependencies": {
     "angular-mocks": "1.5.8"
@@ -60,6 +62,8 @@
   "resolutions": {
     "angular": "1.5.8",
     "angular-bootstrap": "2.0.0",
-    "jquery": "3.1.0"
+    "jquery": "3.1.0",
+    "moment": "~2.9.0",
+    "humanize-duration": "~3.10.0"
   }
 }

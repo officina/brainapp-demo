@@ -3,7 +3,6 @@ package cc.officina.brainapp.config;
 import cc.officina.brainapp.security.*;
 import cc.officina.brainapp.security.jwt.*;
 
-
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -99,11 +98,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/api/register").permitAll()
             .antMatchers("/api/activate").permitAll()
+            //.antMatchers("/api/games/*").permitAll()
+            .antMatchers("/api/play/**").permitAll()
+            .antMatchers("/api/play/attempt").permitAll()
+            .antMatchers("/api/play/attempt/score").permitAll()
+            .antMatchers("/api/play/attempt/end").permitAll()
+            .antMatchers("/api/play/end").permitAll()
             .antMatchers("/api/authenticate").permitAll()
-            .antMatchers("/api/account/reset-password/init").permitAll()
-            .antMatchers("/api/account/reset-password/finish").permitAll()
+            .antMatchers("/api/account/reset_password/init").permitAll()
+            .antMatchers("/api/account/reset_password/finish").permitAll()
             .antMatchers("/api/profile-info").permitAll()
+            .antMatchers("/api/sessions/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/**").authenticated()
+
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/v2/api-docs/**").permitAll()
@@ -113,7 +120,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .apply(securityConfigurerAdapter());
 
     }
-
+    
     private JWTConfigurer securityConfigurerAdapter() {
         return new JWTConfigurer(tokenProvider);
     }

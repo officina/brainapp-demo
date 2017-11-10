@@ -80,7 +80,7 @@ var timerModule = angular.module('timer', [])
         $scope.isRunning = false;
 
         $scope.$on('timer-start', function () {
-        	console.log('timer start');
+        	console.log('iiiiii');
           $scope.start();
         });
 
@@ -101,6 +101,7 @@ var timerModule = angular.module('timer', [])
         });
 
         $scope.$on('timer-set-countdown', function (e, countdown) {
+        	console.log('set countdown');
           $scope.countdown = countdown;
         });
 
@@ -300,12 +301,13 @@ var timerModule = angular.module('timer', [])
           });
 
           $scope.$on('timer-set-countdown-seconds', function (e, countdownSeconds) {
-        	  console.log('set');
+        	  console.log('**********************');
             if (!$scope.isRunning) {
               $scope.clear();
             }
 
             $scope.countdown = countdownSeconds;
+            console.log('**********************'+$scope.countdown);
             $scope.millis = countdownSeconds * 1000;
             calculateTimeUnits();
           });
