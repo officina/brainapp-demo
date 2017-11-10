@@ -1,13 +1,21 @@
 <div class="page-layout blank" fusePerfectScrollbar>
-  <div class="game-pic">
-    <div class="btnpos">
-      <button mat-raised-button class="cta-button btn" color="accent">INIZIA</button>
+  <div class="game-pic" [ngStyle]="{'background-image':'url(assets/images/Make7Sfondo.png)'}">
+    <div class="left">
+      <div class="logo" [ngStyle]="{'background-image':'url(assets/images/Make7Logo.png)'}">
+      </div>
+      <div class="game-title">
+        <h1>Make 7!</h1>
+      </div>
+    </div>
+    <div class="right">
+      <div class="btnpos">
+        <button mat-raised-button class="cta-button btn" color="accent">INIZIA</button>
+      </div>
     </div>
   </div>
   <div class="all" fxLayout="row">
     <div class="game">
       <div class="game-descr">
-        <h1><strong>Make 7!</strong></h1>
         <h3><strong>L’obiettivo della Sfida</strong></h3>
         <p>
           Make 7! è un puzzle game in cui ti è richiesto di spostare
