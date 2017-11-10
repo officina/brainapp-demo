@@ -3,7 +3,6 @@ package cc.officina.brainapp.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.brainapp.domain.MatchTemplate;
 import cc.officina.brainapp.service.MatchTemplateService;
-import cc.officina.brainapp.web.rest.errors.BadRequestAlertException;
 import cc.officina.brainapp.web.rest.util.HeaderUtil;
 import cc.officina.brainapp.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -52,7 +51,7 @@ public class MatchTemplateResource {
     public ResponseEntity<MatchTemplate> createMatchTemplate(@RequestBody MatchTemplate matchTemplate) throws URISyntaxException {
         log.debug("REST request to save MatchTemplate : {}", matchTemplate);
         if (matchTemplate.getId() != null) {
-            throw new BadRequestAlertException("A new matchTemplate cannot already have an ID", ENTITY_NAME, "idexists");
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new matchTemplate cannot already have an ID")).body(null);
         }
         MatchTemplate result = matchTemplateService.save(matchTemplate);
         return ResponseEntity.created(new URI("/api/match-templates/" + result.getId()))

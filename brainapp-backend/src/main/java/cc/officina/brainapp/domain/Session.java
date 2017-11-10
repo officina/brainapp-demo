@@ -41,7 +41,7 @@ public class Session implements Serializable {
     @Column(name = "elaborated")
     private Boolean elaborated;
 
-    @OneToMany(mappedBy = "session")
+    @OneToMany(mappedBy = "session", fetch = FetchType.EAGER)
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Match> matches = new HashSet<>();
@@ -50,7 +50,6 @@ public class Session implements Serializable {
     @JoinColumn(unique = true)
     private Game game;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -161,7 +160,6 @@ public class Session implements Serializable {
     public void setGame(Game game) {
         this.game = game;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

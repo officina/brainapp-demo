@@ -1,9 +1,11 @@
 package cc.officina.brainapp.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
+import cc.officina.brainapp.domain.Game;
 import cc.officina.brainapp.domain.Session;
+import cc.officina.brainapp.service.GameService;
 import cc.officina.brainapp.service.SessionService;
-import cc.officina.brainapp.web.rest.errors.BadRequestAlertException;
 import cc.officina.brainapp.web.rest.util.HeaderUtil;
 import cc.officina.brainapp.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -35,9 +38,11 @@ public class SessionResource {
     private static final String ENTITY_NAME = "session";
 
     private final SessionService sessionService;
+    private final GameService gameService;
 
-    public SessionResource(SessionService sessionService) {
+    public SessionResource(SessionService sessionService, GameService gameService) {
         this.sessionService = sessionService;
+        this.gameService = gameService;
     }
 
     /**
@@ -50,11 +55,21 @@ public class SessionResource {
     @PostMapping("/sessions")
     @Timed
     public ResponseEntity<Session> createSession(@RequestBody Session session) throws URISyntaxException {
-        log.debug("REST request to save Session : {}", session);
+        log.info("REST request to save Session : {}", session);
         if (session.getId() != null) {
-            throw new BadRequestAlertException("A new session cannot already have an ID", ENTITY_NAME, "idexists");
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new session cannot already have an ID")).body(null);
         }
-        Session result = sessionService.save(session);
+        //VALIDATION!
+        Game game = gameService.findOne(session.getGame().getId());
+        if(game == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidGameId", "Invalid game id")).body(null);
+        }
+        Session oldSession = sessionService.findOneByExtId(session.getExtId());
+        if(oldSession != null)
+        {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidExtId", "extId already used")).body(null);
+        }
+        Session result = sessionService.saveAndSchedule(session.getGame(), session);
         return ResponseEntity.created(new URI("/api/sessions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -75,6 +90,21 @@ public class SessionResource {
         log.debug("REST request to update Session : {}", session);
         if (session.getId() == null) {
             return createSession(session);
+        }
+        //VALIDATION
+        Session _session = sessionService.findOne(session.getId());
+        if(session.getMatches() != null && session.getMatches().size() > 0)
+        {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "sessionAlreadyInUse", "Session already in use")).body(null);
+        }
+        Game game = gameService.findOne(session.getGame().getId());
+        if(game == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidGameId", "Invalid game id")).body(null);
+        }
+        Session oldSession = sessionService.findOneByExtId(session.getExtId());
+        if(oldSession != null && !oldSession.getId().equals(session.getId()))
+        {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidExtId", "extId already used")).body(null);
         }
         Session result = sessionService.save(session);
         return ResponseEntity.ok()
@@ -121,7 +151,51 @@ public class SessionResource {
     @Timed
     public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
         log.debug("REST request to delete Session : {}", id);
+        //VALIDATION
+        Session session = sessionService.findOne(id);
+        if(session.getMatches() != null && session.getMatches().size() > 0)
+        {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "sessionAlreadyInUse", "Session already in use")).body(null);
+        }
         sessionService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    
+    @PutMapping("/sessions/elaborate/{id}")
+    @Timed
+    @Transactional
+    public ResponseEntity<Session> elaborateSession(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to elaborate Session with id " + id);
+        Session session = sessionService.findOne(id);
+        if (session == null || session.getId() == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("notFound", "SessionNotFound", "Session not found")).body(null);
+        }
+        if(session.isElaborated())
+        {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("alreadyElaborated", "SessionAlreadyElab", "Session already processed")).body(null);
+        }
+        sessionService.elaborate(session);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
+            .body(null);
+    }
+    
+    @PutMapping("/sessions/ri-elaborate/{id}")
+    @Timed
+    @Transactional
+    public ResponseEntity<Session> riElaborateSession(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to ri-elaborate Session with id " + id);
+        // questo metodo elabora la sessione inviando i match con "used_to_po" uguale a true
+        Session session = sessionService.findOne(id);
+        if (session == null || session.getId() == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("notFound", "SessionNotFound", "Session not found")).body(null);
+        }
+        //elabora anche sessioni con il flag "Elaborate" a true
+        sessionService.rielaborate(session);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
+            .body(null);
+    }
+    
+    
 }

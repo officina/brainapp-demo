@@ -1,8 +1,14 @@
 package cc.officina.brainapp.service.impl;
 
+import cc.officina.brainapp.service.GamificationService;
 import cc.officina.brainapp.service.MatchService;
+import cc.officina.brainapp.domain.Attempt;
 import cc.officina.brainapp.domain.Match;
+import cc.officina.brainapp.repository.AttemptRepository;
 import cc.officina.brainapp.repository.MatchRepository;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,9 +27,13 @@ public class MatchServiceImpl implements MatchService{
     private final Logger log = LoggerFactory.getLogger(MatchServiceImpl.class);
 
     private final MatchRepository matchRepository;
-
-    public MatchServiceImpl(MatchRepository matchRepository) {
+    private final AttemptRepository attemptRepository;
+    private final GamificationService gamificationService;
+    
+    public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GamificationService gamificationService) {
         this.matchRepository = matchRepository;
+        this.attemptRepository = attemptRepository;
+        this.gamificationService = gamificationService;
     }
 
     /**
@@ -74,4 +84,22 @@ public class MatchServiceImpl implements MatchService{
         log.debug("Request to delete Match : {}", id);
         matchRepository.delete(id);
     }
+
+	@Override
+	public List<Match> findByUserAndId(String userId, Long sessionId) {
+		return matchRepository.findByUserAndSessionId(userId, sessionId);
+	}
+
+	@Override
+	public Match resetMatch(Match match) {
+		match.setValid(false);
+		for(Attempt a : match.getAttempts())
+		{
+			a.setValid(false);
+		}
+		attemptRepository.save(match.getAttempts());
+		matchRepository.save(match);
+		gamificationService.runResetAction(match);
+		return match;
+	}
 }

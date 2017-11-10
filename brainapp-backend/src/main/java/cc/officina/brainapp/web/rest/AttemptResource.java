@@ -3,7 +3,6 @@ package cc.officina.brainapp.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.brainapp.domain.Attempt;
 import cc.officina.brainapp.service.AttemptService;
-import cc.officina.brainapp.web.rest.errors.BadRequestAlertException;
 import cc.officina.brainapp.web.rest.util.HeaderUtil;
 import cc.officina.brainapp.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -52,7 +51,7 @@ public class AttemptResource {
     public ResponseEntity<Attempt> createAttempt(@RequestBody Attempt attempt) throws URISyntaxException {
         log.debug("REST request to save Attempt : {}", attempt);
         if (attempt.getId() != null) {
-            throw new BadRequestAlertException("A new attempt cannot already have an ID", ENTITY_NAME, "idexists");
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new attempt cannot already have an ID")).body(null);
         }
         Attempt result = attemptService.save(attempt);
         return ResponseEntity.created(new URI("/api/attempts/" + result.getId()))

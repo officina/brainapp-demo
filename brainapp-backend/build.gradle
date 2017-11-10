@@ -183,6 +183,7 @@ dependencies {
     compile "io.springfox:springfox-bean-validators:${springfox_version}"
     compile "org.postgresql:postgresql"
     compile "org.mapstruct:mapstruct-jdk8:${mapstruct_version}"
+    compile "com.github.officina:playoff-java-sdk:1.0.1"
     testCompile "org.awaitility:awaitility:${awaitility_version}"
     testCompile "com.jayway.jsonpath:json-path"
     testCompile ("org.springframework.boot:spring-boot-starter-test") {

@@ -3,6 +3,8 @@ package cc.officina.brainapp.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -46,11 +48,11 @@ public class Attempt implements Serializable {
 
     @Column(name = "valid")
     private Boolean valid;
-
+    
     @ManyToOne
+    @JsonIgnore
     private Match match;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -150,19 +152,6 @@ public class Attempt implements Serializable {
         this.completed = completed;
     }
 
-    public Boolean isValid() {
-        return valid;
-    }
-
-    public Attempt valid(Boolean valid) {
-        this.valid = valid;
-        return this;
-    }
-
-    public void setValid(Boolean valid) {
-        this.valid = valid;
-    }
-
     public Match getMatch() {
         return match;
     }
@@ -175,9 +164,24 @@ public class Attempt implements Serializable {
     public void setMatch(Match match) {
         this.match = match;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+    
+    public Boolean getValid() {
+		return valid;
+	}
 
-    @Override
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
+
+	public Boolean getCancelled() {
+		return cancelled;
+	}
+
+	public Boolean getCompleted() {
+		return completed;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -208,7 +212,6 @@ public class Attempt implements Serializable {
             ", lastUpdate='" + getLastUpdate() + "'" +
             ", cancelled='" + isCancelled() + "'" +
             ", completed='" + isCompleted() + "'" +
-            ", valid='" + isValid() + "'" +
             "}";
     }
 }

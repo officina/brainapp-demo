@@ -1,6 +1,13 @@
 package cc.officina.brainapp.service;
 
+import cc.officina.brainapp.domain.Attempt;
 import cc.officina.brainapp.domain.Game;
+import cc.officina.brainapp.domain.Match;
+import cc.officina.brainapp.domain.MatchTemplate;
+import cc.officina.brainapp.domain.Session;
+import cc.officina.brainapp.web.response.AttemptResponse;
+import cc.officina.brainapp.web.response.MatchResponse;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +46,16 @@ public interface GameService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken);
+
+	public AttemptResponse startAttempt(Game game, Match match);
+
+	public AttemptResponse updateAttemptScore(Game game, Attempt attempt, Long newScore, String newLevel);
+
+	public MatchResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, String levelReached, boolean endMatch);
+
+	public MatchResponse endMatch(Game game, Match match, Attempt lastAttempt, Long score, String level);
+
+	public MatchResponse endMatchRestore(Game game, Match match, Attempt lastAttempt, Long long1, String level);
 }

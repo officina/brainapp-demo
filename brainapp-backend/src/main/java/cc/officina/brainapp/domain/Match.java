@@ -53,24 +53,22 @@ public class Match implements Serializable {
     @Column(name = "match_token")
     private Long matchToken;
 
-    @Column(name = "valid")
-    private Boolean valid;
-
     @ManyToOne
     private Game game;
 
     @ManyToOne
     private MatchTemplate template;
 
-    @OneToMany(mappedBy = "match")
+    @OneToMany(mappedBy = "match", fetch = FetchType.EAGER)
     @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.NONE)
     private Set<Attempt> attempts = new HashSet<>();
 
     @ManyToOne
     private Session session;
+    
+    private Boolean valid;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -196,19 +194,6 @@ public class Match implements Serializable {
         this.matchToken = matchToken;
     }
 
-    public Boolean isValid() {
-        return valid;
-    }
-
-    public Match valid(Boolean valid) {
-        this.valid = valid;
-        return this;
-    }
-
-    public void setValid(Boolean valid) {
-        this.valid = valid;
-    }
-
     public Game getGame() {
         return game;
     }
@@ -272,9 +257,24 @@ public class Match implements Serializable {
     public void setSession(Session session) {
         this.session = session;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
-    @Override
+    public Boolean getValid() {
+		return valid;
+	}
+
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
+
+	public Boolean getUsedToPO() {
+		return usedToPO;
+	}
+
+	public Boolean getElaborated() {
+		return elaborated;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -307,7 +307,87 @@ public class Match implements Serializable {
             ", usedToPO='" + isUsedToPO() + "'" +
             ", elaborated='" + isElaborated() + "'" +
             ", matchToken='" + getMatchToken() + "'" +
-            ", valid='" + isValid() + "'" +
             "}";
     }
+    
+    @JsonIgnore
+    public String getMaxScore() {
+		Long max = 0l;
+		for(Attempt a : this.getAttempts())
+		{
+			if((a.isCompleted() || this.game.isLastAttemptValid()) && a.getAttemptScore() != null && (a.getAttemptScore() > max))	
+				max = a.getAttemptScore();
+		}
+		//nel caso di max_score un attempt a zero e un match con tutti 0 è considerato valido
+		if(max == null)
+			return null;
+		else
+			return max.toString();
+	}
+    
+    @JsonIgnore
+	public String getMinScore() {
+		Long min = null;
+		for(Attempt a : this.attempts)
+		{
+			try
+			{
+				if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
+					min = a.getAttemptScore();
+			}
+			catch (Exception e)
+			{
+				e.getMessage();
+			}
+		}
+		if(min == null)
+			return null;
+		else
+			return min.toString();
+	}
+
+/*
+    public String getMinScore() {
+        Long min = null;
+        for(Attempt a : this.getAttempts())
+        {
+            if(a.isCompleted() && (min == null || a.getAttemptScore() < min))
+                min = a.getAttemptScore();
+        }
+        if(min == null)
+            min = 0l;
+        return min.toString();
+    }
+*/
+
+	@JsonIgnore
+	public String getMeanScore() {
+		if(this.getAttempts().size() == 0)
+			return 0+"";
+		Long mean = 0l;
+		for(Attempt a : this.getAttempts())
+		{
+			mean = mean + a.getAttemptScore();
+		}
+		mean = mean / this.getAttempts().size();
+		return mean.toString();
+	}
+
+	@JsonIgnore
+	public String getMaxLevel() {
+		Long max = 0l;
+		for(Attempt a : this.getAttempts())
+		{
+			try
+			{
+				if(a != null && a.getLevelReached() != null && Long.parseLong(a.getLevelReached()) > max)
+					max = Long.parseLong(a.getLevelReached());
+			}
+			catch(Exception e)
+			{
+				System.out.println("Errore nel calcolo del maxLevel: " + e.getMessage());
+			}
+		}
+		return max.toString();
+	}
 }

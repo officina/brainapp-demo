@@ -3,7 +3,6 @@ package cc.officina.brainapp.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.brainapp.domain.Match;
 import cc.officina.brainapp.service.MatchService;
-import cc.officina.brainapp.web.rest.errors.BadRequestAlertException;
 import cc.officina.brainapp.web.rest.util.HeaderUtil;
 import cc.officina.brainapp.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -52,7 +51,7 @@ public class MatchResource {
     public ResponseEntity<Match> createMatch(@RequestBody Match match) throws URISyntaxException {
         log.debug("REST request to save Match : {}", match);
         if (match.getId() != null) {
-            throw new BadRequestAlertException("A new match cannot already have an ID", ENTITY_NAME, "idexists");
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new match cannot already have an ID")).body(null);
         }
         Match result = matchService.save(match);
         return ResponseEntity.created(new URI("/api/matches/" + result.getId()))
@@ -123,5 +122,19 @@ public class MatchResource {
         log.debug("REST request to delete Match : {}", id);
         matchService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    @PutMapping("/matches/{id}/reset")
+    @Timed
+    public ResponseEntity<Match> resetMatch(@PathVariable Long id) throws URISyntaxException {
+        log.info("REST request to reset Match with id " + id);
+        Match match = matchService.findOne(id);
+        if (match == null) {
+            return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
+        }
+        Match result = matchService.resetMatch(match);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, match.getId().toString()))
+            .body(result);
     }
 }

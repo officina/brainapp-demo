@@ -1,6 +1,11 @@
 package cc.officina.brainapp.service;
 
+import cc.officina.brainapp.domain.Game;
 import cc.officina.brainapp.domain.Session;
+
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +44,18 @@ public interface SessionService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+	public boolean validateSessionAndUser(String extid, String playerid, Long gameid);
+
+	public Session findOneByExtId(String extid);
+	
+	public Session findOneByExtId(String extid, Long gameid);
+
+	public Session saveAndSchedule(Game game, Session session);
+	
+	public void elaborate(Session session);
+	
+	public List<Session> findPending(ZonedDateTime now);
+
+	public void rielaborate(Session session);
 }

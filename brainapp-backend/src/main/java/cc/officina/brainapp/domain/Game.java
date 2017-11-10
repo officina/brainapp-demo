@@ -38,7 +38,7 @@ public class Game implements Serializable {
     private String actionId;
 
     @Column(name = "jhi_type")
-    private Integer type;
+    private GameType type;
 
     @Column(name = "use_levels")
     private Boolean useLevels;
@@ -54,7 +54,6 @@ public class Game implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Match> matches = new HashSet<>();
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -115,16 +114,16 @@ public class Game implements Serializable {
         this.actionId = actionId;
     }
 
-    public Integer getType() {
+    public GameType getType() {
         return type;
     }
 
-    public Game type(Integer type) {
+    public Game type(GameType type) {
         this.type = type;
         return this;
     }
 
-    public void setType(Integer type) {
+    public void setType(GameType type) {
         this.type = type;
     }
 
@@ -191,7 +190,6 @@ public class Game implements Serializable {
     public void setMatches(Set<Match> matches) {
         this.matches = matches;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

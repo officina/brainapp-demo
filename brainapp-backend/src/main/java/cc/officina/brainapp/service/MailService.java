@@ -1,5 +1,6 @@
 package cc.officina.brainapp.service;
 
+import cc.officina.brainapp.domain.Match;
 import cc.officina.brainapp.domain.User;
 
 import io.github.jhipster.config.JHipsterProperties;
@@ -22,6 +23,7 @@ import java.util.Locale;
  * Service for sending emails.
  * <p>
  * We use the @Async annotation to send emails asynchronously.
+ * </p>
  */
 @Service
 public class MailService {
@@ -101,5 +103,13 @@ public class MailService {
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "passwordResetEmail", "email.reset.title");
+    }
+    
+    @Async
+    public void sendMatchNotValidAlert(Match match, String additionalMessage)
+    {
+    	log.debug("Sending match invalid alert '{}'", match);
+    	String content = "Individuato match non valido con id " + match.getId() + ". Informazioni: " + additionalMessage;
+    	sendEmail("nicola.zambon@officina.cc", "Gatorade Alert - Match non valido", content, false, false);
     }
 }

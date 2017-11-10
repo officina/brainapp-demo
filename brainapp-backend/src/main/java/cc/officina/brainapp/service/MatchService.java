@@ -1,6 +1,9 @@
 package cc.officina.brainapp.service;
 
 import cc.officina.brainapp.domain.Match;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +42,7 @@ public interface MatchService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+    public List<Match> findByUserAndId(String userId, Long id);
+
+	public Match resetMatch(Match match);
 }

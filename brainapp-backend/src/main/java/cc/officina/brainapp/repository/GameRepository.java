@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface GameRepository extends JpaRepository<Game, Long> {
-
+public interface GameRepository extends JpaRepository<Game,Long> {
+    
 }
