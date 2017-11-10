@@ -80,7 +80,6 @@ var timerModule = angular.module('timer', [])
         $scope.isRunning = false;
 
         $scope.$on('timer-start', function () {
-        	console.log('timer start');
           $scope.start();
         });
 
@@ -300,7 +299,6 @@ var timerModule = angular.module('timer', [])
           });
 
           $scope.$on('timer-set-countdown-seconds', function (e, countdownSeconds) {
-        	  console.log('set');
             if (!$scope.isRunning) {
               $scope.clear();
             }
