@@ -1,0 +1,89 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myAttemptLabel" data-translate="brainappbackendApp.attempt.home.createOrEditLabel">Create or edit a Attempt</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.attempt.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.attempt.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.attempt.attemptScore" for="field_attemptScore">Attempt Score</label>
+            <input type="number" class="form-control" name="attemptScore" id="field_attemptScore"
+                    ng-model="vm.attempt.attemptScore"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.attempt.startAttempt" for="field_startAttempt">Start Attempt</label>
+                <div class="input-group">
+                    <input id="field_startAttempt" type="text" class="form-control" name="startAttempt" datetime-picker="{{dateformat}}" ng-model="vm.attempt.startAttempt" is-open="vm.datePickerOpenStatus.startAttempt"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startAttempt')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.attempt.stopAttempt" for="field_stopAttempt">Stop Attempt</label>
+                <div class="input-group">
+                    <input id="field_stopAttempt" type="text" class="form-control" name="stopAttempt" datetime-picker="{{dateformat}}" ng-model="vm.attempt.stopAttempt" is-open="vm.datePickerOpenStatus.stopAttempt"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('stopAttempt')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.attempt.levelReached" for="field_levelReached">Level Reached</label>
+            <input type="text" class="form-control" name="levelReached" id="field_levelReached"
+                    ng-model="vm.attempt.levelReached"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.attempt.lastUpdate" for="field_lastUpdate">Last Update</label>
+                <div class="input-group">
+                    <input id="field_lastUpdate" type="text" class="form-control" name="lastUpdate" datetime-picker="{{dateformat}}" ng-model="vm.attempt.lastUpdate" is-open="vm.datePickerOpenStatus.lastUpdate"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('lastUpdate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.attempt.cancelled" for="field_cancelled">Cancelled</label>
+                <input type="checkbox" name="cancelled" id="field_cancelled"
+                          ng-model="vm.attempt.cancelled"/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.attempt.completed" for="field_completed">Completed</label>
+                <input type="checkbox" name="completed" id="field_completed"
+                          ng-model="vm.attempt.completed"/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.attempt.valid" for="field_valid">Valid</label>
+                <input type="checkbox" name="valid" id="field_valid"
+                          ng-model="vm.attempt.valid"/>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="brainappbackendApp.attempt.match" for="field_match">Match</label>
+            <select class="form-control" id="field_match" name="match" ng-model="vm.attempt.match" ng-options="match as match.id for match in vm.matches track by match.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

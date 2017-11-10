@@ -1,0 +1,51 @@
+
+<div>
+    <h2><span data-translate="brainappbackendApp.game.detail.title">Game</span> {{vm.game.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="brainappbackendApp.game.description">Description</span></dt>
+        <dd>
+            <span>{{vm.game.description}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.game.url">Url</span></dt>
+        <dd>
+            <span>{{vm.game.url}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.game.code">Code</span></dt>
+        <dd>
+            <span>{{vm.game.code}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.game.actionId">Action Id</span></dt>
+        <dd>
+            <span>{{vm.game.actionId}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.game.type">Type</span></dt>
+        <dd>
+            <span>{{vm.game.type}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.game.useLevels">Use Levels</span></dt>
+        <dd>
+            <span>{{vm.game.useLevels}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.game.levelsNumber">Levels Number</span></dt>
+        <dd>
+            <span>{{vm.game.levelsNumber}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.game.lastAttemptValid">Last Attempt Valid</span></dt>
+        <dd>
+            <span>{{vm.game.lastAttemptValid}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="game-detail.edit({id:vm.game.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>
