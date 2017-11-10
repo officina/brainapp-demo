@@ -131,10 +131,16 @@
     }
   .mat-tab-group {
     padding: 0 !important;
+    display: flex;
     width: 500px;
   }
-  label {
+  .mat-tab-labels {
+    display: flex;
     padding: 0 !important;
+  }
+  .mat-tab-label {
+    padding: 0 !important;
+    //min-width: 0 !important;
   }
   $baseColor: #0E2A3B;
   $borderRadius: 10px;
@@ -169,7 +175,7 @@
   }
 
   table {
-    width: 100%;
+    width: 500px;
 
     td, th {
       color: darken($baseColor, 10%);
@@ -195,6 +201,7 @@
     }
 
     tr {
+
       border-bottom: pink solid 1px;
       &:nth-child(2n) { background-color: white; }
       //&:nth-child(2n+1) { background-color: lighten($baseColor, 55%) }
