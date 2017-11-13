@@ -1,10 +1,10 @@
 <div id="price-tables" class="page-layout simple fullwidth" fusePerfectScrollbar>
 
     <!-- HEADER -->
-    <div class="header" fxLayout="column" fxLayoutAlign="center center">
+    <div class="header" fxLayout="column" fxLayoutAlign="center center" [ngStyle]="{'background-image':'url(assets/images/labbkg.jpeg)'}">
 
         <div class="hero-text" fxLayout="column" fxLayoutAlign="center center" fxFlex>
-
+          <br><br>
             <div class="h1">Sfida della settimana!</div>
             <div class="h3">
                 INIZIA: 25/06/2017 12:00 - FINISCE: 7/07/2017 12:00
@@ -72,15 +72,14 @@
 
           <div class="price-table ptmain style-3 " fxLayout="column">
 
-            <div class="package-type">
-              <div class="title">foto</div>
-              <div class="subtitle">del gioco</div>
+            <div class="package-type" [ngStyle]="{ 'background-image': 'url(assets/images/Make7Banner.png)'}">
+
             </div>
 
             <div class="price mat-primary-bg" fxLayout="row" fxLayoutAlign="center start">
               <!--<div class="currency">$</div>-->
               <div fxLayout="row" fxLayoutAlign="center end">
-                <div class="value">Make 7!</div>
+                <div class="value">MAKE 7</div>
                 <!--<div class="period">monthly per user</div>-->
               </div>
             </div>
@@ -93,7 +92,7 @@
               </div>
             </div>
 
-            <button mat-raised-button class="cta-button" color="accent">Gioca</button>
+            <button mat-raised-button class="cta-button" color="accent">VAI ALLA SFIDA</button>
 
             <!--<div class="note">30 day free trial to start</div>-->
 
@@ -162,33 +161,54 @@
 
     <!-- CONTENT -->
     <div class="content" fxLayout="column">
-
         <div class="leaderboards" fxLayout="row" fxLayoutWrap>
+          <div class="table-users">
+            <div class="capo">CLASSIFICA LABORATORIO</div>
 
-            <div class="table-users">
-            <div class="capo">Global</div>
+            <table cellspacing="0">
+
+                <mat-tab-group dynamicHeight="true">
+                    <mat-tab label="COMPLESSIVA">
+                      <app-complessiva></app-complessiva>
+                    </mat-tab>
+                    <mat-tab label="LOGICA">
+                      <app-logica></app-logica>
+                    </mat-tab>
+                    <mat-tab label="CREATIVITÁ">
+                      <app-creativita></app-creativita>
+                    </mat-tab>
+                    <mat-tab label="PROBLEM SOLVING" class="last-label">
+                      <app-problemsolving></app-problemsolving>
+                    </mat-tab>
+                </mat-tab-group>
+
+
+            </table>
+          </div>
+          <div class="table-users">
+            <div class="capo">CLASSIFICA GLOBALE</div>
 
             <table cellspacing="0">
               <tr>
                 <mat-tab-group dynamicHeight="true">
                   <th>
-                    <mat-tab label="Complessiva">
-                      <!--<app-complessiva></app-complessiva>-->
+                    <mat-tab label="COMPLESSIVA">
+                      <app-complessiva></app-complessiva>
                     </mat-tab>
                   </th>
                   <th>
-                    <mat-tab label="Logica">
-                      <!--<app-logica></app-logica>-->
+                    <mat-tab label="LOGICA">
+                      <app-logica></app-logica>
                     </mat-tab>
                   </th>
                   <th>
-                    <mat-tab label="Creatività">
-                      <!--<app-creativita></app-creativita>-->
+                    <mat-tab label="CREATIVITÁ">
+                      <app-creativita></app-creativita>
                     </mat-tab>
                   </th>
                   <th>
-                    <mat-tab label="Problem Solving">
-                      <!--<app-problemsolving></app-problemsolving>-->
+                    <mat-tab label="PROBLEM SOLVING">
+                      <app-problemsolving></app-problemsolving>
                     </mat-tab>
                   </th>
                 </mat-tab-group>
@@ -196,63 +216,7 @@
 
             </table>
           </div>
-          <div class="table-users">
-            <div class="capo">Team</div>
-
-            <table cellspacing="0">
-              <tr>
-                <th>Rank</th>
-                <th>User</th>
-                <th></th>
-                <th>Problem Solving</th>
-                <th>Logic</th>
-                <th>Creativity</th>
-              </tr>
-
-              <tr>
-                <td>1</td>
-                <td><img src="http://lorempixel.com/100/100/people/1" alt="" /></td>
-                <td>Jane Doe</td>
-                <td>5</td>
-                <td>7</td>
-                <td>8</td>
-              </tr>
-
-              <tr>
-                <td>2</td>
-                <td><img src="http://lorempixel.com/100/100/sports/2" alt="" /></td>
-                <td>Jane Doe</td>
-                <td>8</td>
-                <td>3</td>
-                <td>5</td>
-              </tr>
-
-              <tr>
-                <td>3</td>
-                <td><img src="http://lorempixel.com/100/100/people/9" alt="" /></td>
-                <td>Jane Doe</td>
-                <td>4</td>
-                <td>4</td>
-                <td>4</td>
-              </tr>
-
-              <tr>
-                <td>4</td>
-                <td><img src="http://lorempixel.com/100/100/people/3" alt="" /></td>
-                <td>Jane Doe</td>
-                <td>4</td>
-                <td>4</td>
-                <td>4</td>
-              </tr>
-            </table>
-          </div>
-
-
-
-
-
         </div>
-
     </div>
 
 </div>

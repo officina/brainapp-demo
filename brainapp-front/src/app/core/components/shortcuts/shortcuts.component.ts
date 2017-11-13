@@ -57,6 +57,12 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
         {
             // User's shortcut items
             this.shortcutItems = [
+              { 'id': 'profile',
+                'title': 'Profile',
+                'type' : 'item',
+                'icon' : 'person',
+                'url'  : '/pages/profile'
+              },
                 {
                     'title': 'Calendar',
                     'type' : 'nav-item',
@@ -88,22 +94,17 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
                   'icon': 'chat',
                   'url': '/apps/chat',
                 },
-                { 'id': 'profile',
-                  'title': 'Profile',
-                  'type' : 'item',
-                  'icon' : 'person',
-                  'url'  : '/pages/profile'
-                },
+
               {
                 'id'   : 'style-3',
-                'title': 'Style 3',
+                'title': 'LAB',
                 'type' : 'item',
-                'icon' : 'email',
+                'icon' : 'games',
                 'url'  : '/pages/pricing/style-3'
               },
               {
                 'id'   : 'blank',
-                'title': 'Blank',
+                'title': 'GAME',
                 'type' : 'item',
                 'icon' : 'email',
                 'url'  : '/ui/page-layouts/blank'

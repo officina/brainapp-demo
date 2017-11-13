@@ -13,7 +13,6 @@ import { FusePipesModule } from '../pipes/pipes.module';
 import { FuseConfirmDialogComponent } from '../components/confirm-dialog/confirm-dialog.component';
 import { FuseCountdownComponent } from '../components/countdown/countdown.component';
 import { FuseMatchMedia } from '../services/match-media.service';
-import { FuseNavbarVerticalService } from '../../main/navbar/vertical/navbar-vertical.service';
 import { FuseMatSidenavHelperService } from '../directives/mat-sidenav-helper/mat-sidenav-helper.service';
 import { FuseHljsComponent } from '../components/hljs/hljs.component';
 import { FusePerfectScrollbarDirective } from '../directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
@@ -73,7 +72,6 @@ import { TranslateModule } from '@ngx-translate/core';
     providers      : [
         CookieService,
         FuseMatchMedia,
-        FuseNavbarVerticalService,
         FuseMatSidenavHelperService,
         FuseTranslationLoaderService
     ]
