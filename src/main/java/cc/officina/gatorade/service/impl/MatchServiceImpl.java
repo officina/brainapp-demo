@@ -28,12 +28,10 @@ public class MatchServiceImpl implements MatchService{
 
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
-    private final GamificationService gamificationService;
     
     public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GamificationService gamificationService) {
         this.matchRepository = matchRepository;
         this.attemptRepository = attemptRepository;
-        this.gamificationService = gamificationService;
     }
 
     /**
@@ -99,7 +97,6 @@ public class MatchServiceImpl implements MatchService{
 		}
 		attemptRepository.save(match.getAttempts());
 		matchRepository.save(match);
-		gamificationService.runResetAction(match);
 		return match;
 	}
 }

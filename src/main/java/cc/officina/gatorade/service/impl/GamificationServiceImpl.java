@@ -2,31 +2,20 @@ package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MailService;
-import cc.officina.gatorade.service.SessionService;
-import cc.officina.gatorade.task.SessionTask;
 import cc.playoff.sdk.PlayOff;
-import cc.playoff.sdk.PlayOff.PlayOffException;
-import cc.officina.gatorade.domain.Game;
-import cc.officina.gatorade.domain.GameType;
+import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.AttemptRepository;
-import cc.officina.gatorade.repository.GameRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 import cc.officina.gatorade.repository.SessionRepository;
-import cc.officina.gatorade.domain.GameType;
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Timer;
-
 import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +36,7 @@ public class GamificationServiceImpl implements GamificationService{
 
     private final SessionRepository sessionRepository;
     private final MatchRepository matchRepository;
+    private final AttemptRepository attemptRepository;
     private final MailService mailService;
     private static PlayOff po;
     @Value("${elaboration.interval}")
@@ -60,10 +50,11 @@ public class GamificationServiceImpl implements GamificationService{
 	@Value("${playoff.client.domain}")
     private String poDomain;
 
-    public GamificationServiceImpl(SessionRepository sessionRepository, MatchRepository matchRepository, MailService mailService) {
+    public GamificationServiceImpl(SessionRepository sessionRepository, MatchRepository matchRepository, MailService mailService, AttemptRepository attemptRepository) {
         this.sessionRepository = sessionRepository;
         this.matchRepository = matchRepository;
         this.mailService = mailService;
+        this.attemptRepository = attemptRepository;
         po = new PlayOff(poClientId, poClientSecret, null, "v2","playoff.cc");
     }
     
@@ -79,13 +70,19 @@ public class GamificationServiceImpl implements GamificationService{
 	}
 
 	@Override
-	public void runAction(Match match) {
-		try {
-			if(!checkMatchValidity(match))
+	public void runAction(Match match)
+	{
+		try 
+		{
+			if(checkMatchValidity(match))
 			{
-				log.info("Match with id " + match.getId() + " not valid for Playoff.");
-				return;
+				log.info("Match with id " + match.getId() + " valid!");
 			}
+			else
+			{
+				devilryOnMatch(match);
+			}
+			
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("player_id", match.getUserId());
 			LinkedTreeMap<String, Object> requestBody = getRequestByType(match);
@@ -103,11 +100,6 @@ public class GamificationServiceImpl implements GamificationService{
 	@Override
 	public void runResetAction(Match match) {
 		try {
-			if(!checkMatchValidity(match))
-			{
-				log.info("Match with id " + match.getId() + " not valid for Playoff.");
-				return;
-			}
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("player_id", match.getUserId());
 			LinkedTreeMap<String, Object> requestBody = getRequestByType(match);
@@ -251,20 +243,21 @@ public class GamificationServiceImpl implements GamificationService{
 	 */
 	private boolean checkMatchValidity(Match match) {
 		boolean flag = true;
-		switch (match.getGame().getType()) {
-		case POINT:
-			//un match a max point è sempre valido
-			break;
-		case MINPOINT:
-			String tempMin = match.getMinScore();
-			if(tempMin == null || tempMin.equalsIgnoreCase("0"))
-				flag = false;
-			break;
-		case LEVEL:
-			String tempLevel = match.getMaxLevel();
-			if(tempLevel == null)
-				flag = false;
-			break;
+		switch (match.getGame().getType())
+		{
+			case POINT:
+				//un match a max point è sempre valido
+				break;
+			case MINPOINT:
+				String tempMin = match.getMinScore();
+				if(tempMin == null || tempMin.equalsIgnoreCase("0"))
+					flag = false;
+				break;
+			case LEVEL:
+				String tempLevel = match.getMaxLevel();
+				if(tempLevel == null)
+					flag = false;
+				break;
 		}
 		
 		if(!flag)
@@ -291,6 +284,27 @@ public class GamificationServiceImpl implements GamificationService{
 				m.setUserId(oldId);
 			}
 			System.out.println("DOPO - Match con id = " + m.getId() + " e flag " + m.getUsedToPO());
+		}
+		
+	}
+	
+	private void devilryOnMatch(Match match) {
+		switch (match.getGame().getType())
+		{
+			case POINT:
+				break;
+			case MINPOINT:
+				for(Attempt a : match.getAttempts())
+				{
+					if(!a.isCompleted() && match.getGame().getDefaultScore() != null)
+					{
+						a.setAttemptScore(match.getGame().getDefaultScore());
+						attemptRepository.saveAndFlush(a);
+					}
+				}
+				break;
+			case LEVEL:
+				break;
 		}
 		
 	}
