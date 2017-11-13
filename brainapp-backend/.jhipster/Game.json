@@ -40,11 +40,16 @@
         {
             "fieldName": "lastAttemptValid",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "defaultScore",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170618194749",
     "dto": "no",
     "service": "serviceImpl",
     "entityTableName": "game",
+    "jpaMetamodelFiltering": false,
     "pagination": "pager"
 }

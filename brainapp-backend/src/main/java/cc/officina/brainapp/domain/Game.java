@@ -49,6 +49,9 @@ public class Game implements Serializable {
     @Column(name = "last_attempt_valid")
     private Boolean lastAttemptValid;
 
+    @Column(name = "default_score")
+    private Long defaultScore;
+    
     @OneToMany(mappedBy = "game")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -190,8 +193,16 @@ public class Game implements Serializable {
     public void setMatches(Set<Match> matches) {
         this.matches = matches;
     }
+    
+    public Long getDefaultScore() {
+		return defaultScore;
+	}
 
-    @Override
+	public void setDefaultScore(Long defaultScore) {
+		this.defaultScore = defaultScore;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

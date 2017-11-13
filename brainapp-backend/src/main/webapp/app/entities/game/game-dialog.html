@@ -45,8 +45,11 @@
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="brainappbackendApp.game.useLevels" for="field_useLevels">Use Levels</label>
-                <input type="checkbox" name="useLevels" id="field_useLevels"
-                          ng-model="vm.game.useLevels"/>
+                <select name="type" id="field_type" ng-model="vm.game.type" class="form-control">
+					<option value="POINT">POINT</option>
+				 	<option value="LEVEL">LEVEL</option>
+				  	<option value="MINPOINT">MINPOINT</option>
+				</select>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="brainappbackendApp.game.levelsNumber" for="field_levelsNumber">Levels Number</label>
@@ -58,6 +61,12 @@
             <label class="control-label" data-translate="brainappbackendApp.game.lastAttemptValid" for="field_lastAttemptValid">Last Attempt Valid</label>
                 <input type="checkbox" name="lastAttemptValid" id="field_lastAttemptValid"
                           ng-model="vm.game.lastAttemptValid"/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.defaultScore" for="field_defaultScore">Default Score</label>
+            <input type="number" class="form-control" name="defaultScore" id="field_defaultScore"
+                    ng-model="vm.game.defaultScore"
+                    />
         </div>
 
     </div>
