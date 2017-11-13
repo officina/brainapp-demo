@@ -2,6 +2,7 @@
 
 module.exports = {
     app: 'src/main/webapp/',
+    htmlgames: 'src/main/webapp/htmlgames/',
     dist: 'build/www/',
     swaggerDist: 'build/www/swagger-ui/',
     test: 'src/test/javascript/',
