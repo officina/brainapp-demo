@@ -53,7 +53,9 @@
                            if(getParamValue('ctl-arcade') === "true"){
                                parent.__ctlArcadeEndSession();
                            }
-                          attemptEnded(iScore);
+                           if (currentattempt != null) {
+                              attemptEnded(iScore);   
+                           }
                            //...ADD YOUR CODE HERE EVENTUALLY
                     });
 
