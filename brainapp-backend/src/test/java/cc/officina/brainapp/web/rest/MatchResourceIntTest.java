@@ -1,0 +1,329 @@
+package cc.officina.brainapp.web.rest;
+
+import cc.officina.brainapp.BrainappbackendApp;
+
+import cc.officina.brainapp.domain.Match;
+import cc.officina.brainapp.repository.MatchRepository;
+import cc.officina.brainapp.service.MatchService;
+import cc.officina.brainapp.web.rest.errors.ExceptionTranslator;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
+import java.time.ZoneId;
+import java.util.List;
+
+import static cc.officina.brainapp.web.rest.TestUtil.sameInstant;
+import static cc.officina.brainapp.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+/**
+ * Test class for the MatchResource REST controller.
+ *
+ * @see MatchResource
+ */
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BrainappbackendApp.class)
+public class MatchResourceIntTest {
+
+    private static final ZonedDateTime DEFAULT_START = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_START = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final ZonedDateTime DEFAULT_STOP = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_STOP = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final Long DEFAULT_DIFF_LEVEL = 1L;
+    private static final Long UPDATED_DIFF_LEVEL = 2L;
+
+    private static final String DEFAULT_USER_ID = "AAAAAAAAAA";
+    private static final String UPDATED_USER_ID = "BBBBBBBBBB";
+
+    private static final ZonedDateTime DEFAULT_LAST_START = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_LAST_START = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final Long DEFAULT_TIME_SPENT = 1L;
+    private static final Long UPDATED_TIME_SPENT = 2L;
+
+    private static final Boolean DEFAULT_USED_TO_PO = false;
+    private static final Boolean UPDATED_USED_TO_PO = true;
+
+    private static final Boolean DEFAULT_ELABORATED = false;
+    private static final Boolean UPDATED_ELABORATED = true;
+
+    private static final Long DEFAULT_MATCH_TOKEN = 1L;
+    private static final Long UPDATED_MATCH_TOKEN = 2L;
+
+    private static final Boolean DEFAULT_VALID = false;
+    private static final Boolean UPDATED_VALID = true;
+
+    @Autowired
+    private MatchRepository matchRepository;
+
+    @Autowired
+    private MatchService matchService;
+
+    @Autowired
+    private MappingJackson2HttpMessageConverter jacksonMessageConverter;
+
+    @Autowired
+    private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
+
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private EntityManager em;
+
+    private MockMvc restMatchMockMvc;
+
+    private Match match;
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        final MatchResource matchResource = new MatchResource(matchService);
+        this.restMatchMockMvc = MockMvcBuilders.standaloneSetup(matchResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+    }
+
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Match createEntity(EntityManager em) {
+        Match match = new Match()
+            .start(DEFAULT_START)
+            .stop(DEFAULT_STOP)
+            .diffLevel(DEFAULT_DIFF_LEVEL)
+            .userId(DEFAULT_USER_ID)
+            .lastStart(DEFAULT_LAST_START)
+            .timeSpent(DEFAULT_TIME_SPENT)
+            .usedToPO(DEFAULT_USED_TO_PO)
+            .elaborated(DEFAULT_ELABORATED)
+            .matchToken(DEFAULT_MATCH_TOKEN)
+            .valid(DEFAULT_VALID);
+        return match;
+    }
+
+    @Before
+    public void initTest() {
+        match = createEntity(em);
+    }
+
+    @Test
+    @Transactional
+    public void createMatch() throws Exception {
+        int databaseSizeBeforeCreate = matchRepository.findAll().size();
+
+        // Create the Match
+        restMatchMockMvc.perform(post("/api/matches")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(match)))
+            .andExpect(status().isCreated());
+
+        // Validate the Match in the database
+        List<Match> matchList = matchRepository.findAll();
+        assertThat(matchList).hasSize(databaseSizeBeforeCreate + 1);
+        Match testMatch = matchList.get(matchList.size() - 1);
+        assertThat(testMatch.getStart()).isEqualTo(DEFAULT_START);
+        assertThat(testMatch.getStop()).isEqualTo(DEFAULT_STOP);
+        assertThat(testMatch.getDiffLevel()).isEqualTo(DEFAULT_DIFF_LEVEL);
+        assertThat(testMatch.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testMatch.getLastStart()).isEqualTo(DEFAULT_LAST_START);
+        assertThat(testMatch.getTimeSpent()).isEqualTo(DEFAULT_TIME_SPENT);
+        assertThat(testMatch.isUsedToPO()).isEqualTo(DEFAULT_USED_TO_PO);
+        assertThat(testMatch.isElaborated()).isEqualTo(DEFAULT_ELABORATED);
+        assertThat(testMatch.getMatchToken()).isEqualTo(DEFAULT_MATCH_TOKEN);
+        assertThat(testMatch.isValid()).isEqualTo(DEFAULT_VALID);
+    }
+
+    @Test
+    @Transactional
+    public void createMatchWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = matchRepository.findAll().size();
+
+        // Create the Match with an existing ID
+        match.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restMatchMockMvc.perform(post("/api/matches")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(match)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Match in the database
+        List<Match> matchList = matchRepository.findAll();
+        assertThat(matchList).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    @Transactional
+    public void getAllMatches() throws Exception {
+        // Initialize the database
+        matchRepository.saveAndFlush(match);
+
+        // Get all the matchList
+        restMatchMockMvc.perform(get("/api/matches?sort=id,desc"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(match.getId().intValue())))
+            .andExpect(jsonPath("$.[*].start").value(hasItem(sameInstant(DEFAULT_START))))
+            .andExpect(jsonPath("$.[*].stop").value(hasItem(sameInstant(DEFAULT_STOP))))
+            .andExpect(jsonPath("$.[*].diffLevel").value(hasItem(DEFAULT_DIFF_LEVEL.intValue())))
+            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.toString())))
+            .andExpect(jsonPath("$.[*].lastStart").value(hasItem(sameInstant(DEFAULT_LAST_START))))
+            .andExpect(jsonPath("$.[*].timeSpent").value(hasItem(DEFAULT_TIME_SPENT.intValue())))
+            .andExpect(jsonPath("$.[*].usedToPO").value(hasItem(DEFAULT_USED_TO_PO.booleanValue())))
+            .andExpect(jsonPath("$.[*].elaborated").value(hasItem(DEFAULT_ELABORATED.booleanValue())))
+            .andExpect(jsonPath("$.[*].matchToken").value(hasItem(DEFAULT_MATCH_TOKEN.intValue())))
+            .andExpect(jsonPath("$.[*].valid").value(hasItem(DEFAULT_VALID.booleanValue())));
+    }
+
+    @Test
+    @Transactional
+    public void getMatch() throws Exception {
+        // Initialize the database
+        matchRepository.saveAndFlush(match);
+
+        // Get the match
+        restMatchMockMvc.perform(get("/api/matches/{id}", match.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.id").value(match.getId().intValue()))
+            .andExpect(jsonPath("$.start").value(sameInstant(DEFAULT_START)))
+            .andExpect(jsonPath("$.stop").value(sameInstant(DEFAULT_STOP)))
+            .andExpect(jsonPath("$.diffLevel").value(DEFAULT_DIFF_LEVEL.intValue()))
+            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID.toString()))
+            .andExpect(jsonPath("$.lastStart").value(sameInstant(DEFAULT_LAST_START)))
+            .andExpect(jsonPath("$.timeSpent").value(DEFAULT_TIME_SPENT.intValue()))
+            .andExpect(jsonPath("$.usedToPO").value(DEFAULT_USED_TO_PO.booleanValue()))
+            .andExpect(jsonPath("$.elaborated").value(DEFAULT_ELABORATED.booleanValue()))
+            .andExpect(jsonPath("$.matchToken").value(DEFAULT_MATCH_TOKEN.intValue()))
+            .andExpect(jsonPath("$.valid").value(DEFAULT_VALID.booleanValue()));
+    }
+
+    @Test
+    @Transactional
+    public void getNonExistingMatch() throws Exception {
+        // Get the match
+        restMatchMockMvc.perform(get("/api/matches/{id}", Long.MAX_VALUE))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    public void updateMatch() throws Exception {
+        // Initialize the database
+        matchService.save(match);
+
+        int databaseSizeBeforeUpdate = matchRepository.findAll().size();
+
+        // Update the match
+        Match updatedMatch = matchRepository.findOne(match.getId());
+        updatedMatch
+            .start(UPDATED_START)
+            .stop(UPDATED_STOP)
+            .diffLevel(UPDATED_DIFF_LEVEL)
+            .userId(UPDATED_USER_ID)
+            .lastStart(UPDATED_LAST_START)
+            .timeSpent(UPDATED_TIME_SPENT)
+            .usedToPO(UPDATED_USED_TO_PO)
+            .elaborated(UPDATED_ELABORATED)
+            .matchToken(UPDATED_MATCH_TOKEN)
+            .valid(UPDATED_VALID);
+
+        restMatchMockMvc.perform(put("/api/matches")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedMatch)))
+            .andExpect(status().isOk());
+
+        // Validate the Match in the database
+        List<Match> matchList = matchRepository.findAll();
+        assertThat(matchList).hasSize(databaseSizeBeforeUpdate);
+        Match testMatch = matchList.get(matchList.size() - 1);
+        assertThat(testMatch.getStart()).isEqualTo(UPDATED_START);
+        assertThat(testMatch.getStop()).isEqualTo(UPDATED_STOP);
+        assertThat(testMatch.getDiffLevel()).isEqualTo(UPDATED_DIFF_LEVEL);
+        assertThat(testMatch.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testMatch.getLastStart()).isEqualTo(UPDATED_LAST_START);
+        assertThat(testMatch.getTimeSpent()).isEqualTo(UPDATED_TIME_SPENT);
+        assertThat(testMatch.isUsedToPO()).isEqualTo(UPDATED_USED_TO_PO);
+        assertThat(testMatch.isElaborated()).isEqualTo(UPDATED_ELABORATED);
+        assertThat(testMatch.getMatchToken()).isEqualTo(UPDATED_MATCH_TOKEN);
+        assertThat(testMatch.isValid()).isEqualTo(UPDATED_VALID);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingMatch() throws Exception {
+        int databaseSizeBeforeUpdate = matchRepository.findAll().size();
+
+        // Create the Match
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restMatchMockMvc.perform(put("/api/matches")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(match)))
+            .andExpect(status().isCreated());
+
+        // Validate the Match in the database
+        List<Match> matchList = matchRepository.findAll();
+        assertThat(matchList).hasSize(databaseSizeBeforeUpdate + 1);
+    }
+
+    @Test
+    @Transactional
+    public void deleteMatch() throws Exception {
+        // Initialize the database
+        matchService.save(match);
+
+        int databaseSizeBeforeDelete = matchRepository.findAll().size();
+
+        // Get the match
+        restMatchMockMvc.perform(delete("/api/matches/{id}", match.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+
+        // Validate the database is empty
+        List<Match> matchList = matchRepository.findAll();
+        assertThat(matchList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Match.class);
+        Match match1 = new Match();
+        match1.setId(1L);
+        Match match2 = new Match();
+        match2.setId(match1.getId());
+        assertThat(match1).isEqualTo(match2);
+        match2.setId(2L);
+        assertThat(match1).isNotEqualTo(match2);
+        match1.setId(null);
+        assertThat(match1).isNotEqualTo(match2);
+    }
+}

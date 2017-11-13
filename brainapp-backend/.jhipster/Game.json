@@ -1,0 +1,55 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "matches",
+            "otherEntityName": "match",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "game"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "url",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "code",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "actionId",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "useLevels",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "levelsNumber",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "lastAttemptValid",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "defaultScore",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20170618194749",
+    "dto": "no",
+    "service": "serviceImpl",
+    "entityTableName": "game",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pager"
+}

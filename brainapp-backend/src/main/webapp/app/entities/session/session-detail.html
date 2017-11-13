@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="brainappbackendApp.session.detail.title">Session</span> {{vm.session.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="brainappbackendApp.session.startDate">Start Date</span></dt>
+        <dd>
+            <span>{{vm.session.startDate | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.session.endDate">End Date</span></dt>
+        <dd>
+            <span>{{vm.session.endDate | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.session.extId">Ext Id</span></dt>
+        <dd>
+            <span>{{vm.session.extId}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.session.poRoot">Po Root</span></dt>
+        <dd>
+            <span>{{vm.session.poRoot}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.session.elaborated">Elaborated</span></dt>
+        <dd>
+            <span>{{vm.session.elaborated}}</span>
+        </dd>
+        <dt><span data-translate="brainappbackendApp.session.game">Game</span></dt>
+        <dd>
+            <a ui-sref="game-detail({id:vm.session.game.id})">{{vm.session.game.description}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="session-detail.edit({id:vm.session.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

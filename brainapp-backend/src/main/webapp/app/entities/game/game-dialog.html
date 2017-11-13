@@ -1,0 +1,81 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myGameLabel" data-translate="brainappbackendApp.game.home.createOrEditLabel">Create or edit a Game</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.game.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.game.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.description" for="field_description">Description</label>
+            <input type="text" class="form-control" name="description" id="field_description"
+                    ng-model="vm.game.description"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.url" for="field_url">Url</label>
+            <input type="text" class="form-control" name="url" id="field_url"
+                    ng-model="vm.game.url"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.code" for="field_code">Code</label>
+            <input type="text" class="form-control" name="code" id="field_code"
+                    ng-model="vm.game.code"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.actionId" for="field_actionId">Action Id</label>
+            <input type="text" class="form-control" name="actionId" id="field_actionId"
+                    ng-model="vm.game.actionId"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.type" for="field_type">Type</label>
+            <input type="number" class="form-control" name="type" id="field_type"
+                    ng-model="vm.game.type"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.useLevels" for="field_useLevels">Use Levels</label>
+                <select name="type" id="field_type" ng-model="vm.game.type" class="form-control">
+					<option value="POINT">POINT</option>
+				 	<option value="LEVEL">LEVEL</option>
+				  	<option value="MINPOINT">MINPOINT</option>
+				</select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.levelsNumber" for="field_levelsNumber">Levels Number</label>
+            <input type="number" class="form-control" name="levelsNumber" id="field_levelsNumber"
+                    ng-model="vm.game.levelsNumber"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.lastAttemptValid" for="field_lastAttemptValid">Last Attempt Valid</label>
+                <input type="checkbox" name="lastAttemptValid" id="field_lastAttemptValid"
+                          ng-model="vm.game.lastAttemptValid"/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.game.defaultScore" for="field_defaultScore">Default Score</label>
+            <input type="number" class="form-control" name="defaultScore" id="field_defaultScore"
+                    ng-model="vm.game.defaultScore"
+                    />
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>
