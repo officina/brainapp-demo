@@ -2,6 +2,7 @@ package cc.officina.brainapp.service.impl;
 
 import cc.officina.brainapp.service.GamificationService;
 import cc.officina.brainapp.service.MatchService;
+import cc.officina.brainapp.service.impl.MatchServiceImpl;
 import cc.officina.brainapp.domain.Attempt;
 import cc.officina.brainapp.domain.Match;
 import cc.officina.brainapp.repository.AttemptRepository;
@@ -28,12 +29,10 @@ public class MatchServiceImpl implements MatchService{
 
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
-    private final GamificationService gamificationService;
     
     public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GamificationService gamificationService) {
         this.matchRepository = matchRepository;
         this.attemptRepository = attemptRepository;
-        this.gamificationService = gamificationService;
     }
 
     /**
@@ -99,7 +98,6 @@ public class MatchServiceImpl implements MatchService{
 		}
 		attemptRepository.save(match.getAttempts());
 		matchRepository.save(match);
-		gamificationService.runResetAction(match);
 		return match;
 	}
 }
