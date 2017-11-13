@@ -4,11 +4,13 @@ $padding: 10px;
   height: 100vh;
   width: 100vw;
   justify-content: space-between;
-  background-color: rgba(220,220,220,0.3);
+  background-color: #FAFAFA;
 }
 .game {
-  flex-grow: 2;
+  //flex-grow: 2;
   padding: $padding;
+  width: 50vw;
+
 
 }
 .game-pic {
@@ -48,6 +50,8 @@ align-self: center;
 .btn {
   width: 200px !important;
   height: 45px !important;
+  background-color: #0B9AE4;
+  color: white;
   font-size: 1.5em;
   letter-spacing: 2px;
 }
@@ -65,16 +69,19 @@ align-self: center;
   left: 20px;
 }
 .game-descr {
-  width: 600px;
-  padding: $padding;
+  //padding: $padding;
+}
+.azure {
+  color: #0B9AE4;
+  font-size: 1.5em;
+  letter-spacing: 2px;
 }
 .leaderboard {
-  flex-grow: 1;
-  position: sticky;
-  top: 500px;
+  //flex-grow: 1;
+  //position: sticky;
+  //top: 500px;
   //margin: $padding;
-  width: 400px;
-  background-color: white;
+  width: 500px;
 }
 $baseColor: #0E2A3B;
 $borderRadius: 10px;
@@ -83,8 +90,8 @@ $imageSmall: 35px;
 
 
 .capo {
-  background-color: #0E2A3B;
-  color: white;
+  background-color: #F3F4F5;
+  color: black;
   font-size: 1.5em;
   padding: 1rem;
   text-align: center;
@@ -98,15 +105,42 @@ img {
 }
 
 .table-users {
-  border: 1px solid darken($baseColor, 5%);
-  border-radius: $borderRadius;
-  //box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
-  //max-width: calc(50% - 2em);
-  //margin: 1em auto;
+  border-left: #d7d7d7 solid 0.6px;
+  border-right: #d7d7d7 solid 0.6px;
+  border-bottom: #b9b9b9 solid 0.8px;
   overflow: hidden;
-  width: 400px;
-}
+  background-color: white;
 
+  width: 500px;
+}
+/deep/.mat-tab-group {
+  padding: 0 !important;
+  display: flex;
+  //width: 500px;
+
+}
+/deep/.mat-tab-labels {
+  display: flex;
+  padding: 0 !important;
+}
+/deep/.mat-tab-label {
+  min-width: 60px !important;
+  width: 125px !important;
+  background-color: #0B9AE4;
+  color: white;
+  padding: 0 !important;
+  border-right: white solid 0.2px;
+  border-left: white solid 0.2px;
+  //border-top: white solid 4px;
+  //border-bottom: white solid 4px;
+  &:first-child {
+    border-left: none;
+  }
+  &:last-child {
+    border-right: none;
+  }
+
+}
 table {
   //width: 400px;
 
@@ -130,7 +164,7 @@ table {
     //background-color: lighten($baseColor, 50%);
     font-weight: 300;
     width: 145px;
-    border-bottom: $baseColor solid 0.5px;
+    border-bottom: #e1e1e1 solid 0.3px;
   }
 
   tr {

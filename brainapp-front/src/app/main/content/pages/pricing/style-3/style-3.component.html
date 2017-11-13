@@ -4,7 +4,7 @@
     <div class="header" fxLayout="column" fxLayoutAlign="center center" [ngStyle]="{'background-image':'url(assets/images/labbkg.jpeg)'}">
 
         <div class="hero-text" fxLayout="column" fxLayoutAlign="center center" fxFlex>
-
+          <br><br>
             <div class="h1">Sfida della settimana!</div>
             <div class="h3">
                 INIZIA: 25/06/2017 12:00 - FINISCE: 7/07/2017 12:00
@@ -79,7 +79,7 @@
             <div class="price mat-primary-bg" fxLayout="row" fxLayoutAlign="center start">
               <!--<div class="currency">$</div>-->
               <div fxLayout="row" fxLayoutAlign="center end">
-                <div class="value">Make 7!</div>
+                <div class="value">MAKE 7</div>
                 <!--<div class="period">monthly per user</div>-->
               </div>
             </div>
@@ -161,23 +161,25 @@
 
     <!-- CONTENT -->
     <div class="content" fxLayout="column">
+      <br>
+      <br>
         <div class="leaderboards" fxLayout="row" fxLayoutWrap>
           <div class="table-users">
-            <div class="capo">Global</div>
+            <div class="capo">CLASSIFICA LABORATORIO</div>
 
             <table cellspacing="0">
 
                 <mat-tab-group dynamicHeight="true">
-                    <mat-tab label="Complessiva">
+                    <mat-tab label="COMPLESSIVA">
                       <app-complessiva></app-complessiva>
                     </mat-tab>
-                    <mat-tab label="Logica">
+                    <mat-tab label="LOGICA">
                       <app-logica></app-logica>
                     </mat-tab>
-                    <mat-tab label="Creatività">
+                    <mat-tab label="CREATIVITÁ">
                       <app-creativita></app-creativita>
                     </mat-tab>
-                    <mat-tab label="Problem Solving">
+                    <mat-tab label="PROBLEM SOLVING" class="last-label">
                       <app-problemsolving></app-problemsolving>
                     </mat-tab>
                 </mat-tab-group>
@@ -186,28 +188,28 @@
             </table>
           </div>
           <div class="table-users">
-            <div class="capo">Team</div>
+            <div class="capo">CLASSIFICA GLOBALE</div>
 
             <table cellspacing="0">
               <tr>
                 <mat-tab-group dynamicHeight="true">
                   <th>
-                    <mat-tab label="Complessiva">
+                    <mat-tab label="COMPLESSIVA">
                       <app-complessiva></app-complessiva>
                     </mat-tab>
                   </th>
                   <th>
-                    <mat-tab label="Logica">
+                    <mat-tab label="LOGICA">
                       <app-logica></app-logica>
                     </mat-tab>
                   </th>
                   <th>
-                    <mat-tab label="Creatività">
+                    <mat-tab label="CREATIVITÁ">
                       <app-creativita></app-creativita>
                     </mat-tab>
                   </th>
                   <th>
-                    <mat-tab label="Problem Solving">
+                    <mat-tab label="PROBLEM SOLVING">
                       <app-problemsolving></app-problemsolving>
                     </mat-tab>
                   </th>
