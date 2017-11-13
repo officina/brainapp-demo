@@ -40,6 +40,10 @@
         {
             "fieldName": "lastAttemptValid",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "defaultScore",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170618194749",

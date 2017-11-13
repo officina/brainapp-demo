@@ -2,6 +2,7 @@ package cc.officina.gatorade.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
@@ -34,9 +35,10 @@ public class MatchResource {
     private static final String ENTITY_NAME = "match";
 
     private final MatchService matchService;
-
-    public MatchResource(MatchService matchService) {
+    private final GamificationService gamificationService;
+    public MatchResource(MatchService matchService, GamificationService gamificationService) {
         this.matchService = matchService;
+        this.gamificationService = gamificationService;
     }
 
     /**
@@ -133,6 +135,7 @@ public class MatchResource {
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
         Match result = matchService.resetMatch(match);
+        gamificationService.runResetAction(match);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, match.getId().toString()))
             .body(result);

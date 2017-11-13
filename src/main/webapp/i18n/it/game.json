@@ -23,6 +23,7 @@
             "useLevels": "Use Levels",
             "levelsNumber": "Levels Number",
             "lastAttemptValid": "Last Attempt Valid",
+            "defaultScore": "Default Score",
             "matches": "Matches"
         }
     }
