@@ -148,11 +148,13 @@
     padding: 0 !important;
     display: flex;
     //width: 500px;
-
+    border-bottom: none;
   }
   /deep/.mat-tab-labels {
     display: flex;
     padding: 0 !important;
+    border-bottom: none;
+
   }
   /deep/.mat-tab-label {
     min-width: 60px !important;
