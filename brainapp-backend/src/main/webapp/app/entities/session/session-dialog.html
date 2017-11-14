@@ -1,0 +1,69 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="mySessionLabel" data-translate="brainappbackendApp.session.home.createOrEditLabel">Create or edit a Session</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.session.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.session.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.session.startDate" for="field_startDate">Start Date</label>
+                <div class="input-group">
+                    <input id="field_startDate" type="text" class="form-control" name="startDate" datetime-picker="{{dateformat}}" ng-model="vm.session.startDate" is-open="vm.datePickerOpenStatus.startDate"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.session.endDate" for="field_endDate">End Date</label>
+                <div class="input-group">
+                    <input id="field_endDate" type="text" class="form-control" name="endDate" datetime-picker="{{dateformat}}" ng-model="vm.session.endDate" is-open="vm.datePickerOpenStatus.endDate"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.session.extId" for="field_extId">Ext Id</label>
+            <input type="text" class="form-control" name="extId" id="field_extId"
+                    ng-model="vm.session.extId"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.session.poRoot" for="field_poRoot">Po Root</label>
+            <input type="text" class="form-control" name="poRoot" id="field_poRoot"
+                    ng-model="vm.session.poRoot"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="brainappbackendApp.session.elaborated" for="field_elaborated">Elaborated</label>
+                <input type="checkbox" name="elaborated" id="field_elaborated"
+                          ng-model="vm.session.elaborated"/>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="brainappbackendApp.session.game" for="field_game">Game</label>
+            <select class="form-control" id="field_game" name="game" ng-model="vm.session.game" ng-options="game as game.description for game in vm.games | orderBy:'id' track by game.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

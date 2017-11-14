@@ -1,0 +1,17 @@
+{"c2dictionary":true, "data":{
+	"facebookPage":"http://www.facebook.com/myFacebookPage",
+	"twitterPage":"http://www.twitter.com/myTwitterPage",
+	"googlePage":"http://www.google.com/myGooglePage",
+	"rateUs":"market://details?id=com.company.appname&write_review=true",
+	"moreGames":"http://www.moregames.com",
+	"shareMessage":"I just scored $score at My Game !",
+	"label_color":"COLORE",
+	"label_letter":"LETTERE",
+	"label_score":"PUNTI",
+	"label_best":"RECORD",
+	"label_paused":"PAUSA",
+	"label_over":"GAME OVER",
+	"label_quit":"Sei sicuro di voler uscire ?",
+	"colorCode":"255,51,0-0,255,51-0,192,255-153,102,51-153,102,204",
+	"colorName":"rosso-verde-blu-marrone-viola"
+}}
