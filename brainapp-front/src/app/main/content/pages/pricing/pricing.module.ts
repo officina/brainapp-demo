@@ -20,7 +20,7 @@ const routes = [
         component: FusePricingStyle2Component
     },
     {
-        path     : 'pages/pricing/style-3',
+        path     : 'lab',
         component: FusePricingStyle3Component
     }
 ];
