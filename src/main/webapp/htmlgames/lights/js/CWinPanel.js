@@ -101,10 +101,10 @@ function CWinPanel(iMode, iTimeSpent, iLevel, iLevelStars){
         _oInterface = new CInterface(_iMode);
 
         _oContainer.alpha = 0;
-	/*createjs.Tween.get(_oContainer)
+	createjs.Tween.get(_oContainer)
             .wait(1500)
             .to({alpha: 1}, 2000, createjs.Ease.cubicOut)
-            .call(function(){$(s_oMain).trigger("show_interlevel_ad");});*/
+            .call(function(){$(s_oMain).trigger("show_interlevel_ad");});
 
         setVolume("soundtrack", 0.4);
     };
@@ -157,6 +157,7 @@ function CWinPanel(iMode, iTimeSpent, iLevel, iLevelStars){
     this._onExit = function(){
         this.unload();
         s_oMain.gotoMenu();
+        attemptEnded(s_iTotalScore);
     };
 
     this._onNext = function(){
