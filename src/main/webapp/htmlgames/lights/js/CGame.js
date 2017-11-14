@@ -150,7 +150,7 @@ function CGame(oData, iMode, iLevel) {
           _iTotalScore += _iScore;
           s_iTotalScore = _iTotalScore;
           s_lvlBestSCore[_iMode][_iLevel] = _iScore;
-          //saveItem("lights_total_score", s_iTotalScore);
+          saveItem("lights_total_score", s_iTotalScore);
         };
         if (_iScore > s_aBestScore[_iMode]) {
           s_aBestScore[_iMode] = _iScore;
@@ -163,7 +163,7 @@ function CGame(oData, iMode, iLevel) {
     this.updateLastLevel = function(){
         if (_iLevel+2 > s_aLastLevel[_iMode]) {
             s_aLastLevel[_iMode] = _iLevel+2;
-            //setItemJson("lights_last_level", s_aLastLevel);
+            setItemJson("lights_last_level", s_aLastLevel);
         };
     };
 
@@ -189,7 +189,7 @@ function CGame(oData, iMode, iLevel) {
         if (_iLevelStars > aLevelStars[_iLevel]){
             aLevelStars[_iLevel] = _iLevelStars;
             s_aLevelStars[_iMode] = aLevelStars;
-            //setItemJson("lights_level_stars", s_aLevelStars);
+            setItemJson("lights_level_stars", s_aLevelStars);
         };
     };
 
@@ -243,7 +243,6 @@ function CGame(oData, iMode, iLevel) {
         _bStartGame = false;
         _iScore = 0;
         _iLevelStars = 0;
-
         if(_oEndPanel === null){
             playSound("game_over",0.5,false);
             stopSound("soundtrack");
@@ -255,7 +254,6 @@ function CGame(oData, iMode, iLevel) {
 
             _oEndPanel = new CEndPanel(_iMode);
             _bDisableEvents = true;
-            attemptEnded(s_iTotalScore);
             $(s_oMain).trigger("share_event", s_iTotalScore);
             $(s_oMain).trigger("save_score", s_iTotalScore);
         };

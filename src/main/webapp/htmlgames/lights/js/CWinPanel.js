@@ -82,13 +82,13 @@ function CWinPanel(iMode, iTimeSpent, iLevel, iLevelStars){
         _oMsgText3.y = iPositionLine3;
         _oContainer.addChild(_oMsgText3);
 
-        _oMsgBestScoreText = new createjs.Text(TEXT_DIFFICULTY[_iMode] + " " + TEXT_YOUR_BEST_SCORE + " " + _iBestScore, "24px " + PRIMARY_FONT, PRIMARY_FONT_COLOUR);
+        /*_oMsgBestScoreText = new createjs.Text(TEXT_DIFFICULTY[_iMode] + " " + TEXT_YOUR_BEST_SCORE + " " + _iBestScore, "24px " + PRIMARY_FONT, PRIMARY_FONT_COLOUR);
         _oMsgBestScoreText.textAlign = "center";
         _oMsgBestScoreText.textBaseline = "alphabetic";
         _oMsgBestScoreText.lineWidth = 500;
         _oMsgBestScoreText.x = CANVAS_WIDTH_HALF;
         _oMsgBestScoreText.y = iPositionLine4;
-        _oContainer.addChild(_oMsgBestScoreText);
+        _oContainer.addChild(_oMsgBestScoreText);*/
 
         this.addStars();
 
@@ -155,9 +155,9 @@ function CWinPanel(iMode, iTimeSpent, iLevel, iLevelStars){
     };
 
     this._onExit = function(){
+        attemptEnded(s_iTotalScore);
         this.unload();
         s_oMain.gotoMenu();
-        attemptEnded(s_iTotalScore);
     };
 
     this._onNext = function(){

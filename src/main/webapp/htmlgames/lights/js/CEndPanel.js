@@ -13,7 +13,7 @@ function CEndPanel(iMode){
 
     this._init = function(){
         _iMode = iMode;
-
+        attemptEnded(s_iTotalScore);
         _oContainer = new createjs.Container();
         s_oStage.addChild(_oContainer);
 
@@ -39,13 +39,13 @@ function CEndPanel(iMode){
         _oMsgTextGameOver.lineWidth = 450;
 	_oContainer.addChild(_oMsgTextGameOver);
 
-        _oMsgTextFinalScore = new createjs.Text(TEXT_END_PANEL + ": " + 0, "36px " + PRIMARY_FONT, PRIMARY_FONT_COLOUR);
+        /*_oMsgTextFinalScore = new createjs.Text(TEXT_END_PANEL + ": " + 0, "36px " + PRIMARY_FONT, PRIMARY_FONT_COLOUR);
         _oMsgTextFinalScore.textAlign = "center";
         _oMsgTextFinalScore.textBaseline = "alphabetic";
 	_oMsgTextFinalScore.x = CANVAS_WIDTH_HALF;
         _oMsgTextFinalScore.y = CANVAS_HEIGHT_HALF;
         _oMsgTextFinalScore.lineWidth = 450;
-	_oContainer.addChild(_oMsgTextFinalScore);
+	_oContainer.addChild(_oMsgTextFinalScore);*/
 
         _oButExit = new CGfxButton(CANVAS_WIDTH_HALF - 170, 850, s_oSpriteLibrary.getSprite('but_home'), _oContainer);
         _oButExit.addEventListener(ON_MOUSE_UP, this._onExit, this);
@@ -56,10 +56,10 @@ function CEndPanel(iMode){
         _oInterface = new CInterface(_iMode);
 
         _oContainer.alpha = 0;
-	/*createjs.Tween.get(_oContainer)
+	createjs.Tween.get(_oContainer)
             .wait(1500)
             .to({alpha: 1}, 2000, createjs.Ease.cubicOut)
-            .call(function(){$(s_oMain).trigger("show_interlevel_ad");});*/
+            .call(function(){$(s_oMain).trigger("show_interlevel_ad");});
     };
 
     this.unload = function(){

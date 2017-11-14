@@ -56,7 +56,7 @@ function CLevelSelect(iMode) {
         _oTextTitle.y = CANVAS_HEIGHT_HALF - 300;
         _oContainer.addChild(_oTextTitle);
 
-        _oBestScoreBack = new createjs.Text(TEXT_DIFFICULTY[_iMode] + " " + TEXT_YOUR_BEST_SCORE + " " + s_aBestScore[_iMode]," 30px "+PRIMARY_FONT, SECONDARY_FONT_COLOUR);
+        /*_oBestScoreBack = new createjs.Text(TEXT_DIFFICULTY[_iMode] + " " + TEXT_YOUR_BEST_SCORE + " " + s_aBestScore[_iMode]," 30px "+PRIMARY_FONT, SECONDARY_FONT_COLOUR);
         _oBestScoreBack.textAlign = "center";
         _oBestScoreBack.lineWidth = 600;
         _oBestScoreBack.textBaseline = "middle";
@@ -70,7 +70,7 @@ function CLevelSelect(iMode) {
         _oBestScore.textBaseline = "middle";
         _oBestScore.x = CANVAS_WIDTH_HALF;
         _oBestScore.y = CANVAS_HEIGHT_HALF + 320;
-        _oContainer.addChild(_oBestScore);
+        _oContainer.addChild(_oBestScore);*/
 
         _oTotalScoreBack = new createjs.Text(TEXT_TOTAL_SCORE + s_iTotalScore," 30px "+PRIMARY_FONT, SECONDARY_FONT_COLOUR);
         _oTotalScoreBack.textAlign = "center";
