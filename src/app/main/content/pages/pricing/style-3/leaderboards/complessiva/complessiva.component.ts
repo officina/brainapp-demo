@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {LeaderboardDb} from '../../../../../../../fuse-fake-db/leaderboard';
+import {LeaderboardService} from '../../leaderboard.service';
 
 @Component({
   selector: 'app-complessiva',
@@ -6,8 +8,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./complessiva.component.scss']
 })
 export class ComplessivaComponent implements OnInit {
-
-  constructor() { }
+  // leaderboard: any;
+  // constructor(private leaderboardService: LeaderboardService) {
+    // this.leaderboardService.leaderboardOnChanged.subscribe(leaderboard => {
+      // this.leaderboard = leaderboard;
+    // });
+  // }
 
   ngOnInit() {
   }

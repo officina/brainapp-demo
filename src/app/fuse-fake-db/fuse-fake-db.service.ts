@@ -7,7 +7,6 @@ import { TodoFakeDb } from './todo';
 import { ProfileFakeDb } from './profile';
 import { ContactsFakeDb } from './contacts';
 import { InvoiceFakeDb } from './invoice';
-import { FileManagerFakeDb } from './file-manager';
 import { SearchFakeDb } from './search';
 import { QuickPanelFakeDb } from './quick-panel';
 import { IconsFakeDb } from './icons';
@@ -15,7 +14,7 @@ import { ProjectsDashboardDb } from './projects-dashboard';
 import { ScrumboardFakeDb } from './scrumboard';
 import { FaqFakeDb } from './faq';
 import { KnowledgeBaseFakeDb } from './knowledge-base';
-import { ECommerceFakeDb } from './e-commerce';
+import { LeaderboardDb } from './leaderboard';
 
 export class FuseFakeDbService implements InMemoryDbService
 {
@@ -39,7 +38,6 @@ export class FuseFakeDbService implements InMemoryDbService
             'contacts-contacts'          : ContactsFakeDb.contacts,
             'contacts-user'              : ContactsFakeDb.user,
             'invoice'                    : InvoiceFakeDb.invoice,
-            'file-manager'               : FileManagerFakeDb.files,
             'search-classic'             : SearchFakeDb.classic,
             'search-table'               : SearchFakeDb.table,
             'quick-panel-notes'          : QuickPanelFakeDb.notes,
@@ -50,9 +48,7 @@ export class FuseFakeDbService implements InMemoryDbService
             'scrumboard-boards'          : ScrumboardFakeDb.boards,
             'faq'                        : FaqFakeDb.data,
             'knowledge-base'             : KnowledgeBaseFakeDb.data,
-            'e-commerce-dashboard'       : ECommerceFakeDb.dashboard,
-            'e-commerce-products'        : ECommerceFakeDb.products,
-            'e-commerce-orders'        : ECommerceFakeDb.orders
+            'leaderboard-global'         : LeaderboardDb.leaderboard,
         };
     }
 }

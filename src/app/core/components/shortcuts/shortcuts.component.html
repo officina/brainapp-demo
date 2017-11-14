@@ -3,7 +3,7 @@
     <div class="shortcuts-mobile-toggle" *ngIf="!mobileShortcutsPanelActive" fxLayout="row" fxLayoutAlign="start center"
          fxHide fxShow.lt-md>
         <button mat-icon-button (click)="showMobileShortcutsPanel()">
-            <mat-icon class="amber-600-fg">star</mat-icon>
+            <!--<mat-icon class="amber-600-fg">star</mat-icon>-->
         </button>
     </div>
 
@@ -25,10 +25,10 @@
 
                 </div>
 
-                <button mat-icon-button [matMenuTriggerFor]="addMenu" matTooltip="Click to add/remove shortcut"
-                        (onMenuOpen)="onMenuOpen()">
-                    <mat-icon class="amber-600-fg">star</mat-icon>
-                </button>
+                <!--<button mat-icon-button [matMenuTriggerFor]="addMenu" matTooltip="Click to add/remove shortcut"-->
+                        <!--(onMenuOpen)="onMenuOpen()">-->
+                    <!--<mat-icon class="amber-600-fg">star</mat-icon>-->
+                <!--</button>-->
 
             </div>
 
@@ -57,8 +57,8 @@
                               fxLayoutAlign="center center" *ngIf="!shortcutItem.icon">
                             {{shortcutItem.title.substr(0, 1).toUpperCase()}}
                         </span>
-                        <p matLine fxFlex>{{shortcutItem.title}}</p>
-                        <mat-icon class="ml-8">star</mat-icon>
+                        <!--<p matLine fxFlex>{{shortcutItem.title}}</p>-->
+                        <!--<mat-icon class="ml-8">star</mat-icon>-->
                     </div>
                 </mat-list-item>
                 <mat-list-item *ngIf="shortcutItems.length === 0">
@@ -77,8 +77,8 @@
                               fxLayoutAlign="center center" *ngIf="!navigationItem.icon">
                             {{navigationItem.title.substr(0, 1).toUpperCase()}}
                         </span>
-                        <p matLine fxFlex>{{navigationItem.title}}</p>
-                        <mat-icon class="ml-8" *ngIf="isInShortcuts(navigationItem)">star</mat-icon>
+                        <!--<p matLine fxFlex>{{navigationItem.title}}</p>-->
+                        <!--<mat-icon class="ml-8" *ngIf="isInShortcuts(navigationItem)">star</mat-icon>-->
                     </div>
                 </mat-list-item>
             </mat-nav-list>
