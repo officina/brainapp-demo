@@ -46,6 +46,7 @@
         <div style="position: fixed; background-color: transparent; top: 0px; left: 0px; width: 100%; height: 100%"></div>
         <script>
             $(document).ready(function () {
+              localStorage.clear()
                 var oMain = new CMain({
                     num_cols:[3,5,7,10],               // how many columns the maze will have for each difficulty level (easy / medium / hard / extreme)
                     num_rows:[3,5,7,10],               // how many rows the maze will have for each difficulty level (easy / medium / hard / extreme)
