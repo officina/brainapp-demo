@@ -101,7 +101,7 @@ const routes: Routes = [
         component: FuseTabbedComponent
     },
     {
-        path     : 'ui/page-layouts/blank',
+        path     : 'lab/id',
         component: FuseBlankComponent
     }
 ];
