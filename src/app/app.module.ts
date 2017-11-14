@@ -49,7 +49,7 @@ const appRoutes: Routes = [
     },
     {
         path      : '**',
-        redirectTo: 'pages/profile'
+        redirectTo: 'profile'
     }
 ];
 
