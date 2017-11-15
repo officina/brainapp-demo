@@ -52,7 +52,11 @@
             <column name="last_attempt_valid" type="boolean">
                 <constraints nullable="true" />
             </column>
-
+			
+			<column name="default_score" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         
