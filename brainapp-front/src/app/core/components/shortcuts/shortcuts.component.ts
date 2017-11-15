@@ -61,7 +61,7 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
                 'title': 'Profile',
                 'type' : 'item',
                 'icon' : 'person',
-                'url'  : '/pages/profile'
+                'url'  : '/profile'
               },
                 {
                     'title': 'Calendar',
@@ -100,29 +100,15 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
                 'title': 'LAB',
                 'type' : 'item',
                 'icon' : 'games',
-                'url'  : '/pages/pricing/style-3'
+                'url'  : '/lab'
               },
-              {
-                'id'   : 'blank',
-                'title': 'GAME',
-                'type' : 'item',
-                'icon' : 'email',
-                'url'  : '/ui/page-layouts/blank'
-              },
-              {
-                'id'   : 'login-v2',
-                'title': 'Login v2',
-                'type' : 'item',
-                'icon' : 'email',
-                'url'  : '/pages/auth/login-2'
-              },
-              {
-                'id'   : 'register-v2',
-                'title': 'Register v2',
-                'type' : 'item',
-                'icon' : 'email',
-                'url'  : '/pages/auth/register-2'
-              },
+              // {
+              //   'id'   : 'register-v2',
+              //   'title': 'Register v2',
+              //   'type' : 'item',
+              //   'icon' : 'email',
+              //   'url'  : '/pages/auth/register-2'
+              // },
             ];
         }
 

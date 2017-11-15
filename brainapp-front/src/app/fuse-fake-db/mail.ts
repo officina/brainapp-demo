@@ -4,9 +4,9 @@ export class MailFakeDb
         {
             'id'            : '15459251a6d6b397565',
             'from'          : {
-                'name'  : 'Alice Freeman',
+                'name'  : 'Nella Cocci',
                 'avatar': 'assets/images/avatars/alice.jpg',
-                'email' : 'alicefreeman@creapond.com'
+                'email' : 'nellacocci@creapond.com'
             },
             'to'            : [
                 {
@@ -52,9 +52,9 @@ export class MailFakeDb
         {
             'id'            : '154588a0864d2881124',
             'from'          : {
-                'name'  : 'Lawrence Collins',
+                'name'  : 'Andrea Trentini',
                 'avatar': 'assets/images/avatars/vincent.jpg',
-                'email' : 'lawrencecollins@creapond.com'
+                'email' : 'andreatrentini@creapond.com'
             },
             'to'            : [
                 {
@@ -75,9 +75,9 @@ export class MailFakeDb
         {
             'id'            : '15453ba60d3baa5daaf',
             'from'          : {
-                'name'  : 'Judith Burton',
+                'name'  : 'Antonella Siciliano',
                 'avatar': 'assets/images/avatars/joyce.jpg',
-                'email' : 'judithburton@creapond.com'
+                'email' : 'antonellasiciliano@creapond.com'
             },
             'to'            : [
                 {
@@ -101,9 +101,9 @@ export class MailFakeDb
         {
             'id'            : '15453a06c08fb021776',
             'from'          : {
-                'name'  : 'Danielle Obrien',
+                'name'  : 'Lucrezia Toscani',
                 'avatar': 'assets/images/avatars/danielle.jpg',
-                'email' : 'danielleobrien@creapond.com'
+                'email' : 'lucreziatoscani@creapond.com'
             },
             'to'            : [
                 {
@@ -127,9 +127,9 @@ export class MailFakeDb
         {
             'id'            : '154537435d5b32bf11a',
             'from'          : {
-                'name'  : 'Brian Flores',
+                'name'  : 'Fedele Lori',
                 'avatar': '',
-                'email' : 'brianflores@creapond.com'
+                'email' : 'fedelelori@creapond.com'
             },
             'to'            : [
                 {
@@ -150,9 +150,9 @@ export class MailFakeDb
         {
             'id'            : '1544e43dcdae6ebf876',
             'from'          : {
-                'name'  : 'Charles Kim',
+                'name'  : 'Marino Russo',
                 'avatar': 'assets/images/avatars/garry.jpg',
-                'email' : 'charleskim@creapond.com'
+                'email' : 'marinorusso@creapond.com'
             },
             'to'            : [
                 {
@@ -175,9 +175,9 @@ export class MailFakeDb
         {
             'id'            : '1543ee3a5b43e0f9f45',
             'from'          : {
-                'name'  : 'Patricia White',
+                'name'  : 'Ludovica Zetticci',
                 'avatar': '',
-                'email' : 'patriciawhite@creapond.com'
+                'email' : 'ludovicazetticci@creapond.com'
             },
             'to'            : [
                 {
@@ -198,9 +198,9 @@ export class MailFakeDb
         {
             'id'            : '1543cc4515df3146112',
             'from'          : {
-                'name'  : 'Juan Carpenter',
+                'name'  : 'Luca Padovesi',
                 'avatar': 'assets/images/avatars/james.jpg',
-                'email' : 'juancarpenter@creapond.com'
+                'email' : 'lucapadovesi@creapond.com'
             },
             'to'            : [
                 {
@@ -221,9 +221,9 @@ export class MailFakeDb
         {
             'id'            : '154398a4770d7aaf9a2',
             'from'          : {
-                'name'  : 'Maria Gilbert',
+                'name'  : 'Chiara Genovese',
                 'avatar': 'assets/images/avatars/danielle.jpg',
-                'email' : 'mariagilbert@creapond.com'
+                'email' : 'chiaragenovese@creapond.com'
             },
             'to'            : [
                 {
@@ -244,9 +244,9 @@ export class MailFakeDb
         {
             'id'            : '15438351f87dcd68567',
             'from'          : {
-                'name'  : 'Tammy Brooks',
+                'name'  : 'Melissa Grece',
                 'avatar': '',
-                'email' : 'tammybrooks@creapond.com'
+                'email' : 'melissagrece@creapond.com'
             },
             'to'            : [
                 {
@@ -267,9 +267,9 @@ export class MailFakeDb
         {
             'id'            : '1542d75d929a603125',
             'from'          : {
-                'name'  : 'Kathy Price',
+                'name'  : 'Laura Bellucci',
                 'avatar': '',
-                'email' : 'kathyprice@creapond.com'
+                'email' : 'laurabellucci@creapond.com'
             },
             'to'            : [
                 {
@@ -290,9 +290,9 @@ export class MailFakeDb
         {
             'id'            : '1541ca7af66da284177',
             'from'          : {
-                'name'  : 'Alan Coleman',
+                'name'  : 'Enzo Nucci',
                 'avatar': '',
-                'email' : 'alancoleman@creapond.com'
+                'email' : 'enzonucci@creapond.com'
             },
             'to'            : [
                 {
@@ -313,9 +313,9 @@ export class MailFakeDb
         {
             'id'            : '154297167e781781745',
             'from'          : {
-                'name'  : 'Thomas Silva',
+                'name'  : 'Gerolamo Lucciano',
                 'avatar': '',
-                'email' : 'thomassilva@creapond.com'
+                'email' : 'gerolamolucciano@creapond.com'
             },
             'to'            : [
                 {
@@ -336,9 +336,9 @@ export class MailFakeDb
         {
             'id'            : '15427f4c1b7f3953234',
             'from'          : {
-                'name'  : 'Jessica Robertson',
+                'name'  : 'Dora Toscani',
                 'avatar': '',
-                'email' : 'jessicarobertson@creapond.com'
+                'email' : 'doratoscani@creapond.com'
             },
             'to'            : [
                 {
@@ -359,9 +359,9 @@ export class MailFakeDb
         {
             'id'            : '154204e45a59b168453',
             'from'          : {
-                'name'  : 'John Palmer',
+                'name'  : 'Igor Bianchi',
                 'avatar': '',
-                'email' : 'johnpalmer@creapond.com'
+                'email' : 'igorbianchi@creapond.com'
             },
             'to'            : [
                 {
@@ -382,9 +382,9 @@ export class MailFakeDb
         {
             'id'            : '1541dd1e05dfc439216',
             'from'          : {
-                'name'  : 'David Butler',
+                'name'  : 'Landro Iadanza',
                 'avatar': '',
-                'email' : 'davidbutler@creapond.com'
+                'email' : 'landroiadanza@creapond.com'
             },
             'to'            : [
                 {
