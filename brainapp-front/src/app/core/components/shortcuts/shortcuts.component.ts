@@ -61,7 +61,7 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
                 'title': 'Profile',
                 'type' : 'item',
                 'icon' : 'person',
-                'url'  : '/pages/profile'
+                'url'  : '/profile'
               },
                 {
                     'title': 'Calendar',

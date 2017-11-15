@@ -14,7 +14,7 @@ import { ProjectsDashboardDb } from './projects-dashboard';
 import { ScrumboardFakeDb } from './scrumboard';
 import { FaqFakeDb } from './faq';
 import { KnowledgeBaseFakeDb } from './knowledge-base';
-import { LeaderboardDb } from './leaderboard';
+// import { LeaderboardDb } from './leaderboard';
 
 export class FuseFakeDbService implements InMemoryDbService
 {
@@ -48,7 +48,7 @@ export class FuseFakeDbService implements InMemoryDbService
             'scrumboard-boards'          : ScrumboardFakeDb.boards,
             'faq'                        : FaqFakeDb.data,
             'knowledge-base'             : KnowledgeBaseFakeDb.data,
-            'leaderboard-global'         : LeaderboardDb.leaderboard,
+            // 'leaderboard-global'         : LeaderboardDb.leaderboard,
         };
     }
 }

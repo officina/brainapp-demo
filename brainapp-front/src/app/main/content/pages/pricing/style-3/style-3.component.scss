@@ -7,9 +7,9 @@
         .header {
             padding: 24px;
             min-height: calc( 100vh - 64px);
-          linear-gradient : (-225deg, rgba(0,101,168,0.6) 0%, rgba(0,36,61,0.6) 50%) !important;
-          background-size: cover;
-          background-position: center;
+            linear-gradient : (-225deg, rgba(0,101,168,0.6) 0%, rgba(0,36,61,0.6) 50%) !important;
+            background-size: cover;
+            background-position: center;
             //background: #1A237E;
             //background: linear-gradient(to right, #0E2A3B 0%, #34306B 100%);
 
@@ -25,6 +25,7 @@
               height: calc(100%- 8px);
               overflow: hidden;
               text-overflow: ellipsis;
+              padding: 10px;
               //white-space: nowrap;
             }
           .price {
@@ -41,17 +42,28 @@
               padding: 15px 0px;
               background-size: cover;
               background-position: center;
-              height: 120px;
+              min-height: 90px !important;
+            }
+          .package-typem {
+              padding: 15px 0px;
+              background-size: cover;
+              background-position: center;
+              min-height: 120px !important;
             }
             .ptside {
-              max-height: 250px;
-              height: 250px;
+              max-height: 300px;
+              height: 300px;
               width: 200px;
             }
             .ptmain {
-              height: 420px;
-              max-height: 420px;
+              height: 470px;
+              max-height: 470px;
             }
+          .btn {
+            //bottom: -30px;
+            width: 150px;
+            //padding: 0px !important;
+          }
             .hero-text {
                 margin: 60px auto;
                 align-content: start !important;
@@ -63,7 +75,7 @@
 
                 .h1 {
                     color: white;
-                    font-size: 48px;
+                    font-size: 36px;
                     font-weight: 300;
                     letter-spacing: 0.01em;
                     text-align: center;
@@ -93,7 +105,7 @@
           align-self: flex-end;
           justify-content: space-evenly;
           flex: 1 0 auto;
-          margin-bottom: -80px;
+          //margin-bottom: -80px;
 
             @include media-breakpoint-down('xs') {
                 //margin-top: -128px;
@@ -112,10 +124,9 @@
             width: 1100px;
             margin: 20px auto;
             padding: 20px 20px 0px 20px;
-            height: calc(100vh - 115px);
+            //height: calc(100vh - 115px);
             border-top: #b9b9b9 solid 0.8px;
-
-          justify-content: space-between;
+            justify-content: space-between;
 
             .title {
                 font-size: 32px;
@@ -201,10 +212,12 @@
     border-bottom: #b9b9b9 solid 0.8px;
     overflow: hidden;
     background-color: white;
+    height: auto;
   }
 
   table {
     width: 500px;
+    display: flex;
 
     td, th {
       //color: darken($baseColor, 10%);
