@@ -1,16 +1,24 @@
 <div class="page-layout blank" fusePerfectScrollbar>
-  <div class="game-pic">
-    <div class="btnpos">
-      <button mat-raised-button class="cta-button btn" color="accent">INIZIA</button>
+  <div class="game-pic" [ngStyle]="{'background-image':'url(assets/images/SfondoMake7.png)'}">
+    <div class="left">
+      <div class="logo" [ngStyle]="{'background-image':'url(assets/images/Make7Logo.png)'}">
+      </div>
+      <div class="game-title">
+        <h1>MAKE 7</h1>
+      </div>
+    </div>
+    <div class="right">
+      <div class="btnpos">
+        <button mat-raised-button class="cta-button btn">INIZIA</button>
+      </div>
     </div>
   </div>
   <div class="all" fxLayout="row">
     <div class="game">
       <div class="game-descr">
-        <h1><strong>Make 7!</strong></h1>
-        <h3><strong>L’obiettivo della Sfida</strong></h3>
+        <h1 class="azure">L'OBIETTIVO DELLA SFIDA</h1>
         <p>
-          Make 7! è un puzzle game in cui ti è richiesto di spostare
+          Make 7 è un puzzle game in cui ti è richiesto di spostare
           le tessere per creare combinazioni ottenendo tre numeri
           uguali in fila. Tre tessere uguali affiancate infatti si
           fondono ed originano il numero più grande successivo.
@@ -20,9 +28,10 @@
           Un suggerimento prima di cimentarti nella sfida: ricorda di
           tenere spazio libero per muovere le tessere!
         </p>
-        <h3><strong>I benefici della Sfida</strong></h3>
+        <br>
+        <h1 class="azure">I BENEFICI DELLA SFIDA</h1>
         <p>
-          Make 7! ti consente di risvegliare le tue energie mentali
+          Make 7 ti consente di risvegliare le tue energie mentali
           e potenziare le tue abilità di logica, problem solving e
           concentrazione. Per arrivare a formare i numeri 7 infatti
           avrai bisogno di giocare di anticipo, pianificando le tue
@@ -39,48 +48,63 @@
           è la mossa migliore…
         </p>
     </div>
+      <div class="stats">
+        <ul>
+          <li>
+        <!-- COOPERATION -->
+        <p style="width:80%" data-value="80">COOPERATION</p>
+        <progress max="100" value="80" class="html5">
+          <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+          <div class="progress-bar">
+            <span style="width: 80%">80%</span>
+          </div>
+        </progress>
+        </li>
+
+        <!-- LEARNING -->
+        <li>
+          <p style="width:60%" data-value="60">LEARNING</p>
+          <progress max="100" value="60" class="css3">
+            <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+            <div class="progress-bar">
+              <span style="width: 60%">60%</span>
+            </div>
+          </progress>
+        </li>
+        <!-- PLANNING -->
+        <li>
+          <p style="width:50%" data-value="50">PLANNING</p>
+          <progress max="100" value="50" class="jquery">
+            <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+            <div class="progress-bar">
+              <span style="width: 50%">50%</span>
+            </div>
+          </progress>
+        </li>
+        </ul>
+      </div>
   </div>
     <div class="leaderboard">
       <div class="table-users">
-        <div class="capo">Make 7!</div>
+        <div class="capo">CLASSIFICA SFIDA</div>
+          <table cellspacing="0">
 
-        <table cellspacing="0">
-          <tr>
-            <th>Rank</th>
-            <th>User</th>
-            <th></th>
-            <th>Record</th>
-          </tr>
+            <mat-tab-group dynamicHeight="true">
+              <mat-tab label="COMPLESSIVA">
+                <app-complessiva></app-complessiva>
+              </mat-tab>
+              <mat-tab label="LOGICA">
+                <app-logica></app-logica>
+              </mat-tab>
+              <mat-tab label="CREATIVITÁ">
+                <app-creativita></app-creativita>
+              </mat-tab>
+              <mat-tab label="PROBLEM SOLVING" class="last-label">
+                <app-problemsolving></app-problemsolving>
+              </mat-tab>
+            </mat-tab-group>
+          </table>
 
-          <tr>
-            <td>1</td>
-            <td><img src="http://lorempixel.com/100/100/people/1" alt="" /></td>
-            <td>Jane Doe</td>
-            <td>5</td>
-
-          </tr>
-
-          <tr>
-            <td>2</td>
-            <td><img src="http://lorempixel.com/100/100/sports/2" alt="" /></td>
-            <td>Jane Doe</td>
-            <td>8</td>
-          </tr>
-
-          <tr>
-            <td>3</td>
-            <td><img src="http://lorempixel.com/100/100/people/9" alt="" /></td>
-            <td>Jane Doe</td>
-            <td>4</td>
-          </tr>
-
-          <tr>
-            <td>4</td>
-            <td><img src="http://lorempixel.com/100/100/people/3" alt="" /></td>
-            <td>Jane Doe</td>
-            <td>4</td>
-          </tr>
-        </table>
       </div>
     </div>
 </div>

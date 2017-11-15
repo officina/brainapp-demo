@@ -4,7 +4,7 @@ export class ProfileFakeDb
         activities: [
             {
                 'user'   : {
-                    'name'  : 'Alice Freeman',
+                    'name'  : 'Nella Cocci',
                     'avatar': 'assets/images/avatars/alice.jpg'
                 },
                 'message': 'started following you.',
@@ -12,7 +12,7 @@ export class ProfileFakeDb
             },
             {
                 'user'   : {
-                    'name'  : 'Andrew Green',
+                    'name'  : 'Guglielmo Siciliani',
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
                 'message': 'sent you a message.',
@@ -20,7 +20,7 @@ export class ProfileFakeDb
             },
             {
                 'user'   : {
-                    'name'  : 'Garry Newman',
+                    'name'  : 'Claudio Castiglione',
                     'avatar': 'assets/images/avatars/garry.jpg'
                 },
                 'message': 'shared a public post with your group.',
@@ -28,7 +28,7 @@ export class ProfileFakeDb
             },
             {
                 'user'   : {
-                    'name'  : 'Carl Henderson',
+                    'name'  : 'Viviano Lori',
                     'avatar': 'assets/images/avatars/carl.jpg'
                 },
                 'message': 'wants to play Fallout Shelter with you.',
@@ -36,7 +36,7 @@ export class ProfileFakeDb
             },
             {
                 'user'   : {
-                    'name'  : 'Jane Dean',
+                    'name'  : 'Antonina Trevisan',
                     'avatar': 'assets/images/avatars/jane.jpg'
                 },
                 'message': 'started following you.',
@@ -44,7 +44,7 @@ export class ProfileFakeDb
             },
             {
                 'user'   : {
-                    'name'  : 'Juan Carpenter',
+                    'name'  : 'Luca Padovesi',
                     'avatar': 'assets/images/avatars/james.jpg'
                 },
                 'message': 'sent you a message.',
@@ -52,7 +52,7 @@ export class ProfileFakeDb
             },
             {
                 'user'   : {
-                    'name'  : 'Judith Burton',
+                    'name'  : 'Antonella Siciliano',
                     'avatar': 'assets/images/avatars/joyce.jpg'
                 },
                 'message': 'shared a photo with you.',
@@ -60,7 +60,7 @@ export class ProfileFakeDb
             },
             {
                 'user'   : {
-                    'name'  : 'Vincent Munoz',
+                    'name'  : 'Andrea Trentini',
                     'avatar': 'assets/images/avatars/vincent.jpg'
                 },
                 'message': 'shared a photo with you.',
@@ -70,7 +70,7 @@ export class ProfileFakeDb
         posts     : [
             {
                 'user'    : {
-                    'name'  : 'Garry Newman',
+                    'name'  : 'Claudio Castiglione',
                     'avatar': 'assets/images/avatars/garry.jpg'
                 },
                 'message' : 'Remember the place we were talking about the other night? Found it!',
@@ -85,7 +85,7 @@ export class ProfileFakeDb
                 'comments': [
                     {
                         'user'   : {
-                            'name'  : 'Alice Freeman',
+                            'name'  : 'Nella Cocci',
                             'avatar': 'assets/images/avatars/alice.jpg'
                         },
                         'time'   : 'June 10, 2015',
@@ -95,7 +95,7 @@ export class ProfileFakeDb
             },
             {
                 'user'    : {
-                    'name'  : 'Andrew Green',
+                    'name'  : 'Guglielmo Siciliani',
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
                 'message' : 'Hey, man! Check this, it’s pretty awesome!',
@@ -115,7 +115,7 @@ export class ProfileFakeDb
                 'comments': [
                     {
                         'user'   : {
-                            'name'  : 'Alice Freeman',
+                            'name'  : 'Nella Cocci',
                             'avatar': 'assets/images/avatars/alice.jpg'
                         },
                         'time'   : 'June 10, 2015',
@@ -125,7 +125,7 @@ export class ProfileFakeDb
             },
             {
                 'user'   : {
-                    'name'  : 'Carl Henderson',
+                    'name'  : 'Viviano Lori',
                     'avatar': 'assets/images/avatars/carl.jpg'
                 },
                 'message': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat. Aenean lorem ex, ultrices sit amet ligula sed...',

@@ -13,3 +13,6 @@ export class FusePricingStyle3Component
     }
 
 }
+interface Leaderboard {
+  global: [{total: number}];
+}

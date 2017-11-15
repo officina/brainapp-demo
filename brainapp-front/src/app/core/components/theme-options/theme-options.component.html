@@ -1,31 +1,31 @@
-<button #openButton mat-icon-button class="open-button mat-primary-bg mat-elevation-z2" (click)="openBar()">
-    <mat-icon>settings</mat-icon>
-</button>
+<!--<button #openButton mat-icon-button class="open-button mat-primary-bg mat-elevation-z2" (click)="openBar()">-->
+    <!--<mat-icon>settings</mat-icon>-->
+<!--</button>-->
 
 <div class="theme-options-panel-overlay" #overlay [fxHide]="barClosed" [@fadeInOut]="!barClosed"></div>
 
 <div #panel class="theme-options-panel mat-white-bg mat-elevation-z8">
 
-    <button mat-icon-button class="close-button" (click)="closeBar()">
-        <mat-icon>close</mat-icon>
-    </button>
+    <!--<button mat-icon-button class="close-button" (click)="closeBar()">-->
+        <!--<mat-icon>close</mat-icon>-->
+    <!--</button>-->
 
     <div class="theme-options-panel-inner" fxLayout="column" fxLayoutAlign="start start">
 
         <h3>Navigation:</h3>
-        <mat-radio-group [(ngModel)]="fuseSettings.layout.navigation" (ngModelChange)="onSettingsChange()"
-                         fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="start start" fxLayoutWrap>
-            <mat-radio-button class="mr-8 mb-8" value="top">Top</mat-radio-button>
-            <mat-radio-button class="mr-8 mb-8" value="left">Left</mat-radio-button>
-            <mat-radio-button class="mr-8 mb-8" value="right">Right</mat-radio-button>
-            <mat-radio-button class="mr-8 mb-8" value="none">None</mat-radio-button>
-        </mat-radio-group>
+        <!--<mat-radio-group [(ngModel)]="fuseSettings.layout.navigation" (ngModelChange)="onSettingsChange()"-->
+                         <!--fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="start start" fxLayoutWrap>-->
+            <!--<mat-radio-button class="mr-8 mb-8" value="top">Top</mat-radio-button>-->
+            <!--<mat-radio-button class="mr-8 mb-8" value="left">Left</mat-radio-button>-->
+            <!--<mat-radio-button class="mr-8 mb-8" value="right">Right</mat-radio-button>-->
+            <!--<mat-radio-button class="mr-8 mb-8" value="none">None</mat-radio-button>-->
+        <!--</mat-radio-group>-->
 
         <h3>Navigation Fold (for vertical navigation):</h3>
-        <mat-slide-toggle [(ngModel)]="fuseSettings.layout.navigationFolded"
-                          (change)="onSettingsChange()">
-            Folded
-        </mat-slide-toggle>
+        <!--<mat-slide-toggle [(ngModel)]="fuseSettings.layout.navigationFolded"-->
+                          <!--(change)="onSettingsChange()">-->
+            <!--Folded-->
+        <!--</mat-slide-toggle>-->
 
         <h3 class="mt-24">Toolbar:</h3>
         <mat-radio-group [(ngModel)]="fuseSettings.layout.toolbar" (ngModelChange)="onSettingsChange()"

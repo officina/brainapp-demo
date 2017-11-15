@@ -21,6 +21,11 @@ import { FuseSimpleRightSidenav2Component } from './simple/right-sidenav-2/right
 import { FuseSimpleRightSidenav3Component } from './simple/right-sidenav-3/right-sidenav-3.component';
 import { FuseTabbedComponent } from './simple/tabbed/tabbed.component';
 import { FuseBlankComponent } from './blank/blank.component';
+import { ComplessivaComponent } from './blank/components/complessiva/complessiva.component';
+import { LogicaComponent } from './blank/components/logica/logica.component';
+import { CreativitaComponent } from './blank/components/creativita/creativita.component';
+import { ProblemsolvingComponent } from './blank/components/problemsolving/problemsolving.component';
+
 
 const routes: Routes = [
     {
@@ -96,7 +101,7 @@ const routes: Routes = [
         component: FuseTabbedComponent
     },
     {
-        path     : 'ui/page-layouts/blank',
+        path     : 'lab/id',
         component: FuseBlankComponent
     }
 ];
@@ -105,7 +110,7 @@ const routes: Routes = [
     imports     : [
         SharedModule,
         RouterModule.forChild(routes),
-        FuseDemoModule
+        FuseDemoModule,
     ],
     declarations: [
         FuseCardedFullWidthComponent,
@@ -126,7 +131,11 @@ const routes: Routes = [
         FuseSimpleRightSidenav2Component,
         FuseSimpleRightSidenav3Component,
         FuseTabbedComponent,
-        FuseBlankComponent
+        FuseBlankComponent,
+        ComplessivaComponent,
+        LogicaComponent,
+        CreativitaComponent,
+        ProblemsolvingComponent
     ]
 })
 export class UIPageLayoutsModule

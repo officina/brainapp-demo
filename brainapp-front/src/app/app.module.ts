@@ -21,6 +21,7 @@ import { ServicesModule } from './main/content/services/services.module';
 import { FuseAngularMaterialModule } from './main/content/components/angular-material/angular-material.module';
 import { MarkdownModule } from 'angular2-markdown';
 import { TranslateModule } from '@ngx-translate/core';
+
 const appRoutes: Routes = [
     {
         path        : 'apps/mail',
@@ -48,7 +49,7 @@ const appRoutes: Routes = [
     },
     {
         path      : '**',
-        redirectTo: 'apps/dashboards/project'
+        redirectTo: 'profile'
     }
 ];
 
