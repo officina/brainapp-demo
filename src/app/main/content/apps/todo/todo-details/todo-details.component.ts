@@ -49,8 +49,8 @@ export class FuseTodoDetailsComponent implements OnInit, OnDestroy
                         this.todoForm = this.createTodoForm();
 
                         this.onFormChange = this.todoForm.valueChanges
-                                                .debounceTime(500)
-                                                .distinctUntilChanged()
+                                                // .debounceTime(500)
+                                                // .distinctUntilChanged()
                                                 .subscribe(data => {
                                                     this.todoService.updateTodo(data);
                                                 });
