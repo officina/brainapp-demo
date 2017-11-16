@@ -8,7 +8,6 @@ import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import 'hammerjs';
 import { SharedModule } from './core/modules/shared.module';
 import { AppComponent } from './app.component';
-import { ProjectModule } from './main/content/apps/dashboards/project/project.module';
 import { FuseFakeDbService } from './fuse-fake-db/fuse-fake-db.service';
 import { FuseMainModule } from './main/main.module';
 import { PagesModule } from './main/content/pages/pages.module';
@@ -72,7 +71,6 @@ const appRoutes: Routes = [
 
         FuseMainModule,
 
-        ProjectModule,
 
         PagesModule,
         UIModule,

@@ -56,8 +56,8 @@ export class FuseTodoComponent implements OnInit, OnDestroy
                 });
 
         this.searchInput.valueChanges
-            .debounceTime(300)
-            .distinctUntilChanged()
+            // .debounceTime(300)
+            // .distinctUntilChanged()
             .subscribe(searchText => {
                 this.todoService.onSearchTextChanged.next(searchText);
             });
