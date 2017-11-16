@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
+import { LeaderboardService } from './leaderboard.service';
+// import * as scores from 'scores';
 @Component({
-    selector   : 'fuse-blank',
-    templateUrl: './blank.component.html',
-    styleUrls  : ['./blank.component.scss']
+  selector   : 'fuse-blank',
+  templateUrl: './blank.component.html',
+  styleUrls  : ['./blank.component.scss']
 })
-export class FuseBlankComponent {
+export class FuseBlankComponent implements OnInit {
   score: GlobalScore;
   constructor(private leaderboardService: LeaderboardService) {}
     ngOnInit(){
