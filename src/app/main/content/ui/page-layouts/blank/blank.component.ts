@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { LeaderboardService } from './leaderboard.service';
 // import * as scores from 'scores';
 @Component({
-  selector   : 'fuse-blank',
-  templateUrl: './blank.component.html',
-  styleUrls  : ['./blank.component.scss']
+    selector   : 'fuse-blank',
+    templateUrl: './blank.component.html',
+    styleUrls  : ['./blank.component.scss']
 })
 export class FuseBlankComponent implements OnInit {
 
