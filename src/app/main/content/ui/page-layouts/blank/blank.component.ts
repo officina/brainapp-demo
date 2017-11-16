@@ -5,9 +5,12 @@ import { Component } from '@angular/core';
     templateUrl: './blank.component.html',
     styleUrls  : ['./blank.component.scss']
 })
-export class FuseBlankComponent
-{
-    constructor()
-    {
+export class FuseBlankComponent {
+  score: GlobalScore;
+  constructor(private leaderboardService: LeaderboardService) {}
+    ngOnInit(){
+      this.leaderboardService.getScores().subscribe((score: GlobalScore) => {
+        this.score = score;
+      });
     }
 }
