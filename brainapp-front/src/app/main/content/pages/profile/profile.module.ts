@@ -4,8 +4,6 @@ import { RouterModule } from '@angular/router';
 
 import { FuseProfileComponent } from './profile.component';
 import { FuseProfileTimelineComponent } from './tabs/timeline/timeline.component';
-import { FuseProfileAboutComponent } from './tabs/about/about.component';
-import { FuseProfilePhotosVideosComponent } from './tabs/photos-videos/photos-videos.component';
 import { ProfileService } from './profile.service';
 
 const routes = [
@@ -22,8 +20,6 @@ const routes = [
     declarations: [
         FuseProfileComponent,
         FuseProfileTimelineComponent,
-        FuseProfileAboutComponent,
-        FuseProfilePhotosVideosComponent
     ],
     imports     : [
         SharedModule,
