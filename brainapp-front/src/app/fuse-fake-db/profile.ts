@@ -7,64 +7,64 @@ export class ProfileFakeDb
                     'name'  : 'Nella Cocci',
                     'avatar': 'assets/images/avatars/alice.jpg'
                 },
-                'message': 'started following you.',
-                'time'   : '13 mins. ago'
+                'message': 'ha realizzato 1400 p.ti',
+                'time'   : '13 minuti fa'
             },
             {
                 'user'   : {
                     'name'  : 'Guglielmo Siciliani',
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
-                'message': 'sent you a message.',
-                'time'   : 'June 10,2015'
+                'message': 'si è iscritto al laboratorio',
+                'time'   : '3 ore fa'
             },
             {
                 'user'   : {
                     'name'  : 'Claudio Castiglione',
                     'avatar': 'assets/images/avatars/garry.jpg'
                 },
-                'message': 'shared a public post with your group.',
-                'time'   : 'June 9,2015'
+                'message': 'ha condiviso un documento',
+                'time'   : '9 Novembre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Viviano Lori',
                     'avatar': 'assets/images/avatars/carl.jpg'
                 },
-                'message': 'wants to play Fallout Shelter with you.',
-                'time'   : 'June 8,2015'
+                'message': 'ha realizzato 1734 p.ti',
+                'time'   : '6 Novembre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Antonina Trevisan',
                     'avatar': 'assets/images/avatars/jane.jpg'
                 },
-                'message': 'started following you.',
-                'time'   : 'June 7,2015'
+                'message': 'ha commentato il post',
+                'time'   : '6 Novembre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Luca Padovesi',
                     'avatar': 'assets/images/avatars/james.jpg'
                 },
-                'message': 'sent you a message.',
-                'time'   : 'June 6,2015'
+                'message': 'ha fatto 800 p.ti',
+                'time'   : '1 Novembre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Antonella Siciliano',
                     'avatar': 'assets/images/avatars/joyce.jpg'
                 },
-                'message': 'shared a photo with you.',
-                'time'   : 'June 5,2015'
+                'message': 'ha condiviso un documento',
+                'time'   : '21 Ottobre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Andrea Trentini',
                     'avatar': 'assets/images/avatars/vincent.jpg'
                 },
-                'message': 'shared a photo with you.',
-                'time'   : 'June 4,2015'
+                'message': 'ha commentato un post',
+                'time'   : '15 Ottobre, 2017'
             }
         ],
         posts     : [
@@ -73,7 +73,7 @@ export class ProfileFakeDb
                     'name'  : 'Claudio Castiglione',
                     'avatar': 'assets/images/avatars/garry.jpg'
                 },
-                'message' : 'Remember the place we were talking about the other night? Found it!',
+                'message' : 'Ciao a tutti, stiamo organizzando un nuovo Laboratorio. Il tema sar',
                 'time'    : '32 minutes ago',
                 'type'    : 'post',
                 'like'    : 5,
