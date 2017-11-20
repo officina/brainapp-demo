@@ -25,7 +25,6 @@ import { ComplessivaComponent } from './blank/components/complessiva/complessiva
 import { LogicaComponent } from './blank/components/logica/logica.component';
 import { CreativitaComponent } from './blank/components/creativita/creativita.component';
 import { ProblemsolvingComponent } from './blank/components/problemsolving/problemsolving.component';
-import { LeaderboardService } from './blank/leaderboard.service';
 
 
 const routes: Routes = [

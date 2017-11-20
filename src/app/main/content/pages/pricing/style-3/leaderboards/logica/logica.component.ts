@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LeaderboardService } from './../../../../../ui/page-layouts/blank/leaderboard.service';
 
 @Component({
   selector: 'app-logica',
@@ -6,10 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./logica.component.scss']
 })
 export class LogicaComponent implements OnInit {
+  scores: GlobalScore = <GlobalScore>{};
 
-  constructor() { }
+  constructor(private leaderboardService: LeaderboardService) { }
 
   ngOnInit() {
+
+
+    this.leaderboardService.getScores().subscribe((scores: GlobalScore) => {
+
+      this.scores = scores;
+    });
+
+
   }
+
+
 
 }

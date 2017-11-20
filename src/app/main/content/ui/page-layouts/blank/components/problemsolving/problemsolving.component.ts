@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LeaderboardService } from './../../leaderboard.service';
 
 @Component({
   selector: 'app-problemsolving',
@@ -6,10 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./problemsolving.component.scss']
 })
 export class ProblemsolvingComponent implements OnInit {
+  scores: GlobalScore = <GlobalScore>{};
 
-  constructor() { }
+  constructor(private leaderboardService: LeaderboardService) { }
 
   ngOnInit() {
+
+
+    this.leaderboardService.getScores().subscribe((scores: GlobalScore) => {
+
+      this.scores = scores;
+    });
+
+
   }
+
+
 
 }
