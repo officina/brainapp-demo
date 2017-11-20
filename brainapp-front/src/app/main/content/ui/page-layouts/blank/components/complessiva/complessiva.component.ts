@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LeaderboardService } from './../leaderboard.service';
+import { LeaderboardService } from './../../leaderboard.service';
+import { FuseBlankComponent } from './../../blank.component';
 
 @Component({
   selector: 'app-complessiva',
@@ -7,7 +8,6 @@ import { LeaderboardService } from './../leaderboard.service';
   styleUrls: ['./complessiva.component.scss']
 })
 export class ComplessivaComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit() {
