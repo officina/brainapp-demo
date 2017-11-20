@@ -11,7 +11,7 @@ export class LeaderboardService {
     console.log('dato');
   }
   getScores() {
-      return this.http.get('  https://raw.githubusercontent.com/officina/brainapp/feature/apihook/brainapp-front/global.json?token=ATarJuCkQSNRSV8eOwI5q5qZMSmDUqqlks5aFps5wA%3D%3D')
+      return this.http.get('https://raw.githubusercontent.com/officina/brainapp/feature/apihook/brainapp-front/global.json?token=ATarJuCkQSNRSV8eOwI5q5qZMSmDUqqlks5aFps5wA%3D%3D')
       .map(res => res.json());
   }
 }
