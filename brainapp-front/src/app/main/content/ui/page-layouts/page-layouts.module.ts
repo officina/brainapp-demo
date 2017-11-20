@@ -138,7 +138,7 @@ const routes: Routes = [
         CreativitaComponent,
         ProblemsolvingComponent
     ],
-  providers: [LeaderboardService],
+  providers: [],
 })
 export class UIPageLayoutsModule
 {
