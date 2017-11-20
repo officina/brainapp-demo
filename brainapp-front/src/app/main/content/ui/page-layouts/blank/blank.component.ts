@@ -7,7 +7,9 @@ import { LeaderboardService } from './leaderboard.service';
   styleUrls  : ['./blank.component.scss']
 })
 export class FuseBlankComponent implements OnInit {
-  score: GlobalScore;
+
+  score: GlobalScore  = <GlobalScore>{}
+
   constructor(private leaderboardService: LeaderboardService) {}
     ngOnInit(){
       this.leaderboardService.getScores().subscribe((score: GlobalScore) => {

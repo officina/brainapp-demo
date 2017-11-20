@@ -11,13 +11,13 @@ export class ComplessivaComponent implements OnInit {
 
   constructor(private leaderboardService:LeaderboardService) { }
 
-  score:GlobalScore
+  score:GlobalScore = <GlobalScore>{}
 
   ngOnInit() {
 
 
     this.leaderboardService.getScores().subscribe((score: GlobalScore) => {
-  
+
       this.score = score;
     });
 
