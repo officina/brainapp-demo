@@ -7,7 +7,7 @@ import { HttpModule } from '@angular/http';
 @Injectable()
 export class LeaderboardService {
 
-  constructor(public http:Http) {
+  constructor(private http:Http) {
     // console.log('dato');
   }
   getScores() {

@@ -8,9 +8,22 @@ import { FuseBlankComponent } from './../../blank.component';
   styleUrls: ['./complessiva.component.scss']
 })
 export class ComplessivaComponent implements OnInit {
-  constructor() { }
+
+  constructor(private leaderboardService:LeaderboardService) { }
+
+  score:GlobalScore
 
   ngOnInit() {
+
+
+    this.leaderboardService.getScores().subscribe((score: GlobalScore) => {
+  
+      this.score = score;
+    });
+
+
   }
+
+
 
 }
