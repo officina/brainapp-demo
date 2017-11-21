@@ -73,23 +73,19 @@ export class ProfileFakeDb
                     'name'  : 'Claudio Castiglione',
                     'avatar': 'assets/images/avatars/garry.jpg'
                 },
-                'message' : 'Ciao a tutti, stiamo organizzando un nuovo Laboratorio. Il tema sar',
+                'message' : 'Ciao a tutti, stiamo organizzando un nuovo Laboratorio. Il tema sara la Cyber Security, se vuoi partecipare o sei interessato ad approfondire la tematica iscriviti o seguici! Stay Tuned!',
                 'time'    : '32 minutes ago',
                 'type'    : 'post',
                 'like'    : 5,
                 'share'   : 21,
-                'media'   : {
-                    'type'   : 'image',
-                    'preview': 'assets/images/etc/early-sunrise.jpg'
-                },
                 'comments': [
                     {
                         'user'   : {
                             'name'  : 'Nella Cocci',
                             'avatar': 'assets/images/avatars/alice.jpg'
                         },
-                        'time'   : 'June 10, 2015',
-                        'message': 'That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.'
+                        'time'   : '15 minutes ago',
+                        'message': 'Grazie, ci saro!'
                     }
                 ]
             },
