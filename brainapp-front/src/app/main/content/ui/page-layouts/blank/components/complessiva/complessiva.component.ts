@@ -14,7 +14,7 @@ export class ComplessivaComponent implements OnInit {
   ngOnInit() {
 
 
-    this.leaderboardService.getScores().subscribe((scores: GlobalScore) => {
+    this.leaderboardService.getScores('globale_punti_make7').subscribe((scores: GlobalScore) => {
 
       this.scores = scores;
     });

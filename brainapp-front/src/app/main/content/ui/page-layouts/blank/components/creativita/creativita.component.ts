@@ -14,7 +14,7 @@ export class CreativitaComponent implements OnInit {
   ngOnInit() {
 
 
-    this.leaderboardService.getScores().subscribe((scores: GlobalScore) => {
+    this.leaderboardService.getScores("").subscribe((scores: GlobalScore) => {
 
       this.scores = scores;
     });

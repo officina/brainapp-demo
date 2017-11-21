@@ -81,8 +81,8 @@ export class ProfileFakeDb
                 'comments': [
                     {
                         'user'   : {
-                            'name'  : 'Nella Cocci',
-                            'avatar': 'assets/images/avatars/alice.jpg'
+                            'name'  : 'Mario Rossi',
+                            'avatar': 'assets/images/avatars/Trevino.jpg'
                         },
                         'time'   : '15 minutes ago',
                         'message': 'Grazie, ci saro!'
@@ -94,38 +94,19 @@ export class ProfileFakeDb
                     'name'  : 'Guglielmo Siciliani',
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
-                'message' : 'Hey, man! Check this, it’s pretty awesome!',
-                'time'    : 'June 12, 2015',
+                'message' : "Hey!! Abbiamo bisogno urgentemete di qualcuno che sappia come funziona l'export del CRM. Se sai come fare o sai aiutarci ad individuare chi puo' aiutarci... sei chi cerchiamo! :D",
+                'time'    : 'June 12, 2017',
                 'type'    : 'article',
-                'like'    : 98,
+                'like'    : 9,
                 'share'   : 6,
-                'article' : {
-                    'title'   : 'The Fallout 4 Pip-Boy Edition Is Back In Stock Now',
-                    'subtitle': 'Kotaku',
-                    'excerpt' : 'The Fallout 4 Pip-Boy edition is back in stock at Gamestop, for all 3 platforms. Additionally, Walmart also has it in stock for the PS4 and Xbox One as of this writing, as does Best Buy.',
-                    'media'   : {
-                        'type'   : 'image',
-                        'preview': 'assets/images/etc/fallout.jpg'
-                    }
-                },
-                'comments': [
-                    {
-                        'user'   : {
-                            'name'  : 'Nella Cocci',
-                            'avatar': 'assets/images/avatars/alice.jpg'
-                        },
-                        'time'   : 'June 10, 2015',
-                        'message': 'That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.'
-                    }
-                ]
             },
             {
                 'user'   : {
                     'name'  : 'Viviano Lori',
                     'avatar': 'assets/images/avatars/carl.jpg'
                 },
-                'message': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat. Aenean lorem ex, ultrices sit amet ligula sed...',
-                'time'   : 'June 10, 2015',
+                'message': 'Hai ricevuto un riconoscimento da Viviano per il tuo contributo',
+                'time'   : 'June 10, 2017',
                 'type'   : 'something',
                 'like'   : 4,
                 'share'  : 1
