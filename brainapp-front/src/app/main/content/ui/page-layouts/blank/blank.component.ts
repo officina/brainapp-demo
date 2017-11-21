@@ -8,15 +8,15 @@ import { Observable } from 'rxjs/Observable';
 })
 export class FuseBlankComponent implements OnInit {
   score: GlobalScore  = <GlobalScore>{}
-
+  sub = null;
   constructor(private leaderboardService: LeaderboardService) {}
     ngOnInit(){
       this.sub = Observable.interval(5000)
         .subscribe((val) => {
           // console.log('fresh');
-          this.leaderboardService.getScores().subscribe((score: GlobalScore) => {
+          this.leaderboardService.getScores('globale_creativita').subscribe((score: GlobalScore) => {
             this.score = score;
           });
-        }
+        })
     }
 }
