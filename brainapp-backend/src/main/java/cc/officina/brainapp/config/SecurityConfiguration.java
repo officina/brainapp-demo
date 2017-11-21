@@ -99,6 +99,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/register").permitAll()
             .antMatchers("/api/activate").permitAll()
             //.antMatchers("/api/games/*").permitAll()
+            .antMatchers("/api/games/leaderboards/**").permitAll()
             .antMatchers("/api/play/**").permitAll()
             .antMatchers("/api/play/attempt").permitAll()
             .antMatchers("/api/play/attempt/score").permitAll()
@@ -110,7 +111,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/profile-info").permitAll()
             .antMatchers("/api/sessions/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/**").authenticated()
-
+            
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/v2/api-docs/**").permitAll()

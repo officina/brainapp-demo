@@ -13,7 +13,9 @@ $padding: 10px;
   text-align: center;
   text-transform: uppercase;
 }
-
+tbody {
+  width: 100%;
+}
 img {
   border-radius: 50%;
   height: $imageSmall;
@@ -24,10 +26,10 @@ img {
   border: 1px solid darken($baseColor, 5%);
   border-radius: $borderRadius;
   //box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
-  max-width: calc(50% - 2em);
+  //max-width: calc(50% - 2em);
   margin: 1em auto;
   overflow: hidden;
-  width: 500px;
+  max-width: 495px;
 }
 
 table {
@@ -52,7 +54,7 @@ table {
   th {
     //background-color: lighten($baseColor, 50%);
     font-weight: 300;
-    width: 145px;
+    width: 165px;
     border-bottom: $baseColor solid 0.5px;
   }
 
@@ -163,4 +165,11 @@ table {
     box-shadow: none;
     overflow: visible;
   }
+}
+
+tbody {
+  height: 650px;
+  overflow:auto;
+  overflow-x:hidden;
+  display:block;
 }
