@@ -1,0 +1,3 @@
+interface GlobalScore {
+  total: number;
+}
