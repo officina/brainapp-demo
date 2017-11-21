@@ -18,6 +18,7 @@ import { FuseNavigationService } from './core/components/navigation/navigation.s
 import { ServicesModule } from './main/content/services/services.module';
 import { MarkdownModule } from 'angular2-markdown';
 import { TranslateModule } from '@ngx-translate/core';
+import {LeaderboardService} from './main/content/ui/page-layouts/blank/leaderboard.service';
 
 const appRoutes: Routes = [
     {
@@ -79,7 +80,8 @@ const appRoutes: Routes = [
     providers   : [
         FuseSplashScreenService,
         FuseConfigService,
-        FuseNavigationService
+        FuseNavigationService,
+        LeaderboardService
     ],
     bootstrap   : [
         AppComponent

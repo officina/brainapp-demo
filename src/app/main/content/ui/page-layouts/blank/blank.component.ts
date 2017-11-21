@@ -1,17 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LeaderboardService } from './leaderboard.service';
-import * as scores from 'scores';
+import { Observable } from 'rxjs/Observable';
 @Component({
     selector   : 'fuse-blank',
     templateUrl: './blank.component.html',
     styleUrls  : ['./blank.component.scss']
 })
 export class FuseBlankComponent implements OnInit {
-  score: GlobalScore;
+  score: GlobalScore  = <GlobalScore>{}
+
   constructor(private leaderboardService: LeaderboardService) {}
     ngOnInit(){
-      this.leaderboardService.getScores().subscribe((score: GlobalScore) => {
-        this.score = score;
-      });
+      this.sub = Observable.interval(5000)
+        .subscribe((val) => {
+          // console.log('fresh');
+          this.leaderboardService.getScores().subscribe((score: GlobalScore) => {
+            this.score = score;
+          });
+        }
     }
 }
