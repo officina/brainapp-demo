@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { LeaderboardService } from './../../../../../ui/page-layouts/blank/leaderboard.service';
 
 @Component({
-  selector: 'app-logica',
-  templateUrl: './logica.component.html',
-  styleUrls: ['./logica.component.scss']
+  selector: 'app-lablogica',
+  templateUrl: './lablogica.component.html',
+  styleUrls: ['./lablogica.component.scss']
 })
-export class LogicaComponent implements OnInit {
+export class LablogicaComponent implements OnInit {
   scores: GlobalScore = <GlobalScore>{};
 
   constructor(private leaderboardService: LeaderboardService) { }
@@ -14,7 +14,7 @@ export class LogicaComponent implements OnInit {
   ngOnInit() {
 
 
-    this.leaderboardService.getScores('globale_logica').subscribe((scores: GlobalScore) => {
+    this.leaderboardService.getScores('team_logica').subscribe((scores: GlobalScore) => {
 
       this.scores = scores;
     });

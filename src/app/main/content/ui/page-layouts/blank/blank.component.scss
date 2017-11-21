@@ -112,8 +112,8 @@ img {
   border-bottom: #b9b9b9 solid 0.8px;
   overflow: hidden;
   background-color: white;
-
-  width: 500px;
+  height: 650px;
+  width: 495px;
 }
 /deep/.mat-tab-group {
   padding: 0 !important;
@@ -167,7 +167,12 @@ table {
     font-weight: 300;
     width: 145px;
     border-bottom: #e1e1e1 solid 0.3px;
-  }
+  }tbody {
+  height: 650px;
+  overflow:auto;
+  overflow-x:hidden;
+  display:block;
+}
 
   tr {
     &:nth-child(2n) { background-color: white; }
