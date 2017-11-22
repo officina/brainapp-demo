@@ -85,7 +85,7 @@ export class ProfileFakeDb
                             'avatar': 'assets/images/avatars/Trevino.jpg'
                         },
                         'time'   : '15 minutes ago',
-                        'message': 'Grazie, ci saro!'
+                        'message': 'Grazie, ci saró!'
                     }
                 ]
             },
@@ -94,7 +94,7 @@ export class ProfileFakeDb
                     'name'  : 'Guglielmo Siciliani',
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
-                'message' : "Hey!! Abbiamo bisogno urgentemete di qualcuno che sappia come funziona l'export del CRM. Se sai come fare o sai aiutarci ad individuare chi puo' aiutarci... sei chi cerchiamo! :D",
+                'message' : "Hey!! Abbiamo bisogno urgentemete di qualcuno che sappia come funziona l'export del CRM. Se sai come fare o sai aiutarci ad individuare chi puó aiutarci... sei chi cerchiamo! :D",
                 'time'    : 'June 12, 2017',
                 'type'    : 'article',
                 'like'    : 9,
