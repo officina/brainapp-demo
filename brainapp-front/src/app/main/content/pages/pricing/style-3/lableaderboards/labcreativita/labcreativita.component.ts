@@ -14,7 +14,7 @@ export class LabcreativitaComponent implements OnInit {
   ngOnInit() {
 
 
-    this.leaderboardService.getScores('team_creativita').subscribe((scores: GlobalScore) => {
+    this.leaderboardService.getScores('tra_team_creativita').subscribe((scores: GlobalScore) => {
 
       this.scores = scores;
     });

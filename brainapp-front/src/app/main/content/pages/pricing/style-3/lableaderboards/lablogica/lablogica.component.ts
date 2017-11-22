@@ -14,7 +14,7 @@ export class LablogicaComponent implements OnInit {
   ngOnInit() {
 
 
-    this.leaderboardService.getScores('team_logica').subscribe((scores: GlobalScore) => {
+    this.leaderboardService.getScores('tra_team_logica').subscribe((scores: GlobalScore) => {
 
       this.scores = scores;
     });
