@@ -53,7 +53,7 @@ table {
   th {
     //background-color: lighten($baseColor, 50%);
     font-weight: 300;
-    width: 145px;
+    width: 167px;
     border-bottom: $baseColor solid 0.5px;
   }
 
@@ -164,4 +164,10 @@ table {
     box-shadow: none;
     overflow: visible;
   }
+}
+tbody {
+  height: 650px;
+  overflow:auto;
+  overflow-x:hidden;
+  display:block;
 }

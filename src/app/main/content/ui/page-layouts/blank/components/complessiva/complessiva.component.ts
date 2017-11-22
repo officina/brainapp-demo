@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LeaderboardService } from './../../leaderboard.service';
 
 @Component({
   selector: 'app-complessiva',
@@ -6,10 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./complessiva.component.scss']
 })
 export class ComplessivaComponent implements OnInit {
+  scores: GlobalScore = <GlobalScore>{};
 
-  constructor() { }
+  constructor(private leaderboardService: LeaderboardService) { }
 
   ngOnInit() {
+
+
+    this.leaderboardService.getScores('globale_punti_make7').subscribe((scores: GlobalScore) => {
+
+      this.scores = scores;
+    });
+
+
   }
+
+
 
 }
