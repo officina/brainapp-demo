@@ -14,7 +14,8 @@ export class FuseBlankComponent implements OnInit {
       this.sub = Observable.interval(5000)
         .subscribe((val) => {
           // console.log('fresh');
-          this.leaderboardService.getScores('globale_creativita').subscribe((score: GlobalScore) => {
+
+          this.leaderboardService.getScores('globale_make_7').subscribe((score: GlobalScore) => {
             this.score = score;
           });
         })
