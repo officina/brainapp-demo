@@ -12,8 +12,10 @@ export class LeaderboardService {
   }
   getScores(leaderboardId:string) {
     // console.log('dato');
-      return this.http.get(environment.apiUrl + 'games/leaderboards/'+ leaderboardId +'?userid=atomasse')
+
+      return this.http.get(environment.apiUrl + 'games/leaderboards/' + leaderboardId + '?userid=atomasse')
       .map(res => res.json());
+
 
   }
 }
