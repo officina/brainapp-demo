@@ -22666,6 +22666,5 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.exps.rgb,
 	cr.system_object.prototype.cnds.TriggerOnce,
 	cr.plugins_.gatorade.prototype.acts.attemptEnded,
-	cr.system_object.prototype.acts.RestartLayout,
-	cr.plugins_.Browser.prototype.acts.GoToURLWindow
+	cr.system_object.prototype.acts.RestartLayout
 ];};
