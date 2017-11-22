@@ -1,6 +1,8 @@
 package cc.officina.brainapp.web.rest;
 
 import cc.playoff.sdk.PlayOff;
+import cc.playoff.sdk.PlayOff.PlayOffException;
+
 import com.codahale.metrics.annotation.Timed;
 
 import cc.officina.brainapp.domain.Attempt;
@@ -34,6 +36,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -353,7 +356,5 @@ public class GameResource {
             e.printStackTrace();
             return null;
         }
-
-
     }
 }

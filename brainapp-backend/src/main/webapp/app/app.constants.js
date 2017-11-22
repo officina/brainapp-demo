@@ -5,6 +5,6 @@
         .module('brainappbackendApp')
         .constant('VERSION', "1.0.1")
         .constant('DEBUG_INFO_ENABLED', false)
-        .constant('BUILD_TIMESTAMP', 1511343939495)
+        .constant('BUILD_TIMESTAMP', 1511356734397)
 ;
 })();
