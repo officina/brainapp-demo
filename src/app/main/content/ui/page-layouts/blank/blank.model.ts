@@ -1,3 +1,4 @@
 interface GlobalScore {
-  total: number;
+  total:number;
+  data:[any];
 }

@@ -9,6 +9,10 @@ import { ComplessivaComponent } from './style-3/leaderboards/complessiva/comples
 import { LogicaComponent } from './style-3/leaderboards/logica/logica.component';
 import { CreativitaComponent } from './style-3/leaderboards/creativita/creativita.component';
 import { ProblemsolvingComponent } from './style-3/leaderboards/problemsolving/problemsolving.component';
+import { LablogicaComponent } from './style-3/lableaderboards/lablogica/lablogica.component';
+import { LabproblemsolvingComponent } from './style-3/lableaderboards/labproblemsolving/labproblemsolving.component';
+import { LabcreativitaComponent } from './style-3/lableaderboards/labcreativita/labcreativita.component';
+import { LabcomplessivaComponent } from './style-3/lableaderboards/labcomplessiva/labcomplessiva.component';
 
 const routes = [
     {
@@ -33,7 +37,11 @@ const routes = [
         ComplessivaComponent,
         LogicaComponent,
         CreativitaComponent,
-        ProblemsolvingComponent
+        ProblemsolvingComponent,
+        LablogicaComponent,
+        LabproblemsolvingComponent,
+        LabcreativitaComponent,
+        LabcomplessivaComponent
     ],
     imports     : [
         SharedModule,
