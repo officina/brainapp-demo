@@ -14,6 +14,9 @@ export class ComplessivaComponent implements OnInit {
   constructor(private leaderboardService: LeaderboardService) { }
 
   ngOnInit() {
+    this.leaderboardService.getScores('globale_punti_make7').subscribe((scores: GlobalScore) => {
+      this.scores = scores;
+    });
     this.sub = Observable.interval(5000)
       .subscribe((val) => {
         // console.log('fresh');
