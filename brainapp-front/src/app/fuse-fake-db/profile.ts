@@ -99,17 +99,6 @@ export class ProfileFakeDb
                 'type'    : 'article',
                 'like'    : 9,
                 'share'   : 6,
-            },
-            {
-                'user'   : {
-                    'name'  : 'Viviano Lori',
-                    'avatar': 'assets/images/avatars/carl.jpg'
-                },
-                'message': 'Hai ricevuto un riconoscimento da Viviano per il tuo contributo',
-                'time'   : 'June 10, 2017',
-                'type'   : 'something',
-                'like'   : 4,
-                'share'  : 1
             }
         ]
     };
