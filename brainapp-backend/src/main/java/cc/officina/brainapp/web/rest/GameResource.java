@@ -332,7 +332,7 @@ public class GameResource {
 
     @GetMapping("/games/leaderboards/{leaderboardid}")
     @Timed
-    public ResponseEntity<Object> getLeaderboard(@PathVariable String leaderboardid, @RequestParam String userid){
+    public ResponseEntity<Object> getLeaderboard(@PathVariable String leaderboardid, @RequestParam String userid, @RequestParam String teamid){
 
         PlayOff pl = new PlayOff(poClientId,poClientSecret, null, "v2", poDomain);
         try {
@@ -342,7 +342,8 @@ public class GameResource {
             query.put("cycle", "alltime");
             query.put("sort", "descending");
             query.put("limit", "0");
-//			query.put("team_instance_id", "1206_0");
+            if(leaderboardid.indexOf("team_") > -1)
+            	query.put("team_instance_id", "laboratorio_somma");
             Object response = pl.get("/runtime/leaderboards/"+leaderboardid, query);
 
             return ResponseEntity.ok().body(response);
