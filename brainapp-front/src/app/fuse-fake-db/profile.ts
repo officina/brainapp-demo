@@ -81,7 +81,7 @@ export class ProfileFakeDb
                 'comments': [
                     {
                         'user'   : {
-                            'name'  : 'Mario Rossi',
+                            'name'  : 'Dino Davide',
                             'avatar': 'assets/images/avatars/Trevino.jpg'
                         },
                         'time'   : '15 minutes ago',

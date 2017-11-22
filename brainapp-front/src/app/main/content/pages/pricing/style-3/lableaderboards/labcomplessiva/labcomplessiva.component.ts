@@ -14,7 +14,7 @@ export class LabcomplessivaComponent implements OnInit {
   ngOnInit() {
 
 
-    this.leaderboardService.getScores('team_punti').subscribe((scores: GlobalScore) => {
+    this.leaderboardService.getScores('tra_team_punti').subscribe((scores: GlobalScore) => {
 
       this.scores = scores;
     });

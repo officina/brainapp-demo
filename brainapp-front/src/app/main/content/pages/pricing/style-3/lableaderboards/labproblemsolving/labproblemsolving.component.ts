@@ -14,7 +14,7 @@ export class LabproblemsolvingComponent implements OnInit {
   ngOnInit() {
 
 
-    this.leaderboardService.getScores('team_problem_solving').subscribe((scores: GlobalScore) => {
+    this.leaderboardService.getScores('tra_team_problem_solving').subscribe((scores: GlobalScore) => {
 
       this.scores = scores;
     });
