@@ -332,6 +332,7 @@ public class GameResource {
 
     @GetMapping("/games/leaderboards/{leaderboardid}")
     @Timed
+    @CrossOrigin
     public ResponseEntity<Object> getLeaderboard(@PathVariable String leaderboardid, @RequestParam String userid){
 
         PlayOff pl = new PlayOff(poClientId,poClientSecret, null, "v2", poDomain);
