@@ -107,3 +107,9 @@ application:
 elaboration:
     interval: 300
     numUsers: 7
+playoff:
+    client:
+        domain: playoff.cc
+        id: ZTFiNjJmYmItOTljOS00ZGU2LWJhNjctZTZkMTk5NDZhZWUz
+        secret: ZWMyMDU1NDgtZTE3OC00MzE2LTg0N2UtN2JjMjE2NTZlN2UyNmZjMzJmYzAtYzg0OS0xMWU3LWE2MjMtODU5YjhjNzcwNTMx
+        
