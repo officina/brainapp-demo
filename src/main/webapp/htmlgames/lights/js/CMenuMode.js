@@ -175,7 +175,6 @@ function CMenuMode() {
         }else{
              playSound("click", 1, false);
         }
-        startAttempt();
         s_oMain.gotoLevelSelect(iMode);
     };
 
