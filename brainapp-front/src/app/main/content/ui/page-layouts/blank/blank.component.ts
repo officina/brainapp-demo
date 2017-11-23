@@ -15,7 +15,7 @@ export class FuseBlankComponent implements OnInit {
         .subscribe((val) => {
           // console.log('fresh');
 
-          this.leaderboardService.getScores('globale_make_7').subscribe((score: GlobalScore) => {
+          this.leaderboardService.getScores('globale_punti_make7').subscribe((score: GlobalScore) => {
             this.score = score;
           });
         })
