@@ -1,6 +1,8 @@
 package cc.officina.brainapp.web.rest;
 
 import cc.playoff.sdk.PlayOff;
+import cc.playoff.sdk.PlayOff.PlayOffException;
+
 import com.codahale.metrics.annotation.Timed;
 
 import cc.officina.brainapp.domain.Attempt;
@@ -25,6 +27,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +36,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -57,6 +61,12 @@ public class GameResource {
     private final MatchTemplateService templateService;
     private final SessionService sessionService;
     private final GamificationService gamificationService;
+    @Value("${playoff.client.id}")
+    private String poClientId;
+	@Value("${playoff.client.secret}")
+    private String poClientSecret;
+	@Value("${playoff.client.domain}")
+    private String poDomain;
 
     public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService,
     				GamificationService gamificationService) {
@@ -325,19 +335,19 @@ public class GameResource {
 
     @GetMapping("/games/leaderboards/{leaderboardid}")
     @Timed
+    @CrossOrigin
     public ResponseEntity<Object> getLeaderboard(@PathVariable String leaderboardid, @RequestParam String userid){
 
-        PlayOff pl = new PlayOff("MDQ2ZGJmMjMtZWNhZC00OWM3LTk2NjAtOTdhODc4ZjkwOTBj",
-            "Yzg1MmNkMjEtYWI2Yi00YzA1LTk0MTktNWZhZDhhZTk2NDg2MTNhNTBiOTAtNzFmMS0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli", null, "v2", "playoff.cc");
+        PlayOff pl = new PlayOff(poClientId,poClientSecret, null, "v2", poDomain);
         try {
-
             HashMap<String, String> query = new HashMap<String, String>();
             query.put("player_id", userid);
             query.put("detailed", "false");
             query.put("cycle", "alltime");
             query.put("sort", "descending");
             query.put("limit", "0");
-//			query.put("team_instance_id", "1206_0");
+            if(leaderboardid.indexOf("team_") > -1)
+            	query.put("team_instance_id", "laboratorio_somma");
             Object response = pl.get("/runtime/leaderboards/"+leaderboardid, query);
 
             return ResponseEntity.ok().body(response);
@@ -346,7 +356,5 @@ public class GameResource {
             e.printStackTrace();
             return null;
         }
-
-
     }
 }

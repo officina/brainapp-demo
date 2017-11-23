@@ -12,6 +12,7 @@ import cc.officina.brainapp.web.rest.errors.BadRequestAlertException;
 import cc.officina.brainapp.web.rest.errors.EmailAlreadyUsedException;
 import cc.officina.brainapp.web.rest.errors.LoginAlreadyUsedException;
 import cc.officina.brainapp.web.rest.vm.ManagedUserVM;
+import cc.playoff.sdk.PlayOff;
 import cc.officina.brainapp.web.rest.util.HeaderUtil;
 import cc.officina.brainapp.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -67,7 +69,14 @@ public class UserResource {
     private final UserService userService;
 
     private final MailService mailService;
-
+    
+    @Value("${playoff.client.id}")
+    private String poClientId;
+	@Value("${playoff.client.secret}")
+    private String poClientSecret;
+	@Value("${playoff.client.domain}")
+    private String poDomain;
+	
     public UserResource(UserRepository userRepository, UserService userService, MailService mailService) {
 
         this.userRepository = userRepository;
@@ -189,4 +198,23 @@ public class UserResource {
         userService.deleteUser(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
     }
+    
+    @GetMapping("/users/po-profile/{userid}")
+    @Timed
+    @CrossOrigin
+    public ResponseEntity<Object> getUserPOProfile(@PathVariable String userid){
+
+        PlayOff pl = new PlayOff(poClientId,poClientSecret, null, "v2", poDomain);
+		try {
+
+			HashMap<String, String> query = new HashMap<String, String>();
+			query.put("player_id", userid);
+			Object response = pl.get("/admin/players/"+userid, query);
+			return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+	}
 }

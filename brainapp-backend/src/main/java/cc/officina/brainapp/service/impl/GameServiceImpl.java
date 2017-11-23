@@ -200,6 +200,10 @@ public class GameServiceImpl implements GameService{
 		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 		matchRepository.saveAndFlush(match);
 		gamificationService.runAction(match);
+		//INIZIO - per consentire in fase di demo l'utilizzo ripetuto dello stesso user viene corrotto lo user_id
+		String fakeUser = match.getUserId() + "_" + System.currentTimeMillis();
+		match.setUserId(fakeUser);
+		matchRepository.saveAndFlush(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;
 	}

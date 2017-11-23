@@ -37,7 +37,7 @@ apply plugin: 'idea'
 defaultTasks 'bootRun'
 
 group = 'cc.officina.brainapp'
-version = '1.0.0'
+version = '1.0.1'
 
 description = ''
 

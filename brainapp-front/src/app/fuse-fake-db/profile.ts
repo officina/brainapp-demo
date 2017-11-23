@@ -81,11 +81,11 @@ export class ProfileFakeDb
                 'comments': [
                     {
                         'user'   : {
-                            'name'  : 'Mario Rossi',
+                            'name'  : 'Dino Davide',
                             'avatar': 'assets/images/avatars/Trevino.jpg'
                         },
                         'time'   : '15 minutes ago',
-                        'message': 'Grazie, ci saro!'
+                        'message': 'Grazie, ci saró!'
                     }
                 ]
             },
@@ -94,22 +94,11 @@ export class ProfileFakeDb
                     'name'  : 'Guglielmo Siciliani',
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
-                'message' : "Hey!! Abbiamo bisogno urgentemete di qualcuno che sappia come funziona l'export del CRM. Se sai come fare o sai aiutarci ad individuare chi puo' aiutarci... sei chi cerchiamo! :D",
+                'message' : "Hey!! Abbiamo bisogno urgentemete di qualcuno che sappia come funziona l'export del CRM. Se sai come fare o sai aiutarci ad individuare chi puó aiutarci... sei chi cerchiamo! :D",
                 'time'    : 'June 12, 2017',
                 'type'    : 'article',
                 'like'    : 9,
                 'share'   : 6,
-            },
-            {
-                'user'   : {
-                    'name'  : 'Viviano Lori',
-                    'avatar': 'assets/images/avatars/carl.jpg'
-                },
-                'message': 'Hai ricevuto un riconoscimento da Viviano per il tuo contributo',
-                'time'   : 'June 10, 2017',
-                'type'   : 'something',
-                'like'   : 4,
-                'share'  : 1
             }
         ]
     };

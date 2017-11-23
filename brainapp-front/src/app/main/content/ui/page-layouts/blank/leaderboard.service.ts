@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
-
+import { environment } from '../../../../../../environments/environment';
 @Injectable()
 export class LeaderboardService {
 
@@ -12,8 +12,10 @@ export class LeaderboardService {
   }
   getScores(leaderboardId:string) {
     // console.log('dato');
-      return this.http.get('http://localhost:8080/api/games/leaderboards/'+ leaderboardId +'?userid=atomasse')
+
+      return this.http.get(environment.apiUrl + 'games/leaderboards/' + leaderboardId + '?userid=atomasse')
       .map(res => res.json());
+
 
   }
 }

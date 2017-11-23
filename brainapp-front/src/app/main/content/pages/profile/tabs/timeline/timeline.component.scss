@@ -3,7 +3,7 @@
 :host {
 
   #timeline {
-    max-width: 1200px;
+    max-width: 90vw;
     margin: 0 auto;
 
     .timeline-content {
@@ -325,6 +325,9 @@
 
   .li {
     border-bottom: 1px solid black;
+    & p {
+      padding-top: 0px;
+    }
   }
 
   h2 {
@@ -431,7 +434,8 @@
     box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
 
     /* Dimensions should be similar to the parent progress element. */
-    width: 100%; height:20px;
+    width: 100%;
+    //height:20px;
   }
 
   .progress-bar span {
@@ -562,4 +566,123 @@
 
 
     /* THE END */
+}
+.progress {
+  width: 60%;
+}
+progress {
+  margin-bottom: 0px !important;
+}
+.bonus {
+  width: 40%;
+}
+.stats {
+  display: flex;
+  justify-content: space-between;
+}
+.perf {
+  display: flex;
+  flex-direction: column;
+  //justify-content: space-between;
+  height: 50% !important;
+  //background-color: white;
+  align-items: flex-end;
+  justify-content: space-around;
+  border-bottom: 2px solid rgb(41,46,55);
+  //height: 40%;
+  & span {
+    margin: 0 auto;
+    font-size: 90%;
+  }
+}
+.logo {
+  display: flex;
+  flex-direction: column;
+  height: 50% !important;
+  align-items: flex-end;
+  justify-content: space-around;
+  border-top: 2px solid rgb(41,46,55);
+  background-color: white;
+  & span {
+    margin: 0 auto;
+  }
+}
+.image-star {
+  height: 100px;
+  width: 100px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+.image-logo {
+  justify-content: space-around;
+  height: 100px;
+  width: 90px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+.thx {
+  display: flex;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  background-color: red;
+  justify-content: space-around;
+  text-align: center;
+  align-items: center;
+}
+
+.thx-txt {
+  font-size: 2em;
+  color: #ffffff;
+}
+
+.post {
+  display: flex;
+}
+.postt {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.post-up {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.post-down {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.rowbuttons {
+  border-top: 0.5px solid #d3d3d3;
+  background-color: #FAFAFA ;
+  height: 55px;
+}
+.confirm-btn {
+  display: flex;
+  justify-content: space-around;
+  background-color: #0B9AE4;
+  color: white;
+  padding: 5px 15px;
+  width: 100px;
+  //text-align: center;
+  border-radius: 2px;
+  //margin-bottom: 5px;
+  margin-right: 25px;
+}
+
+.spacear {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
 }
