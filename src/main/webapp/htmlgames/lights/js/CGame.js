@@ -31,7 +31,9 @@ function CGame(oData, iMode, iLevel) {
         _oGameContainer = new createjs.Container();
         s_oStage.addChild(_oGameContainer);
         $(s_oMain).trigger("start_level", _iLevel+1);
-
+        if (currentattempt == undefined) {
+          startAttempt()
+        }
         _iMode = iMode;
         _iLevel = iLevel;
 

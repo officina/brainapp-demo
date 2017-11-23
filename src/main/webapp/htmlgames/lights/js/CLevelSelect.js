@@ -33,7 +33,6 @@ function CLevelSelect(iMode) {
         _aStars = [];
 
         NUM_LEVELS = MATRIX_SETTINGS[_iMode].length;
-
         _oContainer = new createjs.Container();
         s_oStage.addChild(_oContainer);
 
@@ -168,7 +167,6 @@ function CLevelSelect(iMode) {
     this._onExit = function(){
         this.unload();
         s_oMain.gotoMenuMode();
-        attemptEnded(s_iTotalScore);
     };
 
     this._checkBoundLimits = function(){
