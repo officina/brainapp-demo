@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { FuseProfileComponent } from './profile.component';
 import { FuseProfileTimelineComponent } from './tabs/timeline/timeline.component';
 import { ProfileService } from './profile.service';
+import {UserService} from '../../../../components/user/user.service';
 
 const routes = [
     {
@@ -26,6 +27,7 @@ const routes = [
         RouterModule.forChild(routes)
     ],
     providers   : [
+        UserService,
         ProfileService
     ]
 })
