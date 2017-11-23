@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { FuseConfigService } from '../../core/services/config.service';
 import { TranslateService } from '@ngx-translate/core';
+import {UserService} from '../../components/user/user.service';
 
 @Component({
     selector   : 'fuse-toolbar',
@@ -11,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 export class FuseToolbarComponent
 {
+    user: ThisUser = <ThisUser>{};
     userStatusOptions: any[];
     languages: any;
     selectedLanguage: any;
@@ -20,9 +22,13 @@ export class FuseToolbarComponent
     constructor(
         private router: Router,
         private fuseConfig: FuseConfigService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private userService: UserService
     )
     {
+      this.userService.getUsers('atomasse').subscribe((user: ThisUser) => {
+        this.user = user;
+      });
         this.userStatusOptions = [
             {
                 'title': 'Online',

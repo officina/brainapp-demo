@@ -19,7 +19,8 @@ import { ServicesModule } from './main/content/services/services.module';
 import { MarkdownModule } from 'angular2-markdown';
 import { TranslateModule } from '@ngx-translate/core';
 import {LeaderboardService} from './main/content/ui/page-layouts/blank/leaderboard.service';
-
+import { UserComponent } from './components/user/user.component';
+import { UserService } from './components/user/user.service';
 const appRoutes: Routes = [
     {
         path        : 'apps/mail',
@@ -54,6 +55,7 @@ const appRoutes: Routes = [
 @NgModule({
     declarations: [
         AppComponent,
+        UserComponent,
     ],
     imports     : [
         BrowserModule,
@@ -81,7 +83,8 @@ const appRoutes: Routes = [
         FuseSplashScreenService,
         FuseConfigService,
         FuseNavigationService,
-        LeaderboardService
+        LeaderboardService,
+        UserService
     ],
     bootstrap   : [
         AppComponent
