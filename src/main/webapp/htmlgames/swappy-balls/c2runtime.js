@@ -22237,9 +22237,9 @@ cr.behaviors.Sin = function(runtime)
 	behaviorProto.exps = new Exps();
 }());
 cr.getObjectRefTable = function () { return [
-	cr.plugins_.Audio,
 	cr.plugins_.admob,
 	cr.plugins_.Browser,
+	cr.plugins_.Audio,
 	cr.plugins_.Function,
 	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,

@@ -31,10 +31,10 @@ spring:
         #password:
 
         #LOCALE
-        url: jdbc:postgresql://localhost:5432/gatorade8
-        username: gatorade
+        url: jdbc:postgresql://localhost:5432/gatorade
+        username: nowr
         password:
-        
+
         #STAGING
         #url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade_stag
         #username: gatorade
