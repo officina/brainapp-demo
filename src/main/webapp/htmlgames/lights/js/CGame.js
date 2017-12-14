@@ -55,7 +55,7 @@ function CGame(oData, iMode, iLevel) {
         _oInterface.initInterfacesText();
 
         if (_iLevel === 0) {
-            _oHelpPanel = CHelpPanel();
+            _oHelpPanel = CHelpPanel(iMode);
         } else {
             this._onExitHelp();
         };
