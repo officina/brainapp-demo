@@ -165,10 +165,12 @@ function CWinPanel(iMode, iTimeSpent, iLevel, iLevelStars){
 
         if (_iLevel+1 < MATRIX_SETTINGS[_iMode].length) {
             s_oMain.gotoGame(_iMode, _iLevel+1);
-        // IF THERE'S NO MORE LEVELS FOR THIS MODE, GO TO MENU
-        } else {
-            s_oGame.unload();
-            s_oMain.gotoLevelSelect(_iMode);
+        // IF THERE'S NO MORE LEVELS FOR THIS MODE, GO TO NEXT CHAPTER
+        } else if (_iMode+1 < MATRIX_SETTINGS.length){
+            s_oMain.gotoGame(_iMode+1, 0);
+        }else{
+          s_oGame.unload();
+          s_oMain.gotoLevelSelect(_iMode);
         };
     };
 
