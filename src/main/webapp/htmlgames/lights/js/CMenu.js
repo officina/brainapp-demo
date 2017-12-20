@@ -41,7 +41,8 @@ function CMenu() {
         var oSprite = s_oSpriteLibrary.getSprite('but_credits');
         _pStartPosCredits = {x:20 + oSprite.width/2,y:(oSprite.height / 2) + 10};
         _oButCredits = new CGfxButton(_pStartPosCredits.x, _pStartPosCredits.y, oSprite, _oMenuContainer);
-        _oButCredits.addEventListener(ON_MOUSE_UP, this._onCredits, this);
+        //_oButCredits.addEventListener(ON_MOUSE_UP, this._onCredits, this);
+        _oButCredits.setVisible(false);
 
         if (DISABLE_SOUND_MOBILE === false || s_bMobile === false) {
             var oSprite = s_oSpriteLibrary.getSprite('audio_icon');
