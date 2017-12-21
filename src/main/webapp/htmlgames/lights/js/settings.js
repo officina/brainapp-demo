@@ -10,7 +10,7 @@ var FPS = 30;
 var FPS_TIME = 1000 / FPS;
 var DISABLE_SOUND_MOBILE = false;
 
-var PRIMARY_FONT = "comfortaa";
+var PRIMARY_FONT = "Sans-serif";
 var PRIMARY_FONT_COLOUR = "#ffffff";
 var SECONDARY_FONT_COLOUR = "#000000";
 
