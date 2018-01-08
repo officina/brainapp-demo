@@ -22468,9 +22468,170 @@ cr.plugins_.Touch = function(runtime)
 	};
 	pluginProto.exps = new Exps();
 }());
+var domain = "*";
+var operations = Object.freeze({
+	UPDATE_LEVEL:"UPDATE_LEVEL",
+	UPDATE_SCORE:"UPDATE_SCORE",
+	START_ATTEMPT:"START_ATTEMPT",
+	STOP_ATTEMPT:"STOP_ATTEMPT",
+	ATTEMPT_ENDED:"ATTEMPT_ENDED",
+	MATCH_ENDED:"MATCH_ENDED",
+	GAME_LOADED: "GAME_LOADED",
+	GAME_UNLOADED:"GAME_UNLOADED",
+	ATTEMPT_RESTARTED:"ATTEMPT_RESTARTED"
+})
+var Attempt = function(){
+		this.score = null
+		this.level = null
+		this.started = null
+		this.ended = null
+		this.completed = null
+}
+var Gatorade = {
+	Message : function(action, attempt){
+	this.attempt = attempt
+	this.action = action
+}
+}
+var currentattempt = null;
+;
+;
+cr.plugins_.gatorade = function(runtime)
+{
+	this.runtime = runtime;
+};
+(function ()
+{
+	var pluginProto = cr.plugins_.gatorade.prototype;
+	pluginProto.Type = function(plugin)
+	{
+		this.plugin = plugin;
+		this.runtime = plugin.runtime;
+	};
+	var typeProto = pluginProto.Type.prototype;
+	typeProto.onCreate = function()
+	{
+	};
+	pluginProto.Instance = function(type)
+	{
+		this.type = type;
+		this.runtime = type.runtime;
+	};
+	var instanceProto = pluginProto.Instance.prototype;
+	instanceProto.onCreate = function()
+	{
+	};
+	instanceProto.draw = function(ctx)
+	{
+	};
+	instanceProto.drawGL = function (glw)
+	{
+	};
+	function Cnds() {};
+	Cnds.prototype.MyCondition = function (myparam)
+	{
+		return myparam >= 0;
+	};
+	pluginProto.cnds = new Cnds();
+	function Acts() {};
+	Acts.prototype.startAttempt = function ()
+	{
+		currentattempt = new Attempt();
+        console.log("New attempt started ");
+        currentattempt.score = 0
+		currentattempt.started = new Date()
+		currentattempt.completed = false
+        var m = new Gatorade.Message(operations.START_ATTEMPT, currentattempt)
+		window.parent.postMessage(m, domain)
+	};
+	Acts.prototype.restartAttempt = function ()
+	{
+		console.log("game restarted, sending " +  score + " as end points")
+		currentattempt.completed = true
+		currentattempt.score = score
+		currentattempt.ended = new Date()
+		var m = new Gatorade.Message(operations.ATTEMPT_RESTARTED, currentattempt)
+		window.parent.postMessage(m, domain)
+		currentattempt = new Attempt();
+		currentattempt.score = 0
+		currentattempt.started = new Date()
+		currentattempt.completed = false
+	};
+	Acts.prototype.stopAttempt = function (score)
+	{
+		if (currentattempt === null){
+			console.log("warning: attempt has to be created, first")
+			return
+		}
+		currentattempt.score = score
+		currentattempt.ended = new Date()
+        console.log("Attempt stopped: with score " + score);
+        var m = new Gatorade.Message(operations.STOP_ATTEMPT, currentattempt)
+		window.parent.postMessage(m, domain)
+		currentattempt = null
+	};
+	Acts.prototype.updateScore = function (score)
+	{
+		if (currentattempt === null){
+			console.log("warning: attempt has to be created, first")
+			return
+		}
+        console.log("Score updated! score: " + score);
+        currentattempt.score = score
+        var m = new Gatorade.Message(operations.UPDATE_SCORE, currentattempt);
+		window.parent.postMessage(m, domain)
+	};
+	Acts.prototype.updateLevel = function (level)
+	{
+		if (currentattempt === null){
+			console.log("warning: attempt has to be created, first")
+			return
+		}
+        console.log("Level updated! level: " + level);
+        currentattempt.level = level
+        var m = new Gatorade.Message(operations.UPDATE_LEVEL, currentattempt);
+		window.parent.postMessage(m, domain)
+	};
+	Acts.prototype.attemptEnded = function (score)
+	{
+		if (currentattempt === null){
+			console.log("warning: attempt has to be created, first")
+			return
+		}
+		console.log("game finished, sending " +  score + " as end points")
+		currentattempt.completed = true
+        currentattempt.score = score
+		currentattempt.ended = new Date()
+        var m = new Gatorade.Message(operations.ATTEMPT_ENDED, currentattempt)
+        window.parent.postMessage(m, domain)
+		currentattempt = null
+	};
+	Acts.prototype.matchEnded = function (score)
+	{
+		if (currentattempt === null){
+			console.log("warning: attempt has to be created, first")
+			return
+		}
+		console.log("game finished, sending " +  score + " as end points")
+        currentattempt.score = score
+		currentattempt.completed = true
+		currentattempt.ended = new Date()
+        var m = new Gatorade.Message(operations.MATCH_ENDED, currentattempt)
+        window.parent.postMessage(m, domain)
+		currentattempt = null
+	};
+	pluginProto.acts = new Acts();
+	function Exps() {};
+	Exps.prototype.MyExpression = function (ret)	// 'ret' must always be the first parameter - always return the expression's result through it!
+	{
+		ret.set_int(1337);				// return our value
+	};
+	pluginProto.exps = new Exps();
+}());
 cr.getObjectRefTable = function () { return [
 	cr.plugins_.Audio,
 	cr.plugins_.Browser,
+	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,
 	cr.plugins_.Sprite,
 	cr.plugins_.Text,
@@ -22480,8 +22641,6 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.SetVar,
 	cr.system_object.prototype.exps.random,
 	cr.system_object.prototype.exps.choose,
-	cr.plugins_.LocalStorage.prototype.cnds.OnItemExists,
-	cr.plugins_.LocalStorage.prototype.exps.ItemValue,
 	cr.system_object.prototype.cnds.CompareVar,
 	cr.plugins_.LocalStorage.prototype.acts.SetItem,
 	cr.plugins_.Touch.prototype.cnds.OnTouchObject,
@@ -22489,6 +22648,7 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Sprite.prototype.acts.SetWidth,
 	cr.plugins_.Sprite.prototype.exps.Width,
 	cr.system_object.prototype.acts.AddVar,
+	cr.plugins_.gatorade.prototype.acts.updateScore,
 	cr.plugins_.Audio.prototype.acts.Play,
 	cr.system_object.prototype.cnds.EveryTick,
 	cr.plugins_.Sprite.prototype.acts.SetAnimFrame,
@@ -22500,11 +22660,13 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Sprite.prototype.cnds.OnDestroyed,
 	cr.plugins_.Sprite.prototype.cnds.IsVisible,
 	cr.system_object.prototype.acts.Wait,
+	cr.plugins_.gatorade.prototype.acts.startAttempt,
 	cr.plugins_.Sprite.prototype.acts.SetVisible,
 	cr.plugins_.Text.prototype.acts.SetVisible,
 	cr.plugins_.Text.prototype.acts.SetText,
 	cr.plugins_.Text.prototype.acts.SetFontColor,
 	cr.system_object.prototype.exps.rgb,
-	cr.system_object.prototype.acts.RestartLayout,
-	cr.plugins_.Browser.prototype.acts.GoToURLWindow
+	cr.system_object.prototype.cnds.TriggerOnce,
+	cr.plugins_.gatorade.prototype.acts.attemptEnded,
+	cr.system_object.prototype.acts.RestartLayout
 ];};
