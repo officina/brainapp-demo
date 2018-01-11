@@ -10191,7 +10191,7 @@ window["cr_setSuspended"] = function(s)
 			this.is_else_block = (this.conditions[0].type == null && this.conditions[0].func == cr.system_object.prototype.cnds.Else);
 		}
 	};
-	window["_c2hh_"] = "C44CE589888E9AC0D5B41AAAE4D08B310541BFE2";
+	window["_c2hh_"] = "4BF7A7E57BF0450F3A1709CD5CEF11FB750E780E";
 	EventBlock.prototype.postInit = function (hasElse/*, prevBlock_*/)
 	{
 		var i, len;
@@ -21882,7 +21882,8 @@ var operations = Object.freeze({
 	ATTEMPT_ENDED:"ATTEMPT_ENDED",
 	MATCH_ENDED:"MATCH_ENDED",
 	GAME_LOADED: "GAME_LOADED",
-	GAME_UNLOADED:"GAME_UNLOADED"
+	GAME_UNLOADED:"GAME_UNLOADED",
+	ATTEMPT_RESTARTED:"ATTEMPT_RESTARTED"
 })
 var Attempt = function(){
 		this.score = null
@@ -21947,6 +21948,19 @@ cr.plugins_.gatorade = function(runtime)
 		currentattempt.completed = false
         var m = new Gatorade.Message(operations.START_ATTEMPT, currentattempt)
 		window.parent.postMessage(m, domain)
+	};
+	Acts.prototype.restartAttempt = function ()
+	{
+		console.log("game restarted, sending " +  score + " as end points")
+		currentattempt.completed = true
+		currentattempt.score = score
+		currentattempt.ended = new Date()
+		var m = new Gatorade.Message(operations.ATTEMPT_RESTARTED, currentattempt)
+		window.parent.postMessage(m, domain)
+		currentattempt = new Attempt();
+		currentattempt.score = 0
+		currentattempt.started = new Date()
+		currentattempt.completed = false
 	};
 	Acts.prototype.stopAttempt = function (score)
 	{
