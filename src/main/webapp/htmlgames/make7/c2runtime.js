@@ -2047,19 +2047,19 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		gl.compileShader(fragmentShader);
 		if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS))
 		{
-;
+			var compilationlog = gl.getShaderInfoLog(fragmentShader);
 			gl.deleteShader(fragmentShader);
-			return null;
+			throw new Error("error compiling fragment shader: " + compilationlog);
 		}
 		var vertexShader = gl.createShader(gl.VERTEX_SHADER);
 		gl.shaderSource(vertexShader, vsSource);
 		gl.compileShader(vertexShader);
 		if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS))
 		{
-;
+			var compilationlog = gl.getShaderInfoLog(vertexShader);
 			gl.deleteShader(fragmentShader);
 			gl.deleteShader(vertexShader);
-			return null;
+			throw new Error("error compiling vertex shader: " + compilationlog);
 		}
 		var shaderProgram = gl.createProgram();
 		gl.attachShader(shaderProgram, fragmentShader);
@@ -2067,11 +2067,11 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		gl.linkProgram(shaderProgram);
 		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
 		{
-;
+			var compilationlog = gl.getProgramInfoLog(shaderProgram);
 			gl.deleteShader(fragmentShader);
 			gl.deleteShader(vertexShader);
 			gl.deleteProgram(shaderProgram);
-			return null;
+			throw new Error("error linking shader program: " + compilationlog);
 		}
 		gl.useProgram(shaderProgram);
 		gl.deleteShader(fragmentShader);
@@ -3459,12 +3459,6 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			this.isMobile = /(blackberry|bb10|playbook|palm|symbian|nokia|windows\s+ce|phone|mobile|tablet|kindle|silk)/i.test(navigator.userAgent);
 		}
 		this.isWKWebView = !!(this.isiOS && this.isCordova && window["webkit"]);
-		this.httpServer = null;
-		this.httpServerUrl = "";
-		if (this.isWKWebView)
-		{
-			this.httpServer = (cordova && cordova["plugins"] && cordova["plugins"]["CorHttpd"]) ? cordova["plugins"]["CorHttpd"] : null;
-		}
 		if (typeof cr_is_preview !== "undefined" && !this.isNWjs && (window.location.search === "?nw" || /nodewebkit/i.test(navigator.userAgent) || /nwjs/i.test(navigator.userAgent)))
 		{
 			this.isNWjs = true;
@@ -3478,7 +3472,6 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.enableFrontToBack = false;
 		this.earlyz_index = 0;
 		this.ctx = null;
-		this.fullscreenOldMarginCss = "";
 		this.firstInFullscreen = false;
 		this.oldWidth = 0;		// for restoring non-fullscreen canvas after fullscreen
 		this.oldHeight = 0;
@@ -3618,36 +3611,13 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		var self = this;
 		if (this.isWKWebView)
 		{
-			var loadDataJsFn = function ()
+			this.fetchLocalFileViaCordovaAsText("data.js", function (str)
 			{
-				self.fetchLocalFileViaCordovaAsText("data.js", function (str)
-				{
-					self.loadProject(JSON.parse(str));
-				}, function (err)
-				{
-					alert("Error fetching data.js");
-				});
-			};
-			if (this.httpServer)
+				self.loadProject(JSON.parse(str));
+			}, function (err)
 			{
-				this.httpServer["startServer"]({
-					"port": 0,
-					"localhost_only": true
-				}, function (url)
-				{
-					self.httpServerUrl = url;
-					loadDataJsFn();
-				}, function (err)
-				{
-					console.log("Error starting local server: " + err + ". Video playback will not work.");
-					loadDataJsFn();
-				});
-			}
-			else
-			{
-				console.log("Local server unavailable. Video playback will not work.");
-				loadDataJsFn();
-			}
+				alert("Error fetching data.js");
+			});
 			return;
 		}
 		var xhr;
@@ -4017,11 +3987,6 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 					offy = (h - newh) / 2;
 					h = newh;
 				}
-			}
-			if (isfullscreen && !this.isNWjs)
-			{
-				offx = 0;
-				offy = 0;
 			}
 		}
 		else if (this.isNWjs && this.isNodeFullscreen && this.fullscreen_mode_set === 0)
@@ -4587,6 +4552,32 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.initRendererAndLoader();
 	};
 	var anyImageHadError = false;
+	var MAX_PARALLEL_IMAGE_LOADS = 100;
+	var currentlyActiveImageLoads = 0;
+	var imageLoadQueue = [];		// array of [img, srcToSet]
+	Runtime.prototype.queueImageLoad = function (img_, src_)
+	{
+		var self = this;
+		var doneFunc = function ()
+		{
+			currentlyActiveImageLoads--;
+			self.maybeLoadNextImages();
+		};
+		img_.addEventListener("load", doneFunc);
+		img_.addEventListener("error", doneFunc);
+		imageLoadQueue.push([img_, src_]);
+		this.maybeLoadNextImages();
+	};
+	Runtime.prototype.maybeLoadNextImages = function ()
+	{
+		var next;
+		while (imageLoadQueue.length && currentlyActiveImageLoads < MAX_PARALLEL_IMAGE_LOADS)
+		{
+			currentlyActiveImageLoads++;
+			next = imageLoadQueue.shift();
+			this.setImageSrc(next[0], next[1]);
+		}
+	};
 	Runtime.prototype.waitForImageLoad = function (img_, src_)
 	{
 		img_["cocoonLazyLoad"] = true;
@@ -4619,7 +4610,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			else
 			{
 				img_.crossOrigin = "anonymous";			// required for Arcade sandbox compatibility
-				this.setImageSrc(img_, src_);			// work around WKWebView problems
+				this.queueImageLoad(img_, src_);		// use a queue to avoid requesting all images simultaneously
 			}
 		}
 		this.wait_for_textures.push(img_);
@@ -5008,27 +4999,12 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			if (isfullscreen)
 			{
 				if (!this.firstInFullscreen)
-				{
-					this.fullscreenOldMarginCss = jQuery(this.canvas).css("margin") || "0";
 					this.firstInFullscreen = true;
-				}
-				if (!this.isChrome && !this.isNWjs)
-				{
-					jQuery(this.canvas).css({
-						"margin-left": "" + Math.floor((screen.width - (this.width / this.devicePixelRatio)) / 2) + "px",
-						"margin-top": "" + Math.floor((screen.height - (this.height / this.devicePixelRatio)) / 2) + "px"
-					});
-				}
 			}
 			else
 			{
 				if (this.firstInFullscreen)
 				{
-					if (!this.isChrome && !this.isNWjs)
-					{
-						jQuery(this.canvas).css("margin", this.fullscreenOldMarginCss);
-					}
-					this.fullscreenOldMarginCss = "";
 					this.firstInFullscreen = false;
 					if (this.fullscreen_mode === 0)
 					{
@@ -7683,9 +7659,21 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 	};
 	Runtime.prototype.fetchLocalFileViaCordovaAsURL = function (filename, successCallback, errorCallback)
 	{
+		var blobType = "";
+		var lowername = filename.toLowerCase();
+		var ext3 = lowername.substr(lowername.length - 4);
+		var ext4 = lowername.substr(lowername.length - 5);
+		if (ext3 === ".mp4")
+			blobType = "video/mp4";
+		else if (ext4 === ".webm")
+			blobType = "video/webm";		// use video type but hopefully works with audio too
+		else if (ext3 === ".m4a")
+			blobType = "audio/mp4";
+		else if (ext3 === ".mp3")
+			blobType = "audio/mpeg";
 		this.fetchLocalFileViaCordovaAsArrayBuffer(filename, function (arrayBuffer)
 		{
-			var blob = new Blob([arrayBuffer]);
+			var blob = new Blob([arrayBuffer], { type: blobType });
 			var url = URL.createObjectURL(blob);
 			successCallback(url);
 		}, errorCallback);
@@ -7912,7 +7900,7 @@ window["cr_setSuspended"] = function(s)
 		this.height = this.originalHeight;
 		this.scrollX = (this.runtime.original_width / 2);
 		this.scrollY = (this.runtime.original_height / 2);
-		var i, k, len, lenk, type, type_instances, inst, iid, t, s, p, q, type_data, layer;
+		var i, k, len, lenk, type, type_instances, initial_inst, inst, iid, t, s, p, q, type_data, layer;
 		for (i = 0, len = this.runtime.types_by_index.length; i < len; i++)
 		{
 			type = this.runtime.types_by_index[i];
@@ -8020,7 +8008,12 @@ window["cr_setSuspended"] = function(s)
 		}
 		for (i = 0, len = this.initial_nonworld.length; i < len; i++)
 		{
-			inst = this.runtime.createInstanceFromInit(this.initial_nonworld[i], null, true);
+			initial_inst = this.initial_nonworld[i];
+			type = this.runtime.types_by_index[initial_inst[1]];
+			if (!type.is_contained)
+			{
+				inst = this.runtime.createInstanceFromInit(this.initial_nonworld[i], null, true);
+			}
 ;
 		}
 		this.runtime.changelayout = null;
@@ -10191,7 +10184,7 @@ window["cr_setSuspended"] = function(s)
 			this.is_else_block = (this.conditions[0].type == null && this.conditions[0].func == cr.system_object.prototype.cnds.Else);
 		}
 	};
-	window["_c2hh_"] = "C44CE589888E9AC0D5B41AAAE4D08B310541BFE2";
+	window["_c2hh_"] = "4BF7A7E57BF0450F3A1709CD5CEF11FB750E780E";
 	EventBlock.prototype.postInit = function (hasElse/*, prevBlock_*/)
 	{
 		var i, len;
@@ -14891,6 +14884,8 @@ cr.system_object.prototype.loadFromJSON = function (o)
 			return false;
 		if (!this.bquad.contains_pt(x, y))
 			return false;
+		if (this.tilemap_exists)
+			return this.testPointOverlapTile(x, y);
 		if (this.collision_poly && !this.collision_poly.is_empty())
 		{
 			this.collision_poly.cache_poly(this.width, this.height, this.angle);
@@ -16705,7 +16700,7 @@ cr.plugins_.Audio = function(runtime)
 				this.supportWebAudioAPI = true;		// can be routed through web audio api
 				this.bufferObject.addEventListener("canplay", function ()
 				{
-					if (!self.mediaSourceNode)		// protect against this event firing twice
+					if (!self.mediaSourceNode && self.bufferObject)
 					{
 						self.mediaSourceNode = context["createMediaElementSource"](self.bufferObject);
 						self.mediaSourceNode["connect"](self.outNode);
@@ -16764,6 +16759,16 @@ cr.plugins_.Audio = function(runtime)
 				++j;		// keep
 		}
 		audioInstances.length = j;
+		if (this.mediaSourceNode)
+		{
+			this.mediaSourceNode["disconnect"]();
+			this.mediaSourceNode = null;
+		}
+		if (this.outNode)
+		{
+			this.outNode["disconnect"]();
+			this.outNode = null;
+		}
 		this.bufferObject = null;
 		this.audioData = null;
 	};
@@ -17691,6 +17696,8 @@ cr.plugins_.Audio = function(runtime)
 		var isAndroid = this.runtime.isAndroid;
 		var playDummyBuffer = function ()
 		{
+			if (context["state"] === "suspended" && context["resume"])
+				context["resume"]();
 			if (isContextSuspended || !context["createBuffer"])
 				return;
 			var buffer = context["createBuffer"](1, 220, 22050);
@@ -22598,7 +22605,7 @@ cr.plugins_.Touch = function(runtime)
 		var t = this.touches[index];
 		var dist = cr.distanceTo(t.x, t.y, t.lastx, t.lasty);
 		var timediff = (t.time - t.lasttime) / 1000;
-		if (timediff === 0)
+		if (timediff <= 0)
 			ret.set_float(0);
 		else
 			ret.set_float(dist / timediff);
@@ -22614,7 +22621,7 @@ cr.plugins_.Touch = function(runtime)
 		var touch = this.touches[index];
 		var dist = cr.distanceTo(touch.x, touch.y, touch.lastx, touch.lasty);
 		var timediff = (touch.time - touch.lasttime) / 1000;
-		if (timediff === 0)
+		if (timediff <= 0)
 			ret.set_float(0);
 		else
 			ret.set_float(dist / timediff);
@@ -22729,7 +22736,8 @@ var operations = Object.freeze({
 	ATTEMPT_ENDED:"ATTEMPT_ENDED",
 	MATCH_ENDED:"MATCH_ENDED",
 	GAME_LOADED: "GAME_LOADED",
-	GAME_UNLOADED:"GAME_UNLOADED"
+	GAME_UNLOADED:"GAME_UNLOADED",
+	ATTEMPT_RESTARTED:"ATTEMPT_RESTARTED"
 })
 var Attempt = function(){
 		this.score = null
@@ -22794,6 +22802,19 @@ cr.plugins_.gatorade = function(runtime)
 		currentattempt.completed = false
         var m = new Gatorade.Message(operations.START_ATTEMPT, currentattempt)
 		window.parent.postMessage(m, domain)
+	};
+	Acts.prototype.restartAttempt = function ()
+	{
+		console.log("game restarted, sending " +  score + " as end points")
+		currentattempt.completed = true
+		currentattempt.score = score
+		currentattempt.ended = new Date()
+		var m = new Gatorade.Message(operations.ATTEMPT_RESTARTED, currentattempt)
+		window.parent.postMessage(m, domain)
+		currentattempt = new Attempt();
+		currentattempt.score = 0
+		currentattempt.started = new Date()
+		currentattempt.completed = false
 	};
 	Acts.prototype.stopAttempt = function (score)
 	{
@@ -23429,8 +23450,8 @@ cr.behaviors.Pin = function(runtime)
 	behaviorProto.exps = new Exps();
 }());
 cr.getObjectRefTable = function () { return [
-	cr.plugins_.Arr,
 	cr.plugins_.Audio,
+	cr.plugins_.Arr,
 	cr.plugins_.Function,
 	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,
@@ -23490,19 +23511,20 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Sprite.prototype.exps.Angle,
 	cr.plugins_.Function.prototype.cnds.CompareParam,
 	cr.plugins_.Sprite.prototype.cnds.OnDestroyed,
+	cr.plugins_.gatorade.prototype.acts.updateScore,
 	cr.plugins_.Sprite.prototype.acts.SetVisible,
 	cr.system_object.prototype.acts.Wait,
 	cr.plugins_.Sprite.prototype.acts.SetPosToObject,
 	cr.behaviors.DragnDrop.prototype.acts.SetEnabled,
-	cr.plugins_.Touch.prototype.cnds.OnTapGestureObject,
+	cr.plugins_.Touch.prototype.cnds.OnTouchEnd,
+	cr.plugins_.Touch.prototype.cnds.IsTouchingObject,
+	cr.plugins_.Sprite.prototype.cnds.IsOnLayer,
 	cr.system_object.prototype.cnds.LayerVisible,
 	cr.plugins_.gatorade.prototype.acts.attemptEnded,
 	cr.system_object.prototype.acts.RestartLayout,
 	cr.system_object.prototype.acts.ResetGlobals,
 	cr.plugins_.gatorade.prototype.acts.startAttempt,
 	cr.plugins_.Arr.prototype.acts.Clear,
-	cr.plugins_.Touch.prototype.cnds.OnTouchEnd,
-	cr.plugins_.Touch.prototype.cnds.IsTouchingObject,
 	cr.system_object.prototype.acts.GoToLayout,
 	cr.plugins_.gatorade.prototype.acts.stopAttempt,
 	cr.plugins_.Sprite.prototype.acts.MoveToTop,
@@ -23514,7 +23536,5 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Sprite.prototype.acts.SetScale,
 	cr.plugins_.Audio.prototype.cnds.IsTagPlaying,
 	cr.plugins_.Audio.prototype.acts.Play,
-	cr.plugins_.Audio.prototype.acts.StopAll,
-	cr.system_object.prototype.cnds.Every,
-	cr.plugins_.gatorade.prototype.acts.updateScore
+	cr.plugins_.Audio.prototype.acts.StopAll
 ];};
