@@ -108,10 +108,11 @@
         });
 
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid).then(function(response){
-          var game = response.data;
-          game.url = $sce.trustAsResourceUrl(response.data.url);
-          $scope.game = game;
-          $scope.wrapperMemory.game = game;
+//          var game = response.data;
+//          game.url = $sce.trustAsResourceUrl(response.data.url)+'?rndparam='+Date.now();
+//          $scope.game = game;
+        	$scope.game = response.data;
+          $scope.wrapperMemory.game = response.data;
           $scope.wrapperMemory.player = {};
           $scope.wrapperMemory.player.playtoken = playtoken;
           if($scope.game.type == 'LEVEL')
