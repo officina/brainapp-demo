@@ -55,7 +55,6 @@ public class GamificationServiceImpl implements GamificationService{
         this.matchRepository = matchRepository;
         this.mailService = mailService;
         this.attemptRepository = attemptRepository;
-        po = new PlayOff(poClientId, poClientSecret, null, "v2","playoff.cc");
     }
     
     @PostConstruct
@@ -88,7 +87,17 @@ public class GamificationServiceImpl implements GamificationService{
 			LinkedTreeMap<String, Object> requestBody = getRequestByType(match);
 			Object response = null;
 			String path = "/runtime/actions/"+match.getGame().getActionId()+"/play";
-			response = po.post(path, params, requestBody);
+			try
+			{
+				response = po.post(path, params, requestBody);
+			}
+			catch(Exception e)
+			{
+				log.info("Run-action fails, init again...");
+				init();
+				log.info("Run-action again");
+				response = po.post(path, params, requestBody);
+			}
 			log.debug(response.toString());
 		} catch (Exception e) {
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
@@ -106,7 +115,17 @@ public class GamificationServiceImpl implements GamificationService{
 			Object response = null;
 			//la action
 			String path = "/runtime/actions/"+match.getGame().getActionId()+"_reset/play";
-			response = po.post(path, params, requestBody);
+			try
+			{
+				response = po.post(path, params, requestBody);
+			}
+			catch(Exception e)
+			{
+				log.info("Run-Reset-action fails, init again...");
+				init();
+				log.info("Run-Reset-action again");
+				response = po.post(path, params, requestBody);
+			}
 			log.debug(response.toString());
 		} catch (Exception e) {
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
