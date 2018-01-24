@@ -80,7 +80,7 @@ angular.module('gatoradeApp')
   this.endAttempt = function(gameId, attemptId, score, level, completed, endMatch, matchToken){
 	  return $http({
       	method: 'PUT',
-      	url: rootPath +'/api/play/attempt/end',
+      	url: rootPath +'/api/play/attempt2/end',
       	data:{
         	gameid:gameId,
       		attemptid:attemptId,
@@ -123,6 +123,18 @@ angular.module('gatoradeApp')
 		http.send(JSON.stringify(content));
     }
     
+    this.reportAsync = function(matchId, userId, json){
+    	var internalUserAgent = navigator.userAgent;
+  	    return $http({
+        	method: 'POST',
+        	url: rootPath + '/api/matches/'+matchId+'/report/'+userId,
+        	data:{
+        		userAgent: internalUserAgent,
+        		info: json
+	         }
+  	    })
+    };
+    
   //SEND ERROR
     this.error = function(matchId, userId, json){
     	var content = {};
@@ -133,6 +145,18 @@ angular.module('gatoradeApp')
       	http.setRequestHeader("Content-type", "application/json");
 		http.send(JSON.stringify(content));
     }
+    
+    this.errorAsync = function(matchId, userId, json){
+    	var internalUserAgent = navigator.userAgent;
+  	    return $http({
+        	method: 'POST',
+        	url: rootPath + '/api/matches/'+matchId+'/error/'+userId,
+        	data:{
+        		userAgent: internalUserAgent,
+        		info: json
+	         }
+  	    })
+    };
     
     this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken){
         var http = new XMLHttpRequest();
