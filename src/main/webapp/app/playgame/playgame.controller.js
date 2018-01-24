@@ -216,6 +216,7 @@
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt restarted inside callback');
+	    		console.log($scope.wrapperMemory);
 	    		startAttempt();
 	    	});
 	    }
