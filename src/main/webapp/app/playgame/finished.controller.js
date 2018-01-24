@@ -37,20 +37,31 @@
     	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
     	    	$scope.errorText = $rootScope.finalError;
     	    	$scope.reportText = $rootScope.wrapperMemory;
+    	    	//mi metto al riparo da casi di wrapperMemory corrotto
     	    	var idToUse = -1
     	    	if (typeof $rootScope.wrapperMemory != 'undefined' && typeof $rootScope.wrapperMemory.match != 'undefined' && typeof $rootScope.wrapperMemory.match.id != 'undefined')
     	    	{
     	    		idToUse = $rootScope.wrapperMemory.match.id;
     	    	}
+    	    	//invio il report di giocata
     	    	PlaygameService.reportAsync(idToUse,$stateParams.playtoken,$rootScope.wrapperMemory)
     	    	.then(function(response){
-    	    		PlaygameService.errorAsync(idToUse,$stateParams.playtoken,$scope.errorText);
+    	    		//se l'invio di report giocata va a buon fine invio anche l'errore che mi ha portato a questo genericError
+    	    		// all'utente mostro il log di errore solo nel caso in cui fallisca l'invio di error
+    	    		PlaygameService.errorAsync(idToUse,$stateParams.playtoken,$scope.errorText)
+    	    		.catch(function(error) {
+    		    		$scope.showReport = true;
+    		    		$scope.showError = true;
+    		    		$scope.message2 = 'Ti preghiamo di inviare l\'errore che trovi in calce all\'amministratore del sistema.';
+    		    	});
 		    	})
 		    	.catch(function(error) {
+		    		//se fallisce l'invio del report provo l'invio dell'errore
+		    		//solo in questo caso mostro all'utente i messaggi da inviare all'amministratore
 		    		$scope.showReport = true;
 		    		$scope.showError = true;
 		    		$scope.message2 = 'Ti preghiamo di inviare l\'errore che trovi in calce all\'amministratore del sistema.';
-		    		//anche se fallita la prima provo comunque l'invio di error
+		    		//anche se fallita la prima provo comunque l'invio dell'errore
 		    		PlaygameService.errorAsync(idToUse,$stateParams.playtoken,$scope.errorText);
 		    	});
     			break

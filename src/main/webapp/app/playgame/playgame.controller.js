@@ -259,19 +259,22 @@
 		    	var currAttemptScore = $scope.wrapperMemory.currAttempt.score;
 		    	var currAttemptLevel = $scope.wrapperMemory.currAttempt.level;
 	    	}
-	    	
+	    	//eseguo prima endmatch
 	    	PlaygameService.endMatch($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, currAttemptId, currAttemptScore, currAttemptLevel,$scope.matchToken)
 	    	.then(function(response){
+	    		// se endmatch va a buon fine eseguo l'invio del report 
 	    		PlaygameService.reportAsync($scope.wrapperMemory.game.id,$stateParams.playtoken,$rootScope.wrapperMemory)
     	    	.then(function(response){
     	    		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
 		    	})
 		    	.catch(function(error) {
+		    		//se l'invio del report non va a buon fine redirect alla pagina di errore
 		    		PlaygameService.errorAsync($scope.wrapperMemory.game.id,$stateParams.playtoken,$scope.errorText);
 		    		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
 		    	});
 	    	})
 	    	.catch(function(error) {
+	    		//se endmatch non va a buon fine redirect alla pagina di errore
   	        	removeEvent(eventName, $scope.handle);
   	        	$rootScope.wrapperMemory = $scope.wrapperMemory;
   	        	$rootScope.finalError = error;

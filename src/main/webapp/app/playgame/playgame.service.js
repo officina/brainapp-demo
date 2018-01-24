@@ -80,7 +80,7 @@ angular.module('gatoradeApp')
   this.endAttempt = function(gameId, attemptId, score, level, completed, endMatch, matchToken){
 	  return $http({
       	method: 'PUT',
-      	url: rootPath +'/api/play/attempt2/end',
+      	url: rootPath +'/api/play/attempt/end',
       	data:{
         	gameid:gameId,
       		attemptid:attemptId,
