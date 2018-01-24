@@ -2,8 +2,11 @@ package cc.officina.gatorade.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.Report;
+import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
+import cc.officina.gatorade.service.ReportService;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,9 +42,12 @@ public class MatchResource {
 
     private final MatchService matchService;
     private final GamificationService gamificationService;
-    public MatchResource(MatchService matchService, GamificationService gamificationService) {
+    private final ReportService reportService;
+    
+    public MatchResource(MatchService matchService, GamificationService gamificationService, ReportService reportService) {
         this.matchService = matchService;
         this.gamificationService = gamificationService;
+        this.reportService = reportService;
     }
 
     /**
@@ -148,6 +154,13 @@ public class MatchResource {
     @Timed
     public ResponseEntity<Match> matchReport(@PathVariable Long id, @PathVariable String userid, @RequestBody String json) throws URISyntaxException {
         System.out.println(json);
+        Report report = new Report();
+        report.setJson(json);
+        report.setTimestamp(ZonedDateTime.now());
+        report.setType(ReportType.Endmatch);
+        report.setUserid(userid);
+        report.setMatch_id(id);
+        reportService.save(report);
         return ResponseEntity.ok().build();
     }
 }

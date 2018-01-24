@@ -13,6 +13,7 @@
                 "match": "Match",
                 "attempt": "Attempt",
                 "session": "Session",
+                "report": "Report",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
