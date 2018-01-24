@@ -3,6 +3,7 @@ package cc.officina.gatorade.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Report;
+import cc.officina.gatorade.domain.ReportRequest;
 import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
@@ -152,15 +153,23 @@ public class MatchResource {
     
     @PostMapping(value = "/matches/{id}/report/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
     @Timed
-    public ResponseEntity<Match> matchReport(@PathVariable Long id, @PathVariable String userid, @RequestBody String json) throws URISyntaxException {
-        System.out.println(json);
+    public ResponseEntity<Match> matchReport(@PathVariable Long id, @PathVariable String userid, @RequestBody ReportRequest request) throws URISyntaxException {
         Report report = new Report();
-        report.setJson(json);
-        report.setTimestamp(ZonedDateTime.now());
-        report.setType(ReportType.Endmatch);
-        report.setUserid(userid);
-        report.setMatch_id(id);
-        reportService.save(report);
+        log.info("END MATCH - INIZIO REPORT userid = " + userid + " - match_id = " + id);
+        log.info(request.toString());
+        log.info("END MATCH - FINE REPORT userid = " + userid + " - match_id = " + id);
+        reportService.matchReport(id, userid, request);
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping(value = "/matches/{id}/error/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @Timed
+    public ResponseEntity<Match> matchError(@PathVariable Long id, @PathVariable String userid, @RequestBody ReportRequest request) throws URISyntaxException {
+        Report report = new Report();
+        log.info("INIZIO ERROR userid = " + userid + " - match_id = " + id);
+        log.info(request.toString());
+        log.info("FINE ERROR userid = " + userid + " - match_id = " + id);
+        reportService.matchError(id, userid, request);
         return ResponseEntity.ok().build();
     }
 }

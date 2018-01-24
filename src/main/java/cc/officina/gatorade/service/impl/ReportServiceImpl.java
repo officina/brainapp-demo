@@ -2,7 +2,12 @@ package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.ReportService;
 import cc.officina.gatorade.domain.Report;
+import cc.officina.gatorade.domain.ReportRequest;
+import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.repository.ReportRepository;
+
+import java.time.ZonedDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -74,4 +79,31 @@ public class ReportServiceImpl implements ReportService{
         log.debug("Request to delete Report : {}", id);
         reportRepository.delete(id);
     }
+    
+    @Override
+	public Report matchReport(Long id, String userid, ReportRequest request) {
+		Report report = new Report();
+		report.setJson(request.getInfo().toString());
+        report.setUserAgent(request.getUserAgent().toString());
+        report.setTimestamp(ZonedDateTime.now());
+        report.setType(ReportType.Endmatch);
+        report.setUserid(userid);
+        report.setMatch_id(id);
+        reportRepository.save(report);
+        return report;
+	}
+    
+    @Override
+	public Report matchError(Long id, String userid, ReportRequest request) {
+		Report report = new Report();
+        report.setJson(request.getInfo().toString());
+        report.setUserAgent(request.getUserAgent().toString());
+        report.setTimestamp(ZonedDateTime.now());
+        report.setType(ReportType.Error);
+        report.setUserid(userid);
+        report.setMatch_id(id);
+        reportRepository.save(report);
+        return report;
+	}
+
 }

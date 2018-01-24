@@ -59,6 +59,9 @@ public class ReportResourceIntTest {
     private static final Long DEFAULT_MATCH_ID = 1L;
     private static final Long UPDATED_MATCH_ID = 2L;
 
+    private static final String DEFAULT_USER_AGENT = "AAAAAAAAAA";
+    private static final String UPDATED_USER_AGENT = "BBBBBBBBBB";
+
     @Autowired
     private ReportRepository reportRepository;
 
@@ -103,7 +106,8 @@ public class ReportResourceIntTest {
             .timestamp(DEFAULT_TIMESTAMP)
             .json(DEFAULT_JSON)
             .type(DEFAULT_TYPE)
-            .match_id(DEFAULT_MATCH_ID);
+            .match_id(DEFAULT_MATCH_ID)
+            .userAgent(DEFAULT_USER_AGENT);
         return report;
     }
 
@@ -132,6 +136,7 @@ public class ReportResourceIntTest {
         assertThat(testReport.getJson()).isEqualTo(DEFAULT_JSON);
         assertThat(testReport.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testReport.getMatch_id()).isEqualTo(DEFAULT_MATCH_ID);
+        assertThat(testReport.getUserAgent()).isEqualTo(DEFAULT_USER_AGENT);
     }
 
     @Test
@@ -168,7 +173,8 @@ public class ReportResourceIntTest {
             .andExpect(jsonPath("$.[*].timestamp").value(hasItem(sameInstant(DEFAULT_TIMESTAMP))))
             .andExpect(jsonPath("$.[*].json").value(hasItem(DEFAULT_JSON.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].match_id").value(hasItem(DEFAULT_MATCH_ID.intValue())));
+            .andExpect(jsonPath("$.[*].match_id").value(hasItem(DEFAULT_MATCH_ID.intValue())))
+            .andExpect(jsonPath("$.[*].userAgent").value(hasItem(DEFAULT_USER_AGENT.toString())));
     }
 
     @Test
@@ -186,7 +192,8 @@ public class ReportResourceIntTest {
             .andExpect(jsonPath("$.timestamp").value(sameInstant(DEFAULT_TIMESTAMP)))
             .andExpect(jsonPath("$.json").value(DEFAULT_JSON.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
-            .andExpect(jsonPath("$.match_id").value(DEFAULT_MATCH_ID.intValue()));
+            .andExpect(jsonPath("$.match_id").value(DEFAULT_MATCH_ID.intValue()))
+            .andExpect(jsonPath("$.userAgent").value(DEFAULT_USER_AGENT.toString()));
     }
 
     @Test
@@ -212,7 +219,8 @@ public class ReportResourceIntTest {
             .timestamp(UPDATED_TIMESTAMP)
             .json(UPDATED_JSON)
             .type(UPDATED_TYPE)
-            .match_id(UPDATED_MATCH_ID);
+            .match_id(UPDATED_MATCH_ID)
+            .userAgent(UPDATED_USER_AGENT);
 
         restReportMockMvc.perform(put("/api/reports")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -228,6 +236,7 @@ public class ReportResourceIntTest {
         assertThat(testReport.getJson()).isEqualTo(UPDATED_JSON);
         assertThat(testReport.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testReport.getMatch_id()).isEqualTo(UPDATED_MATCH_ID);
+        assertThat(testReport.getUserAgent()).isEqualTo(UPDATED_USER_AGENT);
     }
 
     @Test

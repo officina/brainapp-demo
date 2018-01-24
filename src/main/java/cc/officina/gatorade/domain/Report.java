@@ -41,6 +41,9 @@ public class Report implements Serializable {
     @Column(name = "match_id")
     private Long match_id;
 
+    @Column(name = "user_agent")
+    private String userAgent;
+
     public Long getId() {
         return id;
     }
@@ -114,6 +117,19 @@ public class Report implements Serializable {
         this.match_id = match_id;
     }
 
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public Report userAgent(String userAgent) {
+        this.userAgent = userAgent;
+        return this;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -143,6 +159,7 @@ public class Report implements Serializable {
             ", json='" + getJson() + "'" +
             ", type='" + getType() + "'" +
             ", match_id='" + getMatch_id() + "'" +
+            ", userAgent='" + getUserAgent() + "'" +
             "}";
     }
 }

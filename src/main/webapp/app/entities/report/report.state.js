@@ -131,6 +131,7 @@
                                 json: null,
                                 type: null,
                                 match_id: null,
+                                userAgent: null,
                                 id: null
                             };
                         }

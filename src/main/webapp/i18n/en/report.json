@@ -19,7 +19,8 @@
             "timestamp": "Timestamp",
             "json": "Json",
             "type": "Type",
-            "match_id": "Match Id"
+            "match_id": "Match Id",
+            "userAgent": "User Agent"
         }
     }
 }

@@ -22,6 +22,11 @@
         {
             "fieldName": "match_id",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "userAgent",
+            "fieldType": "String",
+            "fieldValidateRules": []
         }
     ],
     "changelogDate": "20180124140739",

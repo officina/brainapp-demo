@@ -24,6 +24,7 @@
                     <th jh-sort-by="json"><span data-translate="gatoradeApp.report.json">Json</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="type"><span data-translate="gatoradeApp.report.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="match_id"><span data-translate="gatoradeApp.report.match_id">Match Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userAgent"><span data-translate="gatoradeApp.report.userAgent">User Agent</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -35,6 +36,7 @@
                     <td>{{report.json}}</td>
                     <td data-translate="{{'gatoradeApp.ReportType.' + report.type}}">{{report.type}}</td>
                     <td>{{report.match_id}}</td>
+                    <td>{{report.userAgent}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

@@ -9,7 +9,6 @@
 
     function PlaygameController ($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams,timer, $interval) {
 
-
     	$scope.wrapperMemory = {};
     	$scope.wrapperMemory.attempts = [];
     	$scope.timerOn = true
@@ -166,6 +165,7 @@
         			refreshWrapperMemory(response.data.match,response.data.attempt);
       	        })
 	      	    .catch(function(error) {
+	      	    	PlaygameService.report($scope.wrapperMemory.match.id,$stateParams.playtoken,error);
 	              	console.log('error on validation');
 	              	console.log(error);
 	              	removeEvent(eventName, $scope.handle);
@@ -195,6 +195,7 @@
 	    	console.log('Attempt ended');
 	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken).then(function(response){
 	    		//chiuso l'attempt, il current è null
+	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now()).toLocaleString();
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt ended inside callback');
@@ -213,6 +214,7 @@
 	    	console.log('Attempt restarted');
 	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken).then(function(response){
 	    		//chiuso l'attempt, il current è null
+	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now()).toLocaleString();
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt restarted inside callback');
@@ -264,6 +266,9 @@
 
         $(window).bind('unload', function() {
         	console.log('event');
+        	$scope.wrapperMemory.match.stop = new Date(Date.now()).toLocaleString();
+        	PlaygameService.report($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.wrapperMemory);
+        	
         	if($scope.wrapperMemory.currAttempt == undefined)
 	    	{
         		PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",

@@ -36,8 +36,12 @@
             <column name="jhi_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            
+
             <column name="match_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="user_agent" type="varchar(1000)">
                 <constraints nullable="true" />
             </column>
 

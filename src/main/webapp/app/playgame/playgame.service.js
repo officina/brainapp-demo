@@ -111,6 +111,29 @@ angular.module('gatoradeApp')
       })
     }
     
+    //SEND REPORT
+    this.report = function(matchId, userId, json){
+    	var content = {};
+    	content.info = json;
+    	content.userAgent = navigator.userAgent;
+    	var http = new XMLHttpRequest();
+      	http.open("POST", '/api/matches/'+matchId+'/report/'+userId, false);
+      	http.setRequestHeader("Content-type", "application/json");
+      	console.log(JSON.stringify(content));
+		http.send(JSON.stringify(content));
+    }
+    
+  //SEND ERROR
+    this.error = function(matchId, userId, json){
+    	var content = {};
+    	content.info = json;
+    	content.userAgent = navigator.userAgent;
+    	var http = new XMLHttpRequest();
+      	http.open("POST", '/api/matches/'+matchId+'/error/'+userId, false);
+      	http.setRequestHeader("Content-type", "application/json");
+		http.send(JSON.stringify(content));
+    }
+    
     this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken){
         var http = new XMLHttpRequest();
         http.open("PUT", '/api/play/end', false);
