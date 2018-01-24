@@ -25333,7 +25333,7 @@ cr.plugins_.gatorade = function(runtime)
         var m = new Gatorade.Message(operations.START_ATTEMPT, currentattempt)
 		window.parent.postMessage(m, domain)
 	};
-	Acts.prototype.restartAttempt = function ()
+	Acts.prototype.restartAttempt = function (score)
 	{
 		console.log("game restarted, sending " +  score + " as end points")
 		currentattempt.completed = true
@@ -25807,6 +25807,8 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Touch.prototype.exps.Y,
 	cr.system_object.prototype.cnds.OnLayoutStart,
 	cr.plugins_.Sprite.prototype.acts.Destroy,
+	cr.plugins_.gatorade.prototype.acts.updateLevel,
+	cr.system_object.prototype.exps.layoutname,
 	cr.plugins_.Sprite.prototype.cnds.IsOverlapping,
 	cr.plugins_.Sprite.prototype.acts.SetAnim,
 	cr.system_object.prototype.cnds.Else,
@@ -25818,13 +25820,11 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.RestartLayout,
 	cr.plugins_.gatorade.prototype.acts.restartAttempt,
 	cr.system_object.prototype.exps["int"],
-	cr.system_object.prototype.exps.layoutname,
 	cr.plugins_.Touch.prototype.cnds.OnTouchStart,
 	cr.plugins_.Spritefont2.prototype.acts.Destroy,
 	cr.system_object.prototype.acts.GoToLayout,
 	cr.plugins_.gatorade.prototype.acts.attemptEnded,
 	cr.system_object.prototype.acts.SetLayerVisible,
-	cr.plugins_.gatorade.prototype.acts.updateLevel,
 	cr.system_object.prototype.cnds.Compare,
 	cr.plugins_.LocalStorage.prototype.acts.SetItem,
 	cr.plugins_.Spritefont2.prototype.acts.SetText,
