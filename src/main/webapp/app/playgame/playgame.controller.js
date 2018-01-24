@@ -89,6 +89,7 @@
                 var total =  (timeToEnd*100/$scope.wrapperMemory.match.template.maxDuration);
                 $scope.progressBar = total <=100? total: 100
                 var tk = args.seconds % 30;
+                console.log($scope.wrapperMemory.currAttempt != undefined);
                 if($scope.wrapperMemory.currAttempt != undefined && tk == 0)
                 {
                 	console.log('score/level update vs server')
