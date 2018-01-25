@@ -124,6 +124,7 @@ angular.module('gatoradeApp')
     }
     
     this.reportAsync = function(matchId, userId, json){
+    	console.log(json);
     	var internalUserAgent = navigator.userAgent;
   	    return $http({
         	method: 'POST',

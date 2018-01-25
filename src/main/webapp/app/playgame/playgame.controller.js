@@ -263,13 +263,13 @@
 	    	PlaygameService.endMatch($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, currAttemptId, currAttemptScore, currAttemptLevel,$scope.matchToken)
 	    	.then(function(response){
 	    		// se endmatch va a buon fine eseguo l'invio del report 
-	    		PlaygameService.reportAsync($scope.wrapperMemory.game.id,$stateParams.playtoken,$rootScope.wrapperMemory)
+	    		PlaygameService.reportAsync($scope.wrapperMemory.match.id,$stateParams.playtoken, $scope.wrapperMemory)
     	    	.then(function(response){
-    	    		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
+    	    		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "timeout"});
 		    	})
 		    	.catch(function(error) {
 		    		//se l'invio del report non va a buon fine redirect alla pagina di errore
-		    		PlaygameService.errorAsync($scope.wrapperMemory.game.id,$stateParams.playtoken,$scope.errorText);
+		    		PlaygameService.errorAsync($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.errorText);
 		    		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
 		    	});
 	    	})

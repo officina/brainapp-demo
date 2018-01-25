@@ -27,11 +27,11 @@
     		case 'timeout':
     			$scope.message1 = 'La tua partita è terminata. ';
     	    	$scope.message2 = 'Grazie per aver giocato!';
-    			break
+    			break;
     		case 'invalidMatch':
     			$scope.message1 = 'La tua partita è stata invalidata. ';
     	    	$scope.message2 = 'Grazie per aver giocato!';
-    			break
+    			break;
     		case 'genericError':
     			$scope.message1 = 'Si è verificato un errore imprevisto. ';
     	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
@@ -64,7 +64,7 @@
 		    		//anche se fallita la prima provo comunque l'invio dell'errore
 		    		PlaygameService.errorAsync(idToUse,$stateParams.playtoken,$scope.errorText);
 		    	});
-    			break
+    			break;
     	}
     }
 })();
