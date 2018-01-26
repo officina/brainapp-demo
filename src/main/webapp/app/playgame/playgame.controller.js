@@ -27,7 +27,6 @@
         var useLevels = false;
 
         $scope.handle = function(e){
-
             switch (e.data.action){
                 case "UPDATE_LEVEL":
                 	console.log('UPDATE_LEVEL');
@@ -147,7 +146,7 @@
         	var why = "genericError";
         	if(error.status == 400)
     		{
-        		why = "invalidMatch";
+        		why = "invalidSession";
     		}
         	
         	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : why});

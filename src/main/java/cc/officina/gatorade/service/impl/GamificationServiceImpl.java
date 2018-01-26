@@ -93,12 +93,16 @@ public class GamificationServiceImpl implements GamificationService{
 			}
 			catch(Exception e)
 			{
-				log.info("Run-action fails, init again...");
-				init();
-				log.info("Run-action again");
-				response = po.post(path, params, requestBody);
+				e.printStackTrace();
+				if(!e.getMessage().contains("Player with ID"))
+				{
+					log.info("Run-action fails, init again...");
+					init();
+					log.info("Run-action again");
+					response = po.post(path, params, requestBody);
+					log.debug(response.toString());
+				}
 			}
-			log.debug(response.toString());
 		} catch (Exception e) {
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
 			log.error(e.getMessage());
