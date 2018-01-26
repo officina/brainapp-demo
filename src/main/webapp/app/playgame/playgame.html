@@ -8,7 +8,7 @@
         </div>
     </timer>
 </div>
-<div id="gamecontainer" class="embed-container">
+<div ng-show="showGame" id="gamecontainer" class="embed-container">
     <gamebox game="{{game}}" ></gamebox>
 </div>
-
+<div ng-hide="showGame" id="offlinecontainer" class="embed-container" ng-include="'/app/playgame/game_finished.html'"></div>
