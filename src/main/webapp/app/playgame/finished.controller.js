@@ -53,7 +53,7 @@
     	{
     		case 'invalidSession':
     			$scope.message1 = 'Nessuna sessione di gioco attiva.';
-    	    	$scope.message2 = 'Grazie per aver giocato!';
+    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
     			break;
     		case 'timeout':
     			$scope.message1 = 'La tua partita è terminata. ';
@@ -61,7 +61,7 @@
     			break;
     		case 'invalidMatch':
     			$scope.message1 = 'La tua partita è stata invalidata. ';
-    	    	$scope.message2 = 'Grazie per aver giocato!';
+    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
     	    	sendProblem();
     			break;
     		case 'genericError':
