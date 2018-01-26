@@ -144,7 +144,13 @@
         	removeEvent(eventName, $scope.handle);
         	$rootScope.wrapperMemory = $scope.wrapperMemory;
         	$rootScope.finalError = error;
-        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
+        	var why = "genericError";
+        	if(error.status == 400)
+    		{
+        		why = "invalidMatch";
+    		}
+        	
+        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : why});
         });
 
         var startAttempt = function(){
