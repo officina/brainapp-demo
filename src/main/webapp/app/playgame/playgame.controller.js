@@ -70,6 +70,8 @@
         addEvent(eventName, $scope.handle,false);
 
         $scope.$on('$locationChangeStart', function (event, next, current) {
+        	console.log('locationChangeStart');
+        	PlaygameService.report($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.wrapperMemory);
         	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
 					$stateParams.playtoken, 
 					$scope.wrapperMemory.match.id, 
@@ -97,11 +99,13 @@
         	    		console.log('Score/Level updated');
         	    	})
                 	.catch(function(error) {
-        	        	removeEvent(eventName, $scope.handle);
-        	        	$rootScope.wrapperMemory = $scope.wrapperMemory;
-        	        	$rootScope.finalError = error;
-        	        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
-        	        });
+        	        	//removeEvent(eventName, $scope.handle);
+        	        	//$rootScope.wrapperMemory = $scope.wrapperMemory;
+        	        	//$rootScope.finalError = error;
+        	        	//se fallisce l'update attempt abbiamo concordato di non andare alla schermata di errore ma proseguire il gioco
+        	        	//$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
+        	        	PlaygameService.errorAsync($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.error);
+                	});
                 }
             }
 
