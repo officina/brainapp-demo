@@ -1,11 +1,14 @@
 package cc.officina.gatorade.service;
 
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.Report;
 
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * Service Interface for managing Match.

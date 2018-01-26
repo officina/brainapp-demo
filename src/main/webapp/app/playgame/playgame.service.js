@@ -111,6 +111,54 @@ angular.module('gatoradeApp')
       })
     }
     
+    //SEND REPORT
+    this.report = function(matchId, userId, json){
+    	var content = {};
+    	content.info = json;
+    	content.userAgent = navigator.userAgent;
+    	var http = new XMLHttpRequest();
+      	http.open("POST", '/api/matches/'+matchId+'/report/'+userId, false);
+      	http.setRequestHeader("Content-type", "application/json");
+      	console.log(JSON.stringify(content));
+		http.send(JSON.stringify(content));
+    }
+    
+    this.reportAsync = function(matchId, userId, json){
+    	console.log(json);
+    	var internalUserAgent = navigator.userAgent;
+  	    return $http({
+        	method: 'POST',
+        	url: rootPath + '/api/matches/'+matchId+'/report/'+userId,
+        	data:{
+        		userAgent: internalUserAgent,
+        		info: json
+	         }
+  	    })
+    };
+    
+  //SEND ERROR
+    this.error = function(matchId, userId, json){
+    	var content = {};
+    	content.info = json;
+    	content.userAgent = navigator.userAgent;
+    	var http = new XMLHttpRequest();
+      	http.open("POST", '/api/matches/'+matchId+'/error/'+userId, false);
+      	http.setRequestHeader("Content-type", "application/json");
+		http.send(JSON.stringify(content));
+    }
+    
+    this.errorAsync = function(matchId, userId, json){
+    	var internalUserAgent = navigator.userAgent;
+  	    return $http({
+        	method: 'POST',
+        	url: rootPath + '/api/matches/'+matchId+'/error/'+userId,
+        	data:{
+        		userAgent: internalUserAgent,
+        		info: json
+	         }
+  	    })
+    };
+    
     this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken){
         var http = new XMLHttpRequest();
         http.open("PUT", '/api/play/end', false);

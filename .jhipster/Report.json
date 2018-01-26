@@ -1,0 +1,37 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "userid",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "timestamp",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "json",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "ReportType",
+            "fieldValues": "Error"
+        },
+        {
+            "fieldName": "match_id",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "userAgent",
+            "fieldType": "String",
+            "fieldValidateRules": []
+        }
+    ],
+    "changelogDate": "20180124140739",
+    "dto": "no",
+    "service": "serviceImpl",
+    "entityTableName": "report",
+    "pagination": "pager"
+}
