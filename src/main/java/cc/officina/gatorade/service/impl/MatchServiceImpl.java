@@ -4,9 +4,12 @@ import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.Report;
+import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -99,4 +102,6 @@ public class MatchServiceImpl implements MatchService{
 		matchRepository.save(match);
 		return match;
 	}
+	
+	
 }

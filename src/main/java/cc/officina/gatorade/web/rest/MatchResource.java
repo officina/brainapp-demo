@@ -2,24 +2,31 @@ package cc.officina.gatorade.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.Report;
+import cc.officina.gatorade.domain.ReportRequest;
+import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
+import cc.officina.gatorade.service.ReportService;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
+
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,9 +43,12 @@ public class MatchResource {
 
     private final MatchService matchService;
     private final GamificationService gamificationService;
-    public MatchResource(MatchService matchService, GamificationService gamificationService) {
+    private final ReportService reportService;
+    
+    public MatchResource(MatchService matchService, GamificationService gamificationService, ReportService reportService) {
         this.matchService = matchService;
         this.gamificationService = gamificationService;
+        this.reportService = reportService;
     }
 
     /**
@@ -139,5 +149,27 @@ public class MatchResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, match.getId().toString()))
             .body(result);
+    }
+    
+    @PostMapping(value = "/matches/{id}/report/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @Timed
+    public ResponseEntity<Match> matchReport(@PathVariable Long id, @PathVariable String userid, @RequestBody ReportRequest request) throws URISyntaxException {
+        Report report = new Report();
+        log.info("END MATCH - INIZIO REPORT userid = " + userid + " - match_id = " + id);
+        log.info(request.toString());
+        log.info("END MATCH - FINE REPORT userid = " + userid + " - match_id = " + id);
+        reportService.matchReport(id, userid, request);
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping(value = "/matches/{id}/error/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @Timed
+    public ResponseEntity<Match> matchError(@PathVariable Long id, @PathVariable String userid, @RequestBody ReportRequest request) throws URISyntaxException {
+        Report report = new Report();
+        log.info("INIZIO ERROR userid = " + userid + " - match_id = " + id);
+        log.info(request.toString());
+        log.info("FINE ERROR userid = " + userid + " - match_id = " + id);
+        reportService.matchError(id, userid, request);
+        return ResponseEntity.ok().build();
     }
 }

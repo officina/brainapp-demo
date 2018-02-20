@@ -1,0 +1,26 @@
+{
+    "gatoradeApp": {
+        "report" : {
+            "home": {
+                "title": "Reports",
+                "createLabel": "Genera un nuovo Report",
+                "createOrEditLabel": "Genera o modifica un Report"
+            },
+            "created": "&Egrave; stato generato un nuovo Report con identificatore {{ param }}",
+            "updated": "&Egrave; stato aggiornato Report identificato da {{ param }}",
+            "deleted": "&Egrave; stato eliminato Report con identificatore {{ param }}",
+            "delete": {
+                "question": "Sei sicuro di volere eliminare Report {{ id }}?"
+            },
+            "detail": {
+                "title": "Report"
+            },
+            "userid": "Userid",
+            "timestamp": "Timestamp",
+            "json": "Json",
+            "type": "Type",
+            "match_id": "Match Id",
+            "userAgent": "User Agent"
+        }
+    }
+}

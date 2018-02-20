@@ -3,12 +3,15 @@ package cc.officina.gatorade.service.impl;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MailService;
 import cc.playoff.sdk.PlayOff;
+import cc.playoff.sdk.PlayOff.PlayOffException;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 import cc.officina.gatorade.repository.SessionRepository;
+
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,12 +96,16 @@ public class GamificationServiceImpl implements GamificationService{
 			}
 			catch(Exception e)
 			{
-				log.info("Run-action fails, init again...");
-				init();
-				log.info("Run-action again");
-				response = po.post(path, params, requestBody);
+				e.printStackTrace();
+				if(!e.getMessage().contains("Player with ID"))
+				{
+					log.info("Run-action fails, init again...");
+					init();
+					log.info("Run-action again");
+					response = po.post(path, params, requestBody);
+					log.debug(response.toString());
+				}
 			}
-			log.debug(response.toString());
 		} catch (Exception e) {
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
 			log.error(e.getMessage());
@@ -238,11 +245,12 @@ public class GamificationServiceImpl implements GamificationService{
 	}
 	
 	private boolean checkPOUser(Match match) {
+		Object response = null;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("player_id", match.getUserId());
+		String path = "/runtime/player/";
 		try {
-			HashMap<String, String> params = new HashMap<String, String>();
-			params.put("player_id", match.getUserId());
-			String path = "/runtime/player/";
-			Object response = po.get(path, params);
+			response = po.get(path, params);
 			//non va in eccezione la get, quindi il player esiste
 			return true;
 		} catch (Exception e) {
@@ -250,6 +258,15 @@ public class GamificationServiceImpl implements GamificationService{
 			log.error("Error for playerId " + match.getUserId() + " on check");
 			log.error(e.getMessage());
 			mailService.sendMatchNotValidAlert(match, "Eccezione playoff: " + e.getMessage());
+			log.info("Run-action fails, init again...");
+			init();
+			log.info("Run-action again");
+			try {
+				response = po.get(path, params);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			log.debug(response.toString());
 			return false;
 		}
 	}
