@@ -41,7 +41,8 @@
         	removeEvent(eventName, $scope.handle);
         	$rootScope.wrapperMemory = $scope.wrapperMemory;
         	$rootScope.finalError = error;
-        	if(navigator.online)
+        	console.log(navigator.online);
+        	if(navigator.onLine)
         	{
         		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : why});
         	}
