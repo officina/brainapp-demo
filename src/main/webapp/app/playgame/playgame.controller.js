@@ -15,6 +15,9 @@
     	$scope.updateCount = 0;
     	$scope.lastProgress = 101;
     	$scope.matchToken = Date.now();
+    	$scope.showGame = true;
+    	$scope.showReport = true;
+		$scope.showError = true;
     	// IE + others compatible event handler
 
         var addEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
@@ -25,6 +28,29 @@
         var playtoken = $stateParams.playtoken;
         var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
         var useLevels = false;
+        
+        var setupOffline = function(){
+        	$scope.showGame = false;
+        	$scope.message1 = "Si è verificato un problema con la tua connessione";
+        	$scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
+        	$scope.errorText = $rootScope.finalError;
+	    	$scope.reportText = $rootScope.wrapperMemory;
+        }
+        
+        var manageError = function(error, why){
+        	removeEvent(eventName, $scope.handle);
+        	$rootScope.wrapperMemory = $scope.wrapperMemory;
+        	$rootScope.finalError = error;
+        	console.log(navigator.online);
+        	if(navigator.onLine)
+        	{
+        		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : why});
+        	}
+        	else
+        	{
+        		setupOffline();
+        	}
+        }
 
         $scope.handle = function(e){
             switch (e.data.action){
@@ -98,11 +124,6 @@
         	    		console.log('Score/Level updated');
         	    	})
                 	.catch(function(error) {
-        	        	//removeEvent(eventName, $scope.handle);
-        	        	//$rootScope.wrapperMemory = $scope.wrapperMemory;
-        	        	//$rootScope.finalError = error;
-        	        	//se fallisce l'update attempt abbiamo concordato di non andare alla schermata di errore ma proseguire il gioco
-        	        	//$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
         	        	PlaygameService.errorAsync($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.error);
                 	});
                 }
@@ -111,9 +132,6 @@
         });
 
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid).then(function(response){
-//          var game = response.data;
-//          game.url = $sce.trustAsResourceUrl(response.data.url)+'?rndparam='+Date.now();
-//          $scope.game = game;
         	$scope.game = response.data;
           $scope.wrapperMemory.game = response.data;
           $scope.wrapperMemory.player = {};
@@ -122,7 +140,8 @@
           {
         	  useLevels = true;
           }
-          PlaygameService.createMatch($stateParams.gameid,null,$stateParams.playtoken,$stateParams.playtoken, $stateParams.extsessionid).then(function(response){
+          PlaygameService.createMatch($stateParams.gameid,null,$stateParams.playtoken,$stateParams.playtoken, $stateParams.extsessionid)
+          .then(function(response){
         	  $scope.wrapperMemory.match = response.data.match;
     		  var timeSpent = $scope.wrapperMemory.match.timeSpent;
 
@@ -137,19 +156,23 @@
         		  console.log('Tempo scaduto in quanto il tempo massimo è ' + $scope.wrapperMemory.match.template.maxDuration +' è quello giocato è ' + timeSpent);
         		  $state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "timeout"});
         	  }
-          })
+          }).catch(function(error) {
+	        	var why = "genericError";
+	        	if(error.status == 400)
+	    		{
+	        		why = "invalidSession";
+	    		}
+	        	manageError(error, why);
+	        });
         })
         .catch(function(error) {
-        	removeEvent(eventName, $scope.handle);
-        	$rootScope.wrapperMemory = $scope.wrapperMemory;
-        	$rootScope.finalError = error;
         	var why = "genericError";
         	if(error.status == 400)
     		{
         		why = "invalidSession";
     		}
         	
-        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : why});
+        	manageError(error, why);
         });
 
         var startAttempt = function(){
@@ -161,10 +184,7 @@
         	        refreshWrapperMemory(response.data.match,response.data.attempt);
     	        })
     	        .catch(function(error) {
-    	        	removeEvent(eventName, $scope.handle);
-    	        	$rootScope.wrapperMemory = $scope.wrapperMemory;
-    	        	$rootScope.finalError = error;
-    	        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
+    	        	manageError(error, "genericError");
     	        });
     	        
         	}
@@ -176,10 +196,7 @@
         			refreshWrapperMemory(response.data.match,response.data.attempt);
       	        })
 	      	   .catch(function(error) {
-	  	        	removeEvent(eventName, $scope.handle);
-	  	        	$rootScope.wrapperMemory = $scope.wrapperMemory;
-	  	        	$rootScope.finalError = error;
-	  	        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
+	      		   manageError(error, "genericError");
 	  	        });
         	}
         	$scope.$broadcast('timer-start');
@@ -212,10 +229,7 @@
 	    		console.log('Attempt ended inside callback');
 	    	})
 	    	.catch(function(error) {
-  	        	removeEvent(eventName, $scope.handle);
-  	        	$rootScope.wrapperMemory = $scope.wrapperMemory;
-  	        	$rootScope.finalError = error;
-  	        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
+	    		manageError(error, "genericError");
   	        });
 	    }
 	    
@@ -240,10 +254,7 @@
 	    		startAttempt();
 	    	})
 	    	.catch(function(error) {
-	        	removeEvent(eventName, $scope.handle);
-	        	$rootScope.wrapperMemory = $scope.wrapperMemory;
-	        	$rootScope.finalError = error;
-	        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
+	    		manageError(error, "genericError");
 	        });
 	    }
 	    
@@ -283,11 +294,7 @@
 		    	});
 	    	})
 	    	.catch(function(error) {
-	    		//se endmatch non va a buon fine redirect alla pagina di errore
-  	        	removeEvent(eventName, $scope.handle);
-  	        	$rootScope.wrapperMemory = $scope.wrapperMemory;
-  	        	$rootScope.finalError = error;
-  	        	$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "genericError"});
+	    		manageError(error, "genericError");
   	        });
 	    }
 
