@@ -95,7 +95,7 @@ export class ProfileFakeDb
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
                 'message' : "Hey!! Abbiamo bisogno urgentemete di qualcuno che sappia come funziona l'export del CRM. Se sai come fare o sai aiutarci ad individuare chi puó aiutarci... sei chi cerchiamo! :D",
-                'time'    : 'June 12, 2017',
+                'time'    : 'April 3, 2018',
                 'type'    : 'article',
                 'like'    : 9,
                 'share'   : 6,
