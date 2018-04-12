@@ -9,7 +9,7 @@
     </div>
     <div class="right">
       <div class="btnpos">
-        <button mat-raised-button class="cta-button btn">INIZIA</button>
+        <button mat-raised-button class="cta-button btn"><a href="https://brainappbackend.herokuapp.com/#/play/gameid/1001/playtoken/atomasse/sessionid/brainapp-ext" target="_blank">INIZIA</a></button>
       </div>
     </div>
   </div>
@@ -52,62 +52,45 @@
         <ul>
           <li>
         <!-- COOPERATION -->
-        <p style="width:80%" data-value="80">COOPERATION</p>
-        <progress max="100" value="80" class="html5">
+        <p style="width:40%" data-value="40">PROBLEM SOLVING</p>
+        <progress max="100" value="40" class="html5">
           <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
           <div class="progress-bar">
-            <span style="width: 80%">80%</span>
+            <span style="width: 80%">40%</span>
           </div>
         </progress>
         </li>
 
         <!-- LEARNING -->
         <li>
-          <p style="width:60%" data-value="60">LEARNING</p>
-          <progress max="100" value="60" class="css3">
+          <p style="width:25%" data-value="25">LOGIC</p>
+          <progress max="100" value="25" class="css3">
             <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
             <div class="progress-bar">
-              <span style="width: 60%">60%</span>
+              <span style="width: 60%">25%</span>
             </div>
           </progress>
         </li>
         <!-- PLANNING -->
         <li>
-          <p style="width:50%" data-value="50">PLANNING</p>
-          <progress max="100" value="50" class="jquery">
+          <p style="width:35%" data-value="35">CREATIVITY</p>
+          <progress max="100" value="35" class="jquery">
             <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
             <div class="progress-bar">
-              <span style="width: 50%">50%</span>
+              <span style="width: 50%">35%</span>
             </div>
           </progress>
         </li>
         </ul>
       </div>
-  </div>
+    </div>
     <div class="leaderboard">
       <div class="table-users">
         <div class="capo">CLASSIFICA SFIDA</div>
-          <table cellspacing="0">
-
-            <mat-tab-group dynamicHeight="true">
-              <mat-tab label="COMPLESSIVA">
-                <app-complessiva></app-complessiva>
-              </mat-tab>
-              <mat-tab label="LOGICA">
-                <app-logica></app-logica>
-              </mat-tab>
-              <mat-tab label="CREATIVITÁ">
-                <app-creativita></app-creativita>
-              </mat-tab>
-              <mat-tab label="PROBLEM SOLVING" class="last-label">
-                <app-problemsolving></app-problemsolving>
-              </mat-tab>
-            </mat-tab-group>
-          </table>
-
+        <table cellspacing="0">
+              <app-complessiva></app-complessiva>
+        </table>
       </div>
     </div>
-</div>
-
-
+  </div>
 </div>

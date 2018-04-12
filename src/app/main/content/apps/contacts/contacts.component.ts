@@ -57,8 +57,8 @@ export class FuseContactsComponent implements OnInit
             });
 
         this.searchInput.valueChanges
-            .debounceTime(300)
-            .distinctUntilChanged()
+            // .debounceTime(300)
+            // .distinctUntilChanged()
             .subscribe(searchText => {
                 this.contactsService.onSearchTextChanged.next(searchText);
             });

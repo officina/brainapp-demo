@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { fuseAnimations } from '../../../../core/animations';
-
+import { UserService} from '../../../../components/user/user.service';
 @Component({
     selector     : 'fuse-profile',
     templateUrl  : './profile.component.html',
@@ -10,14 +10,16 @@ import { fuseAnimations } from '../../../../core/animations';
 })
 export class FuseProfileComponent implements OnInit
 {
-
-    constructor()
+  user: ThisUser = <ThisUser>{};
+    constructor(private userService: UserService)
     {
 
     }
 
     ngOnInit()
     {
-
+      this.userService.getUsers('atomasse').subscribe((user: ThisUser) => {
+        this.user = user;
+      });
     }
 }

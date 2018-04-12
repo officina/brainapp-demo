@@ -25,8 +25,8 @@ export class FuseChatUserSidenavComponent implements OnInit, OnDestroy
     ngOnInit()
     {
         this.onFormChange = this.userForm.valueChanges
-                                .debounceTime(500)
-                                .distinctUntilChanged()
+                                // .debounceTime(500)
+                                // .distinctUntilChanged()
                                 .subscribe(data => {
                                     this.user.mood = data.mood;
                                     this.user.status = data.status;

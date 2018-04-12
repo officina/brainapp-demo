@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-// import {LeaderboardDb} from '../../../../../../../fuse-fake-db/leaderboard';
-// import {LeaderboardService} from '../../leaderboard.service';
+import { LeaderboardService } from './../../../../../ui/page-layouts/blank/leaderboard.service';
+
 
 @Component({
   selector: 'app-complessiva',
@@ -8,14 +8,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./complessiva.component.scss']
 })
 export class ComplessivaComponent implements OnInit {
-  // leaderboard: any;
-  // constructor(private leaderboardService: LeaderboardService) {
-    // this.leaderboardService.leaderboardOnChanged.subscribe(leaderboard => {
-      // this.leaderboard = leaderboard;
-    // });
-  // }
+  scores: GlobalScore = <GlobalScore>{};
+
+  constructor(private leaderboardService: LeaderboardService) { }
 
   ngOnInit() {
+
+
+    this.leaderboardService.getScores('globale_punti').subscribe((scores: GlobalScore) => {
+
+      this.scores = scores;
+    });
+
+
   }
+
+
 
 }

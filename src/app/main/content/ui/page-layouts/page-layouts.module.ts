@@ -136,7 +136,8 @@ const routes: Routes = [
         LogicaComponent,
         CreativitaComponent,
         ProblemsolvingComponent
-    ]
+    ],
+  providers: [],
 })
 export class UIPageLayoutsModule
 {

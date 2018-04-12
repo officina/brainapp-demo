@@ -115,14 +115,16 @@
                         width: 100%;
                         margin: 16px auto;
                         display: block;
-
+                        text-decoration: none !important;
+                        background-color: #0B9AE4;
                         @include media-breakpoint('xs') {
                             width: 80%;
                         }
                       & a {
-                        text-decoration: none;
+                        text-decoration: none !important;
+                        color: #FFFFFF;
                         &:hover {
-                          text-decoration: none;
+                          text-decoration: none !important;
                         }
                       }
                     }

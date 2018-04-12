@@ -7,64 +7,64 @@ export class ProfileFakeDb
                     'name'  : 'Nella Cocci',
                     'avatar': 'assets/images/avatars/alice.jpg'
                 },
-                'message': 'started following you.',
-                'time'   : '13 mins. ago'
+                'message': 'ha realizzato 1400 p.ti',
+                'time'   : '13 minuti fa'
             },
             {
                 'user'   : {
                     'name'  : 'Guglielmo Siciliani',
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
-                'message': 'sent you a message.',
-                'time'   : 'June 10,2015'
+                'message': 'si è iscritto al laboratorio',
+                'time'   : '3 ore fa'
             },
             {
                 'user'   : {
                     'name'  : 'Claudio Castiglione',
                     'avatar': 'assets/images/avatars/garry.jpg'
                 },
-                'message': 'shared a public post with your group.',
-                'time'   : 'June 9,2015'
+                'message': 'ha condiviso un documento',
+                'time'   : '9 Novembre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Viviano Lori',
                     'avatar': 'assets/images/avatars/carl.jpg'
                 },
-                'message': 'wants to play Fallout Shelter with you.',
-                'time'   : 'June 8,2015'
+                'message': 'ha realizzato 1734 p.ti',
+                'time'   : '6 Novembre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Antonina Trevisan',
                     'avatar': 'assets/images/avatars/jane.jpg'
                 },
-                'message': 'started following you.',
-                'time'   : 'June 7,2015'
+                'message': 'ha commentato il post',
+                'time'   : '6 Novembre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Luca Padovesi',
                     'avatar': 'assets/images/avatars/james.jpg'
                 },
-                'message': 'sent you a message.',
-                'time'   : 'June 6,2015'
+                'message': 'ha fatto 800 p.ti',
+                'time'   : '1 Novembre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Antonella Siciliano',
                     'avatar': 'assets/images/avatars/joyce.jpg'
                 },
-                'message': 'shared a photo with you.',
-                'time'   : 'June 5,2015'
+                'message': 'ha condiviso un documento',
+                'time'   : '21 Ottobre, 2017'
             },
             {
                 'user'   : {
                     'name'  : 'Andrea Trentini',
                     'avatar': 'assets/images/avatars/vincent.jpg'
                 },
-                'message': 'shared a photo with you.',
-                'time'   : 'June 4,2015'
+                'message': 'ha commentato un post',
+                'time'   : '15 Ottobre, 2017'
             }
         ],
         posts     : [
@@ -73,23 +73,19 @@ export class ProfileFakeDb
                     'name'  : 'Claudio Castiglione',
                     'avatar': 'assets/images/avatars/garry.jpg'
                 },
-                'message' : 'Remember the place we were talking about the other night? Found it!',
+                'message' : 'Ciao a tutti, stiamo organizzando un nuovo Laboratorio. Il tema sara la Cyber Security, se vuoi partecipare o sei interessato ad approfondire la tematica iscriviti o seguici! Stay Tuned!',
                 'time'    : '32 minutes ago',
                 'type'    : 'post',
                 'like'    : 5,
                 'share'   : 21,
-                'media'   : {
-                    'type'   : 'image',
-                    'preview': 'assets/images/etc/early-sunrise.jpg'
-                },
                 'comments': [
                     {
                         'user'   : {
-                            'name'  : 'Nella Cocci',
-                            'avatar': 'assets/images/avatars/alice.jpg'
+                            'name'  : 'Dino Davide',
+                            'avatar': 'assets/images/avatars/Trevino.jpg'
                         },
-                        'time'   : 'June 10, 2015',
-                        'message': 'That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.'
+                        'time'   : '15 minutes ago',
+                        'message': 'Grazie, ci saró!'
                     }
                 ]
             },
@@ -98,41 +94,11 @@ export class ProfileFakeDb
                     'name'  : 'Guglielmo Siciliani',
                     'avatar': 'assets/images/avatars/andrew.jpg'
                 },
-                'message' : 'Hey, man! Check this, it’s pretty awesome!',
-                'time'    : 'June 12, 2015',
+                'message' : "Hey!! Abbiamo bisogno urgentemete di qualcuno che sappia come funziona l'export del CRM. Se sai come fare o sai aiutarci ad individuare chi puó aiutarci... sei chi cerchiamo! :D",
+                'time'    : 'April 3, 2018',
                 'type'    : 'article',
-                'like'    : 98,
+                'like'    : 9,
                 'share'   : 6,
-                'article' : {
-                    'title'   : 'The Fallout 4 Pip-Boy Edition Is Back In Stock Now',
-                    'subtitle': 'Kotaku',
-                    'excerpt' : 'The Fallout 4 Pip-Boy edition is back in stock at Gamestop, for all 3 platforms. Additionally, Walmart also has it in stock for the PS4 and Xbox One as of this writing, as does Best Buy.',
-                    'media'   : {
-                        'type'   : 'image',
-                        'preview': 'assets/images/etc/fallout.jpg'
-                    }
-                },
-                'comments': [
-                    {
-                        'user'   : {
-                            'name'  : 'Nella Cocci',
-                            'avatar': 'assets/images/avatars/alice.jpg'
-                        },
-                        'time'   : 'June 10, 2015',
-                        'message': 'That’s a wonderful place. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat.'
-                    }
-                ]
-            },
-            {
-                'user'   : {
-                    'name'  : 'Viviano Lori',
-                    'avatar': 'assets/images/avatars/carl.jpg'
-                },
-                'message': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat. Aenean lorem ex, ultrices sit amet ligula sed...',
-                'time'   : 'June 10, 2015',
-                'type'   : 'something',
-                'like'   : 4,
-                'share'  : 1
             }
         ]
     };
