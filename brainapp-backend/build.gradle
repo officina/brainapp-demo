@@ -37,7 +37,7 @@ apply plugin: 'idea'
 defaultTasks 'bootRun'
 
 group = 'cc.officina.brainapp'
-version = '1.0.0'
+version = '1.0.1'
 
 description = ''
 
@@ -127,6 +127,7 @@ configurations {
 repositories {
     mavenLocal()
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -202,6 +203,7 @@ dependencies {
     optional ("org.springframework.boot:spring-boot-configuration-processor:${spring_boot_version}") {
         exclude group: 'com.vaadin.external.google', module: 'android-json'
     }
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }
 

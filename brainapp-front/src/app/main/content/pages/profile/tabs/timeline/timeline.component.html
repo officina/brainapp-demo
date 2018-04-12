@@ -5,76 +5,101 @@
          *fuseIfOnDom [@animate]="{value:'*',params:{delay:'200ms',y:'100%'}}">
 
         <header class="mat-accent-bg" fxLayout="row" fxLayoutAlign="space-between center">
-          <div class="title">My Stats</div>
+          <div class="title">IL TUO IMPEGNO</div>
             <!--<div class="more secondary-text">See All</div>-->
         </header>
-
-        <ul>
-          <li>
-
-            <!-- COOPERATION -->
-            <p style="width:80%" data-value="80">COOPERATION</p>
-            <progress max="100" value="80" class="html5">
-              <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
-              <div class="progress-bar">
-                <span style="width: 80%">80%</span>
-              </div>
-            </progress>
-          </li>
-
-          <!-- LEARNING -->
-          <li>
-            <p style="width:60%" data-value="60">LEARNING</p>
-              <progress max="100" value="60" class="css3">
+        <div class="stats">
+          <div class="progress">
+            <ul>
+            <li>
+              <!-- COOPERATION -->
+              <p style="width:100%" data-value="80"><small>COOPERATION</small></p>
+              <progress max="100" value="80" class="html5">
                 <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
                 <div class="progress-bar">
-                  <span style="width: 60%">60%</span>
+                  <span style="width: 80%"><small>80%</small></span>
                 </div>
               </progress>
-          </li>
-            <!-- PLANNING -->
-          <li>
-          <p style="width:50%" data-value="50">PLANNING</p>
-            <progress max="100" value="50" class="jquery">
-              <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
-              <div class="progress-bar">
-                <span style="width: 50%">50%</span>
-              </div>
-            </progress>
-          </li>
-          <!--PROBLEM SOLVING-->
-          <li>
-            <p style="width:75%" data-value="75">PROBLEM SOLVING</p>
-            <progress max="100" value="75" class="python">
-              <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
-              <div class="progress-bar">
-                <span style="width: 75%">75%</span>
-              </div>
-            </progress>
-          </li>
-          <!-- LOGIC -->
-          <li>
-            <p style="width:60%" data-value="60">LOGIC</p>
-            <progress max="100" value="60" class="css3">
-              <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
-              <div class="progress-bar">
-                <span style="width: 60%">60%</span>
-              </div>
-            </progress>
-          </li>
-            <!-- CREATIVITY -->
-          <li>
-            <p style="width:50%" data-value="50">CREATIVITY</p>
+            </li>
+
+            <!-- LEARNING -->
+            <li>
+              <p style="width:100%" data-value="60"><small>LEARNING</small></p>
+                <progress max="100" value="60" class="css3">
+                  <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+                  <div class="progress-bar">
+                    <span style="width: 60%"><small>60%</small></span>
+                  </div>
+                </progress>
+            </li>
+              <!-- PLANNING -->
+            <li>
+            <p style="width:100%" data-value="50"><small>PLANNING</small></p>
               <progress max="100" value="50" class="jquery">
                 <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
                 <div class="progress-bar">
-                  <span style="width: 50%">50%</span>
+                  <span style="width: 50%"><small>50%</small></span>
                 </div>
               </progress>
-          </li>
-        </ul>
+            </li>
+            <!--PROBLEM SOLVING-->
+            <li>
+              <p style="width:100%" data-value="75"><small>PROBLEM SOLVING</small></p>
+              <progress max="100" value="75" class="python">
+                <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+                <div class="progress-bar">
+                  <span style="width: 75%"><small>75%</small></span>
+                </div>
+              </progress>
+            </li>
+            <!-- LOGIC -->
+            <li>
+              <p style="width:100%" data-value="60"><small>LOGIC</small></p>
+              <progress max="100" value="60" class="css3">
+                <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+                <div class="progress-bar">
+                  <span style="width: 60%"><small>60%</small></span>
+                </div>
+              </progress>
+            </li>
+              <!-- CREATIVITY -->
+            <li>
+              <p style="width:100%" data-value="50"><small>CREATIVITY</small></p>
+                <progress max="100" value="50" class="jquery">
+                  <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+                  <div class="progress-bar">
+                    <span style="width: 50%"><small>50%</small></span>
+                  </div>
+                </progress>
+            </li>
+          </ul>
+          </div>
+
+          <div class="bonus">
+            <div  class="perf">
+              <div class="spacear">
+                <span>Achievement della settimana</span>
+              </div>
+                <div class="image-star" [ngStyle]="{'background-image':'url(assets/images/starperformer.png)'}"></div>
+            </div>
+
+            <div class="logo">
+            <div class="spacear">
+                <span>Sfida della settimana</span>
+            </div>
+              <div class="image-logo" [ngStyle]="{'background-image':'url(assets/images/Make7Logo.png)'}"></div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
+
+
+
+
+
+
 
     <div class="timeline-content" fxLayout="column" fxFlex="100" fxFlex.gt-sm="50" fxFlex.gt-md="50"
          *fuseIfOnDom [@animateStagger]="{value:'50'}">
@@ -112,6 +137,50 @@
         </div>
 
         <mat-divider></mat-divider>
+      <div class="timeline-item"
+           [@animate]="{value:'*',params:{y:'100%'}}">
+
+        <header fxLayout="row" fxLayoutAlign="space-between start">
+          <div class="post">
+            <div class="user" fxLayout="row" fxLayoutAlign="start center">
+              <div class="thx">
+                <div class="thx-txt">THANK YOU</div>
+              </div>
+
+              <div fxLayout="column">
+                <div class="title">
+                  <div class="postt">
+                    <div class="post-up">
+                      <p><strong>THANK YOU</strong></p>
+                      <p>For a job well done</p>
+                    </div>
+                    <div class="post-down">
+                      <div>
+                        <span class="username">Dino</span>
+                        <span>ha ricevuto un riconoscimento per il suo contributo</span>
+                      </div>
+                      <br><br>
+                      <div class="time">30 minuti fa da <span class="username">Mario Bianchi</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button mat-icon-button aria-label="More">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </header>
+
+        <div class="content">
+          <div class="rowbuttons" fxLayout="row" fxLayoutAlign="end center">
+            <div class="confirm-btn"><span>CONFERMA</span></div>
+          </div>
+        </div>
+
+      </div>
+
+
 
         <div class="timeline-item" *ngFor="let post of timeline.posts"
              [@animate]="{value:'*',params:{y:'100%'}}">
@@ -197,7 +266,7 @@
                 </div>
 
                 <div class="reply" fxLayout="row" fxFlexFill>
-                    <img src="assets/images/avatars/profile.jpg" class="avatar"/>
+                    <img src="assets/images/avatars/Trevino.jpg" class="avatar"/>
 
                     <form fxFlex>
                         <textarea placeholder="Add a comment..."></textarea>
@@ -216,8 +285,8 @@
              *fuseIfOnDom [@animate]="{value:'*',params:{delay:'200ms',y:'100%'}}">
 
             <header class="mat-accent-bg" fxLayout="row" fxLayoutAlign="space-between center">
-                <div class="title">Lab Activity</div>
-                <div class="more secondary-text" [routerLink]="['/lab']">See All</div>
+                <div class="title">SALES LAB</div>
+                <div class="more secondary-text" [routerLink]="['/lab']">Apri</div>
             </header>
 
             <div class="content" fxLayout="row" fxLayoutWrap>

@@ -160,7 +160,7 @@ public class SessionResource {
         sessionService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-    
+
     @PutMapping("/sessions/elaborate/{id}")
     @Timed
     @Transactional
@@ -179,7 +179,7 @@ public class SessionResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
             .body(null);
     }
-    
+
     @PutMapping("/sessions/ri-elaborate/{id}")
     @Timed
     @Transactional
@@ -196,6 +196,6 @@ public class SessionResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
             .body(null);
     }
-    
-    
+
+
 }
