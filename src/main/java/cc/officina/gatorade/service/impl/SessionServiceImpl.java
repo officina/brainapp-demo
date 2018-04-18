@@ -9,11 +9,7 @@ import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.SessionRepository;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +31,9 @@ public class SessionServiceImpl implements SessionService{
     private final SessionRepository sessionRepository;
     private final GamificationService gamificationService;
     private final MatchService matchService;
-    
-    private final int numUsers = 5; 
-    	
+
+    private final int numUsers = 5;
+
     public SessionServiceImpl(SessionRepository sessionRepository, GamificationService gamificationService, MatchService matchService) {
         this.sessionRepository = sessionRepository;
         this.gamificationService = gamificationService;
@@ -104,14 +100,14 @@ public class SessionServiceImpl implements SessionService{
 			return false;
 		}
 		List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
-		
+
 		if(matches == null || matches.size() == 0)
 			return true;
-		
+
 		for(Match match : matches)
 		{
 			//se esiste già un match la chiamata viene invaliata
-			if(match != null && match.getValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
+			if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
 			{
 				log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
 				return false;
@@ -127,7 +123,7 @@ public class SessionServiceImpl implements SessionService{
 	public Session findOneByExtId(String extSessionId) {
 		return sessionRepository.findByExtId(extSessionId);
 	}
-	
+
 	@Override
 	public Session findOneByExtId(String extid, Long gameid) {
 		return sessionRepository.findByExtId(extid, gameid);
@@ -145,7 +141,12 @@ public class SessionServiceImpl implements SessionService{
 		return sessionRepository.findPendingSessions(now);
 	}
 
-	@Override
+    @Override
+    public List<Session> findAllByLabId(String labId) {
+        return sessionRepository.findAllByLabId(labId);
+    }
+
+    @Override
 	@Transactional
 	public void elaborate(Session session) {
 		gamificationService.elaborate(session);

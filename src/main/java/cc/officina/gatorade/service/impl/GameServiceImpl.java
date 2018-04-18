@@ -38,7 +38,7 @@ public class GameServiceImpl implements GameService{
     private final AttemptRepository attemptRepository;
     private final GamificationService gamificationService;
 
-    public GameServiceImpl(GameRepository gameRepository, MatchRepository matchRepository, 
+    public GameServiceImpl(GameRepository gameRepository, MatchRepository matchRepository,
     		AttemptRepository attemptRepository,GamificationService gamificationService) {
         this.gameRepository = gameRepository;
         this.matchRepository = matchRepository;
@@ -100,7 +100,7 @@ public class GameServiceImpl implements GameService{
 		//TODO verificare presenza match già aperti e relativa logica da implementare
 		Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
 		ZonedDateTime now = ZonedDateTime.now();
-		if(oldOne == null || !oldOne.getValid())
+		if(oldOne == null || !oldOne.isValid())
 		{
 			Match match = new Match();
 			match.setTemplate(template);
@@ -142,7 +142,7 @@ public class GameServiceImpl implements GameService{
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;
 	}
-	
+
 	@Override
 	public AttemptResponse updateAttemptScore(Game game, Attempt attempt, Long newScore, String newLevel) {
 		//TODO verificare presenza attempt già aperti e relativa logica da implementare
@@ -203,7 +203,7 @@ public class GameServiceImpl implements GameService{
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;
 	}
-	
+
 	@Override
 	public MatchResponse endMatchRestore(Game game, Match match, Attempt lastAttempt, Long score, String level) {
 		ZonedDateTime now = ZonedDateTime.now();

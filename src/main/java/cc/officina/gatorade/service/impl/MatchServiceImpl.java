@@ -31,7 +31,7 @@ public class MatchServiceImpl implements MatchService{
 
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
-    
+
     public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GamificationService gamificationService) {
         this.matchRepository = matchRepository;
         this.attemptRepository = attemptRepository;
@@ -91,7 +91,12 @@ public class MatchServiceImpl implements MatchService{
 		return matchRepository.findByUserAndSessionId(userId, sessionId);
 	}
 
-	@Override
+    @Override
+    public List<Match> findValidByUser(String userId) {
+        return matchRepository.findValidByUser(userId);
+    }
+
+    @Override
 	public Match resetMatch(Match match) {
 		match.setValid(false);
 		for(Attempt a : match.getAttempts())
@@ -102,6 +107,6 @@ public class MatchServiceImpl implements MatchService{
 		matchRepository.save(match);
 		return match;
 	}
-	
-	
+
+
 }

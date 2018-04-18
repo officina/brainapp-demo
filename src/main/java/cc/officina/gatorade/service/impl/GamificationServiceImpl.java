@@ -3,7 +3,6 @@ package cc.officina.gatorade.service.impl;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MailService;
 import cc.playoff.sdk.PlayOff;
-import cc.playoff.sdk.PlayOff.PlayOffException;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Session;
@@ -11,7 +10,6 @@ import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 import cc.officina.gatorade.repository.SessionRepository;
 
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +57,7 @@ public class GamificationServiceImpl implements GamificationService{
         this.mailService = mailService;
         this.attemptRepository = attemptRepository;
     }
-    
+
     @PostConstruct
 	public void init() {
 	   log.info("GamificationService init for " + poDomain);
@@ -74,7 +72,7 @@ public class GamificationServiceImpl implements GamificationService{
 	@Override
 	public void runAction(Match match)
 	{
-		try 
+		try
 		{
 			if(checkMatchValidity(match))
 			{
@@ -84,7 +82,7 @@ public class GamificationServiceImpl implements GamificationService{
 			{
 				devilryOnMatch(match);
 			}
-			
+
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("player_id", match.getUserId());
 			LinkedTreeMap<String, Object> requestBody = getRequestByType(match);
@@ -112,7 +110,7 @@ public class GamificationServiceImpl implements GamificationService{
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void runResetAction(Match match) {
 		try {
@@ -139,7 +137,7 @@ public class GamificationServiceImpl implements GamificationService{
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private LinkedTreeMap<String, Object> getRequestByType(Match match) {
@@ -168,7 +166,7 @@ public class GamificationServiceImpl implements GamificationService{
 		return result;
 	}
 
-	private LinkedTreeMap<String, Object> paramsPerPointGame(Match match) {	
+	private LinkedTreeMap<String, Object> paramsPerPointGame(Match match) {
 		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
 		HashMap<String,Object> variables = new HashMap<String,Object>();
 		variables.put("punteggio", match.getMaxScore());
@@ -179,8 +177,8 @@ public class GamificationServiceImpl implements GamificationService{
 		log.info("Points to playoff: " + match.getMaxScore());
 		return result;
 	}
-	
-	private LinkedTreeMap<String, Object> paramsPerMinPointGame(Match match) {	
+
+	private LinkedTreeMap<String, Object> paramsPerMinPointGame(Match match) {
 		LinkedTreeMap<String, Object> result = new LinkedTreeMap<String, Object>();
 		HashMap<String,Object> variables = new HashMap<String,Object>();
 		variables.put("punteggio", match.getMinScore());
@@ -191,11 +189,11 @@ public class GamificationServiceImpl implements GamificationService{
 		log.info("Points to playoff: " + match.getMinScore());
 		return result;
 	}
-	
+
 	@Override
 	@Transactional
 	public void elaborate(Session s) {
-		
+
 		log.info("Elaboration of session with id = " + s.getId() + " - START");
 		s.setElaborated(true);
 		sessionRepository.save(s);
@@ -209,14 +207,14 @@ public class GamificationServiceImpl implements GamificationService{
 			int index = new Random().nextInt(matches.size());
 			Match randomMatch = matches.get(index);
 			//aggiungo solo se effettivamente lo user ha eseguito almeno una giocata ed il match è valido
-			if(!randomMatch.getValid())
+			if(!randomMatch.isValid())
 				log.info("Match not valid");
-			if(randomMatch.getAttempts().size() > 0 && randomMatch.getValid() && checkPOUser(randomMatch) && checkMatchValidity(randomMatch))
+			if(randomMatch.getAttempts().size() > 0 && randomMatch.isValid() && checkPOUser(randomMatch) && checkMatchValidity(randomMatch))
 				samples.put(randomMatch.getUserId(), randomMatch);
 			matches.remove(index);
 		}
 //		int numPlayer = 1;
-		
+
 		for(Match match : samples.values())
 		{
 //			String newId = match.getSession().getPoRoot()+"_"+String.format("%02d", numPlayer);
@@ -232,7 +230,7 @@ public class GamificationServiceImpl implements GamificationService{
 		matchRepository.save(samples.values());
 		log.info("Elaboration of session with id = " + s.getId() + " - END");
 	}
-	// 
+	//
 	@Override
 	@Transactional
 	public void elaboratePending(ZonedDateTime now) {
@@ -241,9 +239,9 @@ public class GamificationServiceImpl implements GamificationService{
 		{
 			elaborate(s);
 		}
-		
+
 	}
-	
+
 	private boolean checkPOUser(Match match) {
 		Object response = null;
 		HashMap<String, String> params = new HashMap<String, String>();
@@ -270,7 +268,7 @@ public class GamificationServiceImpl implements GamificationService{
 			return false;
 		}
 	}
-	
+
 	/*
 	 * UN MATCH VIENE RITENUTO VALIDO QUANDO (determinato con Milani il 19/09/2017):
 	 * NEL CASO MINPOINT: se il punteggio e non nullo e diverso da zero
@@ -295,12 +293,12 @@ public class GamificationServiceImpl implements GamificationService{
 					flag = false;
 				break;
 		}
-		
+
 		if(!flag)
 		{
 			mailService.sendMatchNotValidAlert(match, "Anomalia nei punteggi");
 		}
-		
+
 		return flag;
 	}
 
@@ -309,7 +307,7 @@ public class GamificationServiceImpl implements GamificationService{
 		log.info("Rielaborate session");
 		for(Match m : session.getMatches())
 		{
-			System.out.println("Match con id = " + m.getId() + " e flag " + m.getUsedToPO());
+			System.out.println("Match con id = " + m.getId() + " e flag " + m.isUsedToPO());
 			if(m.isUsedToPO())
 			{
 				String newId = m.getSession().getPoRoot();
@@ -319,11 +317,11 @@ public class GamificationServiceImpl implements GamificationService{
 				runAction(m);
 				m.setUserId(oldId);
 			}
-			System.out.println("DOPO - Match con id = " + m.getId() + " e flag " + m.getUsedToPO());
+			System.out.println("DOPO - Match con id = " + m.getId() + " e flag " + m.isUsedToPO());
 		}
-		
+
 	}
-	
+
 	private void devilryOnMatch(Match match) {
 		switch (match.getGame().getType())
 		{
@@ -342,6 +340,6 @@ public class GamificationServiceImpl implements GamificationService{
 			case LEVEL:
 				break;
 		}
-		
+
 	}
 }

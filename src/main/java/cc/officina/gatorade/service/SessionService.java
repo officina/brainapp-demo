@@ -48,14 +48,21 @@ public interface SessionService {
 	public boolean validateSessionAndUser(String extid, String playerid, Long gameid);
 
 	public Session findOneByExtId(String extid);
-	
+
 	public Session findOneByExtId(String extid, Long gameid);
 
 	public Session saveAndSchedule(Game game, Session session);
-	
+
 	public void elaborate(Session session);
-	
+
 	public List<Session> findPending(ZonedDateTime now);
+
+    /**
+     * Find all {@link Session} matching the given {@code labId}
+     * @param labId id of the lab
+     * @return a list of {@link Session}
+     */
+    List<Session> findAllByLabId(String labId);
 
 	public void rielaborate(Session session);
 }

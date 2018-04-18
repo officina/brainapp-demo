@@ -47,5 +47,12 @@ public interface MatchService {
     void delete(Long id);
     public List<Match> findByUserAndId(String userId, Long id);
 
+    /**
+     * Find valid Match matching the given user id
+     * @param userId id of the user
+     * @return list of valid match for the user
+     */
+    List<Match> findValidByUser(String userId);
+
 	public Match resetMatch(Match match);
 }
