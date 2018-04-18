@@ -1,14 +1,10 @@
 package cc.officina.gatorade.service.impl;
 
+import cc.officina.gatorade.domain.*;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
-import cc.officina.gatorade.domain.Attempt;
-import cc.officina.gatorade.domain.Game;
-import cc.officina.gatorade.domain.Match;
-import cc.officina.gatorade.domain.MatchTemplate;
-import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.GameRepository;
 import cc.officina.gatorade.repository.MatchRepository;
@@ -196,7 +192,16 @@ public class GameServiceImpl implements GameService{
 //			attemptRepository.saveAndFlush(lastAttempt);
 		}
 		match.setStop(now);
-		match.setElaborated(true);
+        match.setBestLevel(match.getMaxLevel());
+        if (match.getGame().getType() == GameType.MINPOINT){
+            match.setBestScore(Long.parseLong(match.getMinScore()));
+        }else if(match.getGame().getType() == GameType.POINT){
+            match.setBestScore(Long.valueOf(match.getMaxScore()));
+        }else{
+
+        }
+
+        match.setElaborated(true);
 		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 		matchRepository.saveAndFlush(match);
 		gamificationService.runAction(match);
