@@ -1,5 +1,6 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.service.dto.MatchDTO;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Report;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -175,9 +177,13 @@ public class MatchResource {
 
     @GetMapping(value = "/matches/by-user/{userId}")
     @Timed
-    public ResponseEntity<List<Match>> matchByUser(@PathVariable String userId){
+    public ResponseEntity<List<MatchDTO>> matchByUser(@PathVariable String userId){
         log.debug("REST request valid Match for user id: ", userId);
-        List<Match> match = matchService.findValidByUser(userId);
-        return ResponseEntity.ok(match);
+        List<Match> matchs = matchService.findValidByUser(userId);
+        List<MatchDTO> matchDTOS = new ArrayList<MatchDTO>();
+        for (Match match : matchs){
+            matchDTOS.add(new MatchDTO(match, match.getSession()));
+        }
+        return ResponseEntity.ok(matchDTOS);
     }
 }

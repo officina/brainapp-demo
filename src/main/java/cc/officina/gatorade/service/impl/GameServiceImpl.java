@@ -197,8 +197,6 @@ public class GameServiceImpl implements GameService{
             match.setBestScore(Long.parseLong(match.getMinScore()));
         }else if(match.getGame().getType() == GameType.POINT){
             match.setBestScore(Long.valueOf(match.getMaxScore()));
-        }else{
-
         }
 
         match.setElaborated(true);
