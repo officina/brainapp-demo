@@ -3,6 +3,8 @@ package cc.officina.gatorade.service.impl;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.service.SessionService;
+import cc.officina.gatorade.service.dto.MatchDTO;
+import cc.officina.gatorade.service.dto.SessionDTO;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Session;
@@ -15,8 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
+
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,9 +41,10 @@ public class SessionServiceImpl implements SessionService{
     private final SessionRepository sessionRepository;
     private final GamificationService gamificationService;
     private final MatchService matchService;
-    
-    private final int numUsers = 5; 
-    	
+    @Autowired
+    private EntityManager entityManager;
+    private final int numUsers = 5;
+    private ModelMapper modelMapper = new ModelMapper();
     public SessionServiceImpl(SessionRepository sessionRepository, GamificationService gamificationService, MatchService matchService) {
         this.sessionRepository = sessionRepository;
         this.gamificationService = gamificationService;
@@ -154,5 +161,41 @@ public class SessionServiceImpl implements SessionService{
 	@Override
 	public void rielaborate(Session session) {
 		gamificationService.riElaborate(session);
+	}
+
+	@Override
+	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs)
+	{
+		String query = "select s from Session s where 1 = 2 ";
+		for(String s : labs)
+		{
+			query = query + "or s.poRoot = '"+ s + "_aggregate'";
+		}
+		
+		List<Session> sessions = entityManager.createQuery(query).getResultList();
+		List<SessionDTO> sessionDtos = new ArrayList<SessionDTO>();
+		for(Session s : sessions)
+		{
+			SessionDTO sessionDto = modelMapper.map(s, SessionDTO.class);
+			sessionDtos.add(sessionDto);
+		}
+		
+		List<Match> matches = matchService.getMatchesByUserId(userId);
+		Map<Long, Match> map = new HashMap<Long, Match>();
+		for(Match m : matches)
+		{
+			map.put(m.getSession().getId(), m);
+		}
+		
+		for(SessionDTO s : sessionDtos)
+		{
+			Match temp = map.get(s.getId());
+			if(temp != null)
+			{
+				s.setValidMatch(modelMapper.map(temp, MatchDTO.class));
+			}
+		}
+		
+		return sessionDtos;
 	}
 }

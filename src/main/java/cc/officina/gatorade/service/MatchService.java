@@ -48,4 +48,6 @@ public interface MatchService {
     public List<Match> findByUserAndId(String userId, Long id);
 
 	public Match resetMatch(Match match);
+
+	public List<Match> getMatchesByUserId(String userId);
 }

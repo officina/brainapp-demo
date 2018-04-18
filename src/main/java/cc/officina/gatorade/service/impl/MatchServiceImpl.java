@@ -102,6 +102,12 @@ public class MatchServiceImpl implements MatchService{
 		matchRepository.save(match);
 		return match;
 	}
+
+	@Override
+	public List<Match> getMatchesByUserId(String userId)
+	{
+		return matchRepository.findByUserId(userId);
+	}
 	
 	
 }

@@ -27,5 +27,8 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
 	
 	@Query("select m from Match m where m.session.id=:sessionId and m.userId = :userId")
 	public List<Match> findByUserAndSessionId(@Param("userId")String userId, @Param("sessionId")Long sessionId);
+	
+	@Query("select m from Match m where m.userId = :userId and m.valid = true")
+	public List<Match> findByUserId(@Param("userId")String userId);
     
 }

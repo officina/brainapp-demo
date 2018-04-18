@@ -2,6 +2,7 @@ package cc.officina.gatorade.service;
 
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Session;
+import cc.officina.gatorade.service.dto.SessionDTO;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -58,4 +59,6 @@ public interface SessionService {
 	public List<Session> findPending(ZonedDateTime now);
 
 	public void rielaborate(Session session);
+
+	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs);
 }

@@ -6,6 +6,7 @@ import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.SessionService;
+import cc.officina.gatorade.service.dto.SessionDTO;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -22,9 +23,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 
 /**
  * REST controller for managing Session.
@@ -197,5 +199,12 @@ public class SessionResource {
             .body(null);
     }
     
+    @GetMapping("/sessions/user/{userId}/labs/{labs}")
+    @Timed
+    public ResponseEntity<List<SessionDTO>> getUserLabsSession(@PathVariable String userId, @PathVariable String labs) {
+        log.debug("REST request to get Sessions for user " + userId + " and labs " + labs);
+        List<SessionDTO> sessionDTOs = sessionService.getUserLabsSession(userId, Arrays.asList(labs.split("\\s*,\\s*")));
+        return new ResponseEntity<>(sessionDTOs, null, HttpStatus.OK);
+    }
     
 }
