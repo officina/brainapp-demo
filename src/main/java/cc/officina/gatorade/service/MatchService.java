@@ -62,4 +62,6 @@ public interface MatchService {
      * @return list of valid match for the user
      */
 	public List<Match> getMatchesByUserId(String userId);
+
+	public void deletePlayerActivities(String userId);
 }

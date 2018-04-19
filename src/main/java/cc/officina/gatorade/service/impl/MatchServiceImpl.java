@@ -106,4 +106,13 @@ public class MatchServiceImpl implements MatchService{
 		return matchRepository.findValidByUserId(userId);
 	}
 
+	@Override
+	public void deletePlayerActivities(String userId)
+	{
+		//si presuppone che il player andrà cancellato su playoff quindi non eseguo le chiamate per resettare i punteggi
+		matchRepository.invalidateByUserId(userId);
+		attemptRepository.invalidateByUserId(userId);
+		
+	}
+
 }

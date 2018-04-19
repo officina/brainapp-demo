@@ -4,6 +4,7 @@ import cc.officina.gatorade.domain.Attempt;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 
 
 /**
@@ -12,5 +13,9 @@ import org.springframework.data.jpa.repository.*;
 @SuppressWarnings("unused")
 @Repository
 public interface AttemptRepository extends JpaRepository<Attempt,Long> {
+	
+	@Modifying
+	@Query("update Attempt a set a.valid = false where a.match.id in (select m.id from Match m where m.userId = :userId)")
+	public void invalidateByUserId(@Param("userId")String userId);
     
 }

@@ -30,4 +30,8 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
 
 	@Query("select m from Match m where m.userId = :userId and m.valid = true")
 	public List<Match> findValidByUserId(@Param("userId")String userId);
+	
+	@Modifying
+	@Query("update Match m set m.valid = false where m.userId = :userId")
+	public void invalidateByUserId(@Param("userId")String userId);
 }

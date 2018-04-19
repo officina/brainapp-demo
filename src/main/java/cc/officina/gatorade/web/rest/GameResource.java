@@ -2,12 +2,14 @@ package cc.officina.gatorade.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
+import cc.officina.gatorade.config.Constants;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.MatchTemplate;
 import cc.officina.gatorade.domain.Request;
 import cc.officina.gatorade.domain.Session;
+import cc.officina.gatorade.security.AuthoritiesConstants;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
@@ -30,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 

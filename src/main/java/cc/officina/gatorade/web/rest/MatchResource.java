@@ -174,4 +174,12 @@ public class MatchResource {
         reportService.matchError(id, userid, request);
         return ResponseEntity.ok().build();
     }
+    
+    @DeleteMapping("/player-activities/user/{userId}")
+    @Timed
+    public ResponseEntity<Void> deletePlayerActivities(@PathVariable String userId) {
+        log.debug("REST request to delete player activities: {}", userId);
+        matchService.deletePlayerActivities(userId);
+        return ResponseEntity.ok().build();
+    }
 }
