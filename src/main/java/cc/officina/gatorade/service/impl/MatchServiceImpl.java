@@ -89,11 +89,6 @@ public class MatchServiceImpl implements MatchService{
 	}
 
     @Override
-    public List<Match> findValidByUser(String userId) {
-        return matchRepository.findValidByUserId(userId);
-    }
-
-    @Override
 	public Match resetMatch(Match match) {
 		match.setValid(false);
 		for(Attempt a : match.getAttempts())

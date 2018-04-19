@@ -45,16 +45,21 @@ public interface MatchService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * Find Matches by user id and session id
+     * @param userId id of the user
+     * @param id id of the session
+     * @return list of matches
+     */
     public List<Match> findByUserAndId(String userId, Long id);
+
+	public Match resetMatch(Match match);
 
     /**
      * Find valid Match matching the given user id
      * @param userId id of the user
      * @return list of valid match for the user
      */
-    List<Match> findValidByUser(String userId);
-
-	public Match resetMatch(Match match);
-
 	public List<Match> getMatchesByUserId(String userId);
 }

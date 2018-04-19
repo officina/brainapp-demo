@@ -1,12 +1,6 @@
 package cc.officina.gatorade.service.dto;
 
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.Column;
-
-import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 
 public class MatchDTO
@@ -31,7 +25,11 @@ public class MatchDTO
 
     private Long matchToken;
 
-	public Long getId()
+    private String bestLevel;
+
+    private Long bestScore;
+
+    public Long getId()
 	{
 		return id;
 	}
@@ -131,11 +129,27 @@ public class MatchDTO
 		this.matchToken = matchToken;
 	}
 
+    public String getBestLevel() {
+        return bestLevel;
+    }
+
+    public void setBestLevel(String bestLevel) {
+        this.bestLevel = bestLevel;
+    }
+
+    public Long getBestScore() {
+        return bestScore;
+    }
+
+    public void setBestScore(Long bestScore) {
+        this.bestScore = bestScore;
+    }
+
     public MatchDTO(){
         //empty constructor
     }
 
-    public MatchDTO(Long id, ZonedDateTime start, ZonedDateTime stop, Long diffLevel, String userId, ZonedDateTime lastStart, Long timeSpent, Boolean usedToPO, Boolean elaborated, Long matchToken) {
+    public MatchDTO(Long id, ZonedDateTime start, ZonedDateTime stop, Long diffLevel, String userId, ZonedDateTime lastStart, Long timeSpent, Boolean usedToPO, Boolean elaborated, Long matchToken, String bestLevel, Long bestScore) {
         this.id = id;
         this.start = start;
         this.stop = stop;
@@ -146,9 +160,11 @@ public class MatchDTO
         this.usedToPO = usedToPO;
         this.elaborated = elaborated;
         this.matchToken = matchToken;
+        this.bestLevel = bestLevel;
+        this.bestScore = bestScore;
     }
 
     public MatchDTO(Match match) {
-        this(match.getId(), match.getStart(), match.getStop(), match.getDiffLevel(), match.getUserId(), match.getLastStart(), match.getTimeSpent(), match.isUsedToPO(), match.isElaborated(), match.getMatchToken());
+        this(match.getId(), match.getStart(), match.getStop(), match.getDiffLevel(), match.getUserId(), match.getLastStart(), match.getTimeSpent(), match.isUsedToPO(), match.isElaborated(), match.getMatchToken(), match.getBestLevel(), match.getBestScore());
     }
 }

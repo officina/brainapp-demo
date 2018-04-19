@@ -174,16 +174,4 @@ public class MatchResource {
         reportService.matchError(id, userid, request);
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping(value = "/matches/by-user/{userId}")
-    @Timed
-    public ResponseEntity<List<MatchDTO>> matchByUser(@PathVariable String userId){
-        log.debug("REST request valid Match for user id: ", userId);
-        List<Match> matchs = matchService.findValidByUser(userId);
-        List<MatchDTO> matchDTOS = new ArrayList<MatchDTO>();
-        for (Match match : matchs){
-            matchDTOS.add(new MatchDTO(match);
-        }
-        return ResponseEntity.ok(matchDTOS);
-    }
 }
