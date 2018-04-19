@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.persistence.EntityManager;
 
@@ -111,14 +110,14 @@ public class SessionServiceImpl implements SessionService{
 			return false;
 		}
 		List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
-		
+
 		if(matches == null || matches.size() == 0)
 			return true;
-		
+
 		for(Match match : matches)
 		{
 			//se esiste già un match la chiamata viene invaliata
-			if(match != null && match.getValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
+			if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
 			{
 				log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
 				return false;
@@ -134,7 +133,7 @@ public class SessionServiceImpl implements SessionService{
 	public Session findOneByExtId(String extSessionId) {
 		return sessionRepository.findByExtId(extSessionId);
 	}
-	
+
 	@Override
 	public Session findOneByExtId(String extid, Long gameid) {
 		return sessionRepository.findByExtId(extid, gameid);
@@ -152,7 +151,12 @@ public class SessionServiceImpl implements SessionService{
 		return sessionRepository.findPendingSessions(now);
 	}
 
-	@Override
+    @Override
+    public List<Session> findAllByLabId(String labId) {
+        return sessionRepository.findAllByLabId(labId);
+    }
+
+    @Override
 	@Transactional
 	public void elaborate(Session session) {
 		gamificationService.elaborate(session);
@@ -171,7 +175,7 @@ public class SessionServiceImpl implements SessionService{
 		{
 			query = query + "or s.poRoot = '"+ s + "_aggregate'";
 		}
-		
+
 		List<Session> sessions = entityManager.createQuery(query).getResultList();
 		List<SessionDTO> sessionDtos = new ArrayList<SessionDTO>();
 		for(Session s : sessions)
@@ -179,14 +183,14 @@ public class SessionServiceImpl implements SessionService{
 			SessionDTO sessionDto = modelMapper.map(s, SessionDTO.class);
 			sessionDtos.add(sessionDto);
 		}
-		
+
 		List<Match> matches = matchService.getMatchesByUserId(userId);
 		Map<Long, Match> map = new HashMap<Long, Match>();
 		for(Match m : matches)
 		{
 			map.put(m.getSession().getId(), m);
 		}
-		
+
 		for(SessionDTO s : sessionDtos)
 		{
 			Match temp = map.get(s.getId());
@@ -195,7 +199,7 @@ public class SessionServiceImpl implements SessionService{
 				s.setValidMatch(modelMapper.map(temp, MatchDTO.class));
 			}
 		}
-		
+
 		return sessionDtos;
 	}
 }

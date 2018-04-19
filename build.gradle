@@ -245,6 +245,15 @@ if (project.hasProperty('nodeInstall')) {
     }
 }
 
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        // ADD IT HERE
+        maven { url "https://jitpack.io" }
+    }
+}
+
 compileJava.dependsOn processResources
 processResources.dependsOn cleanResources,bootBuildInfo
 bootBuildInfo.mustRunAfter cleanResources

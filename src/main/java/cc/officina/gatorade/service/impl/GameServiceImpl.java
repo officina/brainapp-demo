@@ -1,14 +1,10 @@
 package cc.officina.gatorade.service.impl;
 
+import cc.officina.gatorade.domain.*;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
-import cc.officina.gatorade.domain.Attempt;
-import cc.officina.gatorade.domain.Game;
-import cc.officina.gatorade.domain.Match;
-import cc.officina.gatorade.domain.MatchTemplate;
-import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.GameRepository;
 import cc.officina.gatorade.repository.MatchRepository;
@@ -38,7 +34,7 @@ public class GameServiceImpl implements GameService{
     private final AttemptRepository attemptRepository;
     private final GamificationService gamificationService;
 
-    public GameServiceImpl(GameRepository gameRepository, MatchRepository matchRepository, 
+    public GameServiceImpl(GameRepository gameRepository, MatchRepository matchRepository,
     		AttemptRepository attemptRepository,GamificationService gamificationService) {
         this.gameRepository = gameRepository;
         this.matchRepository = matchRepository;
@@ -100,7 +96,7 @@ public class GameServiceImpl implements GameService{
 		//TODO verificare presenza match già aperti e relativa logica da implementare
 		Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
 		ZonedDateTime now = ZonedDateTime.now();
-		if(oldOne == null || !oldOne.getValid())
+		if(oldOne == null || !oldOne.isValid())
 		{
 			Match match = new Match();
 			match.setTemplate(template);
@@ -142,7 +138,7 @@ public class GameServiceImpl implements GameService{
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;
 	}
-	
+
 	@Override
 	public AttemptResponse updateAttemptScore(Game game, Attempt attempt, Long newScore, String newLevel) {
 		//TODO verificare presenza attempt già aperti e relativa logica da implementare
@@ -196,14 +192,21 @@ public class GameServiceImpl implements GameService{
 //			attemptRepository.saveAndFlush(lastAttempt);
 		}
 		match.setStop(now);
-		match.setElaborated(true);
+        match.setBestLevel(match.getMaxLevel());
+        if (match.getGame().getType() == GameType.MINPOINT){
+            match.setBestScore(Long.parseLong(match.getMinScore()));
+        }else if(match.getGame().getType() == GameType.POINT){
+            match.setBestScore(Long.valueOf(match.getMaxScore()));
+        }
+
+        match.setElaborated(true);
 		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 		matchRepository.saveAndFlush(match);
 		gamificationService.runAction(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;
 	}
-	
+
 	@Override
 	public MatchResponse endMatchRestore(Game game, Match match, Attempt lastAttempt, Long score, String level) {
 		ZonedDateTime now = ZonedDateTime.now();

@@ -1,14 +1,11 @@
 package cc.officina.gatorade.service.dto;
 
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import cc.officina.gatorade.domain.Game;
-import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.Session;
 
-public class SessionDTO
-{
-	private Long id;
+public class SessionDTO {
+    private Long id;
 
     private ZonedDateTime startDate;
 
@@ -21,7 +18,7 @@ public class SessionDTO
     private Boolean elaborated;
 
     private Game game;
-    
+
     private MatchDTO validMatch;
 
 	public Long getId()
@@ -103,5 +100,21 @@ public class SessionDTO
 	{
 		this.validMatch = validMatch;
 	}
-    
+
+    public SessionDTO(){
+        //empty constructor
+    }
+
+    public SessionDTO(Long id, ZonedDateTime startDate, ZonedDateTime endDate, String extId, String poRoot, Boolean elaborated) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.extId = extId;
+        this.poRoot = poRoot;
+        this.elaborated = elaborated;
+    }
+
+    public SessionDTO(Session session){
+        this(session.getId(), session.getStartDate(), session.getEndDate(), session.getExtId(), session.getPoRoot(), session.isElaborated());
+    }
 }

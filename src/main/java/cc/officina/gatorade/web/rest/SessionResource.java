@@ -162,7 +162,7 @@ public class SessionResource {
         sessionService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-    
+
     @PutMapping("/sessions/elaborate/{id}")
     @Timed
     @Transactional
@@ -181,7 +181,7 @@ public class SessionResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
             .body(null);
     }
-    
+
     @PutMapping("/sessions/ri-elaborate/{id}")
     @Timed
     @Transactional
@@ -198,7 +198,7 @@ public class SessionResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
             .body(null);
     }
-    
+
     @GetMapping("/sessions/user/{userId}/labs/{labs}")
     @Timed
     public ResponseEntity<List<SessionDTO>> getUserLabsSession(@PathVariable String userId, @PathVariable String labs) {
@@ -206,5 +206,14 @@ public class SessionResource {
         List<SessionDTO> sessionDTOs = sessionService.getUserLabsSession(userId, Arrays.asList(labs.split("\\s*,\\s*")));
         return new ResponseEntity<>(sessionDTOs, null, HttpStatus.OK);
     }
-    
+
+    @GetMapping("/sessions/by-lab/{id}")
+    @Timed
+    @Transactional
+    public ResponseEntity<List<Session>> getSessionsByLab(@PathVariable String id) {
+        log.debug("REST request active Sessions for Lab with id "+ id);
+        List<Session> sessions = sessionService.findAllByLabId(id);
+        return ResponseEntity.ok()
+            .body(sessions);
+    }
 }

@@ -130,6 +130,25 @@ public class MatchDTO
 	{
 		this.matchToken = matchToken;
 	}
-    
-    
+
+    public MatchDTO(){
+        //empty constructor
+    }
+
+    public MatchDTO(Long id, ZonedDateTime start, ZonedDateTime stop, Long diffLevel, String userId, ZonedDateTime lastStart, Long timeSpent, Boolean usedToPO, Boolean elaborated, Long matchToken) {
+        this.id = id;
+        this.start = start;
+        this.stop = stop;
+        this.diffLevel = diffLevel;
+        this.userId = userId;
+        this.lastStart = lastStart;
+        this.timeSpent = timeSpent;
+        this.usedToPO = usedToPO;
+        this.elaborated = elaborated;
+        this.matchToken = matchToken;
+    }
+
+    public MatchDTO(Match match) {
+        this(match.getId(), match.getStart(), match.getStop(), match.getDiffLevel(), match.getUserId(), match.getLastStart(), match.getTimeSpent(), match.isUsedToPO(), match.isElaborated(), match.getMatchToken());
+    }
 }

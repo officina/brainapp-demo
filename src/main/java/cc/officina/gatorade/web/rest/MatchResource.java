@@ -1,5 +1,6 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.service.dto.MatchDTO;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Report;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +46,7 @@ public class MatchResource {
     private final MatchService matchService;
     private final GamificationService gamificationService;
     private final ReportService reportService;
-    
+
     public MatchResource(MatchService matchService, GamificationService gamificationService, ReportService reportService) {
         this.matchService = matchService;
         this.gamificationService = gamificationService;
@@ -135,7 +137,7 @@ public class MatchResource {
         matchService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-    
+
     @PutMapping("/matches/{id}/reset")
     @Timed
     public ResponseEntity<Match> resetMatch(@PathVariable Long id) throws URISyntaxException {
@@ -150,7 +152,7 @@ public class MatchResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, match.getId().toString()))
             .body(result);
     }
-    
+
     @PostMapping(value = "/matches/{id}/report/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
     @Timed
     public ResponseEntity<Match> matchReport(@PathVariable Long id, @PathVariable String userid, @RequestBody ReportRequest request) throws URISyntaxException {
@@ -161,7 +163,7 @@ public class MatchResource {
         reportService.matchReport(id, userid, request);
         return ResponseEntity.ok().build();
     }
-    
+
     @PostMapping(value = "/matches/{id}/error/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
     @Timed
     public ResponseEntity<Match> matchError(@PathVariable Long id, @PathVariable String userid, @RequestBody ReportRequest request) throws URISyntaxException {
@@ -171,5 +173,17 @@ public class MatchResource {
         log.info("FINE ERROR userid = " + userid + " - match_id = " + id);
         reportService.matchError(id, userid, request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/matches/by-user/{userId}")
+    @Timed
+    public ResponseEntity<List<MatchDTO>> matchByUser(@PathVariable String userId){
+        log.debug("REST request valid Match for user id: ", userId);
+        List<Match> matchs = matchService.findValidByUser(userId);
+        List<MatchDTO> matchDTOS = new ArrayList<MatchDTO>();
+        for (Match match : matchs){
+            matchDTOS.add(new MatchDTO(match);
+        }
+        return ResponseEntity.ok(matchDTOS);
     }
 }
