@@ -1,0 +1,188 @@
+{
+	"id": "1e5ad5ba-664a-4af7-b965-588c14a7b391",
+	"name": "gatorade",
+	"description": "",
+	"auth": null,
+	"events": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f2f557ae-37ee-4a48-abe1-f185740d0a6d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6a0f217e-3943-4ac3-b5cb-e3734c0316f1",
+				"type": "text/javascript",
+				"exec": [
+					"var jsonData = JSON.parse(responseBody);",
+					"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+				]
+			}
+		}
+	],
+	"variables": [
+		{
+			"key": "domain",
+			"value": "http://localhost:8080/api",
+			"description": "",
+			"type": "text",
+			"disabled": false
+		},
+		{
+			"key": "collection_token",
+			"value": "{{token}}",
+			"description": "",
+			"type": "text",
+			"disabled": false
+		}
+	],
+	"order": [
+		"ddc4bded-d1af-4f0d-95a3-1088d6480dc5",
+		"f8a555e0-bb3c-44c3-aef9-4a4152b3588a",
+		"df642e34-35f9-43ac-bd29-2421bf8e733f",
+		"0c6d5421-885d-4432-a6a3-bc359aa713af"
+	],
+	"folders_order": [],
+	"folders": [],
+	"requests": [
+		{
+			"id": "0c6d5421-885d-4432-a6a3-bc359aa713af",
+			"name": "GET User Session",
+			"url": "http://18.194.143.29/api/sessions/user/:userId",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [
+				{
+					"key": "userId",
+					"value": "atomasse"
+				}
+			],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": null,
+			"headers": "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw\n",
+			"pathVariables": {
+				"userId": "atomasse"
+			}
+		},
+		{
+			"id": "ddc4bded-d1af-4f0d-95a3-1088d6480dc5",
+			"name": "authenticate",
+			"url": "http://18.194.143.29/api/authenticate",
+			"description": "Return the authorization token",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a9c6b380-c956-4163-b3b7-8b73c8c59b37",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+						]
+					}
+				}
+			],
+			"folder": null,
+			"rawModeData": "{\n\t\"username\": \"admin\",\n\t\"password\": \"Officina001\"\n}",
+			"headers": "Content-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "df642e34-35f9-43ac-bd29-2421bf8e733f",
+			"name": "GET Labs sessions",
+			"url": "http://18.194.143.29/api/sessions/labs/:labs",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [
+				{
+					"key": "labs",
+					"value": "my_generali_assistenza_clienti,post_vendita_vita"
+				}
+			],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": null,
+			"headers": "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw\n",
+			"pathVariables": {
+				"labs": "my_generali_assistenza_clienti,post_vendita_vita"
+			}
+		},
+		{
+			"id": "f8a555e0-bb3c-44c3-aef9-4a4152b3588a",
+			"name": "GET User Labs Session",
+			"url": "http://18.194.143.29/api/sessions/user/:userId/labs/:labs",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [
+				{
+					"key": "userId",
+					"value": "atomasse"
+				},
+				{
+					"key": "labs",
+					"value": "my_generali_assistenza_clienti,post_vendita_vita"
+				}
+			],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": null,
+			"headers": "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw\n",
+			"pathVariables": {
+				"userId": "atomasse",
+				"labs": "my_generali_assistenza_clienti,post_vendita_vita"
+			}
+		}
+	]
+}
