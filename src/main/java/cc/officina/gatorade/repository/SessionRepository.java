@@ -31,4 +31,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
     @Query("select s from Session s where s.poRoot = :labId")
     public List<Session> findAllByLabId(@Param("labId")String labId);
+
+    @Query("select s from Session s where s.id in (select session.id from Match where userId = :userId)")
+    public List<Session> findAllByUserId(@Param("userId")String userId);
 }

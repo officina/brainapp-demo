@@ -1,5 +1,7 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.service.MatchService;
 import com.codahale.metrics.annotation.Timed;
 
 import cc.officina.gatorade.domain.Game;
@@ -23,10 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * REST controller for managing Session.
@@ -203,17 +202,32 @@ public class SessionResource {
     @Timed
     public ResponseEntity<List<SessionDTO>> getUserLabsSession(@PathVariable String userId, @PathVariable String labs) {
         log.debug("REST request to get Sessions for user " + userId + " and labs " + labs);
+        //TODO aggiungere controlli su validità stringa
         List<SessionDTO> sessionDTOs = sessionService.getUserLabsSession(userId, Arrays.asList(labs.split("\\s*,\\s*")));
         return new ResponseEntity<>(sessionDTOs, null, HttpStatus.OK);
     }
 
-    @GetMapping("/sessions/by-lab/{id}")
+    @GetMapping("/sessions/labs/{labs}")
     @Timed
     @Transactional
-    public ResponseEntity<List<Session>> getSessionsByLab(@PathVariable String id) {
-        log.debug("REST request active Sessions for Lab with id "+ id);
-        List<Session> sessions = sessionService.findAllByLabId(id);
+    public ResponseEntity<List<SessionDTO>> getSessionsByLab(@PathVariable String labs) {
+        log.debug("REST request active Sessions for Labs with ids "+ labs);
+        //TODO aggiungere controlli su validità stringa
+        List<Session> sessions = sessionService.getSessionsByLabs(Arrays.asList(labs.split("\\s*,\\s*")));
+        List<SessionDTO> sessionDtos = sessionService.mapSessionsToDTOS(sessions);
         return ResponseEntity.ok()
-            .body(sessions);
+            .body(sessionDtos);
+    }
+
+    @GetMapping("/sessions/user/{userId}")
+    @Timed
+    @Transactional
+    public ResponseEntity<List<SessionDTO>> getSessionsByUser(@PathVariable String userId) {
+        log.debug("REST request active Sessions for User with id "+ userId);
+        List<Session> sessions = sessionService.findAllByUserId(userId);
+        List<SessionDTO> sessionDtos = sessionService.mapSessionsToDTOS(sessions);
+        sessionDtos = sessionService.setValidMatchToSessionDtos(userId, sessionDtos);
+        return ResponseEntity.ok()
+            .body(sessionDtos);
     }
 }

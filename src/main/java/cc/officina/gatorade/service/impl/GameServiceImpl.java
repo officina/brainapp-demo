@@ -201,8 +201,8 @@ public class GameServiceImpl implements GameService{
 
         match.setElaborated(true);
 		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
-		matchRepository.saveAndFlush(match);
-		gamificationService.runAction(match);
+        gamificationService.runAction(match);
+        matchRepository.saveAndFlush(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;
 	}

@@ -170,36 +170,52 @@ public class SessionServiceImpl implements SessionService{
 	@Override
 	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs)
 	{
-		String query = "select s from Session s where 1 = 2 ";
-		for(String s : labs)
-		{
-			query = query + "or s.poRoot = '"+ s + "_aggregate'";
-		}
-
-		List<Session> sessions = entityManager.createQuery(query).getResultList();
-		List<SessionDTO> sessionDtos = new ArrayList<SessionDTO>();
-		for(Session s : sessions)
-		{
-			SessionDTO sessionDto = modelMapper.map(s, SessionDTO.class);
-			sessionDtos.add(sessionDto);
-		}
-
-		List<Match> matches = matchService.getMatchesByUserId(userId);
-		Map<Long, Match> map = new HashMap<Long, Match>();
-		for(Match m : matches)
-		{
-			map.put(m.getSession().getId(), m);
-		}
-
-		for(SessionDTO s : sessionDtos)
-		{
-			Match temp = map.get(s.getId());
-			if(temp != null)
-			{
-				s.setValidMatch(modelMapper.map(temp, MatchDTO.class));
-			}
-		}
-
+		List<Session> sessions = getSessionsByLabs(labs);
+        List<SessionDTO> sessionDtos = mapSessionsToDTOS(sessions);
+		sessionDtos = setValidMatchToSessionDtos(userId, sessionDtos);
 		return sessionDtos;
 	}
+
+	@Override
+	public List<Session> getSessionsByLabs(List<String> labs){
+        String query = "select s from Session s where 1 = 2 ";
+        for(String s : labs)
+        {
+            query = query + "or s.poRoot = '"+ s + "_aggregate'";
+        }
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<Session> findAllByUserId(String userId) {
+        return sessionRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public List<SessionDTO> mapSessionsToDTOS(List<Session> sessions){
+	    List<SessionDTO> sessionDtos = new ArrayList<SessionDTO>();
+        for(Session s : sessions) {
+            SessionDTO sessionDto = modelMapper.map(s, SessionDTO.class);
+            sessionDtos.add(sessionDto);
+        }
+        return sessionDtos;
+    }
+
+    @Override
+    public List<SessionDTO> setValidMatchToSessionDtos(String userId, List<SessionDTO> sessionDtos){
+        List<Match> matches = matchService.getMatchesByUserId(userId);
+        Map<Long, Match> map = new HashMap<Long, Match>();
+        for(Match m : matches) {
+            map.put(m.getSession().getId(), m);
+        }
+
+        for(SessionDTO s : sessionDtos) {
+            Match temp = map.get(s.getId());
+            if(temp != null)
+            {
+                s.setValidMatch(modelMapper.map(temp, MatchDTO.class));
+            }
+        }
+        return sessionDtos;
+    }
 }

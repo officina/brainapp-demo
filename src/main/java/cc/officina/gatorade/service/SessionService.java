@@ -68,4 +68,12 @@ public interface SessionService {
 	public void rielaborate(Session session);
 
 	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs);
+
+	public List<Session> getSessionsByLabs(List<String> labs);
+
+    List<Session> findAllByUserId(String userId);
+
+    List<SessionDTO> mapSessionsToDTOS(List<Session> sessions);
+
+    List<SessionDTO> setValidMatchToSessionDtos(String userId, List<SessionDTO> sessionDtos);
 }

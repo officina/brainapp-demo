@@ -3,6 +3,7 @@ package cc.officina.gatorade.service.dto;
 import java.time.ZonedDateTime;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Session;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class SessionDTO {
     private Long id;
@@ -20,6 +21,10 @@ public class SessionDTO {
     private Game game;
 
     private MatchDTO validMatch;
+
+    private Boolean ended = false;
+
+    private Boolean played = false;
 
 	public Long getId()
 	{
@@ -96,7 +101,33 @@ public class SessionDTO {
 		return validMatch;
 	}
 
-	public void setValidMatch(MatchDTO validMatch)
+    public void setEnded(Boolean ended) {
+        this.ended = ended;
+    }
+
+    public Boolean getPlayed() {
+        if (this.validMatch != null){
+            this.played = true;
+        }else{
+            this.played = false;
+        }
+        return this.played;
+    }
+
+    public void setPlayed(Boolean played) {
+        this.played = played;
+    }
+
+    public Boolean getEnded(){
+	    if (ZonedDateTime.now().isAfter(this.startDate) && ZonedDateTime.now().isBefore(this.endDate)){
+	        this.ended = false;
+        }else{
+            this.ended = true;
+        }
+        return this.ended;
+    }
+
+    public void setValidMatch(MatchDTO validMatch)
 	{
 		this.validMatch = validMatch;
 	}
