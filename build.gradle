@@ -119,7 +119,7 @@ if (project.hasProperty('prometheus')) {
 }
 
 group = 'cc.officina.gatorade'
-version = '1.7.14'
+version = '2.1.0'
 
 description = ''
 
@@ -218,7 +218,7 @@ dependencies {
     }
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
     compile group: 'org.modelmapper', name: 'modelmapper', version: '0.7.5'
-    
+
 }
 
 clean {
