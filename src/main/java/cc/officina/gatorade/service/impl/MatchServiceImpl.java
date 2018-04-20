@@ -4,12 +4,9 @@ import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
-import cc.officina.gatorade.domain.Report;
-import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,7 +28,7 @@ public class MatchServiceImpl implements MatchService{
 
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
-    
+
     public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GamificationService gamificationService) {
         this.matchRepository = matchRepository;
         this.attemptRepository = attemptRepository;
@@ -91,7 +88,7 @@ public class MatchServiceImpl implements MatchService{
 		return matchRepository.findByUserAndSessionId(userId, sessionId);
 	}
 
-	@Override
+    @Override
 	public Match resetMatch(Match match) {
 		match.setValid(false);
 		for(Attempt a : match.getAttempts())
@@ -102,6 +99,20 @@ public class MatchServiceImpl implements MatchService{
 		matchRepository.save(match);
 		return match;
 	}
-	
-	
+
+	@Override
+	public List<Match> getMatchesByUserId(String userId)
+	{
+		return matchRepository.findValidByUserId(userId);
+	}
+
+	@Override
+	public void deletePlayerActivities(String userId)
+	{
+		//si presuppone che il player andrà cancellato su playoff quindi non eseguo le chiamate per resettare i punteggi
+		matchRepository.invalidateByUserId(userId);
+		attemptRepository.invalidateByUserId(userId);
+		
+	}
+
 }

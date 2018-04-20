@@ -217,6 +217,8 @@ dependencies {
         exclude group: 'com.vaadin.external.google', module: 'android-json'
     }
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
+    compile group: 'org.modelmapper', name: 'modelmapper', version: '0.7.5'
+    
 }
 
 clean {
@@ -240,6 +242,15 @@ if (project.hasProperty('nodeInstall')) {
         npmVersion = "${npm_version}"
         yarnVersion = "${yarn_version}"
         download = true
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        // ADD IT HERE
+        maven { url "https://jitpack.io" }
     }
 }
 

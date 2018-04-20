@@ -16,18 +16,22 @@ import org.springframework.data.repository.query.Param;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface SessionRepository extends JpaRepository<Session,Long> {
-	
-	@Query("select s from Session s where s.extId = :extid")
-	public Session findByExtId(@Param("extid")String extid);
-	
-	@Query("select s from Session s where s.extId = :extid and s.game.id = :gameid")
-	public Session findByExtId(@Param("extid")String extid, @Param("gameid")Long gameid);
-	
-	@Query("select s from Session s where s.extId = :extid and s.endDate > :now and s.startDate < :now and s.game.id = :gameid and s.elaborated = false")
-	public Session findValidByExtId(@Param("extid")String extid,@Param("now")ZonedDateTime now,@Param("gameid") Long gameid);
-	
-	@Query("select s from Session s where s.elaborated = false and s.endDate < :now")
-	public List<Session> findPendingSessions(@Param("now")ZonedDateTime now);
+public interface SessionRepository extends JpaRepository<Session, Long> {
+    @Query("select s from Session s where s.extId = :extid")
+    public Session findByExtId(@Param("extid")String extid);
 
+    @Query("select s from Session s where s.extId = :extid and s.game.id = :gameid")
+    public Session findByExtId(@Param("extid")String extid, @Param("gameid")Long gameid);
+
+    @Query("select s from Session s where s.extId = :extid and s.endDate > :now and s.startDate < :now and s.game.id = :gameid and s.elaborated = false")
+    public Session findValidByExtId(@Param("extid")String extid,@Param("now")ZonedDateTime now,@Param("gameid") Long gameid);
+
+    @Query("select s from Session s where s.elaborated = false and s.endDate < :now")
+    public List<Session> findPendingSessions(@Param("now")ZonedDateTime now);
+
+    @Query("select s from Session s where s.poRoot = :labId")
+    public List<Session> findAllByLabId(@Param("labId")String labId);
+
+    @Query("select s from Session s where s.id in (select session.id from Match where userId = :userId)")
+    public List<Session> findAllByUserId(@Param("userId")String userId);
 }
