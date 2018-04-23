@@ -84,7 +84,7 @@
 		},
 		{
 			"id": "ddc4bded-d1af-4f0d-95a3-1088d6480dc5",
-			"name": "authenticate",
+			"name": "Authenticate",
 			"url": "http://18.194.143.29/api/authenticate",
 			"description": "Return the authorization token",
 			"data": [],
@@ -113,7 +113,7 @@
 				}
 			],
 			"folder": null,
-			"rawModeData": "{\n\t\"username\": \"admin\",\n\t\"password\": \"Officina001\"\n}",
+			"rawModeData": "{\n\t\"username\": \"reply\",\n\t\"password\": \"&#h#L1UE0^BP\"\n}",
 			"headers": "Content-Type: application/json\n",
 			"pathVariables": {}
 		},
