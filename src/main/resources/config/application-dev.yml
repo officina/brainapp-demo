@@ -31,9 +31,9 @@ spring:
             #password:
 
             #LOCALE NICK
-            url: jdbc:postgresql://localhost:5432/gatorade005
-            username: nowr
-            password:
+            #url: jdbc:postgresql://localhost:5432/gatorade005
+            #username: nowr
+            #password:
 
             #STAGING
             #url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade_stag
@@ -46,9 +46,9 @@ spring:
             #password: 695f78b043529198eb1aa92bda58f145522c31d0c49718d7d0ef4086d7e03f9f
 
             #LOCALE GAZZ
-            #url: jdbc:postgresql://localhost:5432/gatorade
-            #username: gatorade
-            #password:
+            url: jdbc:postgresql://localhost:5432/gatorade
+            username: gatorade
+            password:
     h2:
         console:
             enabled: false
