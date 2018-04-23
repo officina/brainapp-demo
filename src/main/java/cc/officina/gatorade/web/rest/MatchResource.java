@@ -1,5 +1,6 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.service.dto.MatchDTO;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
@@ -174,12 +175,23 @@ public class MatchResource {
         reportService.matchError(id, userid, request);
         return ResponseEntity.ok().build();
     }
-    
+
     @DeleteMapping("/player-activities/user/{userId}")
     @Timed
     public ResponseEntity<Void> deletePlayerActivities(@PathVariable String userId) {
         log.debug("REST request to delete player activities: {}", userId);
         matchService.deletePlayerActivities(userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/match/{matchId}/update-with-local", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @Timed
+    public ResponseEntity syncLocalMatch(@PathVariable Long matchId, @RequestBody List<Attempt> attempts){
+        Match match = matchService.findOne(matchId);
+        if (match == null) {
+            return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
+        }
+        //controllo la lista di Attempt
         return ResponseEntity.ok().build();
     }
 }
