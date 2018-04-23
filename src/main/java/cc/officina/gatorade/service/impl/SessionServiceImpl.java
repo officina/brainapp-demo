@@ -3,6 +3,8 @@ package cc.officina.gatorade.service.impl;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.service.SessionService;
+import cc.officina.gatorade.service.dto.MatchDTO;
+import cc.officina.gatorade.service.dto.SessionDTO;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Session;
@@ -13,10 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
+import javax.persistence.EntityManager;
+
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,9 +40,10 @@ public class SessionServiceImpl implements SessionService{
     private final SessionRepository sessionRepository;
     private final GamificationService gamificationService;
     private final MatchService matchService;
-    
-    private final int numUsers = 5; 
-    	
+    @Autowired
+    private EntityManager entityManager;
+    private final int numUsers = 5;
+    private ModelMapper modelMapper = new ModelMapper();
     public SessionServiceImpl(SessionRepository sessionRepository, GamificationService gamificationService, MatchService matchService) {
         this.sessionRepository = sessionRepository;
         this.gamificationService = gamificationService;
@@ -104,14 +110,14 @@ public class SessionServiceImpl implements SessionService{
 			return false;
 		}
 		List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
-		
+
 		if(matches == null || matches.size() == 0)
 			return true;
-		
+
 		for(Match match : matches)
 		{
 			//se esiste già un match la chiamata viene invaliata
-			if(match != null && match.getValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
+			if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
 			{
 				log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
 				return false;
@@ -127,7 +133,7 @@ public class SessionServiceImpl implements SessionService{
 	public Session findOneByExtId(String extSessionId) {
 		return sessionRepository.findByExtId(extSessionId);
 	}
-	
+
 	@Override
 	public Session findOneByExtId(String extid, Long gameid) {
 		return sessionRepository.findByExtId(extid, gameid);
@@ -145,7 +151,12 @@ public class SessionServiceImpl implements SessionService{
 		return sessionRepository.findPendingSessions(now);
 	}
 
-	@Override
+    @Override
+    public List<Session> findAllByLabId(String labId) {
+        return sessionRepository.findAllByLabId(labId);
+    }
+
+    @Override
 	@Transactional
 	public void elaborate(Session session) {
 		gamificationService.elaborate(session);
@@ -155,4 +166,56 @@ public class SessionServiceImpl implements SessionService{
 	public void rielaborate(Session session) {
 		gamificationService.riElaborate(session);
 	}
+
+	@Override
+	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs)
+	{
+		List<Session> sessions = getSessionsByLabs(labs);
+        List<SessionDTO> sessionDtos = mapSessionsToDTOS(sessions);
+		sessionDtos = setValidMatchToSessionDtos(userId, sessionDtos);
+		return sessionDtos;
+	}
+
+	@Override
+	public List<Session> getSessionsByLabs(List<String> labs){
+        String query = "select s from Session s where 1 = 2 ";
+        for(String s : labs)
+        {
+            query = query + "or s.poRoot = '"+ s + "_aggregate'";
+        }
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<Session> findAllByUserId(String userId) {
+        return sessionRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public List<SessionDTO> mapSessionsToDTOS(List<Session> sessions){
+	    List<SessionDTO> sessionDtos = new ArrayList<SessionDTO>();
+        for(Session s : sessions) {
+            SessionDTO sessionDto = modelMapper.map(s, SessionDTO.class);
+            sessionDtos.add(sessionDto);
+        }
+        return sessionDtos;
+    }
+
+    @Override
+    public List<SessionDTO> setValidMatchToSessionDtos(String userId, List<SessionDTO> sessionDtos){
+        List<Match> matches = matchService.getMatchesByUserId(userId);
+        Map<Long, Match> map = new HashMap<Long, Match>();
+        for(Match m : matches) {
+            map.put(m.getSession().getId(), m);
+        }
+
+        for(SessionDTO s : sessionDtos) {
+            Match temp = map.get(s.getId());
+            if(temp != null)
+            {
+                s.setValidMatch(modelMapper.map(temp, MatchDTO.class));
+            }
+        }
+        return sessionDtos;
+    }
 }

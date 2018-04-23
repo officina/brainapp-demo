@@ -1,11 +1,14 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.service.MatchService;
 import com.codahale.metrics.annotation.Timed;
 
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.SessionService;
+import cc.officina.gatorade.service.dto.SessionDTO;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -22,9 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing Session.
@@ -160,7 +161,7 @@ public class SessionResource {
         sessionService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-    
+
     @PutMapping("/sessions/elaborate/{id}")
     @Timed
     @Transactional
@@ -179,7 +180,7 @@ public class SessionResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
             .body(null);
     }
-    
+
     @PutMapping("/sessions/ri-elaborate/{id}")
     @Timed
     @Transactional
@@ -196,6 +197,37 @@ public class SessionResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
             .body(null);
     }
-    
-    
+
+    @GetMapping("/sessions/user/{userId}/labs/{labs}")
+    @Timed
+    public ResponseEntity<List<SessionDTO>> getUserLabsSession(@PathVariable String userId, @PathVariable String labs) {
+        log.debug("REST request to get Sessions for user " + userId + " and labs " + labs);
+        //TODO aggiungere controlli su validità stringa
+        List<SessionDTO> sessionDTOs = sessionService.getUserLabsSession(userId, Arrays.asList(labs.split("\\s*,\\s*")));
+        return new ResponseEntity<>(sessionDTOs, null, HttpStatus.OK);
+    }
+
+    @GetMapping("/sessions/labs/{labs}")
+    @Timed
+    @Transactional
+    public ResponseEntity<List<SessionDTO>> getSessionsByLab(@PathVariable String labs) {
+        log.debug("REST request active Sessions for Labs with ids "+ labs);
+        //TODO aggiungere controlli su validità stringa
+        List<Session> sessions = sessionService.getSessionsByLabs(Arrays.asList(labs.split("\\s*,\\s*")));
+        List<SessionDTO> sessionDtos = sessionService.mapSessionsToDTOS(sessions);
+        return ResponseEntity.ok()
+            .body(sessionDtos);
+    }
+
+    @GetMapping("/sessions/user/{userId}")
+    @Timed
+    @Transactional
+    public ResponseEntity<List<SessionDTO>> getSessionsByUser(@PathVariable String userId) {
+        log.debug("REST request active Sessions for User with id "+ userId);
+        List<Session> sessions = sessionService.findAllByUserId(userId);
+        List<SessionDTO> sessionDtos = sessionService.mapSessionsToDTOS(sessions);
+        sessionDtos = sessionService.setValidMatchToSessionDtos(userId, sessionDtos);
+        return ResponseEntity.ok()
+            .body(sessionDtos);
+    }
 }
