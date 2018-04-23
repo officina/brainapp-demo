@@ -53,7 +53,7 @@ angular.module('gatoradeApp')
         	templateid:templateId,
         	playerid:playerId,
         	playtoken:token,
-        	matchid: matchId,
+        	//matchid: matchId,
         	sessionid: sessionId,
         	matchtoken: matchToken
         }
@@ -83,7 +83,7 @@ angular.module('gatoradeApp')
       	url: rootPath +'/api/play/attempt/end',
       	data:{
         	gameid:gameId,
-      		attemptid:attemptId,
+      		//attemptid:attemptId,
       		score:score,
       		level:level,
       		completed:completed,
@@ -110,7 +110,7 @@ angular.module('gatoradeApp')
         }
       })
     }
-    
+
     //SEND REPORT
     this.report = function(matchId, userId, json){
     	var content = {};
@@ -122,7 +122,7 @@ angular.module('gatoradeApp')
       	console.log(JSON.stringify(content));
 		http.send(JSON.stringify(content));
     }
-    
+
     this.reportAsync = function(matchId, userId, json){
     	console.log(json);
     	var internalUserAgent = navigator.userAgent;
@@ -135,7 +135,7 @@ angular.module('gatoradeApp')
 	         }
   	    })
     };
-    
+
   //SEND ERROR
     this.error = function(matchId, userId, json){
     	var content = {};
@@ -146,7 +146,7 @@ angular.module('gatoradeApp')
       	http.setRequestHeader("Content-type", "application/json");
 		http.send(JSON.stringify(content));
     }
-    
+
     this.errorAsync = function(matchId, userId, json){
     	var internalUserAgent = navigator.userAgent;
   	    return $http({
@@ -158,7 +158,7 @@ angular.module('gatoradeApp')
 	         }
   	    })
     };
-    
+
     this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken){
         var http = new XMLHttpRequest();
         http.open("PUT", '/api/play/end', false);
