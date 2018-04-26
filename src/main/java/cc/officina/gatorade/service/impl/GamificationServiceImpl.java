@@ -91,6 +91,7 @@ public class GamificationServiceImpl implements GamificationService{
 			try
 			{
 				response = po.post(path, params, requestBody);
+				match.setSendToPo(true);
 			}
 			catch(Exception e)
 			{
@@ -101,10 +102,13 @@ public class GamificationServiceImpl implements GamificationService{
 					init();
 					log.info("Run-action again");
 					response = po.post(path, params, requestBody);
+					match.setSendToPo(true);
 					log.debug(response.toString());
 				}
 			}
 		} catch (Exception e) {
+			//se passo in questo catch significa che l'invio verso po è nuovamente fallito
+			match.setSendToPo(false);
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
 			log.error(e.getMessage());
 			e.printStackTrace();

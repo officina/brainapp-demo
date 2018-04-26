@@ -25,6 +25,7 @@
             "elaborated": "Elaborated",
             "matchToken": "Match Token",
             "valid": "Valid",
+            "sendToPo": "Send To Po",
             "game": "Game",
             "template": "Template",
             "attempts": "Attempts",

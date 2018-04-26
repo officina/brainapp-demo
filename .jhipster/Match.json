@@ -66,6 +66,10 @@
         {
             "fieldName": "valid",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "sendToPo",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170627083527",

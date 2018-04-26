@@ -61,6 +61,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="send_to_po" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
             <column name="game_id" type="bigint">
                 <constraints nullable="true" />
             </column>

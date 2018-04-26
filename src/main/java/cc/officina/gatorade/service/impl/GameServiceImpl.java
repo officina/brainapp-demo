@@ -191,7 +191,6 @@ public class GameServiceImpl implements GameService{
 			lastAttempt.setStopAttempt(now);
 //			attemptRepository.saveAndFlush(lastAttempt);
 		}
-		match.setStop(now);
         match.setBestLevel(match.getMaxLevel());
         if (match.getGame().getType() == GameType.MINPOINT){
             match.setBestScore(Long.parseLong(match.getMinScore()));
@@ -200,8 +199,10 @@ public class GameServiceImpl implements GameService{
         }
 
         match.setElaborated(true);
-		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
-        gamificationService.runAction(match);
+        match.setStop(now);
+        match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
+        
+		gamificationService.runAction(match);
         matchRepository.saveAndFlush(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;

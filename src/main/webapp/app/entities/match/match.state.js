@@ -134,6 +134,7 @@
                                 elaborated: null,
                                 matchToken: null,
                                 valid: null,
+                                sendToPo: null,
                                 id: null
                             };
                         }

@@ -59,6 +59,9 @@ public class Match implements Serializable {
     @Column(name = "best_score")
     private Long bestScore;
 
+    @Column(name = "send_to_po")
+    private Boolean sendToPo = false;
+    
     @ManyToOne
     private Game game;
 
@@ -274,9 +277,33 @@ public class Match implements Serializable {
     public void setSession(Session session) {
         this.session = session;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
-    @Override
+    public Boolean getSendToPo()
+	{
+		return sendToPo;
+	}
+
+	public void setSendToPo(Boolean sendToPo)
+	{
+		this.sendToPo = sendToPo;
+	}
+
+	public Boolean getUsedToPO()
+	{
+		return usedToPO;
+	}
+
+	public Boolean getElaborated()
+	{
+		return elaborated;
+	}
+
+	public Boolean getValid()
+	{
+		return valid;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -409,5 +436,16 @@ public class Match implements Serializable {
             }
         }
         return max.toString();
+    }
+    
+    @JsonIgnore
+    public ZonedDateTime getFirstStartAttempt() {
+    	ZonedDateTime result = null;
+    	for(Attempt a : this.getAttempts())
+    	{
+    		if(result == null || a.getStartAttempt().isBefore(result))
+    			result = a.getStartAttempt();
+    	}
+    	return result;
     }
 }
