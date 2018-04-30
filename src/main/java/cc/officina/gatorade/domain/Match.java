@@ -74,6 +74,12 @@ public class Match implements Serializable {
 
     @ManyToOne
     private Session session;
+    
+    @Column(name = "retry")
+    private Long retry;
+
+    @Column(name = "anomalous")
+    private Boolean anomalous;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -301,6 +307,26 @@ public class Match implements Serializable {
 	public Boolean getValid()
 	{
 		return valid;
+	}
+
+	public Long getRetry()
+	{
+		return retry;
+	}
+
+	public void setRetry(Long retry)
+	{
+		this.retry = retry;
+	}
+
+	public Boolean getAnomalous()
+	{
+		return anomalous;
+	}
+
+	public void setAnomalous(Boolean anomalous)
+	{
+		this.anomalous = anomalous;
 	}
 
 	@Override

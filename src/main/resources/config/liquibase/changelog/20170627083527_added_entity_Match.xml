@@ -65,6 +65,14 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="retry" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="anomalous" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
             <column name="game_id" type="bigint">
                 <constraints nullable="true" />
             </column>
