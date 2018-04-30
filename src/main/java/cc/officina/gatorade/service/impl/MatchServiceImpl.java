@@ -40,7 +40,10 @@ public class MatchServiceImpl implements MatchService{
     @Value("${elaboration.safetyMarginInSeconds}")
     private Long safetyMarginInSeconds;
     
-    public enum TypeOfStillPending  {NO_ATTEMPT, RESTORE_FAIL};
+    @Value("${elaboration.maxRetry}")
+    private Long maxRetry;
+    
+    public enum TypeOfStillPending  {NO_ATTEMPT, RESTORE_FAIL, NOT_ELABORATED, TO_PO_FAIL};
 
     public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GameService gameService) {
         this.matchRepository = matchRepository;
@@ -129,10 +132,10 @@ public class MatchServiceImpl implements MatchService{
 		
 	}
 	
-	@Scheduled(fixedRate = 1000)
+	//@Scheduled(fixedRate = 1000)
     public void matchesRestore() {
         log.debug("START - Batch for match restore");
-        List<Match> problems = matchRepository.fetchPendingMatches();
+        List<Match> problems = matchRepository.fetchPendingMatches(maxRetry);
         Map<Long,TypeOfStillPending> stillPending = new HashMap<>();
         log.debug("Size of pending matches: " + problems.size());
         for(Match m : problems)
@@ -140,26 +143,33 @@ public class MatchServiceImpl implements MatchService{
         	if(m.getAttempts().size() == 0)
         	{
         		stillPending.put(m.getId(), TypeOfStillPending.NO_ATTEMPT);
+        		m.setAnomalous(true);
+        		matchRepository.save(m);
         		continue;
-        	}	
-        	//TODO: definire come gestire il caso in cui non ho attempt ma il match non è cominiciato, il caso non è possibile ma valutare se gestire il caso limite
-        	
+        	}
         	//devo verificare se il match può essere potenzialmente ancora in corso
         	Long durationInSeconds = m.getTemplate().getMaxDuration() + safetyMarginInSeconds;
         	//se è scaduta la potenziale durata del match devo tentare di recuperarlo
         	if(m.getFirstStartAttempt().plusSeconds(durationInSeconds).isBefore(ZonedDateTime.now()))
         	{
-    			m.setElaborated(false);
-    			gameService.endMatch(m.getGame(), m, null, null, null);
-    			if(m.getSendToPo())
-    			{
-    				continue;
-    			}
-    			else
-    			{
-    				stillPending.put(m.getId(), TypeOfStillPending.RESTORE_FAIL);
-            		continue;
-    			}
+        		if(m.getElaborated() == false && m.getSendToPo() == false)
+        		{
+        			stillPending.put(m.getId(), TypeOfStillPending.NOT_ELABORATED);
+        			m.setAnomalous(true);
+        			matchRepository.save(m);
+        			continue;
+        		}
+        		
+        		if(m.getElaborated() == true && m.getSendToPo() == false)
+        		{
+        			m.setElaborated(false);
+        			gameService.endMatch(m.getGame(), m, null, null, null);
+        			if(!m.getSendToPo())
+        			{
+        				stillPending.put(m.getId(), TypeOfStillPending.TO_PO_FAIL);
+        			}
+        			continue;
+        		}
         	}
         }
         if(stillPending.size() > 0)

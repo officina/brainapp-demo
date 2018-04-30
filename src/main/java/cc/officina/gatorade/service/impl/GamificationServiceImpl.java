@@ -107,8 +107,9 @@ public class GamificationServiceImpl implements GamificationService{
 				}
 			}
 		} catch (Exception e) {
-			//se passo in questo catch significa che l'invio verso po è nuovamente fallito
+			//se passo in questo catch significa che l'invio verso po è nuovamente fallito e quindi devo mettere a false il relativo flag oltre che ad incrementare il numero di retry
 			match.setSendToPo(false);
+			match.setRetry(match.getRetry() + 1);
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
 			log.error(e.getMessage());
 			e.printStackTrace();

@@ -35,6 +35,6 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
 	@Query("update Match m set m.valid = false where m.userId = :userId")
 	public void invalidateByUserId(@Param("userId")String userId);
 
-	@Query("select m from Match m where (m.sendToPo = false or m.elaborated = false) and matchToken > -1")
-	public List<Match> fetchPendingMatches();
+	@Query("select m from Match m where (m.sendToPo = false or m.elaborated = false) and m.matchToken > -1 and m.retry < m.maxRetry and m.anomalous = false")
+	public List<Match> fetchPendingMatches(@Param("maxRetry")Long maxRetry);
 }

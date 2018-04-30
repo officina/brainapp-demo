@@ -76,7 +76,7 @@ public class Match implements Serializable {
     private Session session;
     
     @Column(name = "retry")
-    private Long retry;
+    private Long retry = 0l;
 
     @Column(name = "anomalous")
     private Boolean anomalous;

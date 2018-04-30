@@ -189,7 +189,6 @@ public class GameServiceImpl implements GameService{
 			lastAttempt.setCompleted(false);
 			lastAttempt.setLastUpdate(now);
 			lastAttempt.setStopAttempt(now);
-//			attemptRepository.saveAndFlush(lastAttempt);
 		}
         match.setBestLevel(match.getMaxLevel());
         if (match.getGame().getType() == GameType.MINPOINT){
