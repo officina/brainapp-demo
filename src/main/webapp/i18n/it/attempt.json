@@ -23,6 +23,7 @@
             "cancelled": "Cancelled",
             "completed": "Completed",
             "valid": "Valid",
+            "localId": "Local Id",
             "match": "Match"
         }
     }

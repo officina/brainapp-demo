@@ -40,6 +40,10 @@
         {
             "fieldName": "valid",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "localId",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170627085006",

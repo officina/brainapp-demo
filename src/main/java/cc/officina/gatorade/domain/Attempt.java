@@ -25,6 +25,9 @@ public class Attempt implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Column(name = "local_id")
+    private Long localId;
+
     @Column(name = "attempt_score")
     private Long attemptScore;
 
@@ -48,7 +51,7 @@ public class Attempt implements Serializable {
 
     @Column(name = "valid")
     private Boolean valid;
-    
+
     @ManyToOne
     @JsonIgnore
     private Match match;
@@ -59,6 +62,14 @@ public class Attempt implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(Long localId) {
+        this.localId = localId;
     }
 
     public Long getAttemptScore() {
@@ -164,7 +175,7 @@ public class Attempt implements Serializable {
     public void setMatch(Match match) {
         this.match = match;
     }
-    
+
     public Boolean getValid() {
 		return valid;
 	}

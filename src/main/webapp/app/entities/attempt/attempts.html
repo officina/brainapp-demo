@@ -27,6 +27,7 @@
                     <th jh-sort-by="cancelled"><span data-translate="gatoradeApp.attempt.cancelled">Cancelled</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="completed"><span data-translate="gatoradeApp.attempt.completed">Completed</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="valid"><span data-translate="gatoradeApp.attempt.valid">Valid</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="localId"><span data-translate="gatoradeApp.attempt.localId">Local Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="match.id"><span data-translate="gatoradeApp.attempt.match">Match</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
@@ -42,6 +43,7 @@
                     <td>{{attempt.cancelled}}</td>
                     <td>{{attempt.completed}}</td>
                     <td>{{attempt.valid}}</td>
+                    <td>{{attempt.localId}}</td>
                     <td>
                         <a ui-sref="match-detail({id:attempt.match.id})">{{attempt.match.id}}</a>
                     </td>

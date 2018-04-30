@@ -132,6 +132,7 @@
                                 cancelled: null,
                                 completed: null,
                                 valid: null,
+                                localId: null,
                                 id: null
                             };
                         }

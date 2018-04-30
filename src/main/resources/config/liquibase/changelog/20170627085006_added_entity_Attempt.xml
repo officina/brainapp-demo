@@ -53,6 +53,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="local_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
             <column name="match_id" type="bigint">
                 <constraints nullable="true" />
             </column>
