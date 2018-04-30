@@ -319,7 +319,7 @@ public class Match implements Serializable {
 		this.retry = retry;
 	}
 
-	public Boolean getAnomalous()
+	public Boolean isAnomalous()
 	{
 		return anomalous;
 	}
