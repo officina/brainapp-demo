@@ -24,6 +24,7 @@
             "completed": "Completed",
             "valid": "Valid",
             "localId": "Local Id",
+            "sync": "Sync",
             "match": "Match"
         }
     }
