@@ -5,6 +5,7 @@ public class Request {
 	private Long templateid;
 	private Long matchid;
 	private Long attemptid;
+	private Long localid;
 	private String playerid;
 	private String playtoken;
 	private Long score;
@@ -13,6 +14,8 @@ public class Request {
 	private String sessionid;
 	private boolean endmatch;
 	private Long matchtoken;
+	private Attempt attempt;
+	private Match match;
 	public Long getGameid() {
 		return gameid;
 	}
@@ -37,7 +40,9 @@ public class Request {
 	public void setAttemptid(Long attemptid) {
 		this.attemptid = attemptid;
 	}
-	public String getPlayerid() {
+    public Long getLocalid() {return localid;}
+    public void setLocalid(Long localid) {this.localid = localid;}
+    public String getPlayerid() {
 		return playerid;
 	}
 	public void setPlayerid(String playerid) {
@@ -85,11 +90,26 @@ public class Request {
 	public void setEndmatch(boolean endmatch) {
 		this.endmatch = endmatch;
 	}
-	public Long getMatchtoken() {
+	public Long getMatchToken() {
 		return matchtoken;
 	}
 	public void setMatchToken(Long matchtoken) {
 		this.matchtoken = matchtoken;
 	}
-	
+
+    public Attempt getAttempt() {
+        return attempt;
+    }
+
+    public void setAttempt(Attempt attempt) {
+        this.attempt = attempt;
+    }
+
+    public Match getMatch() {
+        return match;
+    }
+
+    public void setMatch(Match match) {
+        this.match = match;
+    }
 }

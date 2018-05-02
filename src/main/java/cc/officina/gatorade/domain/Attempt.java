@@ -43,14 +43,20 @@ public class Attempt implements Serializable {
     @Column(name = "last_update")
     private ZonedDateTime lastUpdate;
 
+    //per gestire casi d'attempt "aborted", non viene utilizzato TODO Rimuovere
     @Column(name = "cancelled")
     private Boolean cancelled;
 
+    //indica se l'attempt è completo
     @Column(name = "completed")
     private Boolean completed;
 
+    //indica la validità dell'attempt, viene modificata all'eliminazione del match corrispondente
     @Column(name = "valid")
     private Boolean valid;
+
+    @Transient
+    private Integer sync;
 
     @ManyToOne
     @JsonIgnore
@@ -192,7 +198,15 @@ public class Attempt implements Serializable {
 		return completed;
 	}
 
-	@Override
+    public Integer getSync() {
+        return sync;
+    }
+
+    public void setSync(Integer sync) {
+        this.sync = sync;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
