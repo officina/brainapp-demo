@@ -1,5 +1,6 @@
 package cc.officina.gatorade.domain;
 
+import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -55,8 +56,8 @@ public class Attempt implements Serializable {
     @Column(name = "valid")
     private Boolean valid;
 
-    @Transient
-    private Integer sync;
+    @Column(name = "sync")
+    private AttemptSyncState sync;
 
     @ManyToOne
     @JsonIgnore
@@ -198,11 +199,11 @@ public class Attempt implements Serializable {
 		return completed;
 	}
 
-    public Integer getSync() {
+    public AttemptSyncState getSync() {
         return sync;
     }
 
-    public void setSync(Integer sync) {
+    public void setSync(AttemptSyncState sync) {
         this.sync = sync;
     }
 
