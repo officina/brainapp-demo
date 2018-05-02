@@ -5,5 +5,6 @@ package cc.officina.gatorade.domain.enumeration;
  */
 public enum ReportType {
     Error,
-    Endmatch
+    Endmatch,
+    ResumeReport
 }

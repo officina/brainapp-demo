@@ -3,7 +3,6 @@ package cc.officina.gatorade.service.dto;
 import java.time.ZonedDateTime;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Session;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class SessionDTO {
     private Long id;

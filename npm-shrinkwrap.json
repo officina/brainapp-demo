@@ -5617,7 +5617,7 @@
     "generator-jhipster": {
       "version": "4.5.4",
       "resolved": "https://registry.npmjs.org/generator-jhipster/-/generator-jhipster-4.5.4.tgz",
-      "integrity": "sha512-/87R84ZRU5N8Ku+G3CLUk9HqRXaosJLB4zZ/NNZBtmqkEPbe//h85UAdrZFHhYCmVDXXevc6uBDaRYSHauYlbQ==",
+      "integrity": "sha1-fbdIP4zRCSveC84VqvHm5g3i57c=",
       "dev": true,
       "requires": {
         "chalk": "1.1.3",

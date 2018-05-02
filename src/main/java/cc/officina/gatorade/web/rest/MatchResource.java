@@ -187,16 +187,24 @@ public class MatchResource {
 
     @PutMapping(value = "/match/{matchId}/update-with-local", consumes = {MediaType.APPLICATION_JSON_VALUE})
     @Timed
-    public ResponseEntity syncLocalMatch(@PathVariable Long matchId, @RequestBody List<Attempt> attempts){
+    public ResponseEntity syncLocalMatch(@PathVariable Long matchId, @RequestBody List<Attempt> attempts) {
         Match match = matchService.findOne(matchId);
         if (match == null) {
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
         Map<Long, Attempt> matchAttempts = new HashMap<>();
-        for (Attempt attempt : match.getAttempts()){
+        for (Attempt attempt : match.getAttempts()) {
             matchAttempts.put(attempt.getId(), attempt);
         }
         //controllo la lista di Attempt
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/matches/start-batch")
+    @Timed
+    public ResponseEntity<Void> startBatch() throws URISyntaxException {
+        log.info("REST request to start batch");
+        matchService.matchesRestore();
         return ResponseEntity.ok().build();
     }
 }

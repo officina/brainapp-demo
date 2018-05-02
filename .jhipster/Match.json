@@ -66,6 +66,18 @@
         {
             "fieldName": "valid",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "sendToPo",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "retry",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "anomalous",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170627083527",
