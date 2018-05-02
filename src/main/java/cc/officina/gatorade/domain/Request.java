@@ -1,5 +1,7 @@
 package cc.officina.gatorade.domain;
 
+import java.util.List;
+
 public class Request {
 	private Long gameid;
 	private Long templateid;
@@ -16,6 +18,7 @@ public class Request {
 	private Long matchtoken;
 	private Attempt attempt;
 	private Match match;
+	private List<Attempt> attempts;
 	public Long getGameid() {
 		return gameid;
 	}
@@ -90,7 +93,7 @@ public class Request {
 	public void setEndmatch(boolean endmatch) {
 		this.endmatch = endmatch;
 	}
-	public Long getMatchToken() {
+	public Long getMatchtoken() {
 		return matchtoken;
 	}
 	public void setMatchToken(Long matchtoken) {
@@ -111,5 +114,13 @@ public class Request {
 
     public void setMatch(Match match) {
         this.match = match;
+    }
+
+    public List<Attempt> getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(List<Attempt> attempts) {
+        this.attempts = attempts;
     }
 }

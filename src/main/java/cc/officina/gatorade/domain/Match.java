@@ -61,7 +61,7 @@ public class Match implements Serializable {
 
     @Column(name = "send_to_po")
     private Boolean sendToPo = false;
-    
+
     @ManyToOne
     private Game game;
 
@@ -74,7 +74,7 @@ public class Match implements Serializable {
 
     @ManyToOne
     private Session session;
-    
+
     @Column(name = "retry")
     private Long retry = 0l;
 
@@ -363,6 +363,11 @@ public class Match implements Serializable {
             ", elaborated='" + isElaborated() + "'" +
             ", matchToken=" + getMatchToken() +
             ", valid='" + isValid() + "'" +
+            ", bestLevel='"+ getBestLevel() + "'" +
+            ", bestScore='"+ getBestScore() + "'" +
+            ", sendToPo='"+ getSendToPo() + "'" +
+            ", anomalous='"+ isAnomalous() + "'" +
+            ", retry='"+ getRetry() + "'" +
             "}";
     }
 
@@ -463,7 +468,7 @@ public class Match implements Serializable {
         }
         return max.toString();
     }
-    
+
     @JsonIgnore
     public ZonedDateTime getFirstStartAttempt() {
     	ZonedDateTime result = null;
