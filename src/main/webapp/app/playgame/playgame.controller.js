@@ -41,8 +41,7 @@
 
         	$rootScope.wrapperMemory = $scope.wrapperMemory;
         	$rootScope.finalError = error;
-        	console.log(navigator.online);
-        	if(false)
+        	if(navigator.online)
         	{
                 removeEvent(eventName, $scope.handle);
         		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : why});
@@ -50,14 +49,6 @@
         	else
         	{
                 switch (event){
-                    /*case "UPDxATE_LEVEL":
-                        console.log('MANAGE OFFLINE: UPDATE_LEVEL');
-                        updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
-                        break;
-                    case "UPDATE_SCORE":
-                        console.log('MANAGE OFFLINE: UPDATE_SCORE');
-                        updateAttemptScore(e.data.attempt.score, e.data.attempt.level);
-                        break;*/
                     case "START_ATTEMPT":
                         console.log('MANAGE OFFLINE: START_ATTEMPT');
                         startLocalAttempt();
@@ -155,8 +146,7 @@
                 if($scope.wrapperMemory.currAttempt != undefined && tk == 0)
                 {
                 	console.log('score/level update vs server')
-                	PlaygameService.updateAttemptScore($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id,
-                			$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.score, $scope.wrapperMemory.currAttempt.level,$scope.matchToken).then(function(response){
+                	PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function(response){
         	    		console.log('Score/Level updated');
         	    	})
                 	.catch(function(error) {
@@ -198,7 +188,7 @@
 	    		{
 	        		why = "invalidSession";
 	    		}
-	        	manageError("CREATE_MATCH", data, error, why);
+	        	manageError("CREATE_MATCH", null, error, why);
 	        });
         })
         .catch(function(error) {
@@ -208,7 +198,7 @@
         		why = "invalidSession";
     		}
 
-        	manageError("GAME_INIT", data, error, why);
+        	manageError("GAME_INIT", null, error, why);
         });
 
         var startAttempt = function(){
@@ -220,7 +210,7 @@
         	        refreshWrapperMemory(response.data.match,response.data.attempt);
     	        })
     	        .catch(function(error) {
-    	        	manageError("START_ATTEMPT", data, error, "genericError");
+    	        	manageError("START_ATTEMPT", null, error, "genericError");
     	        });
 
         	}
@@ -232,21 +222,20 @@
         			refreshWrapperMemory(response.data.match,response.data.attempt);
       	        })
 	      	   .catch(function(error) {
-	      		   manageError("START_ATTEMPT", data, error, "genericError");
+	      		   manageError("START_ATTEMPT", null, error, "genericError");
 	  	        });
         	}
         	$scope.$broadcast('timer-start');
         };
 
         var startLocalAttempt = function(){
-            var now = new Date(Date.now()).toLocaleString();
+            var now = Date.now();
             var newAttempt = {};
-            if($scope.wrapperMemory.match == undefined)
-            {
+            if($scope.wrapperMemory.match == undefined) {
                 console.log("creo attempt locale SENZA match");
                 newAttempt = {
                     "localId": now,
-                    "match": $scope.wrapperMemory.match,
+                    "match": "",
                     "startAttempt": now,
                     "lastUpdate": now,
                     "attemptScore": 0,
@@ -255,10 +244,7 @@
                     "cancelled": false,
                     "valid": true
                 };
-                refreshWrapperMemory($scope.wrapperMemory.match, newAttempt)
-            }
-            else
-            {
+            } else {
                 console.log("creo attempt CON match");
 
                 newAttempt = {
@@ -272,8 +258,8 @@
                     "cancelled": false,
                     "valid": true
                 };
-                refreshWrapperMemory($scope.wrapperMemory.match, newAttempt)
             }
+            refreshWrapperMemory($scope.wrapperMemory.match, newAttempt)
             $scope.$broadcast('timer-start');
         };
 
@@ -299,6 +285,7 @@
 	    	.then(function(response){
 	    		//chiuso l'attempt, il current è null
 	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now()).toLocaleString();
+	    		$scope.wrapperMemory.currAttempt.sync = true;
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt ended inside callback');
@@ -407,7 +394,7 @@
 		    	});
 	    	})
 	    	.catch(function(error) {
-	    		manageError("MATCH_ENDED", data, error, "genericError");
+	    		manageError("MATCH_ENDED", null, error, "genericError");
   	        });
 	    };
 
