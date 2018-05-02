@@ -11,6 +11,7 @@ import cc.officina.gatorade.repository.MatchRepository;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,6 +126,7 @@ public class GameServiceImpl implements GameService{
 	public AttemptResponse startAttempt(Game game, Match match) {
 		//TODO verificare presenza attempt già aperti e relativa logica da implementare
 		Attempt attempt = new Attempt();
+		attempt.setLocalId(new Date().getTime());
 		attempt.setMatch(match);
 		attempt.setStartAttempt(ZonedDateTime.now());
 		attempt.setLastUpdate(ZonedDateTime.now());

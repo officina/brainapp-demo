@@ -2,14 +2,12 @@ package cc.officina.gatorade.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
-import cc.officina.gatorade.config.Constants;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.MatchTemplate;
 import cc.officina.gatorade.domain.Request;
 import cc.officina.gatorade.domain.Session;
-import cc.officina.gatorade.security.AuthoritiesConstants;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
@@ -23,8 +21,6 @@ import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -32,7 +28,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +55,7 @@ public class GameResource {
     private final SessionService sessionService;
     private final GamificationService gamificationService;
 
-    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService,  
+    public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService,
     				GamificationService gamificationService) {
         this.gameService = gameService;
         this.matchService = matchService;
@@ -140,7 +135,7 @@ public class GameResource {
         Game game = gameService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
-    
+
     @GetMapping("/play/{id}/init/{extid}/{playerid}")
     @Timed
     public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable String extid, @PathVariable String playerid) {
@@ -170,7 +165,7 @@ public class GameResource {
         gameService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-    
+
     @PostMapping("/play")
     @Timed
     public ResponseEntity<MatchResponse> startMatch(@RequestBody Request request) {
@@ -181,18 +176,18 @@ public class GameResource {
         Session session = sessionService.findOneByExtId(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
-        
+
         Game game = gameService.findOne(request.getGameid());
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+ request.getGameid() + " not found")).body(null);
-        
+
         MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
         // non passo per ora il matchToken, o meglio passo -1
         return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
     }
-    
+
     @PostMapping("/play/attempt")
     @Timed
     @Transactional
@@ -203,38 +198,37 @@ public class GameResource {
         Game game = gameService.findOne(request.getGameid());
         if(game == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("game", "gameNotFound", "Game with id "+request.getGameid() + " not found")).body(null);
-        
+
         MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
-        	
+
         Session session = sessionService.findOneByExtId(request.getSessionid());
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
-        
+
         Match match = null;
         if(request.getMatchid() != null)
         	match = matchService.findOne(request.getMatchid());
         if(match == null)
         {
-        	match = gameService.startMatch(game, template, request.getPlayerid(),session, request.getMatchtoken()).getMatch();
+        	match = gameService.startMatch(game, template, request.getPlayerid(),session, request.getMatchToken()).getMatch();
         }
         else
         {
-        	if((!match.getMatchToken().equals(request.getMatchtoken())) && match.getMatchToken() > -1)
-        	{
+            if((!match.getMatchToken().equals(request.getMatchToken())) && match.getMatchToken() > -1) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
         	}
         	else
-        	{
-        		match.setMatchToken(request.getMatchtoken());
+        	{//TODO if matchtoken =  null segna match come anomalo, e aggiungi record alla tabella Report (tramite service)
+        		match.setMatchToken(request.getMatchToken());
         		matchService.save(match);
         	}
         }
         match.getAttempts().size();
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
-    
+
     @PutMapping("/play/attempt/score")
     @Timed
     @Transactional
@@ -243,17 +237,51 @@ public class GameResource {
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
     	log.info("REST request to update score for game Game with id " + request.getGameid()+", attempt " + request.getAttemptid());
     	log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
-       
-    	Attempt attempt = attemptService.findOne(request.getAttemptid());
-        
-        if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
+
+        Attempt attempt = attemptService.findOne(request.getAttemptid());
+
+        if(!attempt.getMatch().getMatchToken().equals(request.getMatchToken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
-        
+
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
         return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
     }
-    
+
+    @PutMapping("/v2/play/attempt/score")
+    @Timed
+    @Transactional
+    public ResponseEntity<AttemptResponse> updateAttemptScoreV2(@RequestBody Request request) {
+        //TODO aggiustare LOG
+        //log.info("REST request to update score for game Game with id " + reqAttempt.getMatch().getGame().getId()+", attempt " + reqAttempt.getId());
+        //log.info("Score: " + reqAttempt.getAttemptScore() + " - Level: " + reqAttempt.getLevelReached());
+        Attempt attempt;
+        if (request.getAttempt().getId() != null){
+            //attempt creato "online"
+            attempt = attemptService.findOne(request.getAttempt().getId());
+        }else{
+            //Cerco un attempt creato "offline" che sia già stato creato su gatorade
+            attempt = attemptService.findOneByLocalId(request.getAttempt().getLocalId());
+            if (attempt == null){
+                //attempt creato "offline" e non ancora salvato su gatorade
+                attempt = new Attempt();
+                attempt.setLocalId(request.getAttempt().getLocalId());
+                attempt.setMatch(request.getMatch());
+                attempt.setAttemptScore(request.getAttempt().getAttemptScore());
+                attempt.setLevelReached(request.getAttempt().getLevelReached());
+                attempt.setCompleted(false);
+                attempt.setCancelled(false);
+                attempt.setValid(true);
+                attempt = attemptService.save(attempt);
+            }
+        }
+
+        if(!attempt.getMatch().getMatchToken().equals(request.getMatchToken()))
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getMatch().getSession().getId() + " already in use")).body(null);
+
+        return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, request.getAttempt().getAttemptScore(), request.getAttempt().getLevelReached()), null, HttpStatus.OK);
+    }
+
     @PutMapping("/play/attempt/end")
     @Timed
     @Transactional
@@ -265,10 +293,10 @@ public class GameResource {
         Attempt attempt = attemptService.findOne(request.getAttemptid());
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
-        
-        if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
+
+        if(!attempt.getMatch().getMatchToken().equals(request.getMatchToken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
-        
+
         attempt.getMatch().getAttempts().size();
         return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);
     }
@@ -290,15 +318,15 @@ public class GameResource {
         Attempt lastAttempt = null;
         if(request.getAttemptid() != null)
         	lastAttempt = attemptService.findOne(request.getAttemptid());
-        
-        if(!match.getMatchToken().equals(request.getMatchtoken()))
+
+        if(!match.getMatchToken().equals(request.getMatchToken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
-        
-        
+
+
         return new ResponseEntity<>(gameService.endMatch(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
 
     }
-    
+
     @PutMapping("/play/restore-end")
     @Timed
     @Transactional
@@ -316,11 +344,11 @@ public class GameResource {
         Attempt lastAttempt = null;
         if(request.getAttemptid() != null)
         	lastAttempt = attemptService.findOne(request.getAttemptid());
-        
-        if(!match.getMatchToken().equals(request.getMatchtoken()))
+
+        if(!match.getMatchToken().equals(request.getMatchToken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
-        
-        
+
+
         return new ResponseEntity<>(gameService.endMatchRestore(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
 
     }

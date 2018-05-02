@@ -74,4 +74,15 @@ public class AttemptServiceImpl implements AttemptService{
         log.debug("Request to delete Attempt : {}", id);
         attemptRepository.delete(id);
     }
+
+    /**
+     * Get one attempt by localId.
+     * @param localId local id
+     * @return one attempt
+     */
+    @Override
+    public Attempt findOneByLocalId(Long localId) {
+        log.debug("Request to get Attempt for localId: {}", localId);
+        return attemptRepository.getOneByLocalId(localId);
+    }
 }

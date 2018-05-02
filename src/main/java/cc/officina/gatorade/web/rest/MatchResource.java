@@ -1,6 +1,7 @@
 package cc.officina.gatorade.web.rest;
 
 import cc.officina.gatorade.domain.Attempt;
+import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.dto.MatchDTO;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
@@ -29,9 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing Match.
@@ -47,11 +46,13 @@ public class MatchResource {
     private final MatchService matchService;
     private final GamificationService gamificationService;
     private final ReportService reportService;
+    private final AttemptService attemptService;
 
-    public MatchResource(MatchService matchService, GamificationService gamificationService, ReportService reportService) {
+    public MatchResource(MatchService matchService, GamificationService gamificationService, ReportService reportService, AttemptService attemptService) {
         this.matchService = matchService;
         this.gamificationService = gamificationService;
         this.reportService = reportService;
+        this.attemptService = attemptService;
     }
 
     /**
@@ -190,6 +191,10 @@ public class MatchResource {
         Match match = matchService.findOne(matchId);
         if (match == null) {
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
+        }
+        Map<Long, Attempt> matchAttempts = new HashMap<>();
+        for (Attempt attempt : match.getAttempts()){
+            matchAttempts.put(attempt.getId(), attempt);
         }
         //controllo la lista di Attempt
         return ResponseEntity.ok().build();

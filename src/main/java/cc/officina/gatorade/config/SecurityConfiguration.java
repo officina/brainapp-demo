@@ -106,6 +106,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/play/**").permitAll()
             .antMatchers("/api/play/attempt").permitAll()
             .antMatchers("/api/play/attempt/score").permitAll()
+            .antMatchers("/api/v2/play/attempt/score").permitAll()
             .antMatchers("/api/play/attempt/end").permitAll()
             .antMatchers("/api/play/end").permitAll()
             .antMatchers("/api/authenticate").permitAll()

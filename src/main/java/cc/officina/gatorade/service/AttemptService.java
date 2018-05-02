@@ -39,4 +39,11 @@ public interface AttemptService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     *  Get the "localId" attempt
+     * @param localId local id
+     * @return the attempt
+     */
+    Attempt findOneByLocalId(Long localId);
 }
