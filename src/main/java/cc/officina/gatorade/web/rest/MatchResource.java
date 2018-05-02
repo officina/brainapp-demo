@@ -182,4 +182,12 @@ public class MatchResource {
         matchService.deletePlayerActivities(userId);
         return ResponseEntity.ok().build();
     }
+    
+    @PutMapping("/matches/start-batch")
+    @Timed
+    public ResponseEntity<Void> startBatch() throws URISyntaxException {
+        log.info("REST request to start batch");
+        matchService.matchesRestore();
+        return ResponseEntity.ok().build();
+    }
 }

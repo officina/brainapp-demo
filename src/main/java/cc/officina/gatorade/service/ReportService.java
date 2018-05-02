@@ -2,6 +2,9 @@ package cc.officina.gatorade.service;
 
 import cc.officina.gatorade.domain.Report;
 import cc.officina.gatorade.domain.ReportRequest;
+import cc.officina.gatorade.service.impl.MatchServiceImpl.TypeOfStillPending;
+
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,4 +47,6 @@ public interface ReportService {
     
     public Report matchReport(Long id, String userid, ReportRequest request);
     public Report matchError(Long id, String userid, ReportRequest request);
+
+	public void saveEndBatch(Map<Long, TypeOfStillPending> stillPending);
 }

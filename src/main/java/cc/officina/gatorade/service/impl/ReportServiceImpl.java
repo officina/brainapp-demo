@@ -1,13 +1,18 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.ReportService;
+import cc.officina.gatorade.service.impl.MatchServiceImpl.TypeOfStillPending;
+import net.minidev.json.JSONArray;
 import cc.officina.gatorade.domain.Report;
 import cc.officina.gatorade.domain.ReportRequest;
 import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.repository.ReportRepository;
 
 import java.time.ZonedDateTime;
+import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,6 +31,8 @@ public class ReportServiceImpl implements ReportService{
     private final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
 
     private final ReportRepository reportRepository;
+    
+    public static String BatchUser = "BATCH";
 
     public ReportServiceImpl(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
@@ -104,6 +111,37 @@ public class ReportServiceImpl implements ReportService{
         report.setMatch_id(id);
         reportRepository.save(report);
         return report;
+	}
+
+	@Override
+	public void saveEndBatch(Map<Long, TypeOfStillPending> stillPending)
+	{
+		Report report = new Report();
+		report.setTimestamp(ZonedDateTime.now());
+		report.setType(ReportType.ResumeReport);
+		report.setUserid(BatchUser);
+		
+		JSONArray json = new JSONArray();
+		
+		for (Map.Entry<Long, TypeOfStillPending> entry : stillPending.entrySet())
+		{
+		    System.out.println(entry.getKey() + "/" + entry.getValue());
+		    JSONObject obj = new JSONObject();
+		    try
+			{
+				obj.append("matchId", entry.getKey());
+				obj.append("type", entry.getValue());
+			    json.add(obj);
+			}
+			catch (JSONException e)
+			{
+				log.error(e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		
+		report.setJson(json.toString());
+		reportRepository.save(report);
 	}
 
 }

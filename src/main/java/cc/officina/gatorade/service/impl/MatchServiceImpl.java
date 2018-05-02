@@ -3,6 +3,7 @@ package cc.officina.gatorade.service.impl;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
+import cc.officina.gatorade.service.ReportService;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.MatchTemplate;
@@ -36,6 +37,7 @@ public class MatchServiceImpl implements MatchService{
     private final MatchRepository matchRepository;
     private final AttemptRepository attemptRepository;
     private final GameService gameService;
+    private final ReportService reportService;
     
     @Value("${elaboration.safetyMarginInSeconds}")
     private Long safetyMarginInSeconds;
@@ -45,10 +47,11 @@ public class MatchServiceImpl implements MatchService{
     
     public enum TypeOfStillPending  {NO_ATTEMPT, RESTORE_FAIL, NOT_ELABORATED, TO_PO_FAIL};
 
-    public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GameService gameService) {
+    public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GameService gameService, ReportService reportService) {
         this.matchRepository = matchRepository;
         this.attemptRepository = attemptRepository;
         this.gameService = gameService;
+        this.reportService = reportService;
     }
 
     /**
@@ -134,10 +137,10 @@ public class MatchServiceImpl implements MatchService{
 	
 	//@Scheduled(fixedRate = 1000)
     public void matchesRestore() {
-        log.debug("START - Batch for match restore");
+        log.info("START - Batch for match restore");
         List<Match> problems = matchRepository.fetchPendingMatches(maxRetry);
         Map<Long,TypeOfStillPending> stillPending = new HashMap<>();
-        log.debug("Size of pending matches: " + problems.size());
+        log.info("Size of pending matches: " + problems.size());
         for(Match m : problems)
         {	//se il match ritornato dalla query non ha attempt è anomalo ma non risolvibile, lo indico tra quelli ancora irrisolti ma non ho modo di risolverlo
         	if(m.getAttempts().size() == 0)
@@ -174,7 +177,8 @@ public class MatchServiceImpl implements MatchService{
         }
         if(stillPending.size() > 0)
         {
-        	log.debug("INVIARE MAIL DI ALERT");
+        	log.debug("SAVE REPORT");
+        	reportService.saveEndBatch(stillPending);
         }
         log.debug("END - Batch for match restore");
     }

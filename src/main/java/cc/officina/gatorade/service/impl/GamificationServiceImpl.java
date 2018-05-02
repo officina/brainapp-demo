@@ -62,11 +62,7 @@ public class GamificationServiceImpl implements GamificationService{
 	public void init() {
 	   log.info("GamificationService init for " + poDomain);
 	   log.info("GamificationService init clientId " + poClientId);
-	   log.info("GamificationService init clientSecret " + poClientSecret);
 	   po = new PlayOff(poClientId, poClientSecret, null, "v2", poDomain);
-//	   log.info("Attivazione batch");
-//	   Timer task = new Timer();
-//	   task.schedule(new SessionTask(this), 0, interval*1000);
 	}
 
 	@Override
