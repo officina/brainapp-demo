@@ -2,7 +2,7 @@ package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.ReportService;
 import cc.officina.gatorade.service.impl.MatchServiceImpl.TypeOfStillPending;
-import net.minidev.json.JSONArray;
+import org.json.JSONArray;
 import cc.officina.gatorade.domain.Report;
 import cc.officina.gatorade.domain.ReportRequest;
 import cc.officina.gatorade.domain.enumeration.ReportType;
@@ -31,7 +31,7 @@ public class ReportServiceImpl implements ReportService{
     private final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
 
     private final ReportRepository reportRepository;
-    
+
     public static String BatchUser = "BATCH";
 
     public ReportServiceImpl(ReportRepository reportRepository) {
@@ -86,7 +86,7 @@ public class ReportServiceImpl implements ReportService{
         log.debug("Request to delete Report : {}", id);
         reportRepository.delete(id);
     }
-    
+
     @Override
 	public Report matchReport(Long id, String userid, ReportRequest request) {
 		Report report = new Report();
@@ -99,7 +99,7 @@ public class ReportServiceImpl implements ReportService{
         reportRepository.save(report);
         return report;
 	}
-    
+
     @Override
 	public Report matchError(Long id, String userid, ReportRequest request) {
 		Report report = new Report();
@@ -120,9 +120,9 @@ public class ReportServiceImpl implements ReportService{
 		report.setTimestamp(ZonedDateTime.now());
 		report.setType(ReportType.ResumeReport);
 		report.setUserid(BatchUser);
-		
+
 		JSONArray json = new JSONArray();
-		
+
 		for (Map.Entry<Long, TypeOfStillPending> entry : stillPending.entrySet())
 		{
 		    System.out.println(entry.getKey() + "/" + entry.getValue());
@@ -131,7 +131,7 @@ public class ReportServiceImpl implements ReportService{
 			{
 				obj.append("matchId", entry.getKey());
 				obj.append("type", entry.getValue());
-			    json.add(obj);
+			    json.put(obj);
 			}
 			catch (JSONException e)
 			{
@@ -139,7 +139,7 @@ public class ReportServiceImpl implements ReportService{
 				e.printStackTrace();
 			}
 		}
-		
+
 		report.setJson(json.toString());
 		reportRepository.save(report);
 	}
