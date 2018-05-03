@@ -1,5 +1,6 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.service.*;
 import com.codahale.metrics.annotation.Timed;
 
@@ -252,34 +253,9 @@ public class GameResource {
     @Timed
     @Transactional
     public ResponseEntity<AttemptResponse> updateAttemptScoreV2(@RequestBody Request request) {
-        //TODO aggiustare LOG
-        //log.info("REST request to update score for game Game with id " + reqAttempt.getMatch().getGame().getId()+", attempt " + reqAttempt.getId());
-        //log.info("Score: " + reqAttempt.getAttemptScore() + " - Level: " + reqAttempt.getLevelReached());
-        Attempt attempt;
-        if (request.getAttempt().getId() != null){
-            //attempt creato "online"
-            attempt = attemptService.findOne(request.getAttempt().getId());
-            attempt.setLevelReached(request.getAttempt().getLevelReached());
-            attempt.setAttemptScore(request.getAttempt().getAttemptScore());
-        }else{
-            //Cerco un attempt creato "offline" che sia già stato creato su gatorade
-            attempt = attemptService.findOneByLocalId(request.getAttempt().getLocalId());
-            if (attempt == null){
-                //attempt creato "offline" e non ancora salvato su gatorade
-                attempt = new Attempt();
-                attempt.setLocalId(request.getAttempt().getLocalId());
-                attempt.setMatch(request.getMatch());
-                attempt.setAttemptScore(request.getAttempt().getAttemptScore());
-                attempt.setLevelReached(request.getAttempt().getLevelReached());
-                attempt.setCompleted(false);
-                attempt.setCancelled(false);
-                attempt.setValid(true);
-            }else{
-                attempt.setLevelReached(request.getAttempt().getLevelReached());
-                attempt.setAttemptScore(request.getAttempt().getAttemptScore());
-            }
-        }
-        attempt = attemptService.save(attempt);
+        log.info("REST request to update score for game Game with id " + request.getMatch().getGame().getId()+", attempt " + request.getAttempt().getId());
+        log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt().getId(), request.getAttempt().getLocalId(), request.getAttempt().getAttemptScore(), request.getAttempt().getLevelReached(), request.getMatch());
 
         if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getMatch().getSession().getId() + " already in use")).body(null);
@@ -319,15 +295,37 @@ public class GameResource {
         Match match = matchService.findOne(request.getMatchid());
         if(match == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
-        //elaborazione
+        //ottengo la lista di attempt dal client
+        Attempt serverAttempt;
+        int notSyncCount = 0, syncCount = 0, syncOnEndMatchCount = 0;
 
-        //controllo la lista di Attempt
-        //impostare log contare sync a 0 e sync a 1
+        if (request.getAttempts() != null && request.getAttempts().size() > 0){
+            //controllo l'attributo sync degli attempts
+            for (Attempt attempt : request.getAttempts()){
+                switch (attempt.getSync()){
+                    case notSync:
+                        //valore di default.
+                        serverAttempt = attemptService.syncAttempt(attempt.getId(), attempt.getLocalId(), attempt.getAttemptScore(), attempt.getLevelReached(), match);
+                        serverAttempt.setSync(AttemptSyncState.syncOnEndMatch);
+                        notSyncCount++;
+                        attemptService.save(serverAttempt);
+                        break;
+                    case sync:
+                        //client e server sono allineati
+                        //skippo
+                        syncCount++;
+                        break;
+                    case syncOnEndMatch:
+                        attemptService.syncAttempt(attempt.getId(), attempt.getLocalId(), attempt.getAttemptScore(), attempt.getLevelReached(), match);
+                        syncOnEndMatchCount++;
+                        break;
+                }
+            }
+        }
         match.getAttempts().size();
-
-        Attempt lastAttempt = null;
-        if(request.getAttemptid() != null)
-        	lastAttempt = attemptService.findOne(request.getAttemptid());
+        log.info("Parse attempts. Attempt synced: "+syncCount+" - Attempts not synced: "+notSyncCount+" - Attempts synced by the server: "+syncOnEndMatchCount);
+        Attempt lastAttempt = attemptService.syncAttempt(request.getAttemptid(), request.getLocalid(), request.getScore(), request.getLevel(), match);
+        lastAttempt.setSync(lastAttempt.getSync() == AttemptSyncState.notSync ? AttemptSyncState.syncOnEndMatch : lastAttempt.getSync());
 
         if(!match.getMatchToken().equals(request.getMatchtoken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);

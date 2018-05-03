@@ -66,19 +66,22 @@ angular.module('gatoradeApp')
       	url: rootPath +'/api/v2/play/attempt/score',
       	data: {
       	    attempt:attempt,
+            score: attempt.score,
+            level: attempt.level,
             match: match,
             matchtoken: matchtoken
         }
 	  })
   };
     //CLOSE ATTEMPT
-  this.endAttempt = function(gameId, attemptId, score, level, completed, endMatch, matchToken){
+  this.endAttempt = function(gameId, attemptId, localid, score, level, completed, endMatch, matchToken){
 	  return $http({
       	method: 'PUT',
       	url: rootPath +'/api/play/attempt/end',
       	data:{
         	gameid:gameId,
       		attemptid:attemptId,
+            localid: localid,
       		score:score,
       		level:level,
       		completed:completed,
@@ -89,7 +92,7 @@ angular.module('gatoradeApp')
   };
 
     //END MATCH
-    this.endMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken){
+    this.endMatch = function(gameId, playerId, token, matchId, attemptId, attemptLocalId, score, level, matchToken, attempts){
       return $http({
         method: 'PUT',
         url: rootPath + '/api/play/end',
@@ -99,9 +102,11 @@ angular.module('gatoradeApp')
           token:token,
           matchid:matchId,
           attemptid:attemptId,
+          localid: attemptLocalId,
           score:score,
           level:level,
-          matchtoken: matchToken
+          matchtoken: matchToken,
+          attempts: attempts
         }
       })
     }
@@ -154,7 +159,7 @@ angular.module('gatoradeApp')
   	    })
     };
 
-    this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken){
+    this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken, attempts){
         var http = new XMLHttpRequest();
         http.open("PUT", '/api/play/end', false);
         http.setRequestHeader("Content-type", "application/json");
@@ -167,6 +172,7 @@ angular.module('gatoradeApp')
     	dataPut.score = score;
     	dataPut.level = level;
     	dataPut.matchtoken = matchToken;
+    	dataPut.attempts = attempts;
 		http.send(JSON.stringify(dataPut));
     }
 
