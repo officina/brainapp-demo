@@ -1,5 +1,6 @@
 package cc.officina.gatorade.service.impl;
 
+import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.repository.AttemptRepository;
@@ -73,5 +74,46 @@ public class AttemptServiceImpl implements AttemptService{
     public void delete(Long id) {
         log.debug("Request to delete Attempt : {}", id);
         attemptRepository.delete(id);
+    }
+
+    /**
+     * Get one attempt by localId.
+     * @param localId local id
+     * @return one attempt
+     */
+    @Override
+    public Attempt findOneByLocalId(Long localId) {
+        log.debug("Request to get Attempt for localId: {}", localId);
+        return attemptRepository.getOneByLocalId(localId);
+    }
+
+    @Override
+    public Attempt syncAttempt(Long id, Long localId, Long score, String level, Match match) {
+        Attempt attempt;
+        if (id != null){
+            //attempt creato "online"
+            attempt = attemptRepository.findOne(id);
+            attempt.setLevelReached(level);
+            attempt.setAttemptScore(score);
+        }else{
+            //Cerco un attempt creato "offline" che sia già stato creato su gatorade
+            attempt = attemptRepository.getOneByLocalId(localId);
+            if (attempt == null){
+                //attempt creato "offline" e non ancora salvato su gatorade
+                attempt = new Attempt();
+                attempt.setLocalId(localId);
+                attempt.setMatch(match);
+                attempt.setAttemptScore(score);
+                attempt.setLevelReached(level);
+                attempt.setCompleted(false);
+                attempt.setCancelled(false);
+                attempt.setValid(true);
+            }else{
+                attempt.setLevelReached(level);
+                attempt.setAttemptScore(score);
+            }
+        }
+        attemptRepository.save(attempt);
+        return attempt;
     }
 }

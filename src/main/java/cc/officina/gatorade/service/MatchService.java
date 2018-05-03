@@ -64,4 +64,5 @@ public interface MatchService {
 	public List<Match> getMatchesByUserId(String userId);
 
 	public void deletePlayerActivities(String userId);
+	public void matchesRestore();
 }

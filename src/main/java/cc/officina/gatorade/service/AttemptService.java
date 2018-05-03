@@ -1,6 +1,7 @@
 package cc.officina.gatorade.service;
 
 import cc.officina.gatorade.domain.Attempt;
+import cc.officina.gatorade.domain.Match;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,4 +40,13 @@ public interface AttemptService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     *  Get the "localId" attempt
+     * @param localId local id
+     * @return the attempt
+     */
+    Attempt findOneByLocalId(Long localId);
+
+    Attempt syncAttempt(Long id, Long localId, Long score, String level, Match match);
 }

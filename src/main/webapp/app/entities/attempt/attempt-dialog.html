@@ -70,6 +70,20 @@
                 <input type="checkbox" name="valid" id="field_valid"
                           ng-model="vm.attempt.valid"/>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.attempt.localId" for="field_localId">Local Id</label>
+            <input type="number" class="form-control" name="localId" id="field_localId"
+                    ng-model="vm.attempt.localId"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.attempt.sync" for="field_sync">Sync</label>
+            <select class="form-control" name="sync" ng-model="vm.attempt.sync" id="field_sync">
+                <option value="notSync" data-translate="gatoradeApp.AttemptSyncState.notSync">notSync</option>
+                <option value="sync" data-translate="gatoradeApp.AttemptSyncState.sync">sync</option>
+                <option value="syncOnEndMatch" data-translate="gatoradeApp.AttemptSyncState.syncOnEndMatch">syncOnEndMatch</option>
+            </select>
+        </div>
 
         <div class="form-group">
             <label data-translate="gatoradeApp.attempt.match" for="field_match">Match</label>

@@ -1,5 +1,7 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.domain.Attempt;
+import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.dto.MatchDTO;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Match;
@@ -28,9 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing Match.
@@ -46,11 +46,13 @@ public class MatchResource {
     private final MatchService matchService;
     private final GamificationService gamificationService;
     private final ReportService reportService;
+    private final AttemptService attemptService;
 
-    public MatchResource(MatchService matchService, GamificationService gamificationService, ReportService reportService) {
+    public MatchResource(MatchService matchService, GamificationService gamificationService, ReportService reportService, AttemptService attemptService) {
         this.matchService = matchService;
         this.gamificationService = gamificationService;
         this.reportService = reportService;
+        this.attemptService = attemptService;
     }
 
     /**
@@ -174,12 +176,20 @@ public class MatchResource {
         reportService.matchError(id, userid, request);
         return ResponseEntity.ok().build();
     }
-    
+
     @DeleteMapping("/player-activities/user/{userId}")
     @Timed
     public ResponseEntity<Void> deletePlayerActivities(@PathVariable String userId) {
         log.debug("REST request to delete player activities: {}", userId);
         matchService.deletePlayerActivities(userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/matches/start-batch")
+    @Timed
+    public ResponseEntity<Void> startBatch() throws URISyntaxException {
+        log.info("REST request to start batch");
+        matchService.matchesRestore();
         return ResponseEntity.ok().build();
     }
 }

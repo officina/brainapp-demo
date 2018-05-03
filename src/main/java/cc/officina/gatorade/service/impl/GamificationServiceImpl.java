@@ -62,11 +62,7 @@ public class GamificationServiceImpl implements GamificationService{
 	public void init() {
 	   log.info("GamificationService init for " + poDomain);
 	   log.info("GamificationService init clientId " + poClientId);
-	   log.info("GamificationService init clientSecret " + poClientSecret);
 	   po = new PlayOff(poClientId, poClientSecret, null, "v2", poDomain);
-//	   log.info("Attivazione batch");
-//	   Timer task = new Timer();
-//	   task.schedule(new SessionTask(this), 0, interval*1000);
 	}
 
 	@Override
@@ -91,6 +87,7 @@ public class GamificationServiceImpl implements GamificationService{
 			try
 			{
 				response = po.post(path, params, requestBody);
+				match.setSendToPo(true);
 			}
 			catch(Exception e)
 			{
@@ -101,10 +98,14 @@ public class GamificationServiceImpl implements GamificationService{
 					init();
 					log.info("Run-action again");
 					response = po.post(path, params, requestBody);
+					match.setSendToPo(true);
 					log.debug(response.toString());
 				}
 			}
 		} catch (Exception e) {
+			//se passo in questo catch significa che l'invio verso po è nuovamente fallito e quindi devo mettere a false il relativo flag oltre che ad incrementare il numero di retry
+			match.setSendToPo(false);
+			match.setRetry(match.getRetry() + 1);
 			log.error("error for playerId = " + match.getUserId() + " and action_id = " + match.getGame().getActionId());
 			log.error(e.getMessage());
 			e.printStackTrace();
