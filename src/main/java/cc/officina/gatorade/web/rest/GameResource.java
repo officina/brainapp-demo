@@ -267,11 +267,10 @@ public class GameResource {
     @Timed
     @Transactional
     public ResponseEntity<MatchResponse> stopAttempt(@RequestBody Request request) {
-    	if(request.getAttemptid() == null)
-			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-    	log.info("REST request to end attemtp for game Game with id " + request.getGameid()+", attempt " + request.getAttemptid());
+    	log.info("REST request to end attemtp for game Game with id " + request.getGameid()+", attempt " + (request.getAttemptid() != null ? request.getAttemptid() : "created offline with localId: "+request.getLocalid()));
     	log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
-        Attempt attempt = attemptService.findOne(request.getAttemptid());
+        Attempt attempt = attemptService.syncAttempt(request.getAttemptid(), request.getLocalid(), request.getScore(), request.getLevel(), request.getMatch());
+
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
 
