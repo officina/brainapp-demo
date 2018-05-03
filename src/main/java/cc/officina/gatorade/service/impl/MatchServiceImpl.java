@@ -199,6 +199,8 @@ public class MatchServiceImpl implements MatchService{
         		}
         	}
         }
+        
+        //solo se sono rimasti pending dei matches salvo un report
         if(stillPending.size() > 0)
         {
         	log.debug("SAVE REPORT");
