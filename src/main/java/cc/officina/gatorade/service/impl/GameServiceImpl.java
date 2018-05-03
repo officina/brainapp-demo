@@ -1,6 +1,7 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.domain.*;
+import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.web.response.AttemptResponse;
@@ -11,6 +12,7 @@ import cc.officina.gatorade.repository.MatchRepository;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,6 +127,7 @@ public class GameServiceImpl implements GameService{
 	public AttemptResponse startAttempt(Game game, Match match) {
 		//TODO verificare presenza attempt già aperti e relativa logica da implementare
 		Attempt attempt = new Attempt();
+		attempt.setLocalId(new Date().getTime());
 		attempt.setMatch(match);
 		attempt.setStartAttempt(ZonedDateTime.now());
 		attempt.setLastUpdate(ZonedDateTime.now());
@@ -133,6 +136,7 @@ public class GameServiceImpl implements GameService{
 		attempt.setCompleted(false);
 		attempt.setCancelled(false);
 		attempt.setValid(true);
+		attempt.setSync(AttemptSyncState.notSync);
 		attemptRepository.saveAndFlush(attempt);
 		log.info("New attempt created with id = " + attempt.getId());
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
@@ -189,9 +193,7 @@ public class GameServiceImpl implements GameService{
 			lastAttempt.setCompleted(false);
 			lastAttempt.setLastUpdate(now);
 			lastAttempt.setStopAttempt(now);
-//			attemptRepository.saveAndFlush(lastAttempt);
 		}
-		match.setStop(now);
         match.setBestLevel(match.getMaxLevel());
         if (match.getGame().getType() == GameType.MINPOINT){
             match.setBestScore(Long.parseLong(match.getMinScore()));
@@ -200,8 +202,10 @@ public class GameServiceImpl implements GameService{
         }
 
         match.setElaborated(true);
-		match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
-        gamificationService.runAction(match);
+        match.setStop(now);
+        match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
+
+		gamificationService.runAction(match);
         matchRepository.saveAndFlush(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;

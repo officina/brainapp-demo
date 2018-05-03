@@ -3,7 +3,7 @@ apply plugin: 'com.moowork.node'
 apply plugin: 'com.moowork.gulp'
 
 ext {
-    logbackLoglevel = "INFO"
+    logbackLoglevel = "DEBUG"
 }
 
 dependencies {

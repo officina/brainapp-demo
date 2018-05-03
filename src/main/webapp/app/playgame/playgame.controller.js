@@ -28,7 +28,7 @@
         var playtoken = $stateParams.playtoken;
         var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
         var useLevels = false;
-        
+
         var setupOffline = function(){
         	$scope.showGame = false;
         	$scope.message1 = "Si è verificato un problema con la tua connessione";
@@ -36,19 +36,46 @@
         	$scope.errorText = $rootScope.finalError;
 	    	$scope.reportText = $rootScope.wrapperMemory;
         }
-        
-        var manageError = function(error, why){
-        	removeEvent(eventName, $scope.handle);
+
+        var manageError = function (event, attempt, error, why){
+
         	$rootScope.wrapperMemory = $scope.wrapperMemory;
         	$rootScope.finalError = error;
-        	console.log(navigator.online);
         	if(navigator.onLine)
         	{
+                removeEvent(eventName, $scope.handle);
         		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : why});
         	}
         	else
         	{
-        		setupOffline();
+                switch (event){
+                    case "START_ATTEMPT":
+                        console.log('MANAGE OFFLINE: START_ATTEMPT');
+                        startLocalAttempt();
+                        break;
+                    case "STOP_ATTEMPT": // è un cancel attempt
+                        console.log('MANAGE OFFLINE: STOP_ATTEMPT');
+                        attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                        break;
+                    case "ATTEMPT_ENDED":
+                        console.log('MANAGE OFFLINE: ATTEMPT_ENDED');
+                        attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                        break;
+                    case "ATTEMPT_RESTARTED":
+                        console.log('MANAGE OFFLINE: ATTEMPT_RESTARTED');
+                        attemptLocalRestarted(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                        break;
+                    case "GAME_LOADED":
+                        console.log('MANAGE OFFLINE: GAME_LOAD');
+                        break;
+                    case "GAME_UNLOADED":
+                        console.log('MANAGE OFFLINE: GAME_UNLOAD');
+                        break;
+                    default:
+                        console.log(event);
+                        setupOffline();
+                        break;
+                }
         	}
         }
 
@@ -98,16 +125,18 @@
         	console.log('locationChangeStart');
         	PlaygameService.report($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.wrapperMemory);
         	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
-					$stateParams.playtoken, 
-					$scope.wrapperMemory.match.id, 
+					$stateParams.playtoken,
+					$scope.wrapperMemory.match.id,
 					$scope.wrapperMemory.currAttempt.id,
-					$scope.wrapperMemory.currAttempt.score, 
-					$scope.wrapperMemory.currAttempt.level);
+					$scope.wrapperMemory.currAttempt.attemptScore,
+					$scope.wrapperMemory.currAttempt.level,
+                    $scope.matchToken,
+                    $scope.wrapperMemory.attempts);
             		removeEvent(eventName, $scope.handle);
         });
 
         $scope.game = {url:"htmlgames/loading.html"}
-        
+
         $scope.$on('timer-tick', function (event, args) {
             if (args.seconds !== undefined){
                 var myEl = angular.element( document.querySelector( '#game-header' ) );
@@ -119,8 +148,7 @@
                 if($scope.wrapperMemory.currAttempt != undefined && tk == 0)
                 {
                 	console.log('score/level update vs server')
-                	PlaygameService.updateAttemptScore($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id,
-                			$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.score, $scope.wrapperMemory.currAttempt.level,$scope.matchToken).then(function(response){
+                	PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function(response){
         	    		console.log('Score/Level updated');
         	    	})
                 	.catch(function(error) {
@@ -162,7 +190,7 @@
 	    		{
 	        		why = "invalidSession";
 	    		}
-	        	manageError(error, why);
+	        	manageError("CREATE_MATCH", null, error, why);
 	        });
         })
         .catch(function(error) {
@@ -171,8 +199,8 @@
     		{
         		why = "invalidSession";
     		}
-        	
-        	manageError(error, why);
+
+        	manageError("GAME_INIT", null, error, why);
         });
 
         var startAttempt = function(){
@@ -184,9 +212,9 @@
         	        refreshWrapperMemory(response.data.match,response.data.attempt);
     	        })
     	        .catch(function(error) {
-    	        	manageError(error, "genericError");
+    	        	manageError("START_ATTEMPT", null, error, "genericError");
     	        });
-    	        
+
         	}
         	else
         	{
@@ -196,17 +224,54 @@
         			refreshWrapperMemory(response.data.match,response.data.attempt);
       	        })
 	      	   .catch(function(error) {
-	      		   manageError(error, "genericError");
+	      		   manageError("START_ATTEMPT", null, error, "genericError");
 	  	        });
         	}
         	$scope.$broadcast('timer-start');
+        };
+
+        var startLocalAttempt = function(){
+            var now = Date.now();
+            var newAttempt = {};
+            if($scope.wrapperMemory.match == undefined) {
+                console.log("creo attempt locale SENZA match");
+                newAttempt = {
+                    "localId": now,
+                    "match": "",
+                    "startAttempt": now,
+                    "lastUpdate": now,
+                    "attemptScore": 0,
+                    "levelReached": "0",
+                    "completed": false,
+                    "cancelled": false,
+                    "valid": true,
+                    "sync": 0
+                };
+            } else {
+                console.log("creo attempt CON match");
+
+                newAttempt = {
+                    "localId": now,
+                    "match": $scope.wrapperMemory.match,
+                    "startAttempt": now,
+                    "lastUpdate": now,
+                    "attemptScore": 0,
+                    "levelReached": "0",
+                    "completed": false,
+                    "cancelled": false,
+                    "valid": true,
+                    "sync": 0
+                };
+            }
+            refreshWrapperMemory($scope.wrapperMemory.match, newAttempt)
+            $scope.$broadcast('timer-start');
         };
 
 	    var updateAttemptScore = function(score, level){
 	    	if($scope.wrapperMemory.currAttempt == undefined)
 	    		return;
 	    	$scope.updateCount = $scope.updateCount + 1;
-	    	$scope.wrapperMemory.currAttempt.score = score;
+	    	$scope.wrapperMemory.currAttempt.attemptScore = score;
 	    	$scope.wrapperMemory.currAttempt.level = level;
 	    };
 
@@ -220,19 +285,43 @@
 	    		trueScore = score;
 	    	}
 	    	console.log('Attempt ended');
-	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken)
+	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.localId,trueScore,trueLevel,completed,false,$scope.matchToken)
 	    	.then(function(response){
 	    		//chiuso l'attempt, il current è null
-	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now()).toLocaleString();
+	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
+	    		$scope.wrapperMemory.currAttempt.sync = 1;
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt ended inside callback');
 	    	})
 	    	.catch(function(error) {
-	    		manageError(error, "genericError");
+	    	    var data = {
+	    	        "score": score,
+                    "level": level,
+                    "completed": completed
+                };
+
+	    		manageError("ATTEMPT_ENDED", data, error, "genericError");
   	        });
-	    }
-	    
+	    };
+
+	    var attemptLocalEnded = function (score, level, completed, endDate) {
+            var trueLevel = 0;
+            var trueScore = 0;
+            if(useLevels) {
+                trueLevel = score;
+            }
+            else{
+                trueScore = score;
+            }
+            console.log('Attempt local ended');
+            $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
+            $scope.wrapperMemory.currAttempt.level = trueLevel;
+            $scope.wrapperMemory.currAttempt.completed = completed;
+            $scope.wrapperMemory.currAttempt.endmatch = false;
+            $scope.wrapperMemory.currAttempt.lastUpdate = new Date(Date.now());
+        };
+
 	    var attemptRestarted = function(score, level, completed, endDate){
 	    	var trueLevel = 0;
 	    	var trueScore = 0;
@@ -243,10 +332,11 @@
 	    		trueScore = score;
 	    	}
 	    	console.log('Attempt restarted');
-	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken)
+	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.localId,trueScore,trueLevel,completed,false,$scope.matchToken)
 	    	.then(function(response){
 	    		//chiuso l'attempt, il current è null
-	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now()).toLocaleString();
+	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
+                $scope.wrapperMemory.currAttempt.sync = 1;
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt restarted inside callback');
@@ -254,35 +344,52 @@
 	    		startAttempt();
 	    	})
 	    	.catch(function(error) {
-	    		manageError(error, "genericError");
+	    	    var data = {
+	    	        "score": score,
+                    "level": level,
+                    "completed": completed
+                };
+	    	    manageError("ATTEMPT_RESTARTED", data, error, "genericError");
 	        });
-	    }
-	    
+	    };
+
+        var attemptLocalRestarted = function (score, level, completed, endDate) {
+            attemptLocalEnded(score, level, completed, endDate);
+            $scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
+            $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+            $scope.wrapperMemory.currAttempt = undefined;
+            console.log('Attempt restarted locally');
+            console.log($scope.wrapperMemory);
+            startAttempt();
+        };
+
 	    var refreshWrapperMemory = function(match, attempt)
 	    {
 	    	$scope.wrapperMemory.match = match;
 			$scope.wrapperMemory.currAttempt = attempt;
-			$scope.wrapperMemory.currAttempt.score = 0;
+			$scope.wrapperMemory.currAttempt.attemptScore = 0;
 	        $scope.wrapperMemory.currAttempt.level = 0;
 //	        $scope.wrapperMemory.attempts.push(attempt);
-	    }
+	    };
 
 	   $scope.matchEnded = function(){
 		   	console.log('Inside end match');
 		   	removeEvent(eventName, $scope.handle);
 	    	var currAttemptId = null;
+            var currAttemptLocalId = null;
 	    	var currAttemptScore = null;
 	    	var currAttemptLevel = null;
 	    	if($scope.wrapperMemory.currAttempt != undefined)
 	    	{
-	    		var currAttemptId = $scope.wrapperMemory.currAttempt.id;
-		    	var currAttemptScore = $scope.wrapperMemory.currAttempt.score;
-		    	var currAttemptLevel = $scope.wrapperMemory.currAttempt.level;
+	    		currAttemptId = $scope.wrapperMemory.currAttempt.id;
+                currAttemptLocalId = $scope.wrapperMemory.currAttempt.localId;
+		    	currAttemptScore = $scope.wrapperMemory.currAttempt.attemptScore;
+		    	currAttemptLevel = $scope.wrapperMemory.currAttempt.level;
 	    	}
 	    	//eseguo prima endmatch
-	    	PlaygameService.endMatch($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, currAttemptId, currAttemptScore, currAttemptLevel,$scope.matchToken)
+	    	PlaygameService.endMatch($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, currAttemptId, currAttemptLocalId, currAttemptScore, currAttemptLevel,$scope.matchToken, $scope.wrapperMemory.attempts)
 	    	.then(function(response){
-	    		// se endmatch va a buon fine eseguo l'invio del report 
+	    		// se endmatch va a buon fine eseguo l'invio del report
 	    		PlaygameService.reportAsync($scope.wrapperMemory.match.id,$stateParams.playtoken, $scope.wrapperMemory)
     	    	.then(function(response){
     	    		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : "timeout"});
@@ -294,9 +401,9 @@
 		    	});
 	    	})
 	    	.catch(function(error) {
-	    		manageError(error, "genericError");
+	    		manageError("MATCH_ENDED", null, error, "genericError");
   	        });
-	    }
+	    };
 
 	    $scope.countDownCallbackFunction = function() {
 	    	$scope.matchEnded();
@@ -312,29 +419,31 @@
         });
 
         $(window).bind('unload', function() {
-        	$scope.wrapperMemory.match.stop = new Date(Date.now()).toLocaleString();
+        	$scope.wrapperMemory.match.stop = new Date(Date.now());
         	PlaygameService.report($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.wrapperMemory);
         	if($scope.wrapperMemory.currAttempt == undefined)
 	    	{
         		PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
-						$stateParams.playtoken, 
-						$scope.wrapperMemory.match.id, 
+						$stateParams.playtoken,
+						$scope.wrapperMemory.match.id,
 						undefined,
-						undefined, 
 						undefined,
-						$scope.matchToken);
+						undefined,
+						$scope.matchToken,
+                        $scope.wrapperMemory.attempts);
 	    	}
         	else
         	{
 	        	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
-						$stateParams.playtoken, 
-						$scope.wrapperMemory.match.id, 
+						$stateParams.playtoken,
+						$scope.wrapperMemory.match.id,
 						$scope.wrapperMemory.currAttempt.id,
-						$scope.wrapperMemory.currAttempt.score, 
+						$scope.wrapperMemory.currAttempt.attemptScore,
 						$scope.wrapperMemory.currAttempt.level,
-						$scope.matchToken);
+						$scope.matchToken,
+                        $scope.wrapperMemory.attempts);
         	}
-        	
+
             if(typeof beforeUnloadTimeout != 'undefined' && beforeUnloadTimeout != 0) {
                 clearTimeout(beforeUnloadTimeout);
             }

@@ -1,13 +1,18 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.ReportService;
+import cc.officina.gatorade.service.impl.MatchServiceImpl.TypeOfStillPending;
+import org.json.JSONArray;
 import cc.officina.gatorade.domain.Report;
 import cc.officina.gatorade.domain.ReportRequest;
 import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.repository.ReportRepository;
 
 import java.time.ZonedDateTime;
+import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,6 +31,8 @@ public class ReportServiceImpl implements ReportService{
     private final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
 
     private final ReportRepository reportRepository;
+
+    public static String BatchUser = "BATCH";
 
     public ReportServiceImpl(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
@@ -79,7 +86,7 @@ public class ReportServiceImpl implements ReportService{
         log.debug("Request to delete Report : {}", id);
         reportRepository.delete(id);
     }
-    
+
     @Override
 	public Report matchReport(Long id, String userid, ReportRequest request) {
 		Report report = new Report();
@@ -92,7 +99,7 @@ public class ReportServiceImpl implements ReportService{
         reportRepository.save(report);
         return report;
 	}
-    
+
     @Override
 	public Report matchError(Long id, String userid, ReportRequest request) {
 		Report report = new Report();
@@ -104,6 +111,47 @@ public class ReportServiceImpl implements ReportService{
         report.setMatch_id(id);
         reportRepository.save(report);
         return report;
+	}
+
+    @Override
+    public Report matchAnomalousToken(Long id, String userid, String json) {
+        Report report = new Report();
+        report.setJson(json);
+        report.setTimestamp(ZonedDateTime.now());
+        report.setType(ReportType.AnomalousMatchToken);
+        report.setUserid(userid);
+        report.setMatch_id(id);
+        return report;
+    }
+
+    @Override
+	public void saveEndBatch(Map<Long, TypeOfStillPending> stillPending)
+	{
+		Report report = new Report();
+		report.setTimestamp(ZonedDateTime.now());
+		report.setType(ReportType.ResumeReport);
+		report.setUserid(BatchUser);
+
+		JSONArray json = new JSONArray();
+
+		for (Map.Entry<Long, TypeOfStillPending> entry : stillPending.entrySet())
+		{
+		    JSONObject obj = new JSONObject();
+		    try
+			{
+				obj.append("matchId", entry.getKey());
+				obj.append("type", entry.getValue());
+			    json.put(obj);
+			}
+			catch (JSONException e)
+			{
+				log.error(e.getMessage());
+				e.printStackTrace();
+			}
+		}
+
+		report.setJson(json.toString());
+		reportRepository.save(report);
 	}
 
 }

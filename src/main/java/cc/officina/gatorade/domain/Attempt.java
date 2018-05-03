@@ -1,5 +1,6 @@
 package cc.officina.gatorade.domain;
 
+import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -25,6 +26,9 @@ public class Attempt implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Column(name = "local_id")
+    private Long localId;
+
     @Column(name = "attempt_score")
     private Long attemptScore;
 
@@ -40,15 +44,21 @@ public class Attempt implements Serializable {
     @Column(name = "last_update")
     private ZonedDateTime lastUpdate;
 
+    //per gestire casi d'attempt "aborted", non viene utilizzato TODO Rimuovere
     @Column(name = "cancelled")
     private Boolean cancelled;
 
+    //indica se l'attempt è completo
     @Column(name = "completed")
     private Boolean completed;
 
+    //indica la validità dell'attempt, viene modificata all'eliminazione del match corrispondente
     @Column(name = "valid")
     private Boolean valid;
-    
+
+    @Column(name = "sync")
+    private AttemptSyncState sync;
+
     @ManyToOne
     @JsonIgnore
     private Match match;
@@ -59,6 +69,14 @@ public class Attempt implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(Long localId) {
+        this.localId = localId;
     }
 
     public Long getAttemptScore() {
@@ -164,7 +182,7 @@ public class Attempt implements Serializable {
     public void setMatch(Match match) {
         this.match = match;
     }
-    
+
     public Boolean getValid() {
 		return valid;
 	}
@@ -181,7 +199,15 @@ public class Attempt implements Serializable {
 		return completed;
 	}
 
-	@Override
+    public AttemptSyncState getSync() {
+        return sync;
+    }
+
+    public void setSync(AttemptSyncState sync) {
+        this.sync = sync;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -46,6 +46,7 @@
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('attempt');
+                    $translatePartialLoader.addPart('attemptSyncState');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -68,6 +69,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('attempt');
+                    $translatePartialLoader.addPart('attemptSyncState');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'Attempt', function($stateParams, Attempt) {
@@ -132,6 +134,8 @@
                                 cancelled: null,
                                 completed: null,
                                 valid: null,
+                                localId: null,
+                                sync: null,
                                 id: null
                             };
                         }
