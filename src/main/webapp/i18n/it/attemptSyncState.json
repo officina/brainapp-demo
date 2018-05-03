@@ -1,0 +1,10 @@
+{
+    "gatoradeApp": {
+        "AttemptSyncState" : {
+            "null": "",
+            "notSync": "notSync",
+            "sync": "sync",
+            "syncOnEndMatch": "syncOnEndMatch"
+        }
+    }
+}

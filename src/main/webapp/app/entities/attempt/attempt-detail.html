@@ -40,6 +40,10 @@
         <dd>
             <span>{{vm.attempt.localId}}</span>
         </dd>
+        <dt><span data-translate="gatoradeApp.attempt.sync">Sync</span></dt>
+        <dd>
+            <span data-translate="{{'gatoradeApp.AttemptSyncState.' + vm.attempt.sync}}">{{vm.attempt.sync}}</span>
+        </dd>
         <dt><span data-translate="gatoradeApp.attempt.match">Match</span></dt>
         <dd>
             <a ui-sref="match-detail({id:vm.attempt.match.id})">{{vm.attempt.match.id}}</a>

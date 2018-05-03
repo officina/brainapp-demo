@@ -113,7 +113,18 @@ public class ReportServiceImpl implements ReportService{
         return report;
 	}
 
-	@Override
+    @Override
+    public Report matchAnomalousToken(Long id, String userid, String json) {
+        Report report = new Report();
+        report.setJson(json);
+        report.setTimestamp(ZonedDateTime.now());
+        report.setType(ReportType.AnomalousMatchToken);
+        report.setUserid(userid);
+        report.setMatch_id(id);
+        return report;
+    }
+
+    @Override
 	public void saveEndBatch(Map<Long, TypeOfStillPending> stillPending)
 	{
 		Report report = new Report();

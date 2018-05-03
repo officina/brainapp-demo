@@ -44,9 +44,10 @@ public interface ReportService {
      *  @param id the id of the entity
      */
     void delete(Long id);
-    
+
     public Report matchReport(Long id, String userid, ReportRequest request);
     public Report matchError(Long id, String userid, ReportRequest request);
+    public Report matchAnomalousToken(Long id, String userid, String json);
 
 	public void saveEndBatch(Map<Long, TypeOfStillPending> stillPending);
 }

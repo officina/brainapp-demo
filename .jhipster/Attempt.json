@@ -44,6 +44,11 @@
         {
             "fieldName": "localId",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "sync",
+            "fieldType": "AttemptSyncState",
+            "fieldValues": "notSync,sync,syncOnEndMatch"
         }
     ],
     "changelogDate": "20170627085006",

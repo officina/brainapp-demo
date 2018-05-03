@@ -129,7 +129,9 @@
 					$scope.wrapperMemory.match.id,
 					$scope.wrapperMemory.currAttempt.id,
 					$scope.wrapperMemory.currAttempt.score,
-					$scope.wrapperMemory.currAttempt.level);
+					$scope.wrapperMemory.currAttempt.level,
+                    $scope.matchToken,
+                    $scope.wrapperMemory.attempts);
             		removeEvent(eventName, $scope.handle);
         });
 
@@ -242,7 +244,8 @@
                     "levelReached": "0",
                     "completed": false,
                     "cancelled": false,
-                    "valid": true
+                    "valid": true,
+                    "sync": 0
                 };
             } else {
                 console.log("creo attempt CON match");
@@ -256,7 +259,8 @@
                     "levelReached": "0",
                     "completed": false,
                     "cancelled": false,
-                    "valid": true
+                    "valid": true,
+                    "sync": 0
                 };
             }
             refreshWrapperMemory($scope.wrapperMemory.match, newAttempt)
@@ -281,11 +285,11 @@
 	    		trueScore = score;
 	    	}
 	    	console.log('Attempt ended');
-	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken)
+	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.localId,trueScore,trueLevel,completed,false,$scope.matchToken)
 	    	.then(function(response){
 	    		//chiuso l'attempt, il current è null
-	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now()).toLocaleString();
-	    		$scope.wrapperMemory.currAttempt.sync = true;
+	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
+	    		$scope.wrapperMemory.currAttempt.sync = 1;
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt ended inside callback');
@@ -315,7 +319,7 @@
             $scope.wrapperMemory.currAttempt.level = trueLevel;
             $scope.wrapperMemory.currAttempt.completed = completed;
             $scope.wrapperMemory.currAttempt.endmatch = false;
-            $scope.wrapperMemory.currAttempt.lastUpdate = new Date(Date.now()).toLocaleString();
+            $scope.wrapperMemory.currAttempt.lastUpdate = new Date(Date.now());
         };
 
 	    var attemptRestarted = function(score, level, completed, endDate){
@@ -331,7 +335,7 @@
 	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken)
 	    	.then(function(response){
 	    		//chiuso l'attempt, il current è null
-	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now()).toLocaleString();
+	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt restarted inside callback');
@@ -350,7 +354,7 @@
 
         var attemptLocalRestarted = function (score, level, completed, endDate) {
             attemptLocalEnded(score, level, completed, endDate);
-            $scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now()).toLocaleString();
+            $scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
             $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
             $scope.wrapperMemory.currAttempt = undefined;
             console.log('Attempt restarted locally');
@@ -371,16 +375,18 @@
 		   	console.log('Inside end match');
 		   	removeEvent(eventName, $scope.handle);
 	    	var currAttemptId = null;
+            var currAttemptLocalId = null;
 	    	var currAttemptScore = null;
 	    	var currAttemptLevel = null;
 	    	if($scope.wrapperMemory.currAttempt != undefined)
 	    	{
-	    		var currAttemptId = $scope.wrapperMemory.currAttempt.id;
-		    	var currAttemptScore = $scope.wrapperMemory.currAttempt.score;
-		    	var currAttemptLevel = $scope.wrapperMemory.currAttempt.level;
+	    		currAttemptId = $scope.wrapperMemory.currAttempt.id;
+                currAttemptLocalId = $scope.wrapperMemory.currAttempt.localId;
+		    	currAttemptScore = $scope.wrapperMemory.currAttempt.score;
+		    	currAttemptLevel = $scope.wrapperMemory.currAttempt.level;
 	    	}
 	    	//eseguo prima endmatch
-	    	PlaygameService.endMatch($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, currAttemptId, currAttemptScore, currAttemptLevel,$scope.matchToken)
+	    	PlaygameService.endMatch($scope.wrapperMemory.game.id,"",$stateParams.playtoken, $scope.wrapperMemory.match.id, currAttemptId, currAttemptLocalId, currAttemptScore, currAttemptLevel,$scope.matchToken, $scope.wrapperMemory.attempts)
 	    	.then(function(response){
 	    		// se endmatch va a buon fine eseguo l'invio del report
 	    		PlaygameService.reportAsync($scope.wrapperMemory.match.id,$stateParams.playtoken, $scope.wrapperMemory)
@@ -412,7 +418,7 @@
         });
 
         $(window).bind('unload', function() {
-        	$scope.wrapperMemory.match.stop = new Date(Date.now()).toLocaleString();
+        	$scope.wrapperMemory.match.stop = new Date(Date.now());
         	PlaygameService.report($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.wrapperMemory);
         	if($scope.wrapperMemory.currAttempt == undefined)
 	    	{
@@ -422,7 +428,8 @@
 						undefined,
 						undefined,
 						undefined,
-						$scope.matchToken);
+						$scope.matchToken,
+                        $scope.wrapperMemory.attempts);
 	    	}
         	else
         	{
@@ -432,7 +439,8 @@
 						$scope.wrapperMemory.currAttempt.id,
 						$scope.wrapperMemory.currAttempt.score,
 						$scope.wrapperMemory.currAttempt.level,
-						$scope.matchToken);
+						$scope.matchToken,
+                        $scope.wrapperMemory.attempts);
         	}
 
             if(typeof beforeUnloadTimeout != 'undefined' && beforeUnloadTimeout != 0) {

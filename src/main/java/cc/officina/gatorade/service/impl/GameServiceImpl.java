@@ -1,6 +1,7 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.domain.*;
+import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.web.response.AttemptResponse;
@@ -135,6 +136,7 @@ public class GameServiceImpl implements GameService{
 		attempt.setCompleted(false);
 		attempt.setCancelled(false);
 		attempt.setValid(true);
+		attempt.setSync(AttemptSyncState.notSync);
 		attemptRepository.saveAndFlush(attempt);
 		log.info("New attempt created with id = " + attempt.getId());
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
@@ -202,7 +204,7 @@ public class GameServiceImpl implements GameService{
         match.setElaborated(true);
         match.setStop(now);
         match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
-        
+
 		gamificationService.runAction(match);
         matchRepository.saveAndFlush(match);
 		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
