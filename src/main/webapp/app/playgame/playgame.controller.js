@@ -41,7 +41,7 @@
 
         	$rootScope.wrapperMemory = $scope.wrapperMemory;
         	$rootScope.finalError = error;
-        	if(navigator.online)
+        	if(navigator.onLine)
         	{
                 removeEvent(eventName, $scope.handle);
         		$state.go("ended", { "gameid": $stateParams.gameid, "playtoken": $stateParams.playtoken, "sessionid": $stateParams.extsessionid, "why" : why});
@@ -128,7 +128,7 @@
 					$stateParams.playtoken,
 					$scope.wrapperMemory.match.id,
 					$scope.wrapperMemory.currAttempt.id,
-					$scope.wrapperMemory.currAttempt.score,
+					$scope.wrapperMemory.currAttempt.attemptScore,
 					$scope.wrapperMemory.currAttempt.level,
                     $scope.matchToken,
                     $scope.wrapperMemory.attempts);
@@ -271,7 +271,7 @@
 	    	if($scope.wrapperMemory.currAttempt == undefined)
 	    		return;
 	    	$scope.updateCount = $scope.updateCount + 1;
-	    	$scope.wrapperMemory.currAttempt.score = score;
+	    	$scope.wrapperMemory.currAttempt.attemptScore = score;
 	    	$scope.wrapperMemory.currAttempt.level = level;
 	    };
 
@@ -315,7 +315,7 @@
                 trueScore = score;
             }
             console.log('Attempt local ended');
-            $scope.wrapperMemory.currAttempt.score = trueScore;
+            $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
             $scope.wrapperMemory.currAttempt.level = trueLevel;
             $scope.wrapperMemory.currAttempt.completed = completed;
             $scope.wrapperMemory.currAttempt.endmatch = false;
@@ -332,10 +332,11 @@
 	    		trueScore = score;
 	    	}
 	    	console.log('Attempt restarted');
-	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id,trueScore,trueLevel,completed,false,$scope.matchToken)
+	    	PlaygameService.endAttempt(gameId,$scope.wrapperMemory.currAttempt.id, $scope.wrapperMemory.currAttempt.localId,trueScore,trueLevel,completed,false,$scope.matchToken)
 	    	.then(function(response){
 	    		//chiuso l'attempt, il current è null
 	    		$scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
+                $scope.wrapperMemory.currAttempt.sync = 1;
 	    		$scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
 	    		$scope.wrapperMemory.currAttempt = undefined;
 	    		console.log('Attempt restarted inside callback');
@@ -366,7 +367,7 @@
 	    {
 	    	$scope.wrapperMemory.match = match;
 			$scope.wrapperMemory.currAttempt = attempt;
-			$scope.wrapperMemory.currAttempt.score = 0;
+			$scope.wrapperMemory.currAttempt.attemptScore = 0;
 	        $scope.wrapperMemory.currAttempt.level = 0;
 //	        $scope.wrapperMemory.attempts.push(attempt);
 	    };
@@ -382,7 +383,7 @@
 	    	{
 	    		currAttemptId = $scope.wrapperMemory.currAttempt.id;
                 currAttemptLocalId = $scope.wrapperMemory.currAttempt.localId;
-		    	currAttemptScore = $scope.wrapperMemory.currAttempt.score;
+		    	currAttemptScore = $scope.wrapperMemory.currAttempt.attemptScore;
 		    	currAttemptLevel = $scope.wrapperMemory.currAttempt.level;
 	    	}
 	    	//eseguo prima endmatch
@@ -437,7 +438,7 @@
 						$stateParams.playtoken,
 						$scope.wrapperMemory.match.id,
 						$scope.wrapperMemory.currAttempt.id,
-						$scope.wrapperMemory.currAttempt.score,
+						$scope.wrapperMemory.currAttempt.attemptScore,
 						$scope.wrapperMemory.currAttempt.level,
 						$scope.matchToken,
                         $scope.wrapperMemory.attempts);
