@@ -297,19 +297,12 @@ public class GameResource {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
         //ottengo la lista di attempt dal client
         Attempt serverAttempt;
-        int notSyncCount = 0, syncCount = 0, syncOnEndMatchCount = 0;
+        int notSyncCount = 0, syncCount = 0, syncedOnEndMatchCount = 0;
 
         if (request.getAttempts() != null && request.getAttempts().size() > 0){
             //controllo l'attributo sync degli attempts
             for (Attempt attempt : request.getAttempts()){
                 switch (attempt.getSync()){
-                    case notSync:
-                        //valore di default.
-                        serverAttempt = attemptService.syncAttempt(attempt.getId(), attempt.getLocalId(), attempt.getAttemptScore(), attempt.getLevelReached(), match);
-                        serverAttempt.setSync(AttemptSyncState.syncOnEndMatch);
-                        notSyncCount++;
-                        attemptService.save(serverAttempt);
-                        break;
                     case sync:
                         //client e server sono allineati
                         //skippo
@@ -317,15 +310,27 @@ public class GameResource {
                         break;
                     case syncOnEndMatch:
                         attemptService.syncAttempt(attempt.getId(), attempt.getLocalId(), attempt.getAttemptScore(), attempt.getLevelReached(), match);
-                        syncOnEndMatchCount++;
+                        syncedOnEndMatchCount++;
+                        break;
+                    default:
+                        //case notSync:
+                        //valore di default, se "sync" è nullo o notSync
+                        serverAttempt = attemptService.syncAttempt(attempt.getId(), attempt.getLocalId(), attempt.getAttemptScore(), attempt.getLevelReached(), match);
+                        serverAttempt.setSync(AttemptSyncState.syncOnEndMatch);
+                        notSyncCount++;
+                        attemptService.save(serverAttempt);
                         break;
                 }
             }
         }
-        match.getAttempts().size();
-        log.info("Parse attempts. Attempt synced: "+syncCount+" - Attempts not synced: "+notSyncCount+" - Attempts synced by the server: "+syncOnEndMatchCount);
+        //synced from client = sincati dal client quando viene fatto l'end attempt online
+        //Attempts not synced = attempts che sono stati chiusi offline, o non sono stati chiusi.
+        //Attempts synced at end match = attempts che sono stati aggiornati lato server. tutti quelli che arrivano con stato notSync.
+        log.info("Match id: "+match.getId()+" Total attempts: "+match.getAttempts().size()+" - Attempts synced from client: "+syncCount+" - Attempts not synced: "+notSyncCount+" - Attempts synced at end match: "+syncedOnEndMatchCount);
         Attempt lastAttempt = attemptService.syncAttempt(request.getAttemptid(), request.getLocalid(), request.getScore(), request.getLevel(), match);
-        lastAttempt.setSync(lastAttempt.getSync() == AttemptSyncState.notSync ? AttemptSyncState.syncOnEndMatch : lastAttempt.getSync());
+        if (lastAttempt.getSync() == null || lastAttempt.getSync() == AttemptSyncState.notSync){
+            lastAttempt.setSync(AttemptSyncState.syncOnEndMatch);
+        }
 
         if(!match.getMatchToken().equals(request.getMatchtoken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
