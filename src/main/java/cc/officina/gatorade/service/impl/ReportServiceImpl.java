@@ -136,7 +136,6 @@ public class ReportServiceImpl implements ReportService{
 
 		for (Map.Entry<Long, TypeOfStillPending> entry : stillPending.entrySet())
 		{
-		    System.out.println(entry.getKey() + "/" + entry.getValue());
 		    JSONObject obj = new JSONObject();
 		    try
 			{

@@ -45,7 +45,7 @@ public class MatchServiceImpl implements MatchService{
     @Value("${elaboration.maxRetry}")
     private Long maxRetry;
     
-    public enum TypeOfStillPending  {NO_ATTEMPT, RESTORE_FAIL, NOT_ELABORATED, TO_PO_FAIL};
+    public enum TypeOfStillPending  {NO_ATTEMPT, RESTORE_FAIL, NOT_ELABORATED, TO_PO_FAIL, SENT_TO_PO_NOT_ELABORATED};
 
     public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GameService gameService, ReportService reportService) {
         this.matchRepository = matchRepository;
@@ -139,6 +139,7 @@ public class MatchServiceImpl implements MatchService{
     public void matchesRestore() {
         log.info("START - Batch for match restore");
         List<Match> problems = matchRepository.fetchPendingMatches(maxRetry);
+        // la mappa stillPending mi serve per salvare il report a fine batch, l rpeort viene salvato solo nel caso in cui ci siano matches che non sono riuscito a risolvere
         Map<Long,TypeOfStillPending> stillPending = new HashMap<>();
         log.info("Size of pending matches: " + problems.size());
         for(Match m : problems)
@@ -155,22 +156,45 @@ public class MatchServiceImpl implements MatchService{
         	//se è scaduta la potenziale durata del match devo tentare di recuperarlo
         	if(m.getFirstStartAttempt().plusSeconds(durationInSeconds).isBefore(ZonedDateTime.now()))
         	{
+        		//caso in cui il match non è stato elaborato e nemmeno inviato a po, ad esempio client offline non recuperato o problemi lato client
         		if(m.getElaborated() == false && m.getSendToPo() == false)
         		{
+        			//per ora lo indico come stillPending
         			stillPending.put(m.getId(), TypeOfStillPending.NOT_ELABORATED);
+        			//lo marco come anomalo in modo da evidenziarlo lato console admin e non elaborarlo nuovamente alla prossima esecuzione del batch
         			m.setAnomalous(true);
         			matchRepository.save(m);
         			continue;
         		}
         		
+        		//caso di match elaborato ma non inviato a po, ad esempio pe run player not found
         		if(m.getElaborated() == true && m.getSendToPo() == false)
         		{
+        			//mi serve marcarlo come non elborato per eseguire l'endMatch
         			m.setElaborated(false);
+        			//eseguo l'end match
         			gameService.endMatch(m.getGame(), m, null, null, null);
+        			//entro nell'if nel caso in cui sia fallito nuovamente l'invio a playoff
         			if(!m.getSendToPo())
         			{
+        				//incremento il retry
+        				m.setRetry(m.getRetry() + 1);
+        				//registro nella mappagdegli stillPending
         				stillPending.put(m.getId(), TypeOfStillPending.TO_PO_FAIL);
         			}
+        			//salvo il match
+        			matchRepository.save(m);
+        			continue;
+        		}
+        		
+        		//caso considerato per completare i casi di and, ma non si dovrebbe poter presentare
+        		if(m.getElaborated() == false && m.getSendToPo() == true)
+        		{
+        			//l'unica cosa che posso fare è marcarlo come still pending
+        			stillPending.put(m.getId(), TypeOfStillPending.SENT_TO_PO_NOT_ELABORATED);
+        			//lo marco come anomalo in modo da evidenziarlo lato console admin e non elaborarlo nuovamente alla prossima esecuzione del batch
+        			m.setAnomalous(true);
+        			matchRepository.save(m);
         			continue;
         		}
         	}
