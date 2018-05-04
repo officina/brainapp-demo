@@ -2047,19 +2047,19 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		gl.compileShader(fragmentShader);
 		if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS))
 		{
-;
+			var compilationlog = gl.getShaderInfoLog(fragmentShader);
 			gl.deleteShader(fragmentShader);
-			return null;
+			throw new Error("error compiling fragment shader: " + compilationlog);
 		}
 		var vertexShader = gl.createShader(gl.VERTEX_SHADER);
 		gl.shaderSource(vertexShader, vsSource);
 		gl.compileShader(vertexShader);
 		if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS))
 		{
-;
+			var compilationlog = gl.getShaderInfoLog(vertexShader);
 			gl.deleteShader(fragmentShader);
 			gl.deleteShader(vertexShader);
-			return null;
+			throw new Error("error compiling vertex shader: " + compilationlog);
 		}
 		var shaderProgram = gl.createProgram();
 		gl.attachShader(shaderProgram, fragmentShader);
@@ -2067,11 +2067,11 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		gl.linkProgram(shaderProgram);
 		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
 		{
-;
+			var compilationlog = gl.getProgramInfoLog(shaderProgram);
 			gl.deleteShader(fragmentShader);
 			gl.deleteShader(vertexShader);
 			gl.deleteProgram(shaderProgram);
-			return null;
+			throw new Error("error linking shader program: " + compilationlog);
 		}
 		gl.useProgram(shaderProgram);
 		gl.deleteShader(fragmentShader);
@@ -3459,12 +3459,6 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			this.isMobile = /(blackberry|bb10|playbook|palm|symbian|nokia|windows\s+ce|phone|mobile|tablet|kindle|silk)/i.test(navigator.userAgent);
 		}
 		this.isWKWebView = !!(this.isiOS && this.isCordova && window["webkit"]);
-		this.httpServer = null;
-		this.httpServerUrl = "";
-		if (this.isWKWebView)
-		{
-			this.httpServer = (cordova && cordova["plugins"] && cordova["plugins"]["CorHttpd"]) ? cordova["plugins"]["CorHttpd"] : null;
-		}
 		if (typeof cr_is_preview !== "undefined" && !this.isNWjs && (window.location.search === "?nw" || /nodewebkit/i.test(navigator.userAgent) || /nwjs/i.test(navigator.userAgent)))
 		{
 			this.isNWjs = true;
@@ -3478,7 +3472,6 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.enableFrontToBack = false;
 		this.earlyz_index = 0;
 		this.ctx = null;
-		this.fullscreenOldMarginCss = "";
 		this.firstInFullscreen = false;
 		this.oldWidth = 0;		// for restoring non-fullscreen canvas after fullscreen
 		this.oldHeight = 0;
@@ -3555,6 +3548,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.fps = 0;
 		this.last_fps_time = 0;
 		this.tickcount = 0;
+		this.tickcount_nosave = 0;	// same as tickcount but never saved/loaded
 		this.execcount = 0;
 		this.framecount = 0;        // for fps
 		this.objectcount = 0;
@@ -3618,36 +3612,13 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		var self = this;
 		if (this.isWKWebView)
 		{
-			var loadDataJsFn = function ()
+			this.fetchLocalFileViaCordovaAsText("data.js", function (str)
 			{
-				self.fetchLocalFileViaCordovaAsText("data.js", function (str)
-				{
-					self.loadProject(JSON.parse(str));
-				}, function (err)
-				{
-					alert("Error fetching data.js");
-				});
-			};
-			if (this.httpServer)
+				self.loadProject(JSON.parse(str));
+			}, function (err)
 			{
-				this.httpServer["startServer"]({
-					"port": 0,
-					"localhost_only": true
-				}, function (url)
-				{
-					self.httpServerUrl = url;
-					loadDataJsFn();
-				}, function (err)
-				{
-					console.log("Error starting local server: " + err + ". Video playback will not work.");
-					loadDataJsFn();
-				});
-			}
-			else
-			{
-				console.log("Local server unavailable. Video playback will not work.");
-				loadDataJsFn();
-			}
+				alert("Error fetching data.js");
+			});
 			return;
 		}
 		var xhr;
@@ -4017,11 +3988,6 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 					offy = (h - newh) / 2;
 					h = newh;
 				}
-			}
-			if (isfullscreen && !this.isNWjs)
-			{
-				offx = 0;
-				offy = 0;
 			}
 		}
 		else if (this.isNWjs && this.isNodeFullscreen && this.fullscreen_mode_set === 0)
@@ -4587,6 +4553,32 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.initRendererAndLoader();
 	};
 	var anyImageHadError = false;
+	var MAX_PARALLEL_IMAGE_LOADS = 100;
+	var currentlyActiveImageLoads = 0;
+	var imageLoadQueue = [];		// array of [img, srcToSet]
+	Runtime.prototype.queueImageLoad = function (img_, src_)
+	{
+		var self = this;
+		var doneFunc = function ()
+		{
+			currentlyActiveImageLoads--;
+			self.maybeLoadNextImages();
+		};
+		img_.addEventListener("load", doneFunc);
+		img_.addEventListener("error", doneFunc);
+		imageLoadQueue.push([img_, src_]);
+		this.maybeLoadNextImages();
+	};
+	Runtime.prototype.maybeLoadNextImages = function ()
+	{
+		var next;
+		while (imageLoadQueue.length && currentlyActiveImageLoads < MAX_PARALLEL_IMAGE_LOADS)
+		{
+			currentlyActiveImageLoads++;
+			next = imageLoadQueue.shift();
+			this.setImageSrc(next[0], next[1]);
+		}
+	};
 	Runtime.prototype.waitForImageLoad = function (img_, src_)
 	{
 		img_["cocoonLazyLoad"] = true;
@@ -4619,7 +4611,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			else
 			{
 				img_.crossOrigin = "anonymous";			// required for Arcade sandbox compatibility
-				this.setImageSrc(img_, src_);			// work around WKWebView problems
+				this.queueImageLoad(img_, src_);		// use a queue to avoid requesting all images simultaneously
 			}
 		}
 		this.wait_for_textures.push(img_);
@@ -5008,27 +5000,12 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			if (isfullscreen)
 			{
 				if (!this.firstInFullscreen)
-				{
-					this.fullscreenOldMarginCss = jQuery(this.canvas).css("margin") || "0";
 					this.firstInFullscreen = true;
-				}
-				if (!this.isChrome && !this.isNWjs)
-				{
-					jQuery(this.canvas).css({
-						"margin-left": "" + Math.floor((screen.width - (this.width / this.devicePixelRatio)) / 2) + "px",
-						"margin-top": "" + Math.floor((screen.height - (this.height / this.devicePixelRatio)) / 2) + "px"
-					});
-				}
 			}
 			else
 			{
 				if (this.firstInFullscreen)
 				{
-					if (!this.isChrome && !this.isNWjs)
-					{
-						jQuery(this.canvas).css("margin", this.fullscreenOldMarginCss);
-					}
-					this.fullscreenOldMarginCss = "";
 					this.firstInFullscreen = false;
 					if (this.fullscreen_mode === 0)
 					{
@@ -5078,6 +5055,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		if (!this.hit_breakpoint)
 		{
 			this.tickcount++;
+			this.tickcount_nosave++;
 			this.execcount++;
 			this.framecount++;
 		}
@@ -7518,7 +7496,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 	};
 	Runtime.prototype.loadInstanceFromJSON = function(inst, o, state_only)
 	{
-		var p, i, len, iv, oivs, world, fxindex, obehs, behindex;
+		var p, i, len, iv, oivs, world, fxindex, obehs, behindex, value;
 		var oldlayer;
 		var type = inst.type;
 		var plugin = type.plugin;
@@ -7543,7 +7521,10 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 					iv = this.getInstanceVarIndexBySid(type, parseInt(p, 10));
 					if (iv < 0 || iv >= inst.instance_vars.length)
 						continue;		// must've gone missing
-					inst.instance_vars[iv] = oivs[p];
+					value = oivs[p];
+					if (value === null)
+						value = NaN;
+					inst.instance_vars[iv] = value;
 				}
 			}
 		}
@@ -7683,9 +7664,21 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 	};
 	Runtime.prototype.fetchLocalFileViaCordovaAsURL = function (filename, successCallback, errorCallback)
 	{
+		var blobType = "";
+		var lowername = filename.toLowerCase();
+		var ext3 = lowername.substr(lowername.length - 4);
+		var ext4 = lowername.substr(lowername.length - 5);
+		if (ext3 === ".mp4")
+			blobType = "video/mp4";
+		else if (ext4 === ".webm")
+			blobType = "video/webm";		// use video type but hopefully works with audio too
+		else if (ext3 === ".m4a")
+			blobType = "audio/mp4";
+		else if (ext3 === ".mp3")
+			blobType = "audio/mpeg";
 		this.fetchLocalFileViaCordovaAsArrayBuffer(filename, function (arrayBuffer)
 		{
-			var blob = new Blob([arrayBuffer]);
+			var blob = new Blob([arrayBuffer], { type: blobType });
 			var url = URL.createObjectURL(blob);
 			successCallback(url);
 		}, errorCallback);
@@ -7912,7 +7905,7 @@ window["cr_setSuspended"] = function(s)
 		this.height = this.originalHeight;
 		this.scrollX = (this.runtime.original_width / 2);
 		this.scrollY = (this.runtime.original_height / 2);
-		var i, k, len, lenk, type, type_instances, inst, iid, t, s, p, q, type_data, layer;
+		var i, k, len, lenk, type, type_instances, initial_inst, inst, iid, t, s, p, q, type_data, layer;
 		for (i = 0, len = this.runtime.types_by_index.length; i < len; i++)
 		{
 			type = this.runtime.types_by_index[i];
@@ -8020,7 +8013,12 @@ window["cr_setSuspended"] = function(s)
 		}
 		for (i = 0, len = this.initial_nonworld.length; i < len; i++)
 		{
-			inst = this.runtime.createInstanceFromInit(this.initial_nonworld[i], null, true);
+			initial_inst = this.initial_nonworld[i];
+			type = this.runtime.types_by_index[initial_inst[1]];
+			if (!type.is_contained)
+			{
+				inst = this.runtime.createInstanceFromInit(this.initial_nonworld[i], null, true);
+			}
 ;
 		}
 		this.runtime.changelayout = null;
@@ -10191,7 +10189,7 @@ window["cr_setSuspended"] = function(s)
 			this.is_else_block = (this.conditions[0].type == null && this.conditions[0].func == cr.system_object.prototype.cnds.Else);
 		}
 	};
-	window["_c2hh_"] = "C44CE589888E9AC0D5B41AAAE4D08B310541BFE2";
+	window["_c2hh_"] = "4BF7A7E57BF0450F3A1709CD5CEF11FB750E780E";
 	EventBlock.prototype.postInit = function (hasElse/*, prevBlock_*/)
 	{
 		var i, len;
@@ -14891,6 +14889,8 @@ cr.system_object.prototype.loadFromJSON = function (o)
 			return false;
 		if (!this.bquad.contains_pt(x, y))
 			return false;
+		if (this.tilemap_exists)
+			return this.testPointOverlapTile(x, y);
 		if (this.collision_poly && !this.collision_poly.is_empty())
 		{
 			this.collision_poly.cache_poly(this.width, this.height, this.angle);
@@ -15460,6 +15460,207 @@ cr.plugins_.AJAX = function(runtime)
 		ret.set_string(this.curTag);
 	};
 	pluginProto.exps = new Exps();
+}());
+/**
+ * Object holder for the plugin
+ */
+cr.plugins_.ATPAds = function(runtime) {
+    this.runtime = runtime;
+};
+/**
+ * C2 plugin
+ */
+(function() {
+        var showBanner = false;
+        var bannerReady = false;
+        var interstitialReady = false;
+        var pluginProto = cr.plugins_.ATPAds.prototype;
+        pluginProto.Type = function(plugin) {
+            this.plugin = plugin;
+            this.runtime = plugin.runtime;
+        };
+        var typeProto = pluginProto.Type.prototype;
+        typeProto.onCreate = function() {};
+        /**
+         * C2 specific behaviour
+         */
+        pluginProto.Instance = function(type) {
+            this.type = type;
+            this.runtime = type.runtime;
+        };
+        var instanceProto = pluginProto.Instance.prototype;
+        var self;
+        instanceProto.onCreate = function() {
+                if (!(this.runtime.isAndroid || this.runtime.isiOS))
+                    return;
+                if (typeof Cocoon == 'undefined')
+                    return;
+                this.isShowingBanner = false;
+                this.isShowingInterstitial = false;
+                this.androidBannerId = this.properties[0];
+                switch (this.properties[1]) {
+                    case 0:     this.androidBannerSize = "SMART"; break;
+                    case 1:     this.androidBannerSize = "BANNER"; break;
+                    case 2:     this.androidBannerSize = "MEDIUM_REC"; break;
+                    case 3:     this.androidBannerSize = "LEADERBOARD"; break;
+                }
+                this.androidInterstitialId = this.properties[2];
+                this.iosBannerId = this.properties[3];
+                switch (this.properties[4]) {
+                    case 0:     this.iosBannerSize = "SMART"; break;
+                    case 1:     this.iosBannerSize = "BANNER"; break;
+                    case 2:     this.iosBannerSize = "MEDIUM_REC"; break;
+                    case 3:     this.iosBannerSize = "LEADERBOARD"; break;
+                }
+                this.iosInterstitialId = this.properties[5];
+                if (this.runtime.isAndroid)
+                {
+                    this.bannerAdunit = this.androidBannerId;
+                    this.bannerSize = this.androidBannerSize;
+                    this.interstitialAdunit = this.androidInterstitialId;
+                }
+                else if (this.runtime.isiOS)
+                {
+                    this.bannerAdunit = this.iosBannerId;
+                    this.bannerSize = this.iosBannerSize;
+                    this.interstitialAdunit = this.iosInterstitialId;
+                }
+                else
+                {
+                    this.bannerAdunit = "";
+                    this.interstitialAdunit = "";
+                }
+                this.banner = Cocoon.Ad.createBanner(this.bannerAdunit, this.bannerSize);
+                this.interstitial = Cocoon.Ad.createInterstitial(this.interstitialAdunit);
+                self = this;
+                this.banner.on("show", function() {
+                    self.isShowingBanner = true;
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onBannerShown, self);
+                });
+                this.banner.on("load", function() {
+                    bannerReady = true;
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onBannerLoaded, self);
+                });
+                this.banner.on("click", function() {
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onBannerClicked, self);
+                });
+                this.banner.on("fail", function() {
+                    bannerReady = false;
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onBannerFailed, self);
+                });
+                this.banner.on("dismiss", function() {
+                    self.isShowingBanner = false;
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onBannerDismissed, self);
+                });
+                this.interstitial.on("show", function() {
+                    self.isShowingInterstitial = true;
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onInterstitialShown, self);
+                });
+                this.interstitial.on("load", function() {
+                    interstitialReady = true;
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onInterstitialLoaded, self);
+                });
+                this.interstitial.on("click", function() {
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onInterstitialClicked, self);
+                });
+                this.interstitial.on("fail", function() {
+                    interstitialReady = false;
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onInterstitialFailed, self);
+                });
+                this.interstitial.on("dismiss", function() {
+                    self.isShowingInterstitial = false;
+                    interstitialReady = false;
+                    self.runtime.trigger(cr.plugins_.ATPAds.prototype.cnds.onInterstitialDismissed, self);
+                });
+        };
+        function Cnds() {};
+        Cnds.prototype.onBannerShown = function() {
+            return true;
+        };
+        Cnds.prototype.onBannerHidden = function() {
+            return true;
+        };
+        Cnds.prototype.onBannerLoaded = function() {
+            return true;
+        };
+        Cnds.prototype.onBannerClicked = function() {
+            return true;
+        };
+        Cnds.prototype.onBannerFailed = function() {
+             return true;
+        };
+        Cnds.prototype.onBannerDismissed = function() {
+            return true;
+        };
+         Cnds.prototype.isShowingBanner = function() {
+            return this.isShowingBanner;
+        };
+        Cnds.prototype.onInterstitialShown = function() {
+            return true;
+        };
+        Cnds.prototype.onInterstitialLoaded = function() {
+            return true;
+        };
+        Cnds.prototype.onInterstitialClicked = function() {
+            return true;
+        };
+        Cnds.prototype.onInterstitialFailed = function() {
+             return true;
+        };
+        Cnds.prototype.onInterstitialDismissed = function() {
+            return true;
+        }
+        pluginProto.cnds = new Cnds();
+        /**
+         * Plugin actions
+         */
+        function Acts() {};
+        Acts.prototype.ShowBanner = function() {
+            if(bannerReady) {
+                showBanner = true;
+                this.banner.show();
+            }
+            else
+            {
+                this.bannerReady = false;
+                this.banner.load();
+            }
+        };
+        Acts.prototype.HideBanner = function() {
+            if(showBanner){
+                showBanner = false;
+                this.banner.hide();
+            }
+        };
+        Acts.prototype.LoadBanner = function() {
+            this.bannerReady = false;
+            this.banner.load();
+        };
+        Cnds.prototype.isShowingInterstitial = function() {
+            return this.isShowingInterstitial;
+        };
+        Acts.prototype.SetLayout = function(layout) {
+            var bannerLayout;
+            switch (layout) {
+                    case 0:     bannerLayout = "TOP_CENTER"; break;
+                    case 1:     bannerLayout = "BOTTOM_CENTER"; break;
+                    case 2:     bannerLayout = "CUSTOM"; break;
+            }
+            this.banner.setLayout(bannerLayout);
+        };
+        Acts.prototype.SetPosition = function(x,y) {
+            this.banner.setPosition(x,y);
+        };
+        Acts.prototype.ShowInterstitial = function() {
+            if(interstitialReady)
+                this.interstitial.show();
+            else
+                this.interstitial.load();
+        };
+        Acts.prototype.LoadInterstitial = function() {
+            this.interstitial.load();
+        };
+        pluginProto.acts = new Acts();
 }());
 ;
 ;
@@ -16300,7 +16501,7 @@ cr.plugins_.Audio = function(runtime)
 				this.supportWebAudioAPI = true;		// can be routed through web audio api
 				this.bufferObject.addEventListener("canplay", function ()
 				{
-					if (!self.mediaSourceNode)		// protect against this event firing twice
+					if (!self.mediaSourceNode && self.bufferObject)
 					{
 						self.mediaSourceNode = context["createMediaElementSource"](self.bufferObject);
 						self.mediaSourceNode["connect"](self.outNode);
@@ -16359,6 +16560,16 @@ cr.plugins_.Audio = function(runtime)
 				++j;		// keep
 		}
 		audioInstances.length = j;
+		if (this.mediaSourceNode)
+		{
+			this.mediaSourceNode["disconnect"]();
+			this.mediaSourceNode = null;
+		}
+		if (this.outNode)
+		{
+			this.outNode["disconnect"]();
+			this.outNode = null;
+		}
 		this.bufferObject = null;
 		this.audioData = null;
 	};
@@ -17286,6 +17497,8 @@ cr.plugins_.Audio = function(runtime)
 		var isAndroid = this.runtime.isAndroid;
 		var playDummyBuffer = function ()
 		{
+			if (context["state"] === "suspended" && context["resume"])
+				context["resume"]();
 			if (isContextSuspended || !context["createBuffer"])
 				return;
 			var buffer = context["createBuffer"](1, 220, 22050);
@@ -18661,7 +18874,7 @@ cr.plugins_.Browser = function(runtime)
 			{
 				var ret = self.runtime.trigger(cr.plugins_.Browser.prototype.cnds.OnBackButton, self);
 				if (ret)
-					e.handled = true;
+					e["handled"] = true;
 		    });
 		}
 		else if (this.runtime.isWinJS && WinJS["Application"])
@@ -18963,7 +19176,7 @@ cr.plugins_.Browser = function(runtime)
 				return;
 			}
 			this.runtime.fullscreen_scaling = (stretchmode >= 2 ? stretchmode : 0);
-			var elem = this.runtime.canvasdiv || this.runtime.canvas;
+			var elem = document.documentElement;
 			if (firstRequestFullscreen)
 			{
 				firstRequestFullscreen = false;
@@ -19354,6 +19567,209 @@ cr.plugins_.Browser = function(runtime)
 		ret.set_int(window.outerHeight);
 	};
 	pluginProto.exps = new Exps();
+}());
+/**
+ * Object holder for the plugin
+ */
+cr.plugins_.Cocoon_Canvasplus = function(runtime) {
+    this.runtime = runtime;
+};
+/**
+ * C2 plugin
+ */
+(function() {
+    var dialog = "";
+    var input_text = "";
+    var capture_screen_sync = "";
+    var capture_screen_async = "";
+    var device_info = "";
+    var pluginProto = cr.plugins_.Cocoon_Canvasplus.prototype;
+    pluginProto.Type = function(plugin) {
+        this.plugin = plugin;
+        this.runtime = plugin.runtime;
+    };
+    var typeProto = pluginProto.Type.prototype;
+    typeProto.onCreate = function() {};
+    /**
+     * C2 specific behaviour
+     */
+    pluginProto.Instance = function(type) {
+        this.type = type;
+        this.runtime = type.runtime;
+    };
+    var instanceProto = pluginProto.Instance.prototype;
+    var self;
+    instanceProto.onCreate = function() {
+        if (!(this.runtime.isAndroid || this.runtime.isiOS))
+            return;
+        if (typeof Cocoon == 'undefined')
+            return;
+        self = this;
+    };
+    function Cnds() {};
+    /**
+     * Cocoon Basic conditions
+     */
+    Cnds.prototype.isCanvasPlus = function() {
+        return this.runtime.isCocoonJs;
+    };
+    Cnds.prototype.onKeyboardCancel = function() {
+        return true;
+    };
+    Cnds.prototype.onKeyboardSuccess = function() {
+        return true;
+    };
+    Cnds.prototype.onConfirmCancel = function() {
+        return true;
+    };
+    Cnds.prototype.onCaptureScreenAsyncFail = function() {
+        return true;
+    };
+    Cnds.prototype.onConfirmSuccess = function() {
+        return true;
+    };
+    Cnds.prototype.onCaptureScreenAsyncSuccess = function() {
+        return true;
+    };
+    pluginProto.cnds = new Cnds();
+    /**
+     * Plugin actions
+     */
+    function Acts() {};
+    Acts.prototype.promptKeyboard = function(title_, message_, initial_, type_, canceltext_, oktext_) {
+        if (!this.runtime.isCocoonJs)
+            return;
+        var typestr = ["text", "num", "phone", "email", "url"][type_];
+        Cocoon.Dialog.prompt({
+            title: title_,
+            message: message_,
+            text: initial_,
+            type: typestr,
+            cancelText: canceltext_,
+            confirmText: oktext_
+        }, {
+            success: function(text) {
+                input_text = text;
+                self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onKeyboardSuccess, self);
+            },
+            cancel: function() {
+                self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onKeyboardCancel, self);
+            }
+        });
+    };
+    Acts.prototype.confirmDialog = function(title_, message_, canceltext_, oktext_) {
+        if (!this.runtime.isCocoonJs)
+            return;
+        Cocoon.Dialog.confirm({
+            title: title_,
+            message: message_,
+            cancelText: canceltext_,
+            confirmText: oktext_
+        }, function(accepted) {
+            if (accepted) {
+                self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onConfirmSuccess, self);
+            } else {
+                self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onConfirmCancel, self);
+            }
+        });
+    };
+    Acts.prototype.openURL = function(url_) {
+        Cocoon.App.openURL(url_);
+    };
+    Acts.prototype.exitApp = function() {
+        Cocoon.App.exit();
+    };
+    Acts.prototype.pauseApp = function() {
+        Cocoon.App.pause();
+    };
+    Acts.prototype.resumeApp = function() {
+        Cocoon.App.resume();
+    };
+    Acts.prototype.captureScreenSync = function(filename_, storage_, capture_) {
+        if (!this.runtime.isCocoonJs)
+            return;
+        var storage_type = ["APP_STORAGE", "INTERNAL_STORAGE", "EXTERNAL_STORAGE", "TEMPORARY_STORAGE"][storage_];
+        var gallery = false;
+        capture_screen_sync = Cocoon.Utils.captureScreen(filename_, storage_type, capture_, gallery);
+    };
+    Acts.prototype.captureScreenAsync = function(filename_, storage_, capture_) {
+        if (!this.runtime.isCocoonJs)
+            return;
+        var storage_type = ["APP_STORAGE", "INTERNAL_STORAGE", "EXTERNAL_STORAGE", "TEMPORARY_STORAGE"][storage_];
+        var gallery = false;
+        Cocoon.Utils.captureScreenAsync(filename_, storage_type, capture_, gallery, function(url, error) {
+            if (error) {
+                self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onCaptureScreenAsyncFail, self);
+            } else {
+                capture_screen_async = url;
+                self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onCaptureScreenAsyncSuccess, self);
+            }
+        });
+    };
+    Acts.prototype.captureScreenSyncShare = function(filename_, storage_, capture_, text_) {
+        if (!this.runtime.isCocoonJs)
+            return;
+        var storage_type = ["APP_STORAGE", "INTERNAL_STORAGE", "EXTERNAL_STORAGE", "TEMPORARY_STORAGE"][storage_];
+        var gallery = false;
+        url = Cocoon.Utils.captureScreen(filename_, storage_type, capture_, gallery);
+        Cocoon.Share.share({
+            message: text_,
+            image: url
+        }, function(activity, completed, error) {
+            if (completed) {
+                self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onShareSyncComplete, self);
+            } else {
+                self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onShareSyncFail, self);
+                console.log(error);
+            }
+        });
+    };
+    Acts.prototype.showWebdialog = function(url_){
+        dialog = new Cocoon.Widget.WebDialog();
+        dialog.show(url_, function(){
+            console.log("The user has closed the dialog!");
+            self.runtime.trigger(cr.plugins_.Cocoon_Canvasplus.prototype.cnds.onWebdialogUserClose, self);
+        });
+    };
+    Acts.prototype.closeWebdialog = function(){
+        dialog.close();
+    };
+    Acts.prototype.getDeviceInfo = function(){
+        device_info = Cocoon.Device.getDeviceInfo();
+    };
+    pluginProto.acts = new Acts();
+    /**
+     * Expressions
+     */
+    function Exps() {};
+    Exps.prototype.InputText = function(ret) {
+        ret.set_string(input_text);
+    };
+    Exps.prototype.CaptureScreenSync = function(ret) {
+        ret.set_string(capture_screen_sync);
+    };
+    Exps.prototype.CaptureScreenAsync = function(ret) {
+        ret.set_string(capture_screen_async);
+    };
+    Exps.prototype.DeviceOS = function(ret) {
+        ret.set_string(device_info.os);
+    };
+    Exps.prototype.DeviceVersion = function(ret) {
+        ret.set_string(device_info.version);
+    };
+    Exps.prototype.DeviceDPI = function(ret) {
+        ret.set_string(device_info.dpi);
+    };
+    Exps.prototype.DeviceBrand = function(ret) {
+        ret.set_string(device_info.brand);
+    };
+    Exps.prototype.DeviceModel = function(ret) {
+        ret.set_string(device_info.model);
+    };
+    Exps.prototype.DevicePlatformId = function(ret) {
+        ret.set_string(device_info.platformId);
+    };
+    pluginProto.exps = new Exps();
 }());
 ;
 ;
@@ -23813,8 +24229,15 @@ cr.plugins_.Touch = function(runtime)
 			return this.orient_gamma;
 	};
 	var noop_func = function(){};
+	function isCompatibilityMouseEvent(e)
+	{
+		return (e["sourceCapabilities"] && e["sourceCapabilities"]["firesTouchEvents"]) ||
+				(e.originalEvent && e.originalEvent["sourceCapabilities"] && e.originalEvent["sourceCapabilities"]["firesTouchEvents"]);
+	};
 	instanceProto.onMouseDown = function(info)
 	{
+		if (isCompatibilityMouseEvent(info))
+			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
 		this.onTouchStart(fakeinfo);
@@ -23823,6 +24246,8 @@ cr.plugins_.Touch = function(runtime)
 	instanceProto.onMouseMove = function(info)
 	{
 		if (!this.mouseDown)
+			return;
+		if (isCompatibilityMouseEvent(info))
 			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
@@ -23833,6 +24258,8 @@ cr.plugins_.Touch = function(runtime)
 		if (info.preventDefault && this.runtime.had_a_click && !this.runtime.isMobile)
 			info.preventDefault();
 		this.runtime.had_a_click = true;
+		if (isCompatibilityMouseEvent(info))
+			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
 		this.onTouchEnd(fakeinfo);
@@ -24302,7 +24729,7 @@ cr.plugins_.Touch = function(runtime)
 		var t = this.touches[index];
 		var dist = cr.distanceTo(t.x, t.y, t.lastx, t.lasty);
 		var timediff = (t.time - t.lasttime) / 1000;
-		if (timediff === 0)
+		if (timediff <= 0)
 			ret.set_float(0);
 		else
 			ret.set_float(dist / timediff);
@@ -24318,7 +24745,7 @@ cr.plugins_.Touch = function(runtime)
 		var touch = this.touches[index];
 		var dist = cr.distanceTo(touch.x, touch.y, touch.lastx, touch.lasty);
 		var timediff = (touch.time - touch.lasttime) / 1000;
-		if (timediff === 0)
+		if (timediff <= 0)
 			ret.set_float(0);
 		else
 			ret.set_float(dist / timediff);
@@ -24656,7 +25083,8 @@ var operations = Object.freeze({
 	ATTEMPT_ENDED:"ATTEMPT_ENDED",
 	MATCH_ENDED:"MATCH_ENDED",
 	GAME_LOADED: "GAME_LOADED",
-	GAME_UNLOADED:"GAME_UNLOADED"
+	GAME_UNLOADED:"GAME_UNLOADED",
+	ATTEMPT_RESTARTED:"ATTEMPT_RESTARTED"
 })
 var Attempt = function(){
 		this.score = null
@@ -24721,6 +25149,19 @@ cr.plugins_.gatorade = function(runtime)
 		currentattempt.completed = false
         var m = new Gatorade.Message(operations.START_ATTEMPT, currentattempt)
 		window.parent.postMessage(m, domain)
+	};
+	Acts.prototype.restartAttempt = function (score)
+	{
+		console.log("game restarted, sending " +  score + " as end points")
+		currentattempt.completed = true
+		currentattempt.score = score
+		currentattempt.ended = new Date()
+		var m = new Gatorade.Message(operations.ATTEMPT_RESTARTED, currentattempt)
+		window.parent.postMessage(m, domain)
+		currentattempt = new Attempt();
+		currentattempt.score = 0
+		currentattempt.started = new Date()
+		currentattempt.completed = false
 	};
 	Acts.prototype.stopAttempt = function (score)
 	{
@@ -25580,7 +26021,7 @@ var b2Vec2 = Box2D.b2Vec2;
 function createPolygonShape(vertices)
 {
     var shape = new Box2D.b2PolygonShape();
-    var buffer = Box2D.allocate(vertices.length * 8, 'float', Box2D.ALLOC_STACK);
+    var buffer = Box2D._malloc(vertices.length * 8);
     var offset = 0;
     for (var i=0;i<vertices.length;i++) {
         Box2D.setValue(buffer+(offset), vertices[i].get_x(), 'float'); // x
@@ -25589,6 +26030,7 @@ function createPolygonShape(vertices)
     }
     var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
     shape.Set(ptr_wrapped, vertices.length);
+	Box2D._free(buffer);
     return shape;
 }
 b2Vec2._freeCache = [];
@@ -26042,7 +26484,6 @@ cr.behaviors.Physics = function(runtime)
 	{
 		if (this.enabled)
 			this.recreateMyJoints();
-		this.behavior.lastUpdateTick = this.runtime.tickcount - 1;
 	};
 	behinstProto.onInstanceDestroyed = function (inst)
 	{
@@ -26113,40 +26554,33 @@ cr.behaviors.Physics = function(runtime)
 		if (!this.enabled)
 			return;
 		var inst = this.inst;
-		var hadOldBody = false;
-		var oldVelocity = null;
-		var oldOmega = null;
+		inst.update_bbox();
 		var i, len, j, lenj, k, lenk, vec, arr, b, tv, c, rc, pts_cache, pts_count, convexpolys, cp, offx, offy, oldAngle;
-		if (this.body)
+		if (!this.body)
 		{
-			hadOldBody = true;
-			tv = this.body.GetLinearVelocity();
-			oldVelocity = getTempVec2a(tv.get_x(), tv.get_y());
-			oldOmega = this.body.GetAngularVelocity();
-			arr = this.joiningMe.valuesRef();
-			for (i = 0, len = arr.length; i < len; i++)
-			{
-				b = arr[i].extra.box2dbody.c2userdata;
-				b.destroyMyJoints();
-			}
-			this.destroyBody();
+			var bodyDef = new b2BodyDef();
+			bodyDef.set_type(this.immovable ? 0 : 2);		// 0 = b2_staticBody, 2 = b2_dynamicBody
+			bodyDef.set_position(getTempVec2b(inst.bquad.midX() * worldScale, inst.bquad.midY() * worldScale));
+			bodyDef.set_angle(inst.angle);
+			bodyDef.set_fixedRotation(this.preventRotation);
+			bodyDef.set_linearDamping(this.linearDamping);
+			bodyDef.set_angularDamping(this.angularDamping);
+			bodyDef.set_bullet(this.bullet);
+			this.body = this.world.CreateBody(bodyDef);
+			this.body.c2userdata = this;
+			inst.extra.box2dbody = this.body;
+			Box2D.destroy(bodyDef);
+		}
+		if (this.fixture)
+		{
+			this.body.DestroyFixture(this.fixture);
+			this.fixture = null;
 		}
 		var fixDef = new b2FixtureDef();
 		fixDef.set_density(this.density);
 		fixDef.set_friction(this.friction);
 		fixDef.set_restitution(this.restitution);
-		var bodyDef = new b2BodyDef();
-		bodyDef.set_type(this.immovable ? 0 : 2);		// 0 = b2_staticBody, 2 = b2_dynamicBody
-		inst.update_bbox();
-		bodyDef.set_position(getTempVec2b(inst.bquad.midX() * worldScale, inst.bquad.midY() * worldScale));
-		bodyDef.set_angle(inst.angle);
-		bodyDef.set_fixedRotation(this.preventRotation);
-		bodyDef.set_linearDamping(this.linearDamping);
-		bodyDef.set_angularDamping(this.angularDamping);
-		bodyDef.set_bullet(this.bullet);
 		var hasPoly = this.inst.collision_poly && !this.inst.collision_poly.is_empty();
-		this.body = this.world.CreateBody(bodyDef);
-		this.body.c2userdata = this;
 		var usecollisionmask = this.collisionmask;
 		if (!hasPoly && !this.inst.tilemap_exists && this.collisionmask === 0)
 			usecollisionmask = 1;
@@ -26196,8 +26630,10 @@ cr.behaviors.Physics = function(runtime)
 							{
 								arr.push(b2Vec2.Get((rc.left + cp[k].get_x() - offx) * worldScale, (rc.top + cp[k].get_y() - offy) * worldScale));
 							}
-							fixDef.set_shape(createPolygonShape(arr));
+							shape = createPolygonShape(arr);
+							fixDef.set_shape(shape);
 							this.fixture = this.body.CreateFixture(fixDef);
+							Box2D.destroy(shape);
 							for (k = 0, lenk = arr.length; k < lenk; ++k)
 								b2Vec2.Free(arr[k]);
 							cr.clearArray(arr);
@@ -26209,8 +26645,10 @@ cr.behaviors.Physics = function(runtime)
 						arr.push(b2Vec2.Get((rc.right - offx) * worldScale, (rc.top - offy) * worldScale));
 						arr.push(b2Vec2.Get((rc.right - offx) * worldScale, (rc.bottom - offy) * worldScale));
 						arr.push(b2Vec2.Get((rc.left - offx) * worldScale, (rc.bottom - offy) * worldScale));
-						fixDef.set_shape(createPolygonShape(arr));
+						shape = createPolygonShape(arr);
+						fixDef.set_shape(shape);
 						this.fixture = this.body.CreateFixture(fixDef);
+						Box2D.destroy(shape);
 					}
 					for (j = 0, lenj = arr.length; j < lenj; ++j)
 						b2Vec2.Free(arr[j]);
@@ -26253,8 +26691,10 @@ cr.behaviors.Physics = function(runtime)
 							vec.set_x(vec.get_x() * worldScale);
 							vec.set_y(vec.get_y() * worldScale);
 						}
-						fixDef.set_shape(createPolygonShape(arr));
+						shape = createPolygonShape(arr);
+						fixDef.set_shape(shape);
 						this.fixture = this.body.CreateFixture(fixDef);
+						Box2D.destroy(shape);
 						for (j = 0, lenj = arr.length; j < lenj; j++)
 							b2Vec2.Free(arr[j]);
 					}
@@ -26265,6 +26705,7 @@ cr.behaviors.Physics = function(runtime)
 					shape.SetAsBox(instw * worldScale * 0.5, insth * worldScale * 0.5);
 					fixDef.set_shape(shape);
 					this.fixture = this.body.CreateFixture(fixDef);
+					Box2D.destroy(shape);
 				}
 			}
 		}
@@ -26274,6 +26715,7 @@ cr.behaviors.Physics = function(runtime)
 			shape.SetAsBox(instw * worldScale * 0.5, insth * worldScale * 0.5);
 			fixDef.set_shape(shape);
 			this.fixture = this.body.CreateFixture(fixDef);
+			Box2D.destroy(shape);
 		}
 		else
 		{
@@ -26281,22 +26723,11 @@ cr.behaviors.Physics = function(runtime)
 			shape.set_m_radius(Math.min(instw, insth) * worldScale * 0.5);
 			fixDef.set_shape(shape);
 			this.fixture = this.body.CreateFixture(fixDef);
+			Box2D.destroy(shape);
 		}
-		inst.extra.box2dbody = this.body;
 		this.lastWidth = inst.width;
 		this.lastHeight = inst.height;
-		if (hadOldBody)
-		{
-			this.body.SetLinearVelocity(oldVelocity);
-			this.body.SetAngularVelocity(oldOmega);
-			this.recreateMyJoints();
-			arr = this.joiningMe.valuesRef();
-			for (i = 0, len = arr.length; i < len; i++)
-			{
-				b = arr[i].extra.box2dbody.c2userdata;
-				b.recreateMyJoints();
-			}
-		}
+		Box2D.destroy(fixDef);
 		cr.clearArray(collrects);
 	};
 	/*
@@ -26355,14 +26786,14 @@ cr.behaviors.Physics = function(runtime)
 			if (dt > 1 / 30)
 				dt = 1 / 30;
 		}
-		if (this.runtime.tickcount > this.behavior.lastUpdateTick && this.runtime.timescale > 0)
+		if (this.runtime.tickcount_nosave > this.behavior.lastUpdateTick && this.runtime.timescale > 0)
 		{
 			if (dt !== 0)
 			{
 				this.world.Step(dt, this.behavior.velocityIterations, this.behavior.positionIterations);		// still apply timescale
 			}
 			this.world.ClearForces();
-			this.behavior.lastUpdateTick = this.runtime.tickcount;
+			this.behavior.lastUpdateTick = this.runtime.tickcount_nosave;
 		}
 		if (this.recreateBody || inst.width !== this.lastWidth || inst.height !== this.lastHeight
 			|| inst.cur_animation !== this.lastAnimation || inst.cur_frame !== this.lastAnimationFrame
@@ -26625,6 +27056,7 @@ cr.behaviors.Physics = function(runtime)
 		jointDef.set_dampingRatio(damping);
 		jointDef.set_frequencyHz(freq);
 		this.myJoints.push(this.world.CreateJoint(jointDef));
+		Box2D.destroy(jointDef);
 	};
 	Acts.prototype.CreateRevoluteJoint = function (imgpt, obj)
 	{
@@ -26651,6 +27083,7 @@ cr.behaviors.Physics = function(runtime)
 		var jointDef = new b2RevoluteJointDef();
 		jointDef.Initialize(this.body, otherinst.extra.box2dbody, getTempVec2a(myx * worldScale, myy * worldScale));
 		this.myJoints.push(this.world.CreateJoint(jointDef));
+		Box2D.destroy(jointDef);
 	};
 	Acts.prototype.CreateLimitedRevoluteJoint = function (imgpt, obj, lower, upper)
 	{
@@ -26680,6 +27113,7 @@ cr.behaviors.Physics = function(runtime)
 		jointDef.set_lowerAngle(cr.to_radians(lower));
 		jointDef.set_upperAngle(cr.to_radians(upper));
 		this.myJoints.push(this.world.CreateJoint(jointDef));
+		Box2D.destroy(jointDef);
 	};
 	Acts.prototype.SetWorldGravity = function (g)
 	{
@@ -27038,6 +27472,8 @@ cr.behaviors.Sin = function(runtime)
 		this.initialValue = 0;
 		this.initialValue2 = 0;
 		this.ratio = 0;
+		if (this.movement === 5)			// angle
+			this.mag = cr.to_radians(this.mag);
 		this.init();
 	};
 	behinstProto.saveToJSON = function ()
@@ -27091,7 +27527,6 @@ cr.behaviors.Sin = function(runtime)
 			break;
 		case 5:		// angle
 			this.initialValue = this.inst.angle;
-			this.mag = cr.to_radians(this.mag);		// convert magnitude from degrees to radians
 			break;
 		case 6:		// opacity
 			this.initialValue = this.inst.opacity;
@@ -27253,7 +27688,7 @@ cr.behaviors.Sin = function(runtime)
 	};
 	Acts.prototype.SetMovement = function (m)
 	{
-		if (this.movement === 5)
+		if (this.movement === 5 && m !== 5)
 			this.mag = cr.to_degrees(this.mag);
 		this.movement = m;
 		this.init();
@@ -27295,9 +27730,11 @@ cr.behaviors.Sin = function(runtime)
 	behaviorProto.exps = new Exps();
 }());
 cr.getObjectRefTable = function () { return [
+	cr.plugins_.ATPAds,
 	cr.plugins_.AJAX,
 	cr.plugins_.Audio,
 	cr.plugins_.Browser,
+	cr.plugins_.Cocoon_Canvasplus,
 	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,
 	cr.plugins_.Mouse,
@@ -27340,6 +27777,7 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Sprite.prototype.cnds.IsOutsideLayout,
 	cr.plugins_.Sprite.prototype.acts.SetOpacity,
 	cr.plugins_.Sprite.prototype.cnds.IsOnLayer,
+	cr.plugins_.gatorade.prototype.acts.restartAttempt,
 	cr.system_object.prototype.cnds.CompareVar,
 	cr.plugins_.gatorade.prototype.acts.startAttempt,
 	cr.plugins_.Mouse.prototype.cnds.IsOverObject,
@@ -27351,7 +27789,6 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.GoToLayout,
 	cr.plugins_.gatorade.prototype.acts.attemptEnded,
 	cr.system_object.prototype.cnds.LayerVisible,
-	cr.plugins_.Sprite.prototype.acts.SetPos,
 	cr.plugins_.LocalStorage.prototype.acts.CheckItemExists,
 	cr.plugins_.LocalStorage.prototype.cnds.OnItemExists,
 	cr.plugins_.LocalStorage.prototype.acts.GetItem,
@@ -27369,11 +27806,10 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.Sprite.prototype.cnds.CompareFrame,
 	cr.plugins_.Audio.prototype.acts.SetSilent,
 	cr.plugins_.Audio.prototype.cnds.IsSilent,
-	cr.plugins_.Browser.prototype.acts.Close,
+	cr.plugins_.Cocoon_Canvasplus.prototype.acts.exitApp,
 	cr.plugins_.AJAX.prototype.acts.RequestFile,
 	cr.plugins_.AJAX.prototype.cnds.OnComplete,
 	cr.plugins_.XML.prototype.acts.Load,
 	cr.plugins_.AJAX.prototype.exps.LastData,
-	cr.plugins_.Browser.prototype.acts.GoToURLWindow,
-	cr.plugins_.XML.prototype.exps.StringValue
+	cr.plugins_.Browser.prototype.acts.GoToURLWindow
 ];};

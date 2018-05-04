@@ -31,7 +31,7 @@ public class Game implements Serializable {
     @Column(name = "url")
     private String url;
 
-    @Column(name = "code")
+    @Column(name = "code")//TODO remove
     private String code;
 
     @Column(name = "action_id")
@@ -51,7 +51,7 @@ public class Game implements Serializable {
 
     @Column(name = "default_score")
     private Long defaultScore;
-    
+
     @OneToMany(mappedBy = "game")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -193,7 +193,7 @@ public class Game implements Serializable {
     public void setMatches(Set<Match> matches) {
         this.matches = matches;
     }
-    
+
     public Long getDefaultScore() {
 		return defaultScore;
 	}

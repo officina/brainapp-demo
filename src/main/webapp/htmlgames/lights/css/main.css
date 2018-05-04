@@ -1,4 +1,4 @@
-/* 
+/*
     Document   : main.css
     Created on : 19-nov-2013, 15.47.44
     Author     : Biagio Iannuzzi
@@ -6,7 +6,7 @@
         Purpose of the stylesheet follows.
 */
 
-root { 
+root {
     display: block;
 }
 
@@ -14,7 +14,7 @@ body{
     background-color: #000000;
     background-repeat: repeat-x;
     background-position: top;
-    background-image: url(../sprites/bg_tile.jpg);    
+    background-image: url(../sprites/bg_tile.jpg);
 }
 
 *, *:before, *:after {
@@ -24,14 +24,14 @@ body{
     -ms-user-select: none;
     user-select: none;
 }
-     
+
 input, input:before, input:after {
     -webkit-user-select: initial;
     -khtml-user-select: initial;
     -moz-user-select: initial;
     -ms-user-select: initial;
     user-select: initial;
-} 
+}
 
 ::selection { background: transparent;color:inherit; }
 ::-moz-selection { background: transparent;color:inherit; }
@@ -51,7 +51,7 @@ canvas{
 .ani_hack{
     -webkit-perspective: 1000;
     -webkit-backface-visibility: hidden;
-    
+
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
