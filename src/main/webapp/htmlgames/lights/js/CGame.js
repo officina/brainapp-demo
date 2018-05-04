@@ -225,7 +225,7 @@ function CGame(oData, iMode, iLevel) {
     this.restart = function(){
         setVolume("soundtrack", 0.3);
         $(s_oMain).trigger("restart_level",_iLevel+1);
-
+        restartAttempt(s_iTotalScore);
         _oPipesContainer.uncache();
         this.resetVariables();
         _oInterface.refreshPointsText(TIME[_iMode]/10);
