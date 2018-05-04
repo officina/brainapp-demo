@@ -88,29 +88,30 @@ public class AttemptServiceImpl implements AttemptService{
     }
 
     @Override
-    public Attempt syncAttempt(Long id, Long localId, Long score, String level, Match match) {
+    public Attempt syncAttempt(Attempt reqAttempt, Match match) {
         Attempt attempt;
-        if (id != null){
+        if (reqAttempt.getId() != null){
             //attempt creato "online"
-            attempt = attemptRepository.findOne(id);
-            attempt.setLevelReached(level);
-            attempt.setAttemptScore(score);
+            attempt = attemptRepository.findOne(reqAttempt.getId());
+            attempt.setLevelReached(reqAttempt.getLevelReached());
+            attempt.setAttemptScore(reqAttempt.getAttemptScore());
         }else{
             //Cerco un attempt creato "offline" che sia già stato creato su gatorade
-            attempt = attemptRepository.getOneByLocalId(localId);
+            attempt = attemptRepository.getOneByLocalId(reqAttempt.getLocalId());
             if (attempt == null){
                 //attempt creato "offline" e non ancora salvato su gatorade
                 attempt = new Attempt();
-                attempt.setLocalId(localId);
+                attempt.setLocalId(reqAttempt.getLocalId());
                 attempt.setMatch(match);
-                attempt.setAttemptScore(score);
-                attempt.setLevelReached(level);
-                attempt.setCompleted(false);
-                attempt.setCancelled(false);
+                attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                attempt.setLevelReached(reqAttempt.getLevelReached());
+                attempt.setCompleted(reqAttempt.getCompleted());
+                attempt.setStartAttempt(reqAttempt.getStartAttempt());
+                attempt.setLastUpdate(reqAttempt.getLastUpdate());
                 attempt.setValid(true);
             }else{
-                attempt.setLevelReached(level);
-                attempt.setAttemptScore(score);
+                attempt.setLevelReached(reqAttempt.getLevelReached());
+                attempt.setAttemptScore(reqAttempt.getAttemptScore());
             }
         }
         attemptRepository.save(attempt);
