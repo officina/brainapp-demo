@@ -1,6 +1,7 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.repository.AttemptRepository;
@@ -88,32 +89,42 @@ public class AttemptServiceImpl implements AttemptService{
     }
 
     @Override
-    public Attempt syncAttempt(Long id, Long localId, Long score, String level, Match match) {
+    public Attempt syncAttempt(Attempt reqAttempt, Match match, AttemptSyncState syncState) {
         Attempt attempt;
-        if (id != null){
+        Long origScore = null;
+        String origLevel = null;
+        if (reqAttempt.getId() != null){
             //attempt creato "online"
-            attempt = attemptRepository.findOne(id);
-            attempt.setLevelReached(level);
-            attempt.setAttemptScore(score);
+            attempt = attemptRepository.findOne(reqAttempt.getId());
+            origLevel = attempt.getLevelReached();
+            origScore = attempt.getAttemptScore();
+            attempt.setLevelReached(reqAttempt.getLevelReached());
+            attempt.setAttemptScore(reqAttempt.getAttemptScore());
         }else{
             //Cerco un attempt creato "offline" che sia già stato creato su gatorade
-            attempt = attemptRepository.getOneByLocalId(localId);
+            attempt = attemptRepository.getOneByLocalId(reqAttempt.getLocalId());
             if (attempt == null){
                 //attempt creato "offline" e non ancora salvato su gatorade
                 attempt = new Attempt();
-                attempt.setLocalId(localId);
+                attempt.setLocalId(reqAttempt.getLocalId());
                 attempt.setMatch(match);
-                attempt.setAttemptScore(score);
-                attempt.setLevelReached(level);
-                attempt.setCompleted(false);
-                attempt.setCancelled(false);
+                attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                attempt.setLevelReached(reqAttempt.getLevelReached());
+                attempt.setCompleted(reqAttempt.getCompleted());
+                attempt.setStartAttempt(reqAttempt.getStartAttempt());
+                attempt.setLastUpdate(reqAttempt.getLastUpdate());
                 attempt.setValid(true);
             }else{
-                attempt.setLevelReached(level);
-                attempt.setAttemptScore(score);
+                origLevel = attempt.getLevelReached();
+                origScore = attempt.getAttemptScore();
+                attempt.setLevelReached(reqAttempt.getLevelReached());
+                attempt.setAttemptScore(reqAttempt.getAttemptScore());
             }
         }
+        attempt.setSync(syncState);
         attemptRepository.save(attempt);
+        log.info("Attempt: "+reqAttempt.getId()+" from Match id: "+match.getId()+" - SyncState: "+syncState.name());
+        log.debug("SyncAttempt for attempt "+reqAttempt.getId()+": for Original score: "+origScore+"- Updated score: "+attempt.getAttemptScore()+" - Original level: "+origLevel+" - Updated level: "+attempt.getLevelReached());
         return attempt;
     }
 }

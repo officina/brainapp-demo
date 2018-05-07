@@ -79,7 +79,7 @@ public class Match implements Serializable {
     private Long retry = 0l;
 
     @Column(name = "anomalous")
-    private Boolean anomalous;
+    private Boolean anomalous = false;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

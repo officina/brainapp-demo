@@ -5,6 +5,7 @@ import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.service.SessionService;
 import cc.officina.gatorade.service.dto.MatchDTO;
 import cc.officina.gatorade.service.dto.SessionDTO;
+import cc.officina.gatorade.service.impl.MatchServiceImpl.TypeOfStillPending;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Session;
@@ -120,6 +121,16 @@ public class SessionServiceImpl implements SessionService{
 			if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
 			{
 				log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
+				//ha senso verificare se l'utente tenta di riaccedere al match perché in precedenza ha avuto problemi, è un buon trigger per tentare di risolvere l'eventyale pending
+				//chiaramente solo se effettivamente pending
+				if(match.isElaborated() && match.getSendToPo())
+				{
+					log.info("IL match è correttamente elaborato, non serve fare altro (match_id = " + match.getId() + ")");
+				}
+				{
+					TypeOfStillPending type = matchService.singleMatchRestore(match);
+					log.info("Tentativo di rielaborare il match (match_id = " + match.getId() + ") con risultato " + type);
+				}
 				return false;
 			}
 		}

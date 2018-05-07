@@ -23465,8 +23465,8 @@ cr.behaviors.Pin = function(runtime)
 	behaviorProto.exps = new Exps();
 }());
 cr.getObjectRefTable = function () { return [
-	cr.plugins_.Audio,
 	cr.plugins_.Arr,
+	cr.plugins_.Audio,
 	cr.plugins_.Function,
 	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,

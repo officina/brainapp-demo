@@ -74,25 +74,25 @@ angular.module('gatoradeApp')
 	  })
   };
     //CLOSE ATTEMPT
-  this.endAttempt = function(gameId, attemptId, localid, score, level, completed, endMatch, matchToken){
+  this.endAttempt = function(gameId, attempt, score, level, completed, endMatch, matchToken, match){
 	  return $http({
       	method: 'PUT',
       	url: rootPath +'/api/play/attempt/end',
       	data:{
         	gameid:gameId,
-      		attemptid:attemptId,
-            localid: localid,
       		score:score,
       		level:level,
       		completed:completed,
       		endmatch:endMatch,
-      		matchtoken: matchToken
+      		matchtoken:matchToken,
+            match:match,
+            attempt:attempt
         }
 	  })
   };
 
     //END MATCH
-    this.endMatch = function(gameId, playerId, token, matchId, attemptId, attemptLocalId, score, level, matchToken, attempts){
+    this.endMatch = function(gameId, playerId, token, matchId, attempt, matchToken, attempts){
       return $http({
         method: 'PUT',
         url: rootPath + '/api/play/end',
@@ -101,15 +101,12 @@ angular.module('gatoradeApp')
           playerid:playerId,
           token:token,
           matchid:matchId,
-          attemptid:attemptId,
-          localid: attemptLocalId,
-          score:score,
-          level:level,
+          attempt:attempt,
           matchtoken: matchToken,
           attempts: attempts
         }
       })
-    }
+    };
 
     //SEND REPORT
     this.report = function(matchId, userId, json){
@@ -159,7 +156,7 @@ angular.module('gatoradeApp')
   	    })
     };
 
-    this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken, attempts){
+    this.syncEndMatch = function(gameId, playerId, token, matchId, attempt, score, level, matchToken, attempts){
         var http = new XMLHttpRequest();
         http.open("PUT", '/api/play/end', false);
         http.setRequestHeader("Content-type", "application/json");
@@ -168,7 +165,7 @@ angular.module('gatoradeApp')
         dataPut.playerid = playerId;
         dataPut.token = token;
         dataPut.matchid = matchId;
-    	dataPut.attemptid = attemptId;
+    	dataPut.attempt = attempt;
     	dataPut.score = score;
     	dataPut.level = level;
     	dataPut.matchtoken = matchToken;

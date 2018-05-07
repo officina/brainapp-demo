@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -255,7 +256,7 @@ public class GameResource {
     public ResponseEntity<AttemptResponse> updateAttemptScoreV2(@RequestBody Request request) {
         log.info("REST request to update score for game Game with id " + request.getMatch().getGame().getId()+", attempt " + request.getAttempt().getId());
         log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
-        Attempt attempt = attemptService.syncAttempt(request.getAttempt().getId(), request.getAttempt().getLocalId(), request.getAttempt().getAttemptScore(), request.getAttempt().getLevelReached(), request.getMatch());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
 
         if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getMatch().getSession().getId() + " already in use")).body(null);
@@ -269,7 +270,7 @@ public class GameResource {
     public ResponseEntity<MatchResponse> stopAttempt(@RequestBody Request request) {
     	log.info("REST request to end attemtp for game Game with id " + request.getGameid()+", attempt " + (request.getAttemptid() != null ? request.getAttemptid() : "created offline with localId: "+request.getLocalid()));
     	log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
-        Attempt attempt = attemptService.syncAttempt(request.getAttemptid(), request.getLocalid(), request.getScore(), request.getLevel(), request.getMatch());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
 
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
@@ -306,16 +307,20 @@ public class GameResource {
                         //client e server sono allineati
                         //skippo
                         syncCount++;
+                        attemptService.syncAttempt(attempt, match, AttemptSyncState.sync);
                         break;
                     case syncOnEndMatch:
-                        attemptService.syncAttempt(attempt.getId(), attempt.getLocalId(), attempt.getAttemptScore(), attempt.getLevelReached(), match);
+                        attemptService.syncAttempt(attempt, match, AttemptSyncState.syncOnEndMatch);
                         syncedOnEndMatchCount++;
                         break;
                     default:
                         //case notSync:
                         //valore di default, se "sync" è nullo o notSync
-                        serverAttempt = attemptService.syncAttempt(attempt.getId(), attempt.getLocalId(), attempt.getAttemptScore(), attempt.getLevelReached(), match);
-                        serverAttempt.setSync(AttemptSyncState.syncOnEndMatch);
+                        serverAttempt = attemptService.syncAttempt(attempt, match,AttemptSyncState.syncOnEndMatch);
+                        if (serverAttempt.getStopAttempt() == null){
+                            serverAttempt.setStopAttempt(ZonedDateTime.now());
+                        }
+                        serverAttempt.setCompleted(true);
                         notSyncCount++;
                         attemptService.save(serverAttempt);
                         break;
@@ -326,17 +331,16 @@ public class GameResource {
         //Attempts not synced = attempts che sono stati chiusi offline, o non sono stati chiusi.
         //Attempts synced at end match = attempts che sono stati aggiornati lato server. tutti quelli che arrivano con stato notSync.
         log.info("Match id: "+match.getId()+" Total attempts: "+match.getAttempts().size()+" - Attempts synced from client: "+syncCount+" - Attempts not synced: "+notSyncCount+" - Attempts synced at end match: "+syncedOnEndMatchCount);
-        Attempt lastAttempt = attemptService.syncAttempt(request.getAttemptid(), request.getLocalid(), request.getScore(), request.getLevel(), match);
-        if (lastAttempt.getSync() == null || lastAttempt.getSync() == AttemptSyncState.notSync){
+        Attempt lastAttempt = null;
+        if (request.getAttempt() != null){
+            lastAttempt = attemptService.syncAttempt(request.getAttempt(), match, request.getAttempt().getSync());
             lastAttempt.setSync(AttemptSyncState.syncOnEndMatch);
         }
 
         if(!match.getMatchToken().equals(request.getMatchtoken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
 
-
         return new ResponseEntity<>(gameService.endMatch(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
-
     }
 
     @PutMapping("/play/restore-end")
