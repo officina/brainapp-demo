@@ -2,6 +2,7 @@ package cc.officina.gatorade.service;
 
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -48,5 +49,5 @@ public interface AttemptService {
      */
     Attempt findOneByLocalId(Long localId);
 
-    Attempt syncAttempt(Long id, Long localId, Long score, String level, Match match);
+    Attempt syncAttempt(Attempt attempt, Match match, AttemptSyncState syncState);
 }
