@@ -2,6 +2,7 @@ package cc.officina.gatorade.service;
 
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Report;
+import cc.officina.gatorade.service.impl.MatchServiceImpl.TypeOfStillPending;
 
 import java.util.List;
 
@@ -65,4 +66,5 @@ public interface MatchService {
 
 	public void deletePlayerActivities(String userId);
 	public void matchesRestore();
+	public TypeOfStillPending singleMatchRestore(Match match);
 }
