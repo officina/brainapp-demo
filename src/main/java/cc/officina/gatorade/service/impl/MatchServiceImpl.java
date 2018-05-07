@@ -166,7 +166,7 @@ public class MatchServiceImpl implements MatchService{
     	//se il match ritornato dalla query non ha attempt è anomalo ma non risolvibile, lo indico tra quelli ancora irrisolti ma non ho modo di risolverlo
     	if(m.getAttempts().size() == 0)
     	{
-    		log.info("MATCH RESTORE (match_ID = " + m.getId() + "): trovato match con nessun attemp");
+    		log.info("MATCH RESTORE (match_ID = " + m.getId() + "): no attempts!!");
     		m.setAnomalous(true);
     		matchRepository.save(m);
     		return TypeOfStillPending.NO_ATTEMPT;
@@ -179,7 +179,7 @@ public class MatchServiceImpl implements MatchService{
     		//caso in cui il match non è stato elaborato e nemmeno inviato a po, ad esempio client offline non recuperato o problemi lato client
     		if(m.getElaborated() == false && m.getSendToPo() == false)
     		{
-    			log.info("MATCH RESTORE (match_ID = " + m.getId() + "): trovato match non elaborato e non inviato a Playoff");
+    			log.info("MATCH RESTORE (match_ID = " + m.getId() + "): found match with elaborated = false and toPo = false");
     			//per ora lo indico come pending in attesa di eventuale logica per risolverlo
     			//lo marco come anomalo in modo da evidenziarlo lato console admin e non elaborarlo nuovamente alla prossima esecuzione del batch
     			m.setAnomalous(true);
@@ -190,7 +190,7 @@ public class MatchServiceImpl implements MatchService{
     		//caso di match elaborato ma non inviato a po, ad esempio pe run player not found
     		if(m.getElaborated() == true && m.getSendToPo() == false)
     		{
-    			log.info("MATCH RESTORE (match_ID = " + m.getId() + "): trovato match elaborato ma non inviato a Playoff");
+    			log.info("MATCH RESTORE (match_ID = " + m.getId() + "): found match with elaborated = true and toPo = false");
     			TypeOfStillPending result = null;
     			//mi serve marcarlo come non elborato per eseguire l'endMatch
     			m.setElaborated(false);
@@ -212,7 +212,7 @@ public class MatchServiceImpl implements MatchService{
     		//caso considerato per completare i casi di and, ma non si dovrebbe poter presentare
     		if(m.getElaborated() == false && m.getSendToPo() == true)
     		{
-    			log.info("MATCH RESTORE (match_ID = " + m.getId() + "): trovato match inviato a Playoff ma non elaborato (molto grave!)");
+    			log.info("MATCH RESTORE (match_ID = " + m.getId() + "): found match with elaborated = false and toPo = true");
     			//l'unica cosa che posso fare è marcarlo come ancora pending
     			//lo marco come anomalo in modo da evidenziarlo lato console admin e non elaborarlo nuovamente alla prossima esecuzione del batch
     			m.setAnomalous(true);
