@@ -156,7 +156,7 @@ angular.module('gatoradeApp')
   	    })
     };
 
-    this.syncEndMatch = function(gameId, playerId, token, matchId, attemptId, score, level, matchToken, attempts){
+    this.syncEndMatch = function(gameId, playerId, token, matchId, attempt, score, level, matchToken, attempts){
         var http = new XMLHttpRequest();
         http.open("PUT", '/api/play/end', false);
         http.setRequestHeader("Content-type", "application/json");
@@ -165,7 +165,7 @@ angular.module('gatoradeApp')
         dataPut.playerid = playerId;
         dataPut.token = token;
         dataPut.matchid = matchId;
-    	dataPut.attemptid = attemptId;
+    	dataPut.attempt = attempt;
     	dataPut.score = score;
     	dataPut.level = level;
     	dataPut.matchtoken = matchToken;

@@ -419,7 +419,7 @@
 						$stateParams.playtoken,
 						$scope.wrapperMemory.match.id,
 						undefined,
-						undefined,
+                        undefined,
 						undefined,
 						$scope.matchToken,
                         $scope.wrapperMemory.attempts);
@@ -429,7 +429,7 @@
 	        	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
 						$stateParams.playtoken,
 						$scope.wrapperMemory.match.id,
-						$scope.wrapperMemory.currAttempt.id,
+						$scope.wrapperMemory.currAttempt,
 						$scope.wrapperMemory.currAttempt.attemptScore,
 						$scope.wrapperMemory.currAttempt.level,
 						$scope.matchToken,
