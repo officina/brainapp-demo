@@ -67,4 +67,5 @@ public interface MatchService {
 	public void deletePlayerActivities(String userId);
 	public void matchesRestore();
 	public TypeOfStillPending singleMatchRestore(Match match);
+	public List<Match> findValidBySessionId(Long sessionId);
 }
