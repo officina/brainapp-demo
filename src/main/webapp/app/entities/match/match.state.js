@@ -140,6 +140,7 @@
                                 retry: null,
                                 anomalous: null,
                                 replayState: null,
+                                parentId: null,
                                 id: null
                             };
                         }

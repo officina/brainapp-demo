@@ -29,6 +29,7 @@
             "retry": "Retry",
             "anomalous": "Anomalous",
             "replayState": "Replay State",
+            "parentId": "Parent Id",
             "game": "Game",
             "template": "Template",
             "attempts": "Attempts",

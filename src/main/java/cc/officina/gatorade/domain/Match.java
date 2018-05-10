@@ -85,6 +85,9 @@ public class Match implements Serializable {
     @Column(name = "replay_state")
     private MatchReplayState replayState;
 
+    @Column(name = "parent_id")
+    private Long parentId;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -339,6 +342,14 @@ public class Match implements Serializable {
 
     public void setReplayState(MatchReplayState replayState) {
         this.replayState = replayState;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     @Override
