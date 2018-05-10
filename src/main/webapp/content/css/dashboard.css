@@ -1,0 +1,19 @@
+/*Dashboard*/
+.box {
+    box-shadow: 4px 4px 4px rgba(125,125,125,0.25);
+    min-height: 20vh;
+}
+.whitebkg {
+    background-color: white;
+}
+.flex {
+    display: flex;
+}
+.flexcol {
+    display: flex;
+    flex-direction: column;
+}
+.somepadding {
+    padding: 20px;
+}
+/*End Dashboard*/
