@@ -43,18 +43,100 @@
 		}
 	],
 	"order": [
-		"ddc4bded-d1af-4f0d-95a3-1088d6480dc5",
-		"f8a555e0-bb3c-44c3-aef9-4a4152b3588a",
-		"df642e34-35f9-43ac-bd29-2421bf8e733f",
-		"0c6d5421-885d-4432-a6a3-bc359aa713af"
+		"ddc4bded-d1af-4f0d-95a3-1088d6480dc5"
 	],
-	"folders_order": [],
-	"folders": [],
+	"folders_order": [
+		"2093bbf4-ee0f-4a14-9bcb-9f6a82fea19f",
+		"81b21879-564a-45c9-afef-cf4eabf7fd35"
+	],
+	"folders": [
+		{
+			"id": "2093bbf4-ee0f-4a14-9bcb-9f6a82fea19f",
+			"name": "REST API elenco sessioni di gioco per utente e laboratorio",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "1e5ad5ba-664a-4af7-b965-588c14a7b391",
+			"folder": null,
+			"order": [
+				"f8a555e0-bb3c-44c3-aef9-4a4152b3588a",
+				"df642e34-35f9-43ac-bd29-2421bf8e733f",
+				"0c6d5421-885d-4432-a6a3-bc359aa713af"
+			],
+			"folders_order": []
+		},
+		{
+			"id": "81b21879-564a-45c9-afef-cf4eabf7fd35",
+			"name": "Set REST API gestione sessioni/appuntamenti gioco (CRUD + chiusura/elaborazione)",
+			"description": "Set di REST API tramite le quali sia possibile creare, eliminare, modificare, appuntamenti di gioco.\nCiascuna sessione di gioco rimane associata ad un unico gioco; verranno gestite lato Sitecore altre aggregazioni (appuntamenti con più giochi)\nI servizi REST consentiranno di intervenire sulle entità SESSION e MATCH per modificare ditettmente i prametri che caratterizzano la sessione (start_date,  end_date, valid,...) previa verifica dello stato delle sessioni interessate e l'aggiornamento di eventuali giocate in corso",
+			"auth": null,
+			"events": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "74e52e19-1b31-4cb3-be39-c81f10b99ea3",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "869d3929-6ff6-4157-ae3c-bf3685b2e972",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"collection": "1e5ad5ba-664a-4af7-b965-588c14a7b391",
+			"folder": null,
+			"order": [
+				"272d6c71-b85d-4a0a-980a-719372aa8e1b",
+				"5a582dcf-9c3c-4a30-a8a7-73eed9c75cfc",
+				"0755da39-8502-4e89-8cb5-4bac3342e4d2",
+				"9517290a-931f-4dc8-b36c-cdfbd66f8f0a"
+			],
+			"folders_order": []
+		}
+	],
 	"requests": [
+		{
+			"id": "0755da39-8502-4e89-8cb5-4bac3342e4d2",
+			"name": "UPDATE Session",
+			"url": "http://gatoradacert.generali.it/api/sessions/40501",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNTg0OTUyMn0.uRwNIAQ77Etl9RpqN34hGNAoxqluzxMCN0k998_iX7G6_Rl0RqlsPbDMpimmDEmGNW1T3N5RXyKaeHYEmvoUbQ",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "PUT",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "81b21879-564a-45c9-afef-cf4eabf7fd35",
+			"rawModeData": "{\n    \"startDate\": \"2018-05-07T14:45:38Z\",\n    \"endDate\": \"2018-05-07T14:45:38Z\",\n    \"extId\": \"9EF0DB45-BE12-4E31-A57D-67A478953B1\",\n    \"poRoot\": \"my_generali_assistenza_clienti_aggregate\",\n    \"elaborated\": false,\n    \"game\": {\n        \"id\": 1001\n    }\n}",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNTg0OTUyMn0.uRwNIAQ77Etl9RpqN34hGNAoxqluzxMCN0k998_iX7G6_Rl0RqlsPbDMpimmDEmGNW1T3N5RXyKaeHYEmvoUbQ\n",
+			"pathVariables": {}
+		},
 		{
 			"id": "0c6d5421-885d-4432-a6a3-bc359aa713af",
 			"name": "GET User Session",
-			"url": "http://18.194.143.29/api/sessions/user/:userId",
+			"url": "http://gatoradecert.generali.it/api/sessions/user/:userId",
 			"description": "",
 			"data": null,
 			"dataMode": "params",
@@ -76,16 +158,94 @@
 			"queryParams": [],
 			"auth": null,
 			"events": [],
-			"folder": null,
+			"folder": "2093bbf4-ee0f-4a14-9bcb-9f6a82fea19f",
 			"headers": "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw\n",
 			"pathVariables": {
 				"userId": "atomasse"
 			}
 		},
 		{
+			"id": "272d6c71-b85d-4a0a-980a-719372aa8e1b",
+			"name": "CREATE Session",
+			"url": "http://gatoradecert.generali.it/api/sessions",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": ""
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNTg0OTUyMn0.uRwNIAQ77Etl9RpqN34hGNAoxqluzxMCN0k998_iX7G6_Rl0RqlsPbDMpimmDEmGNW1T3N5RXyKaeHYEmvoUbQ",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "81b21879-564a-45c9-afef-cf4eabf7fd35",
+			"rawModeData": "{\n  \"startDate\": \"1525704338\",\n  \"endDate\": \"1525704338\",\n  \"extId\": \"9EF0DB45-BE12-4E31-A57D-67A478953B19-\",\n  \"poRoot\": \"my_generali_assistenza_clienti_aggregate\",\n  \"game\": {\n    \"id\": \"1001\"\n  }\n}",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNTg0OTUyMn0.uRwNIAQ77Etl9RpqN34hGNAoxqluzxMCN0k998_iX7G6_Rl0RqlsPbDMpimmDEmGNW1T3N5RXyKaeHYEmvoUbQ\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "5a582dcf-9c3c-4a30-a8a7-73eed9c75cfc",
+			"name": "READ Session",
+			"url": "http://gatoradecert.generali.it/api/sessions/1101",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZXBseSIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNTc4OTY3MX0.bk6cUPWwvOpJxH0WRcuEiSQ4ll-mp78SYQXT5xTEmxNDm6aYKHRfjI_q7fNivHc_tIYoK1CZu67vPnx-tyqBHg",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "81b21879-564a-45c9-afef-cf4eabf7fd35",
+			"headers": "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZXBseSIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNTc4OTY3MX0.bk6cUPWwvOpJxH0WRcuEiSQ4ll-mp78SYQXT5xTEmxNDm6aYKHRfjI_q7fNivHc_tIYoK1CZu67vPnx-tyqBHg\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "9517290a-931f-4dc8-b36c-cdfbd66f8f0a",
+			"name": "DELETE Session",
+			"url": "http://gatoradecert.generali.it/api/sessions/40501",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNTg0OTUyMn0.uRwNIAQ77Etl9RpqN34hGNAoxqluzxMCN0k998_iX7G6_Rl0RqlsPbDMpimmDEmGNW1T3N5RXyKaeHYEmvoUbQ",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "DELETE",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "81b21879-564a-45c9-afef-cf4eabf7fd35",
+			"headers": "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNTg0OTUyMn0.uRwNIAQ77Etl9RpqN34hGNAoxqluzxMCN0k998_iX7G6_Rl0RqlsPbDMpimmDEmGNW1T3N5RXyKaeHYEmvoUbQ\n",
+			"pathVariables": {}
+		},
+		{
 			"id": "ddc4bded-d1af-4f0d-95a3-1088d6480dc5",
 			"name": "Authenticate",
-			"url": "http://18.194.143.29/api/authenticate",
+			"url": "http://gatoradecert.generali.it/api/authenticate",
 			"description": "Return the authorization token",
 			"data": [],
 			"dataMode": "raw",
@@ -120,7 +280,7 @@
 		{
 			"id": "df642e34-35f9-43ac-bd29-2421bf8e733f",
 			"name": "GET Labs sessions",
-			"url": "http://18.194.143.29/api/sessions/labs/:labs",
+			"url": "http://gatoradecert.generali.it/api/sessions/labs/:labs",
 			"description": "",
 			"data": null,
 			"dataMode": "params",
@@ -142,7 +302,7 @@
 			"queryParams": [],
 			"auth": null,
 			"events": [],
-			"folder": null,
+			"folder": "2093bbf4-ee0f-4a14-9bcb-9f6a82fea19f",
 			"headers": "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw\n",
 			"pathVariables": {
 				"labs": "my_generali_assistenza_clienti,post_vendita_vita"
@@ -151,7 +311,7 @@
 		{
 			"id": "f8a555e0-bb3c-44c3-aef9-4a4152b3588a",
 			"name": "GET User Labs Session",
-			"url": "http://18.194.143.29/api/sessions/user/:userId/labs/:labs",
+			"url": "http://gatoradecert.generali.it/api/sessions/user/:userId/labs/:labs",
 			"description": "",
 			"data": null,
 			"dataMode": "params",
@@ -177,7 +337,7 @@
 			"queryParams": [],
 			"auth": null,
 			"events": [],
-			"folder": null,
+			"folder": "2093bbf4-ee0f-4a14-9bcb-9f6a82fea19f",
 			"headers": "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTUyNDIxNDU2NH0.Nb2_hQl51z3T8tpTbZ28VNyo2HwFa_O0dQa8Qqaga2EnvviTaIclhlIpjpZ_fZnp2_JYatImFDMBb2b9QpfmIw\n",
 			"pathVariables": {
 				"userId": "atomasse",
