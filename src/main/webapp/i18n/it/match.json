@@ -28,6 +28,7 @@
             "sendToPo": "Send To Po",
             "retry": "Retry",
             "anomalous": "Anomalous",
+            "replayState": "Replay State",
             "game": "Game",
             "template": "Template",
             "attempts": "Attempts",
