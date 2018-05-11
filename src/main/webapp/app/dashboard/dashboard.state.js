@@ -8,7 +8,7 @@
     function stateConfig($stateProvider) {
         $stateProvider.state('manage', {
             parent: 'app',
-            url: '/manage/sessionid',
+            url: '/manage/sessionid/:extsessionid',
             data: {
                 authorities: []
             },

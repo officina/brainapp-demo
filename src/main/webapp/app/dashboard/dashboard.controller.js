@@ -9,10 +9,16 @@
     function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams) {
 
         var sessionid = $stateParams.sessions;
+        var matches = $stateParams.matches;
         // console.log('wololo');
 
-        DashboardService.getSession(21751).then(function(response){
+        DashboardService.getSession($stateParams.extsessionid).then(function(response){
             $scope.sessions = response.data;
+        });
+
+        DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
+            $scope.matches = response.data;
         })
+
     }
 })();
