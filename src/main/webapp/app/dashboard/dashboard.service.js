@@ -6,7 +6,7 @@ angular.module('gatoradeApp')
     this.getSession = function getSession(sessionid) {
         return $http({
             method: 'GET',
-            url: rootPath + '/api/sessions/sessionid'
+            url: rootPath + '/api/sessions/' + sessionid,
         })
     };
     }]);

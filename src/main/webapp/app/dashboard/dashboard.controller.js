@@ -8,9 +8,11 @@
 
     function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams) {
 
-        var sessionId = $stateParams.sessionid;
-        console.log('wololo');
+        var sessionid = $stateParams.sessions;
+        // console.log('wololo');
 
-        DashboardService.getSession(sessionId)
+        DashboardService.getSession(21751).then(function(response){
+            $scope.sessions = response.data;
+        })
     }
 })();
