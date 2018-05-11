@@ -1,4 +1,9 @@
 <link rel="stylesheet" href="content/css/dashboard.css">
+
+<div class="navbar">
+<h1 class="white nomar">Dashboard</h1>
+
+</div>
 <div class="">
     <h2>Session ID {{sessions.id}}</h2>
 </div>
@@ -10,16 +15,35 @@
         <span>Da {{sessions.startDate}}</span>
         <span>A {{sessions.endDate}}</span>
     </div>
-    <div class="mid col-lg-4">
+    <div class="mid col-lg-4 flexcol">
         <span>Sessioni</span>
+        <div class="bigcircle">
+            <h2 class="nomar">63%</h2>
+        </div>
     </div>
-    <div class="right col-lg-4">
+    <div class="right col-lg-4 flexcol">
         <span>High Score</span>
+        <div class="bigcircle">
+            <h2 class="nomar">1234</h2>
+        </div>
     </div>
 </div>
 <div class="">
-    <h2>Giocatori {{sessions}}</h2>
+    <h2>Giocatori</h2>
 </div>
-<div class="col-lg-12 whitebkg box somepadding">
-aeae
+<div class="col-lg-12 whitebkg box nopadding">
+    <div class="match flexbtw">
+        <div class="statusinfo"></div>
+        <div class="alias"><span>ALIAS</span></div>
+        <div class="minpoints">Pti Min</div>
+        <div class="maxpoints">Pti Max</div>
+        <div class="advancement">Avanzamento</div>
+        <div class="status">Non Ha ancora giocato</div>
+        <div class="btns">
+            <div class="btn btn-primary btn-sm reset">Reset</div>
+            <div class="btn btn-warning btn-sm interrupt">Interrompi</div>
+            <div class="btn btn-danger btn-sm close">Chiudi</div>
+        </div>
+    </div>
+
 </div>
