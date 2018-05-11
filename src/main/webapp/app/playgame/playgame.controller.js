@@ -124,15 +124,29 @@
         $scope.$on('$locationChangeStart', function (event, next, current) {
         	console.log('locationChangeStart');
         	PlaygameService.report($scope.wrapperMemory.match.id,$stateParams.playtoken,$scope.wrapperMemory);
-        	PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
-					$stateParams.playtoken,
-					$scope.wrapperMemory.match.id,
-					$scope.wrapperMemory.currAttempt.id,
-					$scope.wrapperMemory.currAttempt.attemptScore,
-					$scope.wrapperMemory.currAttempt.level,
+            if($scope.wrapperMemory.currAttempt == undefined)
+            {
+                PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
+                    $stateParams.playtoken,
+                    $scope.wrapperMemory.match.id,
+                    undefined,
+                    undefined,
+                    undefined,
                     $scope.matchToken,
                     $scope.wrapperMemory.attempts);
-            		removeEvent(eventName, $scope.handle);
+            }
+            else
+            {
+                PlaygameService.syncEndMatch($scope.wrapperMemory.game.id,"",
+                    $stateParams.playtoken,
+                    $scope.wrapperMemory.match.id,
+                    $scope.wrapperMemory.currAttempt,
+                    $scope.wrapperMemory.currAttempt.attemptScore,
+                    $scope.wrapperMemory.currAttempt.level,
+                    $scope.matchToken,
+                    $scope.wrapperMemory.attempts);
+            }
+            removeEvent(eventName, $scope.handle);
         });
 
         $scope.game = {url:"htmlgames/loading.html"}
@@ -159,6 +173,19 @@
 
         });
 
+        //TODO aggiungere chiamata a Sitecore "Servizio abiitazione gioco utente" prima del game init o della verifica di rigioco
+
+        //controllo parametro di rigioco in arrivo da link di gioco
+        if ($stateParams.replay != undefined){
+            var replay = ($stateParams.replay == "true");
+            if (replay){
+                console.log("Ho un caso di REPLAY")
+            }else{
+                console.log("Ho un query params dico HO UN QUERY PARAM REPLAY A FALSE")
+            }
+        }else{
+            console.log("NON HO dico NON HO un caso di REPLAY!!!!!!")
+        }
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid).then(function(response){
         	$scope.game = response.data;
           $scope.wrapperMemory.game = response.data;
