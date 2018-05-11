@@ -192,4 +192,14 @@ public class MatchResource {
         matchService.matchesRestore();
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/matches/by-session/{sessionId}")
+    public ResponseEntity<List<Match>> getMatchesBySessionId(@ApiParam Pageable pageable, @PathVariable Long sessionId){
+        log.debug("REST request to get a page of Matches by Session id");
+        Page<Match> page = matchService.findValidBySessionId(pageable, sessionId);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/matches/by-session/"+sessionId);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+
 }
