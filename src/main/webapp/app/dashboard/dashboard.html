@@ -1,14 +1,14 @@
 <link rel="stylesheet" href="content/css/dashboard.css">
 <div class="">
-    <h2>Session ID</h2>
+    <h2>Session ID {{sessions.id}}</h2>
 </div>
 <div class="col-lg-12 whitebkg flex somepadding box" style="margin-bottom: 20px">
     <div class="col-lg-4 left flexcol">
         <span>Nome Laboratorio</span>
-        <span>Nome Gioco</span>
+        <span>Nome Gioco {{sessions.game.description}}</span>
         <span>Stato Appuntamento</span>
-        <span>Da</span>
-        <span>A</span>
+        <span>Da {{sessions.startDate}}</span>
+        <span>A {{sessions.endDate}}</span>
     </div>
     <div class="mid col-lg-4">
         <span>Sessioni</span>
