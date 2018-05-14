@@ -47,7 +47,11 @@ public interface GameService {
      */
     void delete(Long id);
 
-	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken);
+    public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken);
+
+    public MatchResponse replayMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken);
+
+    public MatchResponse cloneMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken);
 
 	public AttemptResponse startAttempt(Game game, Match match);
 

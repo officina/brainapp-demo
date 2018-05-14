@@ -1,26 +1,21 @@
 package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.service.GameService;
-import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.service.ReportService;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Match;
-import cc.officina.gatorade.domain.MatchTemplate;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.MatchRepository;
-
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -226,5 +221,10 @@ public class MatchServiceImpl implements MatchService{
     @Override
     public List<Match> findValidBySessionId(Long sessionId) {
         return matchRepository.findValidBySessionId(sessionId);
+    }
+
+    @Override
+    public Match findMainMatch(Long gameId, String userId) {
+        return matchRepository.findMainMatch(gameId, userId);
     }
 }

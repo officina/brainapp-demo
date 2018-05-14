@@ -14,6 +14,7 @@ import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 
@@ -135,7 +136,7 @@ public class GameResource {
 
     @GetMapping("/play/{id}/init/{extid}/{playerid}")
     @Timed
-    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable String extid, @PathVariable String playerid) {
+    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable String extid, @PathVariable String playerid, @RequestParam("replay") Boolean replay) {
         log.info("REST game init for game with id = " + id + ", extId = " + extid + " and playerid = " + playerid);
         Game game = gameService.findOne(id);
         if(game == null)
@@ -149,7 +150,7 @@ public class GameResource {
         	log.info("Session not valid - not template found for game with id " + id);
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No template founded for game with id "+ id)).body(null);
         }
-        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id);
+        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id, replay);
         if(! validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with ext_id " + extid + " is invalid.")).body(null);
         return new ResponseEntity<>(game, null, HttpStatus.OK);
@@ -182,7 +183,21 @@ public class GameResource {
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
         // non passo per ora il matchToken, o meglio passo -1
-        return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+
+        if (request.isReplay() == null){
+            //reaply non richiesto, procedo alla prima giocata
+            return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+        }
+
+        if (request.isReplay()) {
+            //ho il param replay a true.
+            //procedo alla creazione del match
+            return new ResponseEntity<>(gameService.replayMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+        } else {
+            //ho il param replay a false.
+            //procedo alla clonazione
+            return new ResponseEntity<>(gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/play/attempt")

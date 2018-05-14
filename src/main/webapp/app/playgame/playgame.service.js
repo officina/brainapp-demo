@@ -21,15 +21,15 @@ angular.module('gatoradeApp')
   };
 
   //GAME AUTH
-  this.getGameInit =  function getGame(gameId, userid, extid){
+  this.getGameInit =  function getGame(gameId, userid, extid, replay){
       return $http({
       	method: 'GET',
-      	url: rootPath + '/api/play/' + gameId +  '/init/' + extid + '/' + userid
+      	url: rootPath + '/api/play/' + gameId +  '/init/' + extid + '/' + userid + '?replay=' + replay
       })
   };
 
     //CREATE MATCH
-  this.createMatch = function(gameId, templateId, playerId,token, sessionId, matchToken){
+  this.createMatch = function(gameId, templateId, playerId,token, sessionId, matchToken, replay){
 	  return $http({
       	method: 'POST',
       	url: rootPath+'/api/play',
@@ -39,7 +39,8 @@ angular.module('gatoradeApp')
         	playerid:playerId,
         	playtoken:token,
         	sessionid: sessionId,
-        	matchtoken: matchToken
+        	matchtoken: matchToken,
+            replay: replay
         }
 	  })
   };
