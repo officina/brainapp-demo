@@ -93,4 +93,16 @@ span  {
 .right {
     align-items: center;
 }
+
+.alias {
+    min-width: 80px;
+    max-width: 80px;
+}
+.nobrdbot {
+    border-bottom: none;
+}
+.brdbot {
+border-bottom: 1px solid #D4D4D4;
+}
 /*End Dashboard*/
+
