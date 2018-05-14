@@ -201,6 +201,9 @@ public class MatchServiceImpl implements MatchService{
     			{
     				//incremento il retry
     				m.setRetry(m.getRetry() + 1);
+                    if (m.getRetry() >= maxRetry){
+                        m.setAnomalous(true);
+                    }
     				//registro nella mappagdegli stillPending
     				result = TypeOfStillPending.TO_PO_FAIL;
     			}
