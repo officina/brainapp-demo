@@ -19,7 +19,7 @@ import org.springframework.data.repository.query.Param;
 public interface MatchRepository extends JpaRepository<Match,Long> {
 
 
-	@Query("select m from Match m where m.game.id = :gameId and m.template.id=:templateId and lower(m.userId)=lower(:playerId) and m.session.id=:sessionid and m.valid = true")
+	@Query("select m from Match m where m.game.id = :gameId and m.template.id=:templateId and lower(m.userId)=lower(:playerId) and m.session.id=:sessionid and m.valid = true and m.replayState = 1")
 	public Match findOneByPlayerAndSession(@Param("gameId")Long gameId, @Param("templateId")Long templateId, @Param("playerId")String playerId, @Param("sessionid")Long sessionId);
 
 	@Query("select m from Match m where m.session.extId=:extId")

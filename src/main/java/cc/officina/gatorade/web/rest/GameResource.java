@@ -150,8 +150,8 @@ public class GameResource {
         	log.info("Session not valid - not template found for game with id " + id);
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No template founded for game with id "+ id)).body(null);
         }
-        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id, replay);
-        if(! validateSession)
+        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id);
+        if(!validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with ext_id " + extid + " is invalid.")).body(null);
         return new ResponseEntity<>(game, null, HttpStatus.OK);
     }
@@ -170,7 +170,7 @@ public class GameResource {
 
     	if(request.getGameid() == null || request.getPlayerid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-        log.info("REST request to startMatch : {}", request.getGameid());
+        log.info("REST request to startMatch : {} , replay: "+request.isReplay(), request.getGameid());
         Session session = sessionService.findOneByExtId(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
@@ -185,18 +185,23 @@ public class GameResource {
         // non passo per ora il matchToken, o meglio passo -1
 
         if (request.isReplay() == null){
-            //reaply non richiesto, procedo alla prima giocata
+            //replay non richiesto, procedo alla prima giocata
             return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
         }
-
+        MatchResponse response;
         if (request.isReplay()) {
             //ho il param replay a true.
             //procedo alla creazione del match
-            return new ResponseEntity<>(gameService.replayMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+            response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
+            if (response == null){
+                //FIXME @Nick come gestiamo questo caso? se non trovo il match di riferimento lasciamo gestire a Sitecore?
+                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot replay match")).body(null);
+            }
+            return new ResponseEntity<>(response, null, HttpStatus.OK);
         } else {
             //ho il param replay a false.
             //procedo alla clonazione
-            MatchResponse response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
+            response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
             if (response == null){
                 //FIXME @Nick come gestiamo questo caso? se non trovo il match di riferimento lasciamo gestire a Sitecore?
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot clone match")).body(null);

@@ -129,7 +129,7 @@ public class GameServiceImpl implements GameService{
     @Override
     public MatchResponse replayMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
         //creo un nuovo match con riferimento a oldOne
-        Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
+        Match oldOne = matchRepository.findMainMatch(game.getId(), playerId);
         ZonedDateTime now = ZonedDateTime.now();
         Match match = new Match();
         match.setTemplate(template);
@@ -168,7 +168,7 @@ public class GameServiceImpl implements GameService{
         cloned.setStart(now);
         cloned.setStop(now);
         cloned.setGame(mainMatch.getGame());
-        cloned.setSession(mainMatch.getSession());
+        cloned.setSession(session);
         cloned.setLastStart(now);
         cloned.setTimeSpent(0l);
         cloned.setElaborated(false);

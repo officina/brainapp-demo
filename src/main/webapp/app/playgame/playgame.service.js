@@ -93,7 +93,7 @@ angular.module('gatoradeApp')
   };
 
     //END MATCH
-    this.endMatch = function(gameId, playerId, token, matchId, attempt, matchToken, attempts){
+    this.endMatch = function(gameId, playerId, token, matchId, attempt, matchToken, attempts, score, level){
       return $http({
         method: 'PUT',
         url: rootPath + '/api/play/end',
@@ -104,6 +104,8 @@ angular.module('gatoradeApp')
           matchid:matchId,
           attempt:attempt,
           matchtoken: matchToken,
+          score:score,
+          level:level,
           attempts: attempts
         }
       })

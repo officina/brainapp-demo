@@ -194,7 +194,6 @@
                 .then(function (response) {
                     $scope.wrapperMemory.match = response.data.match;
                     if ($scope.wrapperMemory.match.replayState == 'cloned'){
-                        //FIXME @Nick conviene tenere centralizzato in manageError()? penso di si but not sure
                         $rootScope.wrapperMemory = $scope.wrapperMemory;
                         console.log('Caso di rigioco "false" match clonato corretamente match id: '+$scope.wrapperMemory.match.id+" match di riferimento: "+$scope.wrapperMemory.match.parentId);
                         $state.go("ended", {
@@ -410,9 +409,12 @@
             console.log('Inside end match');
             removeEvent(eventName, $scope.handle);
             //eseguo prima endmatch
-            PlaygameService.endMatch($scope.wrapperMemory.game.id, "", $stateParams.playtoken, $scope.wrapperMemory.match.id, $scope.wrapperMemory.currAttempt, $scope.matchToken, $scope.wrapperMemory.attempts)
+            PlaygameService.endMatch($scope.wrapperMemory.game.id, "", $stateParams.playtoken, $scope.wrapperMemory.match.id, $scope.wrapperMemory.currAttempt, $scope.matchToken, $scope.wrapperMemory.attempts, $scope.wrapperMemory.currAttempt.attemptScore,
+                $scope.wrapperMemory.currAttempt.level)
                 .then(function (response) {
                     // se endmatch va a buon fine eseguo l'invio del report
+                    $scope.wrapperMemory.match = response.data.match;
+                    $rootScope.wrapperMemory = $scope.wrapperMemory;
                     PlaygameService.reportAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory)
                         .then(function (response) {
                             $state.go("ended", {
