@@ -196,7 +196,12 @@ public class GameResource {
         } else {
             //ho il param replay a false.
             //procedo alla clonazione
-            return new ResponseEntity<>(gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+            MatchResponse response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
+            if (response == null){
+                //FIXME @Nick come gestiamo questo caso? se non trovo il match di riferimento lasciamo gestire a Sitecore?
+                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot clone match")).body(null);
+            }
+            return new ResponseEntity<>(response, null, HttpStatus.OK);
         }
     }
 

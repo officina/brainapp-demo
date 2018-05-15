@@ -190,9 +190,20 @@
             if ($scope.game.type == 'LEVEL') {
                 useLevels = true;
             }
-            PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.extsessionid, replay)
+            PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.extsessionid, $scope.matchToken, replay)
                 .then(function (response) {
                     $scope.wrapperMemory.match = response.data.match;
+                    if ($scope.wrapperMemory.match.replayState == 'cloned'){
+                        //FIXME @Nick conviene tenere centralizzato in manageError()? penso di si but not sure
+                        $rootScope.wrapperMemory = $scope.wrapperMemory;
+                        console.log('Caso di rigioco "false" match clonato corretamente match id: '+$scope.wrapperMemory.match.id+" match di riferimento: "+$scope.wrapperMemory.match.parentId);
+                        $state.go("ended", {
+                            "gameid": $stateParams.gameid,
+                            "playtoken": $stateParams.playtoken,
+                            "sessionid": $stateParams.extsessionid,
+                            "why": "cloneSuccessfully"
+                        });
+                    }
                     var timeSpent = $scope.wrapperMemory.match.timeSpent;
 
                     if (timeSpent < $scope.wrapperMemory.match.template.maxDuration) {

@@ -12,12 +12,12 @@
     	//remove confirm message
     	$(window).unbind('beforeunload');
     	$(window).unbind('unload');
-    	
+
     	$scope.message1 = 'Gioco finito o sessione terminata. ';
     	$scope.message2 = 'Grazie per aver giocato!';
     	$scope.showError = false;
     	$scope.showReport = false;
-    	
+
     	var sendProblem = function(){
     		$scope.errorText = $rootScope.finalError;
 	    	$scope.reportText = $rootScope.wrapperMemory;
@@ -48,9 +48,19 @@
 	    		PlaygameService.errorAsync(idToUse,$stateParams.playtoken,$scope.errorText);
 	    	});
     	}
-    	
+
     	switch($stateParams.why)
     	{
+            case 'cloneSuccessfully':
+                $scope.message1 = 'La tua ultima giocata è stata salvata con successo';
+                var score = 0;
+                if ($rootScope.wrapperMemory.match.game.useLevels){
+                    score = $rootScope.wrapperMemory.match.bestLevel;
+                }else{
+                    score = $rootScope.wrapperMemory.match.bestScore;
+                }
+                $scope.message2 = 'Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
+                break;
     		case 'invalidSession':
     			$scope.message1 = 'Nessuna sessione di gioco attiva.';
     	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';

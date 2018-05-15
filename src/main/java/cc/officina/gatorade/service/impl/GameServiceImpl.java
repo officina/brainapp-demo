@@ -166,12 +166,15 @@ public class GameServiceImpl implements GameService{
         cloned.setTemplate(mainMatch.getTemplate());
         cloned.setUserId(mainMatch.getUserId());
         cloned.setStart(now);
+        cloned.setStop(now);
         cloned.setGame(mainMatch.getGame());
         cloned.setSession(mainMatch.getSession());
         cloned.setLastStart(now);
         cloned.setTimeSpent(0l);
         cloned.setElaborated(false);
-        cloned.setMatchToken(-1l);
+        cloned.setMatchToken(new Date().getTime());
+        cloned.setBestLevel(mainMatch.getBestLevel());
+        cloned.setBestScore(mainMatch.getBestScore());
         cloned.setUsedToPO(false);
         cloned.setValid(true);
 
@@ -180,6 +183,7 @@ public class GameServiceImpl implements GameService{
         attempt.setMatch(cloned);
         attempt.setStartAttempt(now);
         attempt.setLastUpdate(now);
+        attempt.setStopAttempt(now);
         attempt.setAttemptScore(mainMatch.getBestScore());
         attempt.setLevelReached(mainMatch.getBestLevel());
         attempt.setCompleted(true);
@@ -190,7 +194,6 @@ public class GameServiceImpl implements GameService{
         cloned.addAttempts(attempt);
         matchRepository.saveAndFlush(cloned);
         attemptRepository.saveAndFlush(attempt);
-
         return new MatchResponse(game,cloned,template);
     }
 
@@ -277,17 +280,16 @@ public class GameServiceImpl implements GameService{
         match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 
         Match mainMatch = matchRepository.findMainMatch(match.getGame().getId(), match.getUserId());
-        if (match.getReplayState() != MatchReplayState.cloned){
-            if (mainMatch != null){
+        if (mainMatch != null){
+            if (match.getReplayState() != MatchReplayState.cloned){
                 gamificationService.runResetAction(mainMatch);
                 mainMatch.setReplayState(MatchReplayState.old);
                 matchRepository.saveAndFlush(mainMatch);
             }
-
-            gamificationService.runAction(match);
-            match.setReplayState(MatchReplayState.main);
         }
 
+        gamificationService.runAction(match);
+        match.setReplayState(MatchReplayState.main);
         matchRepository.saveAndFlush(match);
 
         MatchResponse response = new MatchResponse(game, match, match.getTemplate());
