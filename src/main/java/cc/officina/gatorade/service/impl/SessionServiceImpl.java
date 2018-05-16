@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,30 +111,31 @@ public class SessionServiceImpl implements SessionService{
 			log.info("Session not valid - session (by extid) not found");
 			return false;
 		}
-		List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
 
-		if(matches == null || matches.size() == 0)
-			return true;
+        List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
 
-		for(Match match : matches)
-		{
-			//se esiste già un match la chiamata viene invaliata
-			if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
-			{
-				log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
-				//ha senso verificare se l'utente tenta di riaccedere al match perché in precedenza ha avuto problemi, è un buon trigger per tentare di risolvere l'eventyale pending
-				//chiaramente solo se effettivamente pending
-				if(match.isElaborated() && match.getSendToPo())
-				{
-					log.info("IL match è correttamente elaborato, non serve fare altro (match_id = " + match.getId() + ")");
-				}
-				{
-					TypeOfStillPending type = matchService.singleMatchRestore(match);
-					log.info("Tentativo di rielaborare il match (match_id = " + match.getId() + ") con risultato " + type);
-				}
-				return false;
-			}
-		}
+        if(matches == null || matches.size() == 0)
+            return true;
+
+        for(Match match : matches)
+        {
+            //se esiste già un match la chiamata viene invaliata
+            if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
+            {
+                log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
+                //ha senso verificare se l'utente tenta di riaccedere al match perché in precedenza ha avuto problemi, è un buon trigger per tentare di risolvere l'eventyale pending
+                //chiaramente solo se effettivamente pending
+                if(match.isElaborated() && match.getSendToPo())
+                {
+                    log.info("IL match è correttamente elaborato, non serve fare altro (match_id = " + match.getId() + ")");
+                }
+                {
+                    TypeOfStillPending type = matchService.singleMatchRestore(match);
+                    log.info("Tentativo di rielaborare il match (match_id = " + match.getId() + ") con risultato " + type);
+                }
+                return false;
+            }
+        }
 
 		if(session != null)
 			result = true;

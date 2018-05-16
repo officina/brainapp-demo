@@ -18,6 +18,7 @@ public class Request {
 	private Long matchtoken;
 	private Attempt attempt;
 	private Match match;
+	private Boolean replay;
 	private List<Attempt> attempts;
 	public Long getGameid() {
 		return gameid;
@@ -122,5 +123,13 @@ public class Request {
 
     public void setAttempts(List<Attempt> attempts) {
         this.attempts = attempts;
+    }
+
+    public Boolean isReplay() {
+        return replay;
+    }
+
+    public void setReplay(Boolean replay) {
+        this.replay = replay;
     }
 }

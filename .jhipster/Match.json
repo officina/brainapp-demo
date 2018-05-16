@@ -78,6 +78,15 @@
         {
             "fieldName": "anomalous",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "replayState",
+            "fieldType": "MatchReplayState",
+            "fieldValues": "playing,main,old,cloned"
+        },
+        {
+            "fieldName": "parentId",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170627083527",
