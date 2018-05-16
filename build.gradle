@@ -216,6 +216,7 @@ dependencies {
     optional ("org.springframework.boot:spring-boot-configuration-processor:${spring_boot_version}") {
         exclude group: 'com.vaadin.external.google', module: 'android-json'
     }
+    compile 'org.apache.httpcomponents:httpclient:4.5.5'
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
     compile group: 'org.modelmapper', name: 'modelmapper', version: '0.7.5'
 
