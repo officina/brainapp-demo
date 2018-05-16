@@ -158,7 +158,7 @@
                 var timeToEnd = (args.minutes * 60 + args.seconds)
                 var total = (timeToEnd * 100 / $scope.wrapperMemory.match.template.maxDuration);
                 $scope.progressBar = total <= 100 ? total : 100
-                var tk = args.seconds % 30;
+                var tk = args.seconds % 5;
                 console.log($scope.wrapperMemory.currAttempt != undefined);
                 if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
                     console.log('score/level update vs server')
@@ -409,8 +409,14 @@
             console.log('Inside end match');
             removeEvent(eventName, $scope.handle);
             //eseguo prima endmatch
-            PlaygameService.endMatch($scope.wrapperMemory.game.id, "", $stateParams.playtoken, $scope.wrapperMemory.match.id, $scope.wrapperMemory.currAttempt, $scope.matchToken, $scope.wrapperMemory.attempts, $scope.wrapperMemory.currAttempt.attemptScore,
-                $scope.wrapperMemory.currAttempt.level)
+            var tmlLevel = '';
+            var tmpScore = 0;
+            if ($scope.wrapperMemory.currAttempt != undefined){
+                tmpScore = $scope.wrapperMemory.currAttempt.attemptScore;
+                tmlLevel = $scope.wrapperMemory.currAttempt.level;
+            }
+            PlaygameService.endMatch($scope.wrapperMemory.game.id, "", $stateParams.playtoken, $scope.wrapperMemory.match.id, $scope.wrapperMemory.currAttempt, $scope.matchToken, $scope.wrapperMemory.attempts, tmpScore,
+                tmlLevel)
                 .then(function (response) {
                     // se endmatch va a buon fine eseguo l'invio del report
                     $scope.wrapperMemory.match = response.data.match;

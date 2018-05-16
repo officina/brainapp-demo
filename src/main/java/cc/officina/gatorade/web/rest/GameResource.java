@@ -194,7 +194,6 @@ public class GameResource {
             //procedo alla creazione del match
             response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
             if (response == null){
-                //FIXME @Nick come gestiamo questo caso? se non trovo il match di riferimento lasciamo gestire a Sitecore?
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot replay match")).body(null);
             }
             return new ResponseEntity<>(response, null, HttpStatus.OK);
@@ -203,7 +202,6 @@ public class GameResource {
             //procedo alla clonazione
             response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
             if (response == null){
-                //FIXME @Nick come gestiamo questo caso? se non trovo il match di riferimento lasciamo gestire a Sitecore?
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot clone match")).body(null);
             }
             return new ResponseEntity<>(response, null, HttpStatus.OK);
@@ -252,7 +250,7 @@ public class GameResource {
         		matchService.save(match);
         	}
         }
-        match.getAttempts().size();
+        //match.getAttempts().size();
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
 

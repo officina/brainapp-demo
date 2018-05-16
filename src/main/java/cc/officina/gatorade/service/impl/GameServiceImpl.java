@@ -171,7 +171,8 @@ public class GameServiceImpl implements GameService{
         cloned.setSession(session);
         cloned.setLastStart(now);
         cloned.setTimeSpent(0l);
-        cloned.setElaborated(false);
+        cloned.setElaborated(true);
+        cloned.setSendToPo(true);
         cloned.setMatchToken(new Date().getTime());
         cloned.setBestLevel(mainMatch.getBestLevel());
         cloned.setBestScore(mainMatch.getBestScore());
@@ -262,7 +263,10 @@ public class GameServiceImpl implements GameService{
 		if(lastAttempt != null)
 		{
 			lastAttempt.setAttemptScore(score);
-			lastAttempt.setLevelReached(level);
+            if(Long.parseLong(level) > Long.parseLong(lastAttempt.getLevelReached()))
+            {
+                lastAttempt.setLevelReached(level);
+            }
 			//si assume che un attempt chiuso in concomitanza al match risulta non completato
 			lastAttempt.setCompleted(false);
 			lastAttempt.setLastUpdate(now);

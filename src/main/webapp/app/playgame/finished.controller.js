@@ -51,7 +51,7 @@
 
         var score = 0;
     	if ($rootScope.wrapperMemory.match && $rootScope.wrapperMemory.match.game){
-            if ($rootScope.wrapperMemory.match.game.useLevels){
+            if ($rootScope.wrapperMemory.match.game.type == 'LEVEL'){
                 score = $rootScope.wrapperMemory.match.bestLevel;
             }else{
                 score = $rootScope.wrapperMemory.match.bestScore;
