@@ -130,6 +130,10 @@ public class GameServiceImpl implements GameService{
     public MatchResponse replayMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
         //creo un nuovo match con riferimento a oldOne
         Match oldOne = matchRepository.findMainMatch(game.getId(), playerId);
+        if (oldOne == null){
+            //non ho match di riferimento
+            return null;
+        }
         ZonedDateTime now = ZonedDateTime.now();
         Match match = new Match();
         match.setTemplate(template);

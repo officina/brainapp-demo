@@ -182,29 +182,37 @@ public class GameResource {
         MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
-        // non passo per ora il matchToken, o meglio passo -1
-
-        if (request.isReplay() == null){
-            //replay non richiesto, procedo alla prima giocata
-            return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
-        }
         MatchResponse response;
-        if (request.isReplay()) {
-            //ho il param replay a true.
-            //procedo alla creazione del match
+        if (session.getExtId().startsWith("top_user_")){
+            log.info("Richiesta inizio Match per TOP USER playerId: "+request.getPlayerid()+" - extId: "+session.getExtId());
             response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
             if (response == null){
-                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot replay match")).body(null);
+                return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
             }
             return new ResponseEntity<>(response, null, HttpStatus.OK);
-        } else {
-            //ho il param replay a false.
-            //procedo alla clonazione
-            response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
-            if (response == null){
-                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot clone match")).body(null);
+        }else{
+            // non passo per ora il matchToken, o meglio passo -1
+            if (request.isReplay() == null){
+                //replay non richiesto, procedo alla prima giocata
+                return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
             }
-            return new ResponseEntity<>(response, null, HttpStatus.OK);
+            if (request.isReplay()) {
+                //ho il param replay a true.
+                //procedo alla creazione del match
+                response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
+                if (response == null){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot replay match")).body(null);
+                }
+                return new ResponseEntity<>(response, null, HttpStatus.OK);
+            } else {
+                //ho il param replay a false.
+                //procedo alla clonazione
+                response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
+                if (response == null){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot clone match")).body(null);
+                }
+                return new ResponseEntity<>(response, null, HttpStatus.OK);
+            }
         }
     }
 
