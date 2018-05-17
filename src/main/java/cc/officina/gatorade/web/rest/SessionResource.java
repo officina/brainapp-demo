@@ -40,10 +40,12 @@ public class SessionResource {
 
     private final SessionService sessionService;
     private final GameService gameService;
+    private final MatchService matchService;
 
-    public SessionResource(SessionService sessionService, GameService gameService) {
+    public SessionResource(SessionService sessionService, GameService gameService, MatchService matchService) {
         this.sessionService = sessionService;
         this.gameService = gameService;
+        this.matchService = matchService;
     }
 
     /**
@@ -65,6 +67,7 @@ public class SessionResource {
         if(game == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidGameId", "Invalid game id")).body(null);
         }
+        session.setGame(game);
         Session oldSession = sessionService.findOneByExtId(session.getExtId());
         if(oldSession != null)
         {
@@ -87,6 +90,7 @@ public class SessionResource {
      */
     @PutMapping("/sessions")
     @Timed
+    @Transactional
     public ResponseEntity<Session> updateSession(@RequestBody Session session) throws URISyntaxException {
         log.debug("REST request to update Session : {}", session);
         if (session.getId() == null) {
@@ -107,6 +111,49 @@ public class SessionResource {
         {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidExtId", "extId already used")).body(null);
         }
+        Session result = sessionService.save(session);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
+            .body(result);
+    }
+
+    @PutMapping("/sessions/{id}")
+    @Timed
+    @Transactional
+    public ResponseEntity<Session> updateSessionRemote(@PathVariable Long id, @RequestBody Session session) throws URISyntaxException {
+
+        log.debug("REST request to update Session : {}", session);
+
+        //VALIDATION
+        Session _session = sessionService.findOne(id);
+        if (_session == null){
+            log.error("Unable to update. Session with id {} not found.", id);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("notFound", "SessionNotFound", "Session not found")).body(null);
+        }
+
+        //Se ho già dei match giocati la sessione è in uso
+        if(_session.getMatches() != null && _session.getMatches().size() > 0)
+        {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "sessionAlreadyInUse", "Session already in use")).body(null);
+        }
+
+
+        if (session.getGame() == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "missingGameId", "Missing the Game in the body request")).body(null);
+        }
+        Game game = gameService.findOne(session.getGame().getId());
+        if(game == null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidGameId", "Invalid game id")).body(null);
+        }
+        session.setGame(game);
+        Session oldSession = sessionService.findOneByExtId(session.getExtId());
+        if(oldSession != null && !oldSession.getId().equals(session.getId()))
+        {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidExtId", "extId already used")).body(null);
+        }
+
+        //il flag elaborated viene modificato solo dal metodo SessionResource.elaborateSession()
+        session.setElaborated(_session.isElaborated());
         Session result = sessionService.save(session);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
@@ -150,11 +197,17 @@ public class SessionResource {
      */
     @DeleteMapping("/sessions/{id}")
     @Timed
+    @Transactional
     public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
         log.debug("REST request to delete Session : {}", id);
         //VALIDATION
         Session session = sessionService.findOne(id);
-        if(session.getMatches() != null && session.getMatches().size() > 0)
+        if (session == null){
+            log.error("Unable to update. Session with id {} not found.", id);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("notFound", "SessionNotFound", "Session not found")).body(null);
+        }
+        List<Match> matches = matchService.findValidBySessionId(session.getId());
+        if(matches != null && matches.size() > 0)
         {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "sessionAlreadyInUse", "Session already in use")).body(null);
         }

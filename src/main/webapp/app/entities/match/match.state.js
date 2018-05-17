@@ -46,6 +46,7 @@
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('match');
+                    $translatePartialLoader.addPart('matchReplayState');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -68,6 +69,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('match');
+                    $translatePartialLoader.addPart('matchReplayState');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'Match', function($stateParams, Match) {
@@ -137,6 +139,8 @@
                                 sendToPo: null,
                                 retry: null,
                                 anomalous: null,
+                                replayState: null,
+                                parentId: null,
                                 id: null
                             };
                         }

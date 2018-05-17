@@ -2,8 +2,10 @@ package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.domain.*;
 import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
+import cc.officina.gatorade.domain.enumeration.MatchReplayState;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
+import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.repository.AttemptRepository;
@@ -16,6 +18,7 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -96,34 +99,106 @@ public class GameServiceImpl implements GameService{
 	@Override
 	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
 		//TODO verificare presenza match già aperti e relativa logica da implementare
-		Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
-		ZonedDateTime now = ZonedDateTime.now();
-		if(oldOne == null || !oldOne.isValid())
-		{
-			Match match = new Match();
-			match.setTemplate(template);
-			match.setUserId(playerId);
-			match.setStart(now);
-			match.setGame(game);
-			match.setSession(session);
-			match.setLastStart(now);
-			match.setTimeSpent(0l);
-			match.setElaborated(false);
-			match.setMatchToken(matchToken);
-			match.setUsedToPO(false);
-			match.setValid(true);
-			matchRepository.save(match);
-			return new MatchResponse(game,match,template);
-		}
-		else
-		{
-			oldOne.setLastStart(now);
-		}
-		log.info(""+oldOne.getAttempts().size());
-		return new MatchResponse(game,oldOne,template);
+        Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
+        ZonedDateTime now = ZonedDateTime.now();
+        if(oldOne == null || !oldOne.isValid())
+        {
+            Match match = new Match();
+            match.setTemplate(template);
+            match.setUserId(playerId);
+            match.setStart(now);
+            match.setGame(game);
+            match.setSession(session);
+            match.setLastStart(now);
+            match.setTimeSpent(0l);
+            match.setElaborated(false);
+            match.setMatchToken(matchToken);
+            match.setUsedToPO(false);
+            match.setValid(true);
+            matchRepository.save(match);
+            return new MatchResponse(game,match,template);
+        }
+        else
+        {
+            oldOne.setLastStart(now);
+        }
+        log.info(""+oldOne.getAttempts().size());
+        return new MatchResponse(game,oldOne,template);
 	}
 
-	@Override
+    @Override
+    public MatchResponse replayMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
+        //creo un nuovo match con riferimento a oldOne
+        Match oldOne = matchRepository.findMainMatch(game.getId(), playerId);
+        ZonedDateTime now = ZonedDateTime.now();
+        Match match = new Match();
+        match.setTemplate(template);
+        match.setUserId(playerId);
+        match.setStart(now);
+        match.setGame(game);
+        match.setSession(session);
+        match.setLastStart(now);
+        match.setTimeSpent(0l);
+        match.setElaborated(false);
+        match.setMatchToken(matchToken);
+        match.setUsedToPO(false);
+        match.setValid(true);
+        match.setReplayState(MatchReplayState.playing);
+        match.setParentId(oldOne.getId());
+        oldOne.setReplayState(MatchReplayState.main);
+        matchRepository.save(oldOne);
+        matchRepository.save(match);
+        return new MatchResponse(game,match,template);
+    }
+
+    @Override
+    public MatchResponse cloneMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
+        Match mainMatch = matchRepository.findMainMatch(game.getId(), playerId);
+        if (mainMatch == null){
+            //non ho match da clonare
+            return null;
+        }
+
+        ZonedDateTime now = ZonedDateTime.now();
+        Match cloned = new Match();
+        cloned.setParentId(mainMatch.getId());
+        cloned.setReplayState(MatchReplayState.cloned);
+        cloned.setTemplate(mainMatch.getTemplate());
+        cloned.setUserId(mainMatch.getUserId());
+        cloned.setStart(now);
+        cloned.setStop(now);
+        cloned.setGame(mainMatch.getGame());
+        cloned.setSession(session);
+        cloned.setLastStart(now);
+        cloned.setTimeSpent(0l);
+        cloned.setElaborated(true);
+        cloned.setSendToPo(true);
+        cloned.setMatchToken(new Date().getTime());
+        cloned.setBestLevel(mainMatch.getBestLevel());
+        cloned.setBestScore(mainMatch.getBestScore());
+        cloned.setUsedToPO(false);
+        cloned.setValid(true);
+
+        Attempt attempt = new Attempt();
+        attempt.setLocalId(new Date().getTime());
+        attempt.setMatch(cloned);
+        attempt.setStartAttempt(now);
+        attempt.setLastUpdate(now);
+        attempt.setStopAttempt(now);
+        attempt.setAttemptScore(mainMatch.getBestScore());
+        attempt.setLevelReached(mainMatch.getBestLevel());
+        attempt.setCompleted(true);
+        attempt.setCancelled(false);
+        attempt.setValid(true);
+        attempt.setSync(AttemptSyncState.sync);
+
+        cloned.addAttempts(attempt);
+        matchRepository.saveAndFlush(cloned);
+        attemptRepository.saveAndFlush(attempt);
+        return new MatchResponse(game,cloned,template);
+    }
+
+    @Override
 	public AttemptResponse startAttempt(Game game, Match match) {
 		//TODO verificare presenza attempt già aperti e relativa logica da implementare
 		Attempt attempt = new Attempt();
@@ -188,7 +263,10 @@ public class GameServiceImpl implements GameService{
 		if(lastAttempt != null)
 		{
 			lastAttempt.setAttemptScore(score);
-			lastAttempt.setLevelReached(level);
+            if(Long.parseLong(level) > Long.parseLong(lastAttempt.getLevelReached()))
+            {
+                lastAttempt.setLevelReached(level);
+            }
 			//si assume che un attempt chiuso in concomitanza al match risulta non completato
 			lastAttempt.setCompleted(false);
 			lastAttempt.setLastUpdate(now);
@@ -205,9 +283,20 @@ public class GameServiceImpl implements GameService{
         match.setStop(now);
         match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 
-		gamificationService.runAction(match);
+        Match mainMatch = matchRepository.findMainMatch(match.getGame().getId(), match.getUserId());
+        if (mainMatch != null){
+            if (match.getReplayState() != MatchReplayState.cloned){
+                gamificationService.runResetAction(mainMatch);
+                mainMatch.setReplayState(MatchReplayState.old);
+                matchRepository.saveAndFlush(mainMatch);
+            }
+        }
+
+        gamificationService.runAction(match);
+        match.setReplayState(MatchReplayState.main);
         matchRepository.saveAndFlush(match);
-		MatchResponse response = new MatchResponse(game, match, match.getTemplate());
+
+        MatchResponse response = new MatchResponse(game, match, match.getTemplate());
 		return response;
 	}
 

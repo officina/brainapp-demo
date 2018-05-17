@@ -56,6 +56,14 @@
         <dd>
             <span>{{vm.match.anomalous}}</span>
         </dd>
+        <dt><span data-translate="gatoradeApp.match.replayState">Replay State</span></dt>
+        <dd>
+            <span data-translate="{{'gatoradeApp.MatchReplayState.' + vm.match.replayState}}">{{vm.match.replayState}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.match.parentId">Parent Id</span></dt>
+        <dd>
+            <span>{{vm.match.parentId}}</span>
+        </dd>
         <dt><span data-translate="gatoradeApp.match.game">Game</span></dt>
         <dd>
             <a ui-sref="game-detail({id:vm.match.game.id})">{{vm.match.game.description}}</a>

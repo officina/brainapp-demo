@@ -1,0 +1,11 @@
+{
+    "gatoradeApp": {
+        "MatchReplayState" : {
+            "null": "",
+            "playing": "playing",
+            "main": "main",
+            "old": "old",
+            "cloned": "cloned"
+        }
+    }
+}
