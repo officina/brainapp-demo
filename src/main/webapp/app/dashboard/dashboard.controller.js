@@ -10,7 +10,6 @@
 
         var sessionid = $stateParams.sessions;
         var matches = $stateParams.matches;
-        // console.log('wololo');
 
         DashboardService.getSession($stateParams.extsessionid).then(function(response){
             $scope.sessions = response.data;
@@ -18,7 +17,21 @@
 
         DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
             $scope.matches = response.data;
-        })
+            // console.log(response.data);
+            $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
+            console.log($scope.levelgame);
+        });
+        var isLevelGame =function (game){
+            console.log('dentro')
+            if (game.game.type === 'LEVEL') {
+                // console.log('level');
+                return true;
+            } else {
+                // console.log('point');
+                return false;
+            }
+        }
+
 
     }
 })();

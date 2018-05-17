@@ -18,4 +18,6 @@ angular.module('gatoradeApp')
             url: rootPath + '/api/matches/by-session/' + sessionid
         })
     };
+
+
     }]);

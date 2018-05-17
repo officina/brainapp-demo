@@ -5,7 +5,7 @@
 
 </div>
 <div class="col-lg-10 col-lg-offset-1">
-    <h2>Session ID {{sessions.id}}</h2>
+    <h2>Session ID {{sessions.id}} {{gametype}}</h2>
 </div>
 <div class="col-lg-10 col-lg-offset-1 whitebkg flex somepadding box" style="margin-bottom: 20px">
     <div class="col-lg-6 left flexcol">
@@ -35,8 +35,9 @@
     <div class="match flexbtw nobrdbot" ng-repeat="match in matches">
         <div class="statusinfo"></div>
         <div class="alias "><span>{{match.userId}}</span></div>
-        <div class="minpoints ">Pti Min</div>
-        <div class="maxpoints ">Pti Max</div>
+        <div class="minpoints">Pti Min</div>
+        <div class="maxpoints" ng-if="levelgame == true">{{match.bestLevel}} Liv</div>
+        <div class="maxpoints" ng-if="levelgame == false">{{match.bestScore}} Pti</div>
         <div class="advancement ">Avanzamento</div>
         <div class="status ">Non ha ancora giocato</div>
         <div class="btns">
@@ -48,3 +49,4 @@
 
 </div>
 
+<p>{{sessions}}</p>

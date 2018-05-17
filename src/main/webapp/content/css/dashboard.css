@@ -95,8 +95,10 @@ span  {
 }
 
 .alias {
-    min-width: 80px;
-    max-width: 80px;
+    min-width: 100px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .nobrdbot {
     border-bottom: none;
