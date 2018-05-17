@@ -230,4 +230,5 @@ public class MatchServiceImpl implements MatchService{
     public Match findMainMatch(Long gameId, String userId) {
         return matchRepository.findMainMatch(gameId, userId);
     }
+
 }
