@@ -108,5 +108,6 @@ application:
 elaboration:
     interval: 300
     numUsers: 7
+    numCommunityUsers: 7
     safetyMarginInSeconds: 300
     maxRetry: 5
