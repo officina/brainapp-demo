@@ -113,7 +113,8 @@ public class SessionServiceImpl implements SessionService{
 		}
 
 		if (extid.startsWith("top_user_")){
-		        return true;
+		    log.info("Validate Session for Top user: "+ playerid+" - extid: "+extid+" - gameid: "+gameid);
+		    return true;
         }else{
             List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
 

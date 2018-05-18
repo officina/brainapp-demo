@@ -99,6 +99,7 @@ public class GameServiceImpl implements GameService{
 	@Override
 	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
 		//TODO verificare presenza match già aperti e relativa logica da implementare
+        log.info("GameService: request to startMatch for user:"+ playerId+" - session extId: "+session.getExtId()+" - game: "+game.getId());
         Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
         ZonedDateTime now = ZonedDateTime.now();
         if(oldOne == null || !oldOne.isValid())
@@ -128,10 +129,12 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public MatchResponse replayMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
+        log.info("GameService: request to replayMatch for user:"+ playerId+" - session extId: "+session.getExtId()+" - game: "+game.getId());
         //creo un nuovo match con riferimento a oldOne
         Match oldOne = matchRepository.findMainMatch(game.getId(), playerId);
         if (oldOne == null){
             //non ho match di riferimento
+            log.info("GameService: request to replayMatch fail, no main match found. playerId: "+ playerId+" - gameId: "+game.getId());
             return null;
         }
         ZonedDateTime now = ZonedDateTime.now();
@@ -152,14 +155,17 @@ public class GameServiceImpl implements GameService{
         oldOne.setReplayState(MatchReplayState.main);
         matchRepository.save(oldOne);
         matchRepository.save(match);
+        log.info("GameService: request to replayMatch completed, ex-main match: "+oldOne.getId() + " - new main match: "+match.getId());
         return new MatchResponse(game,match,template);
     }
 
     @Override
     public MatchResponse cloneMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
+        log.info("GameService: request to cloneMatch for user:"+ playerId+" - session extId: "+session.getExtId()+" - game: "+game.getId());
         Match mainMatch = matchRepository.findMainMatch(game.getId(), playerId);
         if (mainMatch == null){
             //non ho match da clonare
+            log.info("GameService: request to cloneMatch fail, no main match found. playerId: "+ playerId+" - gameId: "+game.getId());
             return null;
         }
 
@@ -199,6 +205,7 @@ public class GameServiceImpl implements GameService{
         cloned.addAttempts(attempt);
         matchRepository.saveAndFlush(cloned);
         attemptRepository.saveAndFlush(attempt);
+        log.info("GameService: request to cloneMatch completed, main match: "+mainMatch.getId() + " -  cloned match: "+cloned.getId());
         return new MatchResponse(game,cloned,template);
     }
 
@@ -224,6 +231,7 @@ public class GameServiceImpl implements GameService{
 
 	@Override
 	public AttemptResponse updateAttemptScore(Game game, Attempt attempt, Long newScore, String newLevel) {
+        log.info("GameService: request to updateAttemptScore attempt:"+ attempt.getId()+" - new score: "+newScore+" - new level: "+newLevel);
 		//TODO verificare presenza attempt già aperti e relativa logica da implementare
 		if(! attempt.isCompleted())
 		{
@@ -236,6 +244,7 @@ public class GameServiceImpl implements GameService{
 			attemptRepository.saveAndFlush(attempt);
 		}
 		AttemptResponse response = new AttemptResponse(game, attempt.getMatch(), null,attempt);
+        log.info("GameService: request to updateAttemptScore completed attempt:"+ attempt.getId()+" - saved score: "+attempt.getAttemptScore()+" - saved level: "+attempt.getLevelReached());
 		return response;
 	}
 

@@ -184,7 +184,7 @@ public class GameResource {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
         MatchResponse response;
         if (session.getExtId().startsWith("top_user_")){
-            log.info("Richiesta inizio Match per TOP USER playerId: "+request.getPlayerid()+" - extId: "+session.getExtId());
+            log.info("Request ti StartMatch for Top user: "+ request.getPlayerid()+" - extid: "+session.getExtId()+" - gameid: "+session.getGame().getId());
             response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
             if (response == null){
                 return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
@@ -286,7 +286,7 @@ public class GameResource {
     @Transactional
     public ResponseEntity<AttemptResponse> updateAttemptScoreV2(@RequestBody Request request) {
         log.info("REST request to update score for game Game with id " + request.getMatch().getGame().getId()+", attempt " + request.getAttempt().getId());
-        log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
+        log.info("Score: " + request.getScore() + " - Level: " + request.getLevel()+" - AttemptScore: "+request.getAttempt().getAttemptScore()+" - AttemptLevel: "+request.getAttempt().getLevelReached()) ;
         Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
 
         if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
