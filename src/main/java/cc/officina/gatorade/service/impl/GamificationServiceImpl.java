@@ -44,6 +44,8 @@ public class GamificationServiceImpl implements GamificationService{
     private int interval; //intervallo di esecuzione del thread in secondi
     @Value("${elaboration.numUsers}")
     private int numUsers;
+    @Value("${elaboration.numCommunityUsers}")
+    private int numCommunityUsers;
     @Value("${playoff.client.id}")
     private String poClientId;
 	@Value("${playoff.client.secret}")
@@ -203,7 +205,11 @@ public class GamificationServiceImpl implements GamificationService{
 		List<Match> matches = new ArrayList<Match>();
 		log.info("Matches size for elaboration: " + s.getMatches().size());
 		matches.addAll(s.getMatches());
-		while(matches.size() > 0 && samples.size() < numUsers && matches.size() > 0)
+		int numberOfUsers = numUsers;
+		if (s.getExtId().startsWith("community_")){
+		    numberOfUsers = numCommunityUsers;
+        }
+		while(matches.size() > 0 && samples.size() < numberOfUsers && matches.size() > 0)
 		{
 			int index = new Random().nextInt(matches.size());
 			Match randomMatch = matches.get(index);
