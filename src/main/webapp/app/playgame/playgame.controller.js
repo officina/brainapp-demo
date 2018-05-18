@@ -172,16 +172,19 @@
                 }
                 var pushTimer = args.seconds % 10;
                 if (pushTimer == 0){
-                    //TODO invia collezione attemptsOFfline
-                } 
+                    PlaygameService.syncOfflineAttempts($scope.wrapperMemory.attemptsOffline, $scope.match)
+                        .then(function(response){
+                            $scope.wrapperMemory.attemptsOffline = {}
+                        })
+                        .catch(function (error){
+                            console.log('Offline attempts sync failed: '+error);
+                        })
+                }
             }
 
         });
 
-        //TODO aggiungere chiamata a Sitecore "Servizio abiitazione gioco utente" prima del game init o della verifica di rigioco
-
         //controllo parametro di rigioco in arrivo da link di gioco
-        //TODO controlla per typo tipo ?replay=tru
         var replay = '';
         if ($stateParams.replay != undefined) {
             replay = $stateParams.replay == "true";

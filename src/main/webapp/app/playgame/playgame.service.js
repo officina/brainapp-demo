@@ -195,4 +195,15 @@ angular.module('gatoradeApp')
 		http.send(JSON.stringify(dataPut));
     }
 
+    this.syncOfflineAttempts = function(attemptsOffline, match){
+        return $http({
+            method: 'POST',
+            url: rootPath + '/api/attempts/sync',
+            data:{
+                match: match,
+                attemptsOffline: attemptsOffline
+            }
+        })
+    }
+
   }]);

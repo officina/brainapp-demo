@@ -133,4 +133,12 @@ public class Request {
     public void setReplay(Boolean replay) {
         this.replay = replay;
     }
+
+    public List<Attempt> getOfflineAttempts() {
+        return offlineAttempts;
+    }
+
+    public void setOfflineAttempts(List<Attempt> offlineAttempts) {
+        this.offlineAttempts = offlineAttempts;
+    }
 }
