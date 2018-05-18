@@ -68,5 +68,6 @@ public interface MatchService {
 	public void matchesRestore();
 	public TypeOfStillPending singleMatchRestore(Match match);
 	public List<Match> findValidBySessionId(Long sessionId);
+    public Page<Match> findValidBySessionId(Pageable pageable, Long sessionId);
 	public Match findMainMatch(Long gameId, String userId);
 }

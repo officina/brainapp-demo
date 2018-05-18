@@ -227,6 +227,11 @@ public class MatchServiceImpl implements MatchService{
     }
 
     @Override
+    public Page<Match> findValidBySessionId(Pageable pageable, Long sessionId) {
+        return matchRepository.findValidBySessionId(pageable, sessionId);
+    }
+
+    @Override
     public Match findMainMatch(Long gameId, String userId) {
         return matchRepository.findMainMatch(gameId, userId);
     }
