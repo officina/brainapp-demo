@@ -358,7 +358,7 @@
             $scope.wrapperMemory.currAttempt = undefined;
         };
 
-        var attemptRestarted = function (score, level, completed, endDate) {
+        /*var attemptRestarted = function (score, level, completed, endDate) {
             var trueLevel = 0;
             var trueScore = 0;
             if (useLevels) {
@@ -379,6 +379,34 @@
                     console.log('Attempt restarted inside callback');
                     console.log($scope.wrapperMemory);
                     startAttempt();
+                })
+                .catch(function (error) {
+                    var data = {
+                        "score": score,
+                        "level": level,
+                        "completed": completed
+                    };
+                    manageError("ATTEMPT_RESTARTED", data, error, "genericError");
+                });
+        };*/
+
+        var attemptRestarted = function (score, level, completed, endDate) {
+            var trueLevel = 0;
+            var trueScore = 0;
+            if (useLevels) {
+                trueLevel = score;
+            }
+            else {
+                trueScore = score;
+            }
+            console.log('Attempt restarted');
+            $scope.wrapperMemory.currAttempt.level = trueLevel;
+            $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
+            PlaygameService.restartAttemptToServer(gameId, $scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken, $stateParams.extsessionid, false)
+                .then(function (response) {
+                    $scope.wrapperMemory.currAttempt.sync = 1;
+                    $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+                    $scope.wrapperMemory.currAttempt = response.data.attempt;
                 })
                 .catch(function (error) {
                     var data = {

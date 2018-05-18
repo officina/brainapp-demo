@@ -313,6 +313,27 @@ public class GameResource {
         return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);
     }
 
+    @PutMapping("/play/attempt/restart")
+    @Timed
+    @Transactional
+    public ResponseEntity<MatchResponse> restartAttempt(@RequestBody Request request) {
+        log.info("REST request to restart attemtp for game Game with id " + request.getGameid()+", attempt " + (request.getAttempt().getId() != null ? request.getAttempt().getId() : "created offline with localId: "+request.getAttempt().getLocalId()));
+        log.info("Score: " + request.getAttempt().getAttemptScore() + " - Level: " + request.getAttempt().getLevelReached());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
+
+        if(attempt == null)
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
+
+        if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+
+        //chiudo l'attempt
+        MatchResponse response = gameService.stopAttempt(gameService.findOne(request.getGameid()), attempt, attempt.isCompleted(), attempt.getAttemptScore(), attempt.getLevelReached(), request.isEndmatch());
+
+        //inizio un nuovo attempt
+        return new ResponseEntity<>(gameService.startAttempt(response.getGame(), response.getMatch()), null, HttpStatus.OK);
+    }
+
     @PutMapping("/play/end")
     @Timed
     @Transactional

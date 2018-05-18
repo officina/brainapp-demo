@@ -92,7 +92,24 @@ angular.module('gatoradeApp')
 	  })
   };
 
-    //END MATCH
+  //RESTART ATTEMPT
+      this.restartAttemptToServer = function(gameId, attempt, match, matchtoken, sessionid, endmatch){
+          return $http({
+              method: 'PUT',
+              url: rootPath +'/api/play/attempt/restart',
+              data:{
+                  gameid:gameId,
+                  completed:attempt.completed,
+                  endmatch:endmatch,
+                  matchtoken:matchtoken,
+                  match:match,
+                  attempt:attempt,
+                  sessionid:sessionid
+              }
+          })
+      };
+
+      //END MATCH
     this.endMatch = function(gameId, playerId, token, matchId, attempt, matchToken, attempts, score, level){
       return $http({
         method: 'PUT',
