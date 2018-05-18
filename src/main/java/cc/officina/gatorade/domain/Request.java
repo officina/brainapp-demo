@@ -20,6 +20,7 @@ public class Request {
 	private Match match;
 	private Boolean replay;
 	private List<Attempt> attempts;
+    private List<Attempt> offlineAttempts;
 	public Long getGameid() {
 		return gameid;
 	}

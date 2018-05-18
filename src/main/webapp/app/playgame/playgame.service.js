@@ -61,7 +61,7 @@ angular.module('gatoradeApp')
 	  })
   };
     //UPDATE ATTEMPT
-  this.updateAttemptScore = function(attempt, match, matchtoken){
+  this.updateAttemptScore = function(attempt, match, matchtoken, offlineAttempts){
 	  return $http({
       	method: 'PUT',
       	url: rootPath +'/api/v2/play/attempt/score',
@@ -70,7 +70,8 @@ angular.module('gatoradeApp')
             score: attempt.score,
             level: attempt.level,
             match: match,
-            matchtoken: matchtoken
+            matchtoken: matchtoken,
+            offlineAttempts: offlineAttempts
         }
 	  })
   };
@@ -92,8 +93,25 @@ angular.module('gatoradeApp')
 	  })
   };
 
-    //END MATCH
-    this.endMatch = function(gameId, playerId, token, matchId, attempt, matchToken, attempts, score, level){
+  //RESTART ATTEMPT
+      this.restartAttemptToServer = function(gameId, attempt, match, matchtoken, sessionid, endmatch){
+          return $http({
+              method: 'PUT',
+              url: rootPath +'/api/play/attempt/restart',
+              data:{
+                  gameid:gameId,
+                  completed:attempt.completed,
+                  endmatch:endmatch,
+                  matchtoken:matchtoken,
+                  match:match,
+                  attempt:attempt,
+                  sessionid:sessionid
+              }
+          })
+      };
+
+      //END MATCH
+    this.endMatch = function(gameId, playerId, token, matchId, attempt, matchToken, attempts, score, level, attemptsOffline){
       return $http({
         method: 'PUT',
         url: rootPath + '/api/play/end',
@@ -106,7 +124,8 @@ angular.module('gatoradeApp')
           matchtoken: matchToken,
           score:score,
           level:level,
-          attempts: attempts
+          attempts: attempts,
+          attemptsOffline: attemptsOffline
         }
       })
     };

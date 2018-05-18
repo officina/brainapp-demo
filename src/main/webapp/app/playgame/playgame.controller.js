@@ -11,7 +11,8 @@
 
         $scope.wrapperMemory = {};
         $scope.wrapperMemory.attempts = [];
-        $scope.timerOn = true
+        $scope.wrapperMemory.attemptsOffline = {};
+        $scope.timerOn = true;
         $scope.updateCount = 0;
         $scope.lastProgress = 101;
         $scope.matchToken = Date.now();
@@ -162,7 +163,7 @@
                 console.log($scope.wrapperMemory.currAttempt != undefined);
                 if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
                     console.log('score/level update vs server')
-                    PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function (response) {
+                    PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken, $scope.wrapperMemory.attemptsOffline).then(function (response) {
                         console.log('Score/Level updated');
                     })
                         .catch(function (error) {
@@ -355,6 +356,7 @@
             $scope.wrapperMemory.currAttempt.lastUpdate = new Date(Date.now());
             $scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
             $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+            $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId] = $scope.wrapperMemory.currAttempt;
             $scope.wrapperMemory.currAttempt = undefined;
         };
 
@@ -402,6 +404,11 @@
             $scope.wrapperMemory.currAttempt = attempt;
             $scope.wrapperMemory.currAttempt.attemptScore = 0;
             $scope.wrapperMemory.currAttempt.level = 0;
+            if ($scope.wrapperMemory.currAttempt.sync != 1){
+                $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId] = $scope.wrapperMemory.currAttempt;
+            }else{
+                delete $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId];
+            }
 //	        $scope.wrapperMemory.attempts.push(attempt);
         };
 
@@ -416,7 +423,7 @@
                 tmlLevel = $scope.wrapperMemory.currAttempt.level;
             }
             PlaygameService.endMatch($scope.wrapperMemory.game.id, "", $stateParams.playtoken, $scope.wrapperMemory.match.id, $scope.wrapperMemory.currAttempt, $scope.matchToken, $scope.wrapperMemory.attempts, tmpScore,
-                tmlLevel)
+                tmlLevel, $scope.wrapperMemory.attemptsOffline)
                 .then(function (response) {
                     // se endmatch va a buon fine eseguo l'invio del report
                     $scope.wrapperMemory.match = response.data.match;
