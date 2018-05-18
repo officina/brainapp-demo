@@ -170,6 +170,10 @@
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.error);
                         });
                 }
+                var pushTimer = args.seconds % 10;
+                if (pushTimer == 0){
+                    //TODO invia collezione attemptsOFfline
+                } 
             }
 
         });
