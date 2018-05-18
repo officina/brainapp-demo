@@ -30,6 +30,8 @@
             "anomalous": "Anomalous",
             "replayState": "Replay State",
             "parentId": "Parent Id",
+            "bestLevel": "Best Level",
+            "bestScore": "Best Score",
             "game": "Game",
             "template": "Template",
             "attempts": "Attempts",
