@@ -192,27 +192,19 @@ public class GameResource {
             return new ResponseEntity<>(response, null, HttpStatus.OK);
         }else{
             // non passo per ora il matchToken, o meglio passo -1
-            if (request.isReplay() == null){
-                //replay non richiesto, procedo alla prima giocata
-                return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
-            }
             if (request.isReplay()) {
                 //ho il param replay a true.
                 //procedo alla creazione del match
                 response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
-                if (response == null){
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot replay match")).body(null);
-                }
-                return new ResponseEntity<>(response, null, HttpStatus.OK);
             } else {
-                //ho il param replay a false.
+                //ho il param replay a false, provo a clonare, se non ho match di riferimento allora creo un nuovo match
                 //procedo alla clonazione
                 response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
-                if (response == null){
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot clone match")).body(null);
-                }
-                return new ResponseEntity<>(response, null, HttpStatus.OK);
             }
+            if (response == null){
+                return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(response, null, HttpStatus.OK);
         }
     }
 

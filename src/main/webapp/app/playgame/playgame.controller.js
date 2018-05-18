@@ -177,10 +177,7 @@
 
         //controllo parametro di rigioco in arrivo da link di gioco
         //TODO controlla per typo tipo ?replay=tru
-        var replay = '';
-        if ($stateParams.replay != undefined) {
-            replay = $stateParams.replay == "true";
-        }
+        var replay = $stateParams.replay;
         console.log("REPLAY = " + replay);
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid, replay).then(function (response) {
             $scope.game = response.data;
