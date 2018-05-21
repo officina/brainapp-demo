@@ -39,8 +39,10 @@
         <!--<div class="minpoints">Pti Min</div>-->
         <div class="maxpoints" ng-if="levelgame == true">{{match.bestLevel}} Liv</div>
         <div class="maxpoints" ng-if="levelgame == false">{{match.bestScore}} Pti</div>
-        <div class="advancement" ng-if="currentDate | date:'dd/MM/yyyy' > match.start | date: 'dd/MM/yyyy' ">Avanzamento </div>
         <div class="status ">Non ha ancora giocato</div>
+        <div class="advancement" ng-if="((currentDate | date:'dd/MM/yyyy') > (match.start | date: 'dd/MM/yyyy'))">Ha Finito</div>
+        <div class="advancement" ng-if="((currentDate | date:'dd/MM/yyyy') < (match.start | date: 'dd/MM/yyyy'))">Sta Giocando</div>
+
         <div class="btns">
             <div class="btn btn-primary btn-sm reset">Reset</div>
             <div class="btn btn-warning btn-sm interrupt">Interrompi</div>
