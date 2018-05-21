@@ -300,13 +300,16 @@
                 return;
             $scope.updateCount = $scope.updateCount + 1;
             $scope.wrapperMemory.currAttempt.attemptScore = score;
+            //risolve utilizzo di due diciture, al momento level e levelReached devono contenere lo stesso valore
             $scope.wrapperMemory.currAttempt.level = level;
+            $scope.wrapperMemory.currAttempt.levelReached = level;
         };
 
         var attemptEnded = function (score, level, completed, endDate) {
             var trueLevel = 0;
             var trueScore = 0;
             if (useLevels) {
+                console.log("devo usare level : " + trueLevel + " score vale " + trueScore);
                 trueLevel = score;
             }
             else {
@@ -337,14 +340,19 @@
         var attemptLocalEnded = function (score, level, completed, endDate) {
             var trueLevel = 0;
             var trueScore = 0;
+            //dal plugin construct il livello arriva comunque dalla variabile SCORE
+            //TODO: fare comunque una verifica definitiva
             if (useLevels) {
                 trueLevel = score;
             }
             else {
                 trueScore = score;
             }
+
             console.log('Attempt local ended');
             $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
+            //risolve utilizzo di due diciture, al momento level e levelReached devono contenere lo stesso valore
+            $scope.wrapperMemory.currAttempt.levelReached = trueLevel;
             $scope.wrapperMemory.currAttempt.level = trueLevel;
             $scope.wrapperMemory.currAttempt.completed = completed;
             $scope.wrapperMemory.currAttempt.endmatch = false;
@@ -397,7 +405,9 @@
                 trueScore = score;
             }
             console.log('Attempt restarted');
+            //risolve utilizzo di due diciture, al momento level e levelReached devono contenere lo stesso valore
             $scope.wrapperMemory.currAttempt.level = trueLevel;
+            $scope.wrapperMemory.currAttempt.levelReached = trueLevel;
             $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
             PlaygameService.restartAttemptToServer(gameId, $scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken, $stateParams.extsessionid, false)
                 .then(function (response) {

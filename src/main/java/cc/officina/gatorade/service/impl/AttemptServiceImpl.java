@@ -115,6 +115,7 @@ public class AttemptServiceImpl implements AttemptService{
                 attempt.setCompleted(reqAttempt.getCompleted());
                 attempt.setStartAttempt(reqAttempt.getStartAttempt());
                 attempt.setLastUpdate(reqAttempt.getLastUpdate());
+                attempt.setCancelled(false);
                 attempt.setValid(true);
             }else{
                 origLevel = attempt.getLevelReached();
@@ -123,6 +124,8 @@ public class AttemptServiceImpl implements AttemptService{
                     attempt.setLevelReached(reqAttempt.getLevelReached());
                 }
                 attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                // risolve
+                attempt.setLevelReached(reqAttempt.getLevelReached());
             }
         }
         attempt.setSync(syncState);
