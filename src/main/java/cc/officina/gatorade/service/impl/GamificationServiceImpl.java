@@ -206,13 +206,15 @@ public class GamificationServiceImpl implements GamificationService{
 		log.info("Matches size for elaboration: " + s.getMatches().size());
 		matches.addAll(s.getMatches());
 		int numberOfUsers = numUsers;
-		if (s.getExtId().startsWith("community_")){
+
+		if (s.getPoRoot().startsWith("community_")){
 		    numberOfUsers = numCommunityUsers;
 		    log.info("Elaborate Community team session, number of user: "+numberOfUsers);
         }else{
             log.info("Elaborate Laboratorio team session, number of user: "+numberOfUsers);
         }
-		while(matches.size() > 0 && samples.size() < numberOfUsers && matches.size() > 0)
+
+        while(matches.size() > 0 && samples.size() < numberOfUsers && matches.size() > 0)
 		{
 			int index = new Random().nextInt(matches.size());
 			Match randomMatch = matches.get(index);
