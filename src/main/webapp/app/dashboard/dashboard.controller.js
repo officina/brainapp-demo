@@ -18,8 +18,11 @@
         DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
             $scope.matches = response.data;
             // console.log(response.data);
+            console.log($scope.matches);
             $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
             console.log($scope.levelgame);
+            $scope.currentDate = new Date();
+            console.log($scope.currentDate);
         });
         var isLevelGame =function (game){
             console.log('dentro')
@@ -31,6 +34,7 @@
                 return false;
             }
         }
+        
 
 
     }
