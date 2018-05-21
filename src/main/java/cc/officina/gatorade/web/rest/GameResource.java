@@ -184,7 +184,7 @@ public class GameResource {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
         MatchResponse response;
 
-        if (session.getPoRoot().startsWith("top_user_")){
+        if (session.getPoRoot() != null &&session.getPoRoot().startsWith("top_user_")){
             log.info("Request ti StartMatch for Top user: "+ request.getPlayerid()+" - extid: "+session.getExtId()+" - gameid: "+session.getGame().getId());
             response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
             if (response == null){
