@@ -162,8 +162,8 @@
                 var tk = args.seconds % 30;
                 console.log($scope.wrapperMemory.currAttempt != undefined);
                 if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
-                    console.log('score/level update vs server')
-                    PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken, $scope.wrapperMemory.attemptsOffline).then(function (response) {
+                    console.log('score/level update vs server');
+                    PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function (response) {
                         console.log('Score/Level updated');
                     })
                         .catch(function (error) {
@@ -172,12 +172,15 @@
                 }
                 var pushTimer = args.seconds % 10;
                 if (pushTimer == 0){
-                    PlaygameService.syncOfflineAttempts($scope.wrapperMemory.attemptsOffline, $scope.match)
+                    console.log("Sending offline attempts for sync: ");
+                    console.log($scope.wrapperMemory.attemptsOffline);
+                    PlaygameService.syncOfflineAttempts($scope.wrapperMemory.attemptsOffline, $scope.wrapperMemory.match)
                         .then(function(response){
                             $scope.wrapperMemory.attemptsOffline = {}
                         })
                         .catch(function (error){
-                            console.log('Offline attempts sync failed: '+error);
+                            console.log('Offline attempts sync failed: ');
+                            console.log(error);
                         })
                 }
             }
@@ -302,7 +305,8 @@
                     "sync": 0
                 };
             }
-            refreshWrapperMemory($scope.wrapperMemory.match, newAttempt)
+            refreshWrapperMemory($scope.wrapperMemory.match, newAttempt);
+            $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId] = $scope.wrapperMemory.currAttempt;
             $scope.$broadcast('timer-start');
         };
 
@@ -331,6 +335,7 @@
                     $scope.wrapperMemory.currAttempt.sync = 1;
                     $scope.wrapperMemory.currAttempt.completed = true;
                     $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+                    delete $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId];
                     $scope.wrapperMemory.currAttempt = undefined;
                     console.log('Attempt ended inside callback');
                 })
@@ -384,6 +389,7 @@
                     $scope.wrapperMemory.currAttempt.sync = 1;
                     $scope.wrapperMemory.currAttempt.completed = true;
                     $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+                    delete $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId];
                     $scope.wrapperMemory.currAttempt = undefined;
                     console.log('Attempt restarted inside callback');
                     console.log($scope.wrapperMemory);
@@ -411,11 +417,6 @@
             $scope.wrapperMemory.currAttempt = attempt;
             $scope.wrapperMemory.currAttempt.attemptScore = 0;
             $scope.wrapperMemory.currAttempt.level = 0;
-            if ($scope.wrapperMemory.currAttempt.sync != 1){
-                $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId] = $scope.wrapperMemory.currAttempt;
-            }else{
-                delete $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId];
-            }
 //	        $scope.wrapperMemory.attempts.push(attempt);
         };
 

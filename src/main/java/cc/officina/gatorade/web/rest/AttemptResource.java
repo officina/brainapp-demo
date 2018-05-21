@@ -131,12 +131,12 @@ public class AttemptResource {
     @PostMapping("/attempts/sync")
     @Timed
     public ResponseEntity<Void> syncAttempts(@RequestBody Request request){
-        if (request.getOfflineAttempts() != null && request.getOfflineAttempts().size() > 0){
+        if (request.getAttemptsOffline() != null && request.getAttemptsOffline().size() > 0){
             //controllo l'attributo sync degli attempts
             Match match = request.getMatch();
             int notSyncCount = 0, syncCount = 0, syncedOnEndMatchCount = 0;
             Attempt serverAttempt;
-            for (Attempt attempt : request.getOfflineAttempts()){
+            for (Attempt attempt : request.getAttemptsOffline()){
                 switch (attempt.getSync()){
                     case sync:
                         //client e server sono allineati

@@ -61,7 +61,7 @@ angular.module('gatoradeApp')
 	  })
   };
     //UPDATE ATTEMPT
-  this.updateAttemptScore = function(attempt, match, matchtoken, offlineAttempts){
+  this.updateAttemptScore = function(attempt, match, matchtoken){
 	  return $http({
       	method: 'PUT',
       	url: rootPath +'/api/v2/play/attempt/score',
@@ -70,8 +70,7 @@ angular.module('gatoradeApp')
             score: attempt.score,
             level: attempt.level,
             match: match,
-            matchtoken: matchtoken,
-            offlineAttempts: offlineAttempts
+            matchtoken: matchtoken
         }
 	  })
   };
@@ -125,7 +124,7 @@ angular.module('gatoradeApp')
           score:score,
           level:level,
           attempts: attempts,
-          attemptsOffline: attemptsOffline
+          attemptsOffline: Object.values(attemptsOffline)
         }
       })
     };
@@ -201,7 +200,7 @@ angular.module('gatoradeApp')
             url: rootPath + '/api/attempts/sync',
             data:{
                 match: match,
-                attemptsOffline: attemptsOffline
+                attemptsOffline: Object.values(attemptsOffline)
             }
         })
     }

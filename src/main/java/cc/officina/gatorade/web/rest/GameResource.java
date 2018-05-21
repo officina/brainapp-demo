@@ -341,7 +341,8 @@ public class GameResource {
                         //client e server sono allineati
                         //skippo
                         syncCount++;
-                        //attemptService.syncAttempt(attempt, match, AttemptSyncState.sync);
+                        //sinco lo stesso per allineare il flag. clientAttempt.sync = 1 mentre dbAttempt.sync = 0
+                        attemptService.syncAttempt(attempt, match, AttemptSyncState.sync);
                         break;
                     case syncOnEndMatch:
                         attemptService.syncAttempt(attempt, match, AttemptSyncState.syncOnEndMatch);
