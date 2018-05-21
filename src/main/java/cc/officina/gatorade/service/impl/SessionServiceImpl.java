@@ -112,7 +112,7 @@ public class SessionServiceImpl implements SessionService{
 			return false;
 		}
 
-		if (extid.startsWith("top_user_")){
+		if (session.getPoRoot().startsWith("top_user_")){
 		    log.info("Validate Session for Top user: "+ playerid+" - extid: "+extid+" - gameid: "+gameid);
 		    return true;
         }else{

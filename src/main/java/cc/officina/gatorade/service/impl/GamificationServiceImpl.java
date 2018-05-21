@@ -208,6 +208,9 @@ public class GamificationServiceImpl implements GamificationService{
 		int numberOfUsers = numUsers;
 		if (s.getExtId().startsWith("community_")){
 		    numberOfUsers = numCommunityUsers;
+		    log.info("Elaborate Community team session, number of user: "+numberOfUsers);
+        }else{
+            log.info("Elaborate Laboratorio team session, number of user: "+numberOfUsers);
         }
 		while(matches.size() > 0 && samples.size() < numberOfUsers && matches.size() > 0)
 		{
