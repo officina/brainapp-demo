@@ -1,5 +1,8 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.domain.Match;
+import cc.officina.gatorade.domain.Request;
+import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.service.AttemptService;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,5 +126,48 @@ public class AttemptResource {
         log.debug("REST request to delete Attempt : {}", id);
         attemptService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @PostMapping("/attempts/sync")
+    @Timed
+    public ResponseEntity<Void> syncAttempts(@RequestBody Request request){
+        if (request.getAttemptsOffline() != null && request.getAttemptsOffline().size() > 0){
+            //controllo l'attributo sync degli attempts
+            Match match = request.getMatch();
+            int notSyncCount = 0, syncCount = 0, syncedOnEndMatchCount = 0;
+            Attempt serverAttempt;
+            for (Attempt attempt : request.getAttemptsOffline()){
+                switch (attempt.getSync()){
+                    case sync:
+                        //client e server sono allineati
+                        //skippo
+                        syncCount++;
+                        //attemptService.syncAttempt(attempt, match, AttemptSyncState.sync);
+                        break;
+                    case syncOnEndMatch:
+                        attemptService.syncAttempt(attempt, match, AttemptSyncState.syncOnEndMatch);
+                        syncedOnEndMatchCount++;
+                        break;
+                    default:
+                        //case notSync:
+                        //valore di default, se "sync" è nullo o notSync
+                        serverAttempt = attemptService.syncAttempt(attempt, match,AttemptSyncState.syncOnEndMatch);
+                        if (serverAttempt.getStopAttempt() == null){
+                            serverAttempt.setStopAttempt(ZonedDateTime.now());
+                        }
+                        serverAttempt.setCompleted(true);
+                        notSyncCount++;
+                        attemptService.save(serverAttempt);
+                        break;
+                }
+            }
+            //synced from client = sincati dal client quando viene fatto l'end attempt online
+            //Attempts not synced = attempts che sono stati chiusi offline, o non sono stati chiusi.
+            //Attempts synced at end match = attempts che sono stati aggiornati lato server. tutti quelli che arrivano con stato notSync.
+            log.info("Match id: "+match.getId()+" Total attempts: "+match.getAttempts().size()+" - Attempts synced from client: "+syncCount+" - Attempts not synced: "+notSyncCount+" - Attempts synced at end match: "+syncedOnEndMatchCount);
+        }else{
+            log.info("No offline attempt to sync");
+        }
+        return ResponseEntity.ok(null);
     }
 }

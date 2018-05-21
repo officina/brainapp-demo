@@ -326,6 +326,9 @@ public class GameResource {
         Match match = matchService.findOne(request.getMatchid());
         if(match == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
+
+        if(!match.getMatchToken().equals(request.getMatchtoken()))
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
         //ottengo la lista di attempt dal client
         Attempt serverAttempt;
         int notSyncCount = 0, syncCount = 0, syncedOnEndMatchCount = 0;
@@ -338,6 +341,7 @@ public class GameResource {
                         //client e server sono allineati
                         //skippo
                         syncCount++;
+                        //sinco lo stesso per allineare il flag. clientAttempt.sync = 1 mentre dbAttempt.sync = 0
                         attemptService.syncAttempt(attempt, match, AttemptSyncState.sync);
                         break;
                     case syncOnEndMatch:
@@ -367,9 +371,6 @@ public class GameResource {
             lastAttempt = attemptService.syncAttempt(request.getAttempt(), match, request.getAttempt().getSync());
             lastAttempt.setSync(AttemptSyncState.syncOnEndMatch);
         }
-
-        if(!match.getMatchToken().equals(request.getMatchtoken()))
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
 
         return new ResponseEntity<>(gameService.endMatch(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
     }
