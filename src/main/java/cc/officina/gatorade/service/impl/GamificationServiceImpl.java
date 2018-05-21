@@ -252,6 +252,7 @@ public class GamificationServiceImpl implements GamificationService{
 
 	}
 
+	//metodo che consente di verificare se un match ha player valido
 	private boolean checkPOUser(Match match) {
 		Object response = null;
 		HashMap<String, String> params = new HashMap<String, String>();
@@ -262,20 +263,22 @@ public class GamificationServiceImpl implements GamificationService{
 			//non va in eccezione la get, quindi il player esiste
 			return true;
 		} catch (Exception e) {
-			//vado in eccezione, lo user non esiste
-			log.error("Error for playerId " + match.getUserId() + " on check");
-			log.error(e.getMessage());
-			mailService.sendMatchNotValidAlert(match, "Eccezione playoff: " + e.getMessage());
-			log.info("Run-action fails, init again...");
+			//vado in eccezione, lo user non esiste oppure ho avuto un problema con il token PO, riprovo...
+			// TODO da verificare e configurare il funzionamento
+//			mailService.sendMatchNotValidAlert(match, "Eccezione playoff: " + e.getMessage());
+			log.info("CheckPOUser fails, init again...");
 			init();
-			log.info("Run-action again");
+			log.info("CheckPOUser again");
 			try {
 				response = po.get(path, params);
 			} catch (Exception e1) {
+			    // vado nuovamente in eccezione
 				e1.printStackTrace();
+				log.error("CheckPOUser fails for match with id = " + match.getId() + " (userId: " + match.getUserId() + ")");
+				return false;
 			}
 			log.debug(response.toString());
-			return false;
+			return true;
 		}
 	}
 
