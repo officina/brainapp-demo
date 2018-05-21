@@ -236,10 +236,7 @@ public class GameServiceImpl implements GameService{
 		if(! attempt.isCompleted())
 		{
 			attempt.setAttemptScore(newScore);
-			if(Long.parseLong(newLevel) > Long.parseLong(attempt.getLevelReached()))
-			{
-				attempt.setLevelReached(newLevel);
-			}
+            attempt.setLevelReached(newLevel);
 			attempt.setLastUpdate(ZonedDateTime.now());
 			attemptRepository.saveAndFlush(attempt);
 		}
@@ -276,10 +273,7 @@ public class GameServiceImpl implements GameService{
 		if(lastAttempt != null)
 		{
 			lastAttempt.setAttemptScore(score);
-            if(Long.parseLong(level) > Long.parseLong(lastAttempt.getLevelReached()))
-            {
-                lastAttempt.setLevelReached(level);
-            }
+            lastAttempt.setLevelReached(level);
 			//si assume che un attempt chiuso in concomitanza al match risulta non completato
 			lastAttempt.setCompleted(false);
 			lastAttempt.setLastUpdate(now);

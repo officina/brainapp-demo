@@ -20,6 +20,7 @@ public class Request {
 	private Match match;
 	private Boolean replay;
 	private List<Attempt> attempts;
+    private List<Attempt> attemptsOffline;
 	public Long getGameid() {
 		return gameid;
 	}
@@ -131,5 +132,13 @@ public class Request {
 
     public void setReplay(Boolean replay) {
         this.replay = replay;
+    }
+
+    public List<Attempt> getAttemptsOffline() {
+        return attemptsOffline;
+    }
+
+    public void setAttemptsOffline(List<Attempt> attemptsOffline) {
+        this.attemptsOffline = attemptsOffline;
     }
 }

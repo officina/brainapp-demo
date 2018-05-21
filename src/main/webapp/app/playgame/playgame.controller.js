@@ -11,7 +11,8 @@
 
         $scope.wrapperMemory = {};
         $scope.wrapperMemory.attempts = [];
-        $scope.timerOn = true
+        $scope.wrapperMemory.attemptsOffline = {};
+        $scope.timerOn = true;
         $scope.updateCount = 0;
         $scope.lastProgress = 101;
         $scope.matchToken = Date.now();
@@ -161,7 +162,7 @@
                 var tk = args.seconds % 30;
                 console.log($scope.wrapperMemory.currAttempt != undefined);
                 if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
-                    console.log('score/level update vs server')
+                    console.log('score/level update vs server');
                     PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function (response) {
                         console.log('Score/Level updated');
                     })
@@ -169,14 +170,24 @@
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.error);
                         });
                 }
+                var pushTimer = args.seconds % 10;
+                if (pushTimer == 0){
+                    console.log("Sending offline attempts for sync: ");
+                    console.log($scope.wrapperMemory.attemptsOffline);
+                    PlaygameService.syncOfflineAttempts($scope.wrapperMemory.attemptsOffline, $scope.wrapperMemory.match)
+                        .then(function(response){
+                            $scope.wrapperMemory.attemptsOffline = {}
+                        })
+                        .catch(function (error){
+                            console.log('Offline attempts sync failed: ');
+                            console.log(error);
+                        })
+                }
             }
 
         });
 
-        //TODO aggiungere chiamata a Sitecore "Servizio abiitazione gioco utente" prima del game init o della verifica di rigioco
-
         //controllo parametro di rigioco in arrivo da link di gioco
-        //TODO controlla per typo tipo ?replay=tru
         var replay = $stateParams.replay;
         console.log("REPLAY = " + replay);
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid, replay).then(function (response) {
@@ -291,7 +302,8 @@
                     "sync": 0
                 };
             }
-            refreshWrapperMemory($scope.wrapperMemory.match, newAttempt)
+            refreshWrapperMemory($scope.wrapperMemory.match, newAttempt);
+            $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId] = $scope.wrapperMemory.currAttempt;
             $scope.$broadcast('timer-start');
         };
 
@@ -323,6 +335,7 @@
                     $scope.wrapperMemory.currAttempt.sync = 1;
                     $scope.wrapperMemory.currAttempt.completed = true;
                     $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+                    delete $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId];
                     $scope.wrapperMemory.currAttempt = undefined;
                     console.log('Attempt ended inside callback');
                 })
@@ -360,6 +373,7 @@
             $scope.wrapperMemory.currAttempt.lastUpdate = new Date(Date.now());
             $scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
             $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+            $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId] = $scope.wrapperMemory.currAttempt;
             $scope.wrapperMemory.currAttempt = undefined;
         };
 
@@ -380,6 +394,7 @@
                     $scope.wrapperMemory.currAttempt.sync = 1;
                     $scope.wrapperMemory.currAttempt.completed = true;
                     $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+                    delete $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId];
                     $scope.wrapperMemory.currAttempt = undefined;
                     console.log('Attempt restarted inside callback');
                     console.log($scope.wrapperMemory);
@@ -451,7 +466,7 @@
                 tmlLevel = $scope.wrapperMemory.currAttempt.level;
             }
             PlaygameService.endMatch($scope.wrapperMemory.game.id, "", $stateParams.playtoken, $scope.wrapperMemory.match.id, $scope.wrapperMemory.currAttempt, $scope.matchToken, $scope.wrapperMemory.attempts, tmpScore,
-                tmlLevel)
+                tmlLevel, $scope.wrapperMemory.attemptsOffline)
                 .then(function (response) {
                     // se endmatch va a buon fine eseguo l'invio del report
                     $scope.wrapperMemory.match = response.data.match;
