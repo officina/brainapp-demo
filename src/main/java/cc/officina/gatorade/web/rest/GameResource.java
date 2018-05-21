@@ -154,6 +154,7 @@ public class GameResource {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No template founded for game with id "+ id)).body(null);
         }
         /*boolean validateSession = false;
+        //TODO set hostname and endpoint as properties
         String hostname = "http://gamificationlabcert.generali.it";
         String endpoint = "/api/gaming/isvalid";
         String url = hostname+endpoint;
