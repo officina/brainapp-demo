@@ -16,6 +16,8 @@
         $scope.updateCount = 0;
         $scope.lastProgress = 101;
         $scope.matchToken = Date.now();
+        $scope.timerEndTimestamp = -1;
+        $scope.timeSpent = 0;
         $scope.showGame = true;
         $scope.showReport = true;
         $scope.showError = true;
@@ -36,7 +38,7 @@
             $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
             $scope.errorText = $rootScope.finalError;
             $scope.reportText = $rootScope.wrapperMemory;
-        }
+        };
 
         var manageError = function (event, attempt, error, why) {
 
@@ -155,10 +157,19 @@
 
         $scope.$on('timer-tick', function (event, args) {
             if (args.seconds !== undefined) {
-                var myEl = angular.element(document.querySelector('#game-header'));
-                var timeToEnd = (args.minutes * 60 + args.seconds)
-                var total = (timeToEnd * 100 / $scope.wrapperMemory.match.template.maxDuration);
-                $scope.progressBar = total <= 100 ? total : 100
+                if ($scope.timerEndTimestamp == -1){
+                    $scope.timerEndTimestamp = ($scope.maxDuration - $scope.timeSpent)*1000 + Date.now();
+                }
+                var now = Date.now();
+                var timestampToEnd = $scope.timerEndTimestamp - now;
+                var timeToEnd = timestampToEnd/1000;
+                var total = (timeToEnd * 100 / $scope.maxDuration);
+                $scope.progressBar = total <= 100 ? total : 100;
+                /*console.log("now: "+now);
+                console.log("time stamp to end: "+timestampToEnd);
+                console.log("time to end: "+timeToEnd);
+                console.log("total: "+total);
+                console.log("progressbar: "+$scope.progressBar);*/
                 var tk = args.seconds % 30;
                 console.log($scope.wrapperMemory.currAttempt != undefined);
                 if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
@@ -211,15 +222,15 @@
                             "why": "cloneSuccessfully"
                         });
                     }
-                    var timeSpent = $scope.wrapperMemory.match.timeSpent;
-
-                    if (timeSpent < $scope.wrapperMemory.match.template.maxDuration) {
-                        var myTime = $scope.wrapperMemory.match.template.maxDuration - timeSpent;
+                    $scope.timeSpent = $scope.wrapperMemory.match.timeSpent;
+                    $scope.maxDuration = $scope.wrapperMemory.match.template.maxDuration;
+                    if ($scope.timeSpent < $scope.maxDuration) {
+                        var myTime = $scope.maxDuration - $scope.timeSpent;
                         console.log('Start a new session with a duration ' + myTime);
                         $scope.$broadcast('timer-set-countdown-seconds', myTime);
                     }
                     else {
-                        console.log('Tempo scaduto in quanto il tempo massimo è ' + $scope.wrapperMemory.match.template.maxDuration + ' è quello giocato è ' + timeSpent);
+                        console.log('Tempo scaduto in quanto il tempo massimo è ' + $scope.maxDuration + ' è quello giocato è ' + timeSpent);
                         $state.go("ended", {
                             "gameid": $stateParams.gameid,
                             "playtoken": $stateParams.playtoken,
