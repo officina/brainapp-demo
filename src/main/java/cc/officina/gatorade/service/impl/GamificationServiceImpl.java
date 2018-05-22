@@ -207,7 +207,7 @@ public class GamificationServiceImpl implements GamificationService{
 		matches.addAll(s.getMatches());
 		int numberOfUsers = numUsers;
 
-		if (s.getPoRoot().startsWith("community_")){
+		if (s.getPoRoot() != null && s.getPoRoot().startsWith("community_")){
 		    numberOfUsers = numCommunityUsers;
 		    log.info("Elaborate Community team session, number of user: "+numberOfUsers);
         }else{
