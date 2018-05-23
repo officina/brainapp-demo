@@ -9,20 +9,20 @@
 </div>
 <div class="col-lg-10 col-lg-offset-1 whitebkg flex somepadding box" style="margin-bottom: 20px">
     <div class="col-lg-6 left flexcol">
-        <span>Nome Laboratorio {{matches[0].session.poRoot}}</span>
-        <span>Nome Gioco {{sessions.game.description}}</span>
-        <span>Stato Appuntamento</span>
-        <span>Da {{sessions.startDate | date:'dd/MM/yyyy'}} {{sessions.startDate | date:'HH:mm'}}</span>
-        <span>A {{sessions.endDate | date:'dd/MM/yyyy'}} {{sessions.endDate | date:'HH:mm'}}</span>
+        <span>Nome Laboratorio: {{matches[0].session.poRoot}}</span>
+        <span>Nome Gioco: {{sessions.game.description}}</span>
+        <div class="state"><span>Stato Appuntamento: </span> <span ng-if="(Date.parse(sessions.endDate)) < (Date.parse(currentDate))">Terminato</span><span ng-if="(Date.parse(sessions.endDate)) > (Date.parse(currentDate))">In corso</span></div>
+        <span>Da: {{sessions.startDate | date:'dd/MM/yyyy HH:mm'}}</span>
+        <span>A: {{sessions.endDate | date:'dd/MM/yyyy HH:mm'}}</span>
     </div>
     <div class="mid col-lg-3 flexcol">
         <span>Sessioni</span>
         <div class="bigcircle">
-            <h2 class="nomar">63%</h2>
+            <h2 class="nomar">{{(matches.elaborated == true).length}}</h2>
         </div>
     </div>
     <div class="right col-lg-3 flexcol">
-        <span>High Score</span>
+        <span>Best Score</span>
         <div class="bigcircle">
             <h2 class="nomar">1234</h2>
         </div>
@@ -36,12 +36,11 @@
         <div class="statusinfogo"ng-if="match.elaborated == true"></div>
         <div class="statusinfono"ng-if="match.elaborated == false"></div>
         <div class="alias "><span>{{match.userId}}</span></div>
-        <!--<div class="minpoints">Pti Min</div>-->
-        <div class="maxpoints" ng-if="levelgame == true">{{match.bestLevel}} Liv</div>
-        <div class="maxpoints" ng-if="levelgame == false">{{match.bestScore}} Pti</div>
-        <div class="status ">Non ha ancora giocato</div>
-        <div class="advancement" ng-if="((currentDate | date:'dd/MM/yyyy') > (match.start | date: 'dd/MM/yyyy'))">Ha Finito</div>
-        <div class="advancement" ng-if="((currentDate | date:'dd/MM/yyyy') < (match.start | date: 'dd/MM/yyyy'))">Sta Giocando</div>
+        <!--<div class="bla">{{currentDate}}</div>-->
+        <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
+        <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+        <div class="advancement alias flexaround" ng-if="currentDate > (Date.parse(match.start) + (matchDuration))"><span>Terminato</span></div>
+        <div class="advancement alias flexaround" ng-if="currentDate < (Date.parse(match.start) + (matchDuration))"><span>In corso</span></div>
 
         <div class="btns">
             <div class="btn btn-primary btn-sm reset">Reset</div>
@@ -52,5 +51,5 @@
 
 </div>
 
-<p>{{sessions}}</p>
-{{match.start + match.template.maxDuration}}
+<!--<p>{{sessions}}</p>-->
+<!--{{match.start + match.template.maxDuration}}-->

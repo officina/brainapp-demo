@@ -54,6 +54,11 @@ span  {
     justify-content: space-between;
     align-items: center;
 }
+.flexaround {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
 .flexcol {
     display: flex;
     flex-direction: column;
