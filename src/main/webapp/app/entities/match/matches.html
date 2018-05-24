@@ -34,6 +34,8 @@
                     <th jh-sort-by="anomalous"><span data-translate="gatoradeApp.match.anomalous">Anomalous</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="replayState"><span data-translate="gatoradeApp.match.replayState">Replay State</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="parentId"><span data-translate="gatoradeApp.match.parentId">Parent Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="bestLevel"><span data-translate="gatoradeApp.match.bestLevel">Best Level</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="bestScore"><span data-translate="gatoradeApp.match.bestScore">Best Score</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="game.description"><span data-translate="gatoradeApp.match.game">Game</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="template.description"><span data-translate="gatoradeApp.match.template">Template</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="session.id"><span data-translate="gatoradeApp.match.session">Session</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -58,6 +60,8 @@
                     <td>{{match.anomalous}}</td>
                     <td data-translate="{{'gatoradeApp.MatchReplayState.' + match.replayState}}">{{match.replayState}}</td>
                     <td>{{match.parentId}}</td>
+                    <td>{{match.bestLevel}}</td>
+                    <td>{{match.bestScore}}</td>
                     <td>
                         <a ui-sref="game-detail({id:match.game.id})">{{match.game.description}}</a>
                     </td>

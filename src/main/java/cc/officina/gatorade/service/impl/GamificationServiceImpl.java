@@ -44,6 +44,8 @@ public class GamificationServiceImpl implements GamificationService{
     private int interval; //intervallo di esecuzione del thread in secondi
     @Value("${elaboration.numUsers}")
     private int numUsers;
+    @Value("${elaboration.numCommunityUsers}")
+    private int numCommunityUsers;
     @Value("${playoff.client.id}")
     private String poClientId;
 	@Value("${playoff.client.secret}")
@@ -203,7 +205,16 @@ public class GamificationServiceImpl implements GamificationService{
 		List<Match> matches = new ArrayList<Match>();
 		log.info("Matches size for elaboration: " + s.getMatches().size());
 		matches.addAll(s.getMatches());
-		while(matches.size() > 0 && samples.size() < numUsers && matches.size() > 0)
+		int numberOfUsers = numUsers;
+
+		if (s.getPoRoot() != null && s.getPoRoot().startsWith("community_")){
+		    numberOfUsers = numCommunityUsers;
+		    log.info("Elaborate Community team session, number of user: "+numberOfUsers);
+        }else{
+            log.info("Elaborate Laboratorio team session, number of user: "+numberOfUsers);
+        }
+
+        while(matches.size() > 0 && samples.size() < numberOfUsers && matches.size() > 0)
 		{
 			int index = new Random().nextInt(matches.size());
 			Match randomMatch = matches.get(index);
@@ -243,6 +254,7 @@ public class GamificationServiceImpl implements GamificationService{
 
 	}
 
+	//metodo che consente di verificare se un match ha player valido
 	private boolean checkPOUser(Match match) {
 		Object response = null;
 		HashMap<String, String> params = new HashMap<String, String>();
@@ -253,20 +265,22 @@ public class GamificationServiceImpl implements GamificationService{
 			//non va in eccezione la get, quindi il player esiste
 			return true;
 		} catch (Exception e) {
-			//vado in eccezione, lo user non esiste
-			log.error("Error for playerId " + match.getUserId() + " on check");
-			log.error(e.getMessage());
-			mailService.sendMatchNotValidAlert(match, "Eccezione playoff: " + e.getMessage());
-			log.info("Run-action fails, init again...");
+			//vado in eccezione, lo user non esiste oppure ho avuto un problema con il token PO, riprovo...
+			// TODO da verificare e configurare il funzionamento
+//			mailService.sendMatchNotValidAlert(match, "Eccezione playoff: " + e.getMessage());
+			log.info("CheckPOUser fails, init again...");
 			init();
-			log.info("Run-action again");
+			log.info("CheckPOUser again");
 			try {
 				response = po.get(path, params);
 			} catch (Exception e1) {
+			    // vado nuovamente in eccezione
 				e1.printStackTrace();
+				log.error("CheckPOUser fails for match with id = " + match.getId() + " (userId: " + match.getUserId() + ")");
+				return false;
 			}
 			log.debug(response.toString());
-			return false;
+			return true;
 		}
 	}
 
