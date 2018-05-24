@@ -25,9 +25,10 @@
             $scope.currentDate = new Date();
             $scope.currentDate = Date.parse($scope.currentDate);
             // console.log($scope.matchDuration);
+            // console.log(typeof $scope.matches[0].bestLevel)
         });
         var isLevelGame =function (game){
-            console.log('dentro')
+            // console.log('dentro')
             if (game.game.type === 'LEVEL') {
                 // console.log('level');
                 return true;
