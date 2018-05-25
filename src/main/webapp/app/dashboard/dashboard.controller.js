@@ -18,7 +18,7 @@
         DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
             $scope.matches = response.data;
             // console.log(response.data);
-            // console.log($scope.matches);
+            console.log($scope.matches);
             $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
             // console.log($scope.levelgame);
             $scope.matchDuration = $scope.matches[0].template.maxDuration * 1000;
@@ -41,6 +41,28 @@
         $scope.resetMatch = function (matchId) {
             console.log('Sending request for reset match with id: '+matchId);
             DashboardService.resetMatch(matchId)
+                .then(function (response) {
+                    console.log(response)
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
+
+        $scope.elaborateMatch = function (matchId) {
+            console.log('Sending request for elaborate match with id: '+matchId);
+            DashboardService.elaborateMatch(matchId)
+                .then(function (response) {
+                    console.log(response)
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
+
+        $scope.closeMatch = function (matchId) {
+            console.log('Sending request for close match with id: '+matchId);
+            DashboardService.closeMatch(matchId)
                 .then(function (response) {
                     console.log(response)
                 })

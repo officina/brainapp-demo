@@ -45,6 +45,8 @@
             </div>
             <div class="btns">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
+                <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)" aria-disabled="true" disabled>Elabora</div>
+                <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)" aria-disabled="true" disabled>Chiudi</div>
             </div>
         </div>
 
@@ -60,8 +62,8 @@
             </div>
             <div class="btns">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
-                <div class="btn btn-warning btn-sm interrupt">Elabora</div>
-                <div class="btn btn-danger btn-sm ">Chiudi</div>
+                <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)">Elabora</div>
+                <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)">Chiudi</div>
             </div>
         </div>
 
@@ -75,13 +77,13 @@
             <div class="advancement flexaround"><span>Match Appeso</span></div>
             <div class="btns">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
-                <div class="btn btn-warning btn-sm interrupt">Elabora</div>
-                <div class="btn btn-danger btn-sm ">Chiudi</div>
+                <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)">Elabora</div>
+                <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)">Chiudi</div>
             </div>
         </div>
 
         <!--rosso -Punteggio non elaborato- reset elabora-->
-        <div class="flexbtw nobrdbot" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo != true">
+        <div class="flexbtw nobrdbot" ng-if="match.anomalous == true && match.elaborated == true && match.sendToPo != true">
             <div class="statusinfono"></div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <!--<div class="bla">{{currentDate}}</div>-->
@@ -90,17 +92,41 @@
             <div class="advancement flexaround"><span>Punteggio non elaborato</span></div>
             <div class="btns">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
-                <div class="btn btn-warning btn-sm interrupt">Elabora</div>
+                <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)">Elabora</div>
+                <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)" aria-disabled="true" disabled>Chiudi</div>
+            </div>
+        </div>
+
+        <!--giallo -Punteggio non elaborato / sta aspettando il batch - reset elabora-->
+        <div class="flexbtw nobrdbot" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo != true">
+            <div class="statusinfofo"></div>
+            <div class="alias "><span>{{match.userId}}</span></div>
+            <!--<div class="bla">{{currentDate}}</div>-->
+            <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
+            <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="advancement flexaround"><span>In Elaborazione</span></div>
+            <div class="btns">
+                <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
+                <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)">Elabora</div>
+                <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id) " aria-disabled="true" disabled>Chiudi</div>
+            </div>
+        </div>
+
+        <!--rosso -Punteggio non elaborato- reset elabora-->
+        <div class="flexbtw nobrdbot" ng-if="match.anomalous == true && match.elaborated == true && match.sendToPo != true">
+            <div class="statusinfofo"></div>
+            <div class="alias "><span>{{match.userId}}</span></div>
+            <!--<div class="bla">{{currentDate}}</div>-->
+            <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
+            <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="advancement flexaround"><span>Elaborazione Fallita</span></div>
+            <div class="btns">
+                <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
+                <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)">Elabora</div>
+                <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)" aria-disabled="true" disabled>Chiudi</div>
             </div>
         </div>
 
     </div>
 
 </div>
-
-<!--<p>{{sessions}}</p>-->
-<!--{{match.start + match.template.maxDuration}}-->
-<!--<div class="" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">verde - Terminato - reset</div>-->
-<!--<div class="" ng-if="match.anomalous != true && match.elaborated != true && match.sendToPo != true">giallo - In Corso - reset elabora chiudi</div>-->
-<!--<div class="" ng-if="match.anomalous == true && match.elaborated != true && match.sendToPo != true">rosso - Match Appeso - reset elabora chiudi</div>-->
-<!--<div class="" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo != true">rosso -Punteggio non elaborato- reset elabora</div>-->

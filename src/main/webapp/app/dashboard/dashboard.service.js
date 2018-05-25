@@ -24,5 +24,20 @@ angular.module('gatoradeApp')
                 method: 'PUT',
                 url: rootPath + '/api/matches/'+matchid+'/reset'
             })
-        }
+        };
+
+        this.elaborateMatch = function(matchid){
+            return $http({
+                method: 'PUT',
+                url: rootPath + '/api/matches/'+matchid+'/admin/elaborate'
+            })
+        };
+
+        this.closeMatch = function(matchid){
+            return $http({
+                method: 'PUT',
+                url: rootPath + '/api/matches/'+matchid+'/admin/close'
+            })
+        };
+
     }]);
