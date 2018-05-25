@@ -1,6 +1,8 @@
 package cc.officina.gatorade.service.impl;
 
+import cc.officina.gatorade.domain.enumeration.MatchReplayState;
 import cc.officina.gatorade.service.GameService;
+import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.service.ReportService;
 import cc.officina.gatorade.domain.Attempt;
@@ -33,6 +35,7 @@ public class MatchServiceImpl implements MatchService{
     private final AttemptRepository attemptRepository;
     private final GameService gameService;
     private final ReportService reportService;
+    private final GamificationService gamificationService;
 
     @Value("${elaboration.safetyMarginInSeconds}")
     private Long safetyMarginInSeconds;
@@ -42,11 +45,12 @@ public class MatchServiceImpl implements MatchService{
 
     public enum TypeOfStillPending  {NO_ATTEMPT, RESTORE_FAIL, NOT_ELABORATED, TO_PO_FAIL, SENT_TO_PO_NOT_ELABORATED};
 
-    public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GameService gameService, ReportService reportService) {
+    public MatchServiceImpl(MatchRepository matchRepository, AttemptRepository attemptRepository, GameService gameService, ReportService reportService, GamificationService gamificationService) {
         this.matchRepository = matchRepository;
         this.attemptRepository = attemptRepository;
         this.gameService = gameService;
         this.reportService = reportService;
+        this.gamificationService = gamificationService;
     }
 
     /**
@@ -104,13 +108,31 @@ public class MatchServiceImpl implements MatchService{
 	}
 
     @Override
+    @Transactional
 	public Match resetMatch(Match match) {
 		match.setValid(false);
 		for(Attempt a : match.getAttempts())
 		{
 			a.setValid(false);
 		}
+		//TODO controlla se il punteggio è già andato a PO
 		attemptRepository.save(match.getAttempts());
+		log.debug("Match "+match.getId()+" with replay state:" +match.getReplayState().name());
+		if (match.getReplayState() != MatchReplayState.cloned){
+            log.debug("Match replay state setted to old");
+            match.setReplayState(MatchReplayState.old);
+            log.debug("Match replay reset point to po");
+            gamificationService.runResetAction(match);
+            if (match.getParentId() != null){
+                log.debug("Get parent match with id: "+match.getParentId());
+                Match parentMatch = matchRepository.findOne(match.getParentId());
+                log.debug("Set parent match replay state to main");
+                parentMatch.setReplayState(MatchReplayState.main);
+                log.debug("Parent match replay set point to po");
+                gamificationService.runAction(parentMatch);
+                matchRepository.save(parentMatch);
+            }
+        }
 		matchRepository.save(match);
 		return match;
 	}

@@ -43,7 +43,7 @@
         <div class="advancement alias flexaround" ng-if="currentDate < (Date.parse(match.start) + (matchDuration))"><span>In corso</span></div>
 
         <div class="btns">
-            <div class="btn btn-primary btn-sm reset">Reset</div>
+            <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
             <div class="btn btn-warning btn-sm interrupt">Interrompi</div>
             <div class="btn btn-danger btn-sm ">Chiudi</div>
         </div>

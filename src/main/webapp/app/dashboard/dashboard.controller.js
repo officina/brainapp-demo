@@ -38,7 +38,15 @@
             }
         }
 
-
-
+        $scope.resetMatch = function (matchId) {
+            console.log('Sending request for reset match with id: '+matchId);
+            DashboardService.resetMatch(matchId)
+                .then(function (response) {
+                    console.log(response)
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
     }
 })();

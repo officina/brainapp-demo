@@ -141,17 +141,16 @@ public class MatchResource {
 
     @PutMapping("/matches/{id}/reset")
     @Timed
+    @Transactional
     public ResponseEntity<Match> resetMatch(@PathVariable Long id) throws URISyntaxException {
         log.info("REST request to reset Match with id " + id);
         Match match = matchService.findOne(id);
         if (match == null) {
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
-        Match result = matchService.resetMatch(match);
-        gamificationService.runResetAction(match);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, match.getId().toString()))
-            .body(result);
+            .body(matchService.resetMatch(match));
     }
 
     @PostMapping(value = "/matches/{id}/report/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -204,7 +203,6 @@ public class MatchResource {
     @Timed
     @Transactional
     public ResponseEntity<Void> startOutcomeDrainage() throws URISyntaxException {
-        //TODO rendere accessibile solo per admin
         log.info("REST request to matches outcome drainage");
         Page<Match> matches = matchService.findAll(new PageRequest(0, Integer.MAX_VALUE));
         for (Match match : matches){
