@@ -1,5 +1,6 @@
 package cc.officina.gatorade.service.impl;
 
+import cc.officina.gatorade.domain.GameType;
 import cc.officina.gatorade.domain.enumeration.MatchReplayState;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
@@ -10,9 +11,12 @@ import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.MatchRepository;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cc.officina.gatorade.web.response.MatchResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -115,20 +119,23 @@ public class MatchServiceImpl implements MatchService{
 		{
 			a.setValid(false);
 		}
-		//TODO controlla se il punteggio è già andato a PO
 		attemptRepository.save(match.getAttempts());
-		log.debug("Match "+match.getId()+" with replay state:" +match.getReplayState().name());
-		if (match.getReplayState() != MatchReplayState.cloned){
-            log.debug("Match replay state setted to old");
+        log.info("Match "+match.getId()+" with replay state:" +match.getReplayState().name());
+        if (match.getReplayState() != MatchReplayState.cloned){
+            log.info("Match replay state setted to old");
             match.setReplayState(MatchReplayState.old);
-            log.debug("Match replay reset point to po");
-            gamificationService.runResetAction(match);
+            if (match.getSendToPo()){
+                log.info("Match replay reset point to po");
+                gamificationService.runResetAction(match);
+            }else{
+                log.info("Match replay sendToPo == false, runResetAction skipped");
+            }
             if (match.getParentId() != null){
-                log.debug("Get parent match with id: "+match.getParentId());
+                log.info("Get parent match with id: "+match.getParentId());
                 Match parentMatch = matchRepository.findOne(match.getParentId());
-                log.debug("Set parent match replay state to main");
+                log.info("Set parent match replay state to main");
                 parentMatch.setReplayState(MatchReplayState.main);
-                log.debug("Parent match replay set point to po");
+                log.info("Parent match replay set point to po");
                 gamificationService.runAction(parentMatch);
                 matchRepository.save(parentMatch);
             }
@@ -258,4 +265,86 @@ public class MatchServiceImpl implements MatchService{
         return matchRepository.findMainMatch(gameId, userId);
     }
 
+    @Override
+    public Match adminElaborateMatch(Match match) {
+        log.info("Admin elaborate Match with id: "+match.getId()+" - elaborated: "+match.getElaborated()+" - sendToPo: "+match.getSendToPo()+" - anomalous: "+match.isAnomalous());
+        //sono qui per i match anomali elaborati, il cui punteggio non è stato mandato a PO
+        match.getAttempts().size();
+        match.setBestLevel(match.getMaxLevel());
+        if (match.getGame().getType() == GameType.MINPOINT){
+            match.setBestScore(Long.parseLong(match.getMinScore()));
+        }else if(match.getGame().getType() == GameType.POINT){
+            match.setBestScore(Long.valueOf(match.getMaxScore()));
+        }
+
+        Match mainMatch = matchRepository.findMainMatch(match.getGame().getId(), match.getUserId());
+
+        if (mainMatch != null){
+            if (match.getReplayState() != MatchReplayState.cloned){
+                if (mainMatch.getSendToPo()){
+                    gamificationService.runResetAction(mainMatch);
+                }
+                mainMatch.setReplayState(MatchReplayState.old);
+                matchRepository.saveAndFlush(mainMatch);
+            }
+        }
+
+        if (!match.getSendToPo()){
+            gamificationService.runAction(match);
+        }
+        match.setReplayState(MatchReplayState.main);
+        if (match.getSendToPo() && match.isElaborated()){
+            match.setAnomalous(false);
+        }else{
+            match.setAnomalous(true);
+        }
+        matchRepository.saveAndFlush(match);
+        return match;
+    }
+
+    @Override
+    public Match adminCloseMatch(Match match) {
+        log.info("Admin close Match with id: "+match.getId()+"- elaborated: "+match.getElaborated()+" - sendToPo: "+match.getSendToPo()+" - anomalous: "+match.isAnomalous());
+        //sono qui per i match in "pending", forzo la chiusura e mando punti a PO se necessario
+        ZonedDateTime now = ZonedDateTime.now();
+        match.getAttempts().size();
+        if(match.isElaborated())
+        {
+            return match;
+        }
+        match.setBestLevel(match.getMaxLevel());
+        if (match.getGame().getType() == GameType.MINPOINT){
+            match.setBestScore(Long.parseLong(match.getMinScore()));
+        }else if(match.getGame().getType() == GameType.POINT){
+            match.setBestScore(Long.valueOf(match.getMaxScore()));
+        }
+
+        match.setElaborated(true);
+        match.setStop(now);
+        match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
+
+        Match mainMatch = matchRepository.findMainMatch(match.getGame().getId(), match.getUserId());
+        if (mainMatch != null){
+            if (match.getReplayState() != MatchReplayState.cloned){
+                if (mainMatch.getSendToPo()){
+                    gamificationService.runResetAction(mainMatch);
+                }
+                mainMatch.setReplayState(MatchReplayState.old);
+                matchRepository.saveAndFlush(mainMatch);
+            }
+        }
+
+        if (!match.getSendToPo()){
+            gamificationService.runAction(match);
+        }
+        if (match.getSendToPo() && match.isElaborated()){
+            match.setAnomalous(false);
+        }else{
+            match.setAnomalous(true);
+        }
+        match.setReplayState(MatchReplayState.main);
+        matchRepository.saveAndFlush(match);
+
+        return match;
+    }
 }

@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import sun.rmi.runtime.Log;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -228,5 +229,31 @@ public class MatchResource {
             matchService.save(match);
         }
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/matches/{id}/admin/elaborate")
+    @Timed
+    @Transactional
+    public ResponseEntity<Match> adminElaborateMatch(@PathVariable Long id) throws URISyntaxException {
+        log.info("REST request to admin elaborate match with id: "+ id);
+        Match match = matchService.findOne(id);
+        if (match == null){
+            log.info("Match with id: "+ id+" not found");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(matchService.adminElaborateMatch(match));
+    }
+
+    @PutMapping("/matches/{id}/admin/close")
+    @Timed
+    @Transactional
+    public ResponseEntity<Match> adminCloseMatch(@PathVariable Long id) throws URISyntaxException {
+        log.info("REST request to admin close match with id: "+ id);
+        Match match = matchService.findOne(id);
+        if (match == null){
+            log.info("Match with id: "+ id+" not found");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(matchService.adminCloseMatch(match));
     }
 }
