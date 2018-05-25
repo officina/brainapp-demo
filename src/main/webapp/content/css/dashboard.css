@@ -89,6 +89,12 @@ span  {
     width: 15px;
     border-radius: 50%;
 }
+.statusinfofo {
+    background-color: #FFFF33;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+}
 .bigcircle {
     height: 100px;
     width: 100px;
@@ -116,6 +122,18 @@ span  {
 }
 .brdbot {
 border-bottom: 1px solid #D4D4D4;
+}
+.advancement {
+    min-width: 150px;
+    max-width: 150px;
+}
+.btns {
+    min-width: 200px;
+    max-width: 200px;
+}
+.maxpoints {
+    min-width: 100px;
+    max-width: 100px;
 }
 /*End Dashboard*/
 

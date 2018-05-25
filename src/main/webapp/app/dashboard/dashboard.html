@@ -32,21 +32,68 @@
     <h2>Giocatori</h2>
 </div>
 <div class="col-lg-10 col-lg-offset-1 whitebkg box nopadding brdbot">
-    <div class="match flexbtw nobrdbot" ng-repeat="match in matches">
-        <div class="statusinfogo"ng-if="match.elaborated == true"></div>
-        <div class="statusinfono"ng-if="match.elaborated == false"></div>
-        <div class="alias "><span>{{match.userId}}</span></div>
-        <!--<div class="bla">{{currentDate}}</div>-->
-        <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
-        <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
-        <div class="advancement alias flexaround" ng-if="currentDate > (Date.parse(match.start) + (matchDuration))"><span>Terminato</span></div>
-        <div class="advancement alias flexaround" ng-if="currentDate < (Date.parse(match.start) + (matchDuration))"><span>In corso</span></div>
-
-        <div class="btns">
-            <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
-            <div class="btn btn-warning btn-sm interrupt">Elabora</div>
-            <div class="btn btn-danger btn-sm ">Chiudi</div>
+    <div class="match nobrdbot" ng-repeat="match in matches">
+        
+        <!--verde - Terminato - reset-->
+        <div class="flexbtw nobrdbot" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">
+            <div class="statusinfogo"></div>
+            <div class="alias "><span>{{match.userId}}</span></div>
+            <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
+            <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="advancement flexaround">
+                <span>Terminato</span>
+            </div>
+            <div class="btns">
+                <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
+            </div>
         </div>
+
+        <!--giallo - In Corso - reset elabora chiudi-->
+        <div class="flexbtw nobrdbot" ng-if="match.anomalous != true && match.elaborated != true && match.sendToPo != true">
+            <div class="statusinfofo"></div>
+            <div class="alias "><span>{{match.userId}}</span></div>
+            <!--<div class="bla">{{currentDate}}</div>-->
+            <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
+            <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="advancement flexaround">
+                <span>In corso</span>
+            </div>
+            <div class="btns">
+                <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
+                <div class="btn btn-warning btn-sm interrupt">Elabora</div>
+                <div class="btn btn-danger btn-sm ">Chiudi</div>
+            </div>
+        </div>
+
+        <!--rosso - Match Appeso - reset elabora chiudi-->
+        <div class="flexbtw nobrdbot" ng-if="match.anomalous == true && match.elaborated != true && match.sendToPo != true">
+            <div class="statusinfono"></div>
+            <div class="alias "><span>{{match.userId}}</span></div>
+            <!--<div class="bla">{{currentDate}}</div>-->
+            <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
+            <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="advancement flexaround"><span>Match Appeso</span></div>
+            <div class="btns">
+                <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
+                <div class="btn btn-warning btn-sm interrupt">Elabora</div>
+                <div class="btn btn-danger btn-sm ">Chiudi</div>
+            </div>
+        </div>
+
+        <!--rosso -Punteggio non elaborato- reset elabora-->
+        <div class="flexbtw nobrdbot" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo != true">
+            <div class="statusinfono"></div>
+            <div class="alias "><span>{{match.userId}}</span></div>
+            <!--<div class="bla">{{currentDate}}</div>-->
+            <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
+            <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="advancement flexaround"><span>Punteggio non elaborato</span></div>
+            <div class="btns">
+                <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
+                <div class="btn btn-warning btn-sm interrupt">Elabora</div>
+            </div>
+        </div>
+
     </div>
 
 </div>
