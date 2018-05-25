@@ -12,12 +12,10 @@ import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.repository.SessionRepository;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TemporalType;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.modelmapper.ModelMapper;
@@ -186,27 +184,36 @@ public class SessionServiceImpl implements SessionService{
 	}
 
 	@Override
-	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs)
+	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs, Boolean active)
 	{
-		List<Session> sessions = getSessionsByLabs(labs);
+		List<Session> sessions = getSessionsByLabs(labs, active);
         List<SessionDTO> sessionDtos = mapSessionsToDTOS(sessions);
 		sessionDtos = setValidMatchToSessionDtos(userId, sessionDtos);
 		return sessionDtos;
 	}
 
 	@Override
-	public List<Session> getSessionsByLabs(List<String> labs){
+	public List<Session> getSessionsByLabs(List<String> labs, Boolean active){
         String query = "select s from Session s where 1 = 2 ";
         for(String s : labs)
         {
             query = query + "or s.poRoot = '"+ s + "_aggregate'";
         }
-        return entityManager.createQuery(query).getResultList();
+        if (active != null && active){
+            query = query+" and s.endDate >= now()";
+            return entityManager.createQuery(query).getResultList();
+        }else {
+            return entityManager.createQuery(query).getResultList();
+        }
     }
 
     @Override
-    public List<Session> findAllByUserId(String userId) {
-        return sessionRepository.findAllByUserId(userId);
+    public List<Session> findAllByUserId(String userId, Boolean active) {
+        if (active != null && active){
+            return sessionRepository.findAllActiveByUserId(userId, ZonedDateTime.now());
+        }else{
+            return sessionRepository.findAllByUserId(userId);
+        }
     }
 
     @Override
