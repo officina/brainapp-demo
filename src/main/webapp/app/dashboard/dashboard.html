@@ -44,7 +44,7 @@
 
         <div class="btns">
             <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
-            <div class="btn btn-warning btn-sm interrupt">Interrompi</div>
+            <div class="btn btn-warning btn-sm interrupt">Elabora</div>
             <div class="btn btn-danger btn-sm ">Chiudi</div>
         </div>
     </div>
@@ -53,3 +53,7 @@
 
 <!--<p>{{sessions}}</p>-->
 <!--{{match.start + match.template.maxDuration}}-->
+<!--<div class="" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">verde - Terminato - reset</div>-->
+<!--<div class="" ng-if="match.anomalous != true && match.elaborated != true && match.sendToPo != true">giallo - In Corso - reset elabora chiudi</div>-->
+<!--<div class="" ng-if="match.anomalous == true && match.elaborated != true && match.sendToPo != true">rosso - Match Appeso - reset elabora chiudi</div>-->
+<!--<div class="" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo != true">rosso -Punteggio non elaborato- reset elabora</div>-->
