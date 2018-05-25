@@ -70,4 +70,6 @@ public interface MatchService {
 	public List<Match> findValidBySessionId(Long sessionId);
     public Page<Match> findValidBySessionId(Pageable pageable, Long sessionId);
 	public Match findMainMatch(Long gameId, String userId);
+	public Match adminElaborateMatch(Match match);
+    public Match adminCloseMatch(Match match);
 }
