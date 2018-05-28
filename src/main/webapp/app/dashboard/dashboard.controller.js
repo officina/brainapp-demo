@@ -11,18 +11,35 @@
         var sessionid = $stateParams.sessions;
         var matches = $stateParams.matches;
 
+
+        var bestScores = [];
+        var best;
         $scope.getMatches = function(){
             DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
                 $scope.matches = response.data;
-                // console.log(response.data);
+                console.log(response.data);
                 console.log($scope.matches);
                 $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
-                // console.log($scope.levelgame);
                 $scope.matchDuration = $scope.matches[0].template.maxDuration * 1000;
                 $scope.currentDate = new Date();
                 $scope.currentDate = Date.parse($scope.currentDate);
-                // console.log($scope.matchDuration);
-                // console.log(typeof $scope.matches[0].bestLevel)
+                for (var m in $scope.matches) {
+                    // console.log(m);
+                    if ($scope.matches[m].game.type == "POINT") {
+                        bestScores.push(parseInt($scope.matches[m].bestScore));
+                        $scope.best = Math.max.apply(null, bestScores);
+                    } else if ($scope.matches[m].game.type == "MINPOINT") {
+                        bestScores.push(parseInt($scope.matches[m].bestScore));
+                        $scope.best = Math.min.apply(null, bestScores);
+                        console.log(highest)
+                    } else if ($scope.matches[m].game.type == "LEVEL") {
+                        bestScores.push(parseInt($scope.matches[m].bestLevel));
+                        $scope.best = Math.max.apply(null, bestScores);
+                    }
+                }
+                // console.log(bestScores);
+                // $scope.best = Math.max.apply(null, bestScores);
+                // console.log($scope.best);
             });
         };
 
