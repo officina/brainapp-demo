@@ -1,8 +1,9 @@
 package cc.officina.gatorade.repository;
 
 import cc.officina.gatorade.domain.Match;
-import cc.officina.gatorade.domain.MatchTemplate;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,8 +39,11 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
 	@Query("select m from Match m where (m.sendToPo = false or m.elaborated = false) and m.matchToken > -1 and m.retry < :maxRetry and m.anomalous = false")
 	public List<Match> fetchPendingMatches(@Param("maxRetry")Long maxRetry);
 
-	@Query("select m from Match m where m.session.id = :sessionId and m.valid = true")
+	@Query("select m from Match m where m.session.id = :sessionId and m.valid = true order by m.userId asc")
     public List<Match> findValidBySessionId(@Param("sessionId")Long sessionId);
+
+    @Query("select m from Match m where m.session.id = :sessionId and m.valid = true order by m.userId asc")
+    public Page<Match> findValidBySessionId(Pageable pageable, @Param("sessionId")Long sessionId);
 
     @Query("select m from Match m where m.game.id = :gameId and m.userId = :playerId and m.replayState = 1 and m.valid = true") //1 = Main
 	public Match findMainMatch(@Param("gameId")Long gameId, @Param("playerId")String playerId);

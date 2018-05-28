@@ -1,0 +1,151 @@
+/*FONTS */
+h1  {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h2  {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h3  {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h4  {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h5  {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+span  {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+/* Main navbar */
+.navbar {
+    box-shadow: 0 1px 5px 0 rgba(0,0,0,0.07),0 1px 0 0 rgba(0,0,0,0.03);
+    background: #791911;
+    transition: all 0.3s ease;
+    height: 70px;
+    padding: 0px 30px;
+    display: flex;
+    align-items: center;
+    border-radius: 0px;
+}
+
+
+/*Dashboard*/
+.box {
+    box-shadow: 4px 4px 4px rgba(125,125,125,0.25);
+    min-height: 20vh;
+}
+.whitebkg {
+    background-color: white;
+}
+.white {
+    color: white;
+}
+.flex {
+    display: flex;
+}
+.flexbtw {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.flexaround {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.flexcol {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.somepadding {
+    padding: 20px;
+}
+.nopadding {
+    padding: 0px;
+}
+.nomar {
+    margin: 0px;
+}
+.match {
+    border: 1px solid #D4D4D4;
+    padding: 5px 15px;
+}
+.statusinfogo {
+    background-color: green;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+}
+.statusinfono {
+    background-color: red;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+}
+.statusinfofo {
+    background-color: #d8c20d;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+}
+.bigcircle {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    border: 2px solid #791911;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.mid {
+    align-items: center;
+}
+.right {
+    align-items: center;
+}
+
+.alias {
+    min-width: 100px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.nobrdbot {
+    border-bottom: none;
+}
+.brdbot {
+border-bottom: 1px solid #D4D4D4;
+}
+.advancement {
+    min-width: 150px;
+    max-width: 150px;
+}
+.btns {
+    min-width: 200px;
+    max-width: 200px;
+}
+.maxpoints {
+    min-width: 100px;
+    max-width: 100px;
+}
+.img-fix {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    height: 20px;
+    width: 20px;
+}
+
+.container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+/*End Dashboard*/
+
