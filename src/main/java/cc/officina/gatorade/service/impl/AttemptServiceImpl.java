@@ -99,9 +99,7 @@ public class AttemptServiceImpl implements AttemptService{
             attempt = attemptRepository.findOne(reqAttempt.getId());
             origLevel = attempt.getLevelReached();
             origScore = attempt.getAttemptScore();
-            if (Long.parseLong(reqAttempt.getLevelReached()) > Long.parseLong(origLevel)){
-                attempt.setLevelReached(reqAttempt.getLevelReached());
-            }
+            attempt.setLevelReached(reqAttempt.getLevelReached());
             attempt.setAttemptScore(reqAttempt.getAttemptScore());
         }else{
             //Cerco un attempt creato "offline" che sia già stato creato su gatorade
@@ -116,15 +114,14 @@ public class AttemptServiceImpl implements AttemptService{
                 attempt.setCompleted(reqAttempt.getCompleted());
                 attempt.setStartAttempt(reqAttempt.getStartAttempt());
                 attempt.setLastUpdate(reqAttempt.getLastUpdate());
-                attempt.setCancelled(reqAttempt.getCancelled());
+                attempt.setCancelled(false);
                 attempt.setValid(true);
             }else{
                 origLevel = attempt.getLevelReached();
                 origScore = attempt.getAttemptScore();
-                if (Long.parseLong(reqAttempt.getLevelReached()) > Long.parseLong(origLevel)){
-                    attempt.setLevelReached(reqAttempt.getLevelReached());
-                }
                 attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                // risolve
+                attempt.setLevelReached(reqAttempt.getLevelReached());
             }
         }
         attempt.setSync(syncState);

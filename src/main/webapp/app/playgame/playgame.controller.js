@@ -16,6 +16,8 @@
         $scope.updateCount = 0;
         $scope.lastProgress = 101;
         $scope.matchToken = Date.now();
+        $scope.timerEndTimestamp = -1;
+        $scope.timeSpent = 0;
         $scope.showGame = true;
         $scope.showReport = true;
         $scope.showError = true;
@@ -36,7 +38,7 @@
             $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
             $scope.errorText = $rootScope.finalError;
             $scope.reportText = $rootScope.wrapperMemory;
-        }
+        };
 
         var manageError = function (event, attempt, error, why) {
 
@@ -155,10 +157,19 @@
 
         $scope.$on('timer-tick', function (event, args) {
             if (args.seconds !== undefined) {
-                var myEl = angular.element(document.querySelector('#game-header'));
-                var timeToEnd = (args.minutes * 60 + args.seconds)
-                var total = (timeToEnd * 100 / $scope.wrapperMemory.match.template.maxDuration);
-                $scope.progressBar = total <= 100 ? total : 100
+                if ($scope.timerEndTimestamp == -1){
+                    $scope.timerEndTimestamp = ($scope.maxDuration - $scope.timeSpent)*1000 + Date.now();
+                }
+                var now = Date.now();
+                var timestampToEnd = $scope.timerEndTimestamp - now;
+                var timeToEnd = timestampToEnd/1000;
+                var total = (timeToEnd * 100 / $scope.maxDuration);
+                $scope.progressBar = total <= 100 ? total : 100;
+                /*console.log("now: "+now);
+                console.log("time stamp to end: "+timestampToEnd);
+                console.log("time to end: "+timeToEnd);
+                console.log("total: "+total);
+                console.log("progressbar: "+$scope.progressBar);*/
                 var tk = args.seconds % 30;
                 console.log($scope.wrapperMemory.currAttempt != undefined);
                 if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
@@ -188,10 +199,7 @@
         });
 
         //controllo parametro di rigioco in arrivo da link di gioco
-        var replay = '';
-        if ($stateParams.replay != undefined) {
-            replay = $stateParams.replay == "true";
-        }
+        var replay = $stateParams.replay;
         console.log("REPLAY = " + replay);
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid, replay).then(function (response) {
             $scope.game = response.data;
@@ -214,15 +222,15 @@
                             "why": "cloneSuccessfully"
                         });
                     }
-                    var timeSpent = $scope.wrapperMemory.match.timeSpent;
-
-                    if (timeSpent < $scope.wrapperMemory.match.template.maxDuration) {
-                        var myTime = $scope.wrapperMemory.match.template.maxDuration - timeSpent;
+                    $scope.timeSpent = $scope.wrapperMemory.match.timeSpent;
+                    $scope.maxDuration = $scope.wrapperMemory.match.template.maxDuration;
+                    if ($scope.timeSpent < $scope.maxDuration) {
+                        var myTime = $scope.maxDuration - $scope.timeSpent;
                         console.log('Start a new session with a duration ' + myTime);
                         $scope.$broadcast('timer-set-countdown-seconds', myTime);
                     }
                     else {
-                        console.log('Tempo scaduto in quanto il tempo massimo è ' + $scope.wrapperMemory.match.template.maxDuration + ' è quello giocato è ' + timeSpent);
+                        console.log('Tempo scaduto in quanto il tempo massimo è ' + $scope.maxDuration + ' è quello giocato è ' + timeSpent);
                         $state.go("ended", {
                             "gameid": $stateParams.gameid,
                             "playtoken": $stateParams.playtoken,
@@ -315,13 +323,16 @@
                 return;
             $scope.updateCount = $scope.updateCount + 1;
             $scope.wrapperMemory.currAttempt.attemptScore = score;
+            //risolve utilizzo di due diciture, al momento level e levelReached devono contenere lo stesso valore
             $scope.wrapperMemory.currAttempt.level = level;
+            $scope.wrapperMemory.currAttempt.levelReached = level;
         };
 
         var attemptEnded = function (score, level, completed, endDate) {
             var trueLevel = 0;
             var trueScore = 0;
             if (useLevels) {
+                console.log("devo usare level : " + trueLevel + " score vale " + trueScore);
                 trueLevel = score;
             }
             else {
@@ -353,14 +364,19 @@
         var attemptLocalEnded = function (score, level, completed, endDate) {
             var trueLevel = 0;
             var trueScore = 0;
+            //dal plugin construct il livello arriva comunque dalla variabile SCORE
+            //TODO: fare comunque una verifica definitiva
             if (useLevels) {
                 trueLevel = score;
             }
             else {
                 trueScore = score;
             }
+
             console.log('Attempt local ended');
             $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
+            //risolve utilizzo di due diciture, al momento level e levelReached devono contenere lo stesso valore
+            $scope.wrapperMemory.currAttempt.levelReached = trueLevel;
             $scope.wrapperMemory.currAttempt.level = trueLevel;
             $scope.wrapperMemory.currAttempt.completed = completed;
             $scope.wrapperMemory.currAttempt.endmatch = false;
@@ -372,7 +388,7 @@
             $scope.wrapperMemory.currAttempt = undefined;
         };
 
-        var attemptRestarted = function (score, level, completed, endDate) {
+        /*var attemptRestarted = function (score, level, completed, endDate) {
             var trueLevel = 0;
             var trueScore = 0;
             if (useLevels) {
@@ -394,6 +410,36 @@
                     console.log('Attempt restarted inside callback');
                     console.log($scope.wrapperMemory);
                     startAttempt();
+                })
+                .catch(function (error) {
+                    var data = {
+                        "score": score,
+                        "level": level,
+                        "completed": completed
+                    };
+                    manageError("ATTEMPT_RESTARTED", data, error, "genericError");
+                });
+        };*/
+
+        var attemptRestarted = function (score, level, completed, endDate) {
+            var trueLevel = 0;
+            var trueScore = 0;
+            if (useLevels) {
+                trueLevel = score;
+            }
+            else {
+                trueScore = score;
+            }
+            console.log('Attempt restarted');
+            //risolve utilizzo di due diciture, al momento level e levelReached devono contenere lo stesso valore
+            $scope.wrapperMemory.currAttempt.level = trueLevel;
+            $scope.wrapperMemory.currAttempt.levelReached = trueLevel;
+            $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
+            PlaygameService.restartAttemptToServer(gameId, $scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken, $stateParams.extsessionid, false)
+                .then(function (response) {
+                    $scope.wrapperMemory.currAttempt.sync = 1;
+                    $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
+                    $scope.wrapperMemory.currAttempt = response.data.attempt;
                 })
                 .catch(function (error) {
                     var data = {

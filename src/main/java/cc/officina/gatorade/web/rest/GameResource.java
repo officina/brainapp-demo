@@ -183,8 +183,9 @@ public class GameResource {
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
         MatchResponse response;
-        if (session.getExtId().startsWith("top_user_")){
-            log.info("Richiesta inizio Match per TOP USER playerId: "+request.getPlayerid()+" - extId: "+session.getExtId());
+
+        if (session.getPoRoot() != null &&session.getPoRoot().startsWith("top_user_")){
+            log.info("Request ti StartMatch for Top user: "+ request.getPlayerid()+" - extid: "+session.getExtId()+" - gameid: "+session.getGame().getId());
             response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
             if (response == null){
                 return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
@@ -192,10 +193,6 @@ public class GameResource {
             return new ResponseEntity<>(response, null, HttpStatus.OK);
         }else{
             // non passo per ora il matchToken, o meglio passo -1
-            if (request.isReplay() == null){
-                //replay non richiesto, procedo alla prima giocata
-                return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
-            }
             if (request.isReplay()) {
                 //ho il param replay a true.
                 //procedo alla creazione del match
@@ -203,16 +200,15 @@ public class GameResource {
                 if (response == null){
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot replay match")).body(null);
                 }
-                return new ResponseEntity<>(response, null, HttpStatus.OK);
             } else {
-                //ho il param replay a false.
+                //ho il param replay a false, provo a clonare, se non ho match di riferimento allora creo un nuovo match
                 //procedo alla clonazione
                 response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
                 if (response == null){
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot clone match")).body(null);
+                    return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
                 }
-                return new ResponseEntity<>(response, null, HttpStatus.OK);
             }
+            return new ResponseEntity<>(response, null, HttpStatus.OK);
         }
     }
 
@@ -286,7 +282,7 @@ public class GameResource {
     @Transactional
     public ResponseEntity<AttemptResponse> updateAttemptScoreV2(@RequestBody Request request) {
         log.info("REST request to update score for game Game with id " + request.getMatch().getGame().getId()+", attempt " + request.getAttempt().getId());
-        log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
+        log.info("Score: " + request.getScore() + " - Level: " + request.getLevel()+" - AttemptScore: "+request.getAttempt().getAttemptScore()+" - AttemptLevel: "+request.getAttempt().getLevelReached()) ;
         Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
 
         if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
@@ -311,6 +307,27 @@ public class GameResource {
 
         attempt.getMatch().getAttempts().size();
         return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);
+    }
+
+    @PutMapping("/play/attempt/restart")
+    @Timed
+    @Transactional
+    public ResponseEntity<MatchResponse> restartAttempt(@RequestBody Request request) {
+        log.info("REST request to restart attemtp for game Game with id " + request.getGameid()+", attempt " + (request.getAttempt().getId() != null ? request.getAttempt().getId() : "created offline with localId: "+request.getAttempt().getLocalId()));
+        log.info("Score: " + request.getAttempt().getAttemptScore() + " - Level: " + request.getAttempt().getLevelReached());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
+
+        if(attempt == null)
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
+
+        if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+
+        //chiudo l'attempt
+        MatchResponse response = gameService.stopAttempt(gameService.findOne(request.getGameid()), attempt, attempt.isCompleted(), attempt.getAttemptScore(), attempt.getLevelReached(), request.isEndmatch());
+
+        //inizio un nuovo attempt
+        return new ResponseEntity<>(gameService.startAttempt(response.getGame(), response.getMatch()), null, HttpStatus.OK);
     }
 
     @PutMapping("/play/end")
