@@ -135,5 +135,11 @@ border-bottom: 1px solid #D4D4D4;
     min-width: 100px;
     max-width: 100px;
 }
+.img-fix {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    height: 20px;
+    width: 20px;
+}
 /*End Dashboard*/
 
