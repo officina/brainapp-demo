@@ -2,6 +2,7 @@ package cc.officina.gatorade.service.impl;
 
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
+import cc.officina.gatorade.repository.MatchRepository;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.repository.AttemptRepository;
@@ -24,7 +25,7 @@ public class AttemptServiceImpl implements AttemptService{
 
     private final AttemptRepository attemptRepository;
 
-    public AttemptServiceImpl(AttemptRepository attemptRepository) {
+    public AttemptServiceImpl(AttemptRepository attemptRepository, MatchRepository matchRepository) {
         this.attemptRepository = attemptRepository;
     }
 
@@ -113,18 +114,20 @@ public class AttemptServiceImpl implements AttemptService{
                 attempt.setCompleted(reqAttempt.getCompleted());
                 attempt.setStartAttempt(reqAttempt.getStartAttempt());
                 attempt.setLastUpdate(reqAttempt.getLastUpdate());
+                attempt.setCancelled(false);
                 attempt.setValid(true);
             }else{
                 origLevel = attempt.getLevelReached();
                 origScore = attempt.getAttemptScore();
-                attempt.setLevelReached(reqAttempt.getLevelReached());
                 attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                // risolve
+                attempt.setLevelReached(reqAttempt.getLevelReached());
             }
         }
         attempt.setSync(syncState);
         attemptRepository.save(attempt);
-        log.info("Attempt: "+reqAttempt.getId()+" from Match id: "+match.getId()+" - SyncState: "+syncState.name());
-        log.debug("SyncAttempt for attempt "+reqAttempt.getId()+": for Original score: "+origScore+"- Updated score: "+attempt.getAttemptScore()+" - Original level: "+origLevel+" - Updated level: "+attempt.getLevelReached());
+        log.info("Attempt: "+attempt.getId()+" from Match id: "+match.getId()+" - SyncState: "+syncState.name());
+        log.debug("SyncAttempt for attempt "+attempt.getId()+": for Original score: "+origScore+" - Updated score: "+attempt.getAttemptScore()+" - Original level: "+origLevel+" - Updated level: "+attempt.getLevelReached());
         return attempt;
     }
 }

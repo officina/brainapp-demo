@@ -11,6 +11,7 @@ import cc.officina.gatorade.service.SessionService;
 import cc.officina.gatorade.service.dto.SessionDTO;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -253,20 +254,20 @@ public class SessionResource {
 
     @GetMapping("/sessions/user/{userId}/labs/{labs}")
     @Timed
-    public ResponseEntity<List<SessionDTO>> getUserLabsSession(@PathVariable String userId, @PathVariable String labs) {
+    public ResponseEntity<List<SessionDTO>> getUserLabsSession(@PathVariable String userId, @PathVariable String labs, @RequestParam(value = "active", required = false)Boolean active) {
         log.debug("REST request to get Sessions for user " + userId + " and labs " + labs);
         //TODO aggiungere controlli su validità stringa
-        List<SessionDTO> sessionDTOs = sessionService.getUserLabsSession(userId, Arrays.asList(labs.split("\\s*,\\s*")));
+        List<SessionDTO> sessionDTOs = sessionService.getUserLabsSession(userId, Arrays.asList(labs.split("\\s*,\\s*")), active);
         return new ResponseEntity<>(sessionDTOs, null, HttpStatus.OK);
     }
 
     @GetMapping("/sessions/labs/{labs}")
     @Timed
     @Transactional
-    public ResponseEntity<List<SessionDTO>> getSessionsByLab(@PathVariable String labs) {
+    public ResponseEntity<List<SessionDTO>> getSessionsByLab(@PathVariable String labs, @RequestParam(value = "active", required = false)Boolean active) {
         log.debug("REST request active Sessions for Labs with ids "+ labs);
         //TODO aggiungere controlli su validità stringa
-        List<Session> sessions = sessionService.getSessionsByLabs(Arrays.asList(labs.split("\\s*,\\s*")));
+        List<Session> sessions = sessionService.getSessionsByLabs(Arrays.asList(labs.split("\\s*,\\s*")), active);
         List<SessionDTO> sessionDtos = sessionService.mapSessionsToDTOS(sessions);
         return ResponseEntity.ok()
             .body(sessionDtos);
@@ -275,9 +276,9 @@ public class SessionResource {
     @GetMapping("/sessions/user/{userId}")
     @Timed
     @Transactional
-    public ResponseEntity<List<SessionDTO>> getSessionsByUser(@PathVariable String userId) {
+    public ResponseEntity<List<SessionDTO>> getSessionsByUser(@PathVariable String userId, @RequestParam(value = "active", required = false)Boolean active) {
         log.debug("REST request active Sessions for User with id "+ userId);
-        List<Session> sessions = sessionService.findAllByUserId(userId);
+        List<Session> sessions = sessionService.findAllByUserId(userId, active);
         List<SessionDTO> sessionDtos = sessionService.mapSessionsToDTOS(sessions);
         sessionDtos = sessionService.setValidMatchToSessionDtos(userId, sessionDtos);
         return ResponseEntity.ok()

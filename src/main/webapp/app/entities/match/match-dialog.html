@@ -98,6 +98,33 @@
                 <input type="checkbox" name="anomalous" id="field_anomalous"
                           ng-model="vm.match.anomalous"/>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.match.replayState" for="field_replayState">Replay State</label>
+            <select class="form-control" name="replayState" ng-model="vm.match.replayState" id="field_replayState">
+                <option value="playing" data-translate="gatoradeApp.MatchReplayState.playing">playing</option>
+                <option value="main" data-translate="gatoradeApp.MatchReplayState.main">main</option>
+                <option value="old" data-translate="gatoradeApp.MatchReplayState.old">old</option>
+                <option value="cloned" data-translate="gatoradeApp.MatchReplayState.cloned">cloned</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.match.parentId" for="field_parentId">Parent Id</label>
+            <input type="number" class="form-control" name="parentId" id="field_parentId"
+                    ng-model="vm.match.parentId"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.match.bestLevel" for="field_bestLevel">Best Level</label>
+            <input type="text" class="form-control" name="bestLevel" id="field_bestLevel"
+                    ng-model="vm.match.bestLevel"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.match.bestScore" for="field_bestScore">Best Score</label>
+            <input type="number" class="form-control" name="bestScore" id="field_bestScore"
+                    ng-model="vm.match.bestScore"
+                    />
+        </div>
 
         <div class="form-group">
             <label data-translate="gatoradeApp.match.game" for="field_game">Game</label>
