@@ -10,7 +10,8 @@
 
         var sessionid = $stateParams.sessions;
         var matches = $stateParams.matches;
-
+        $scope.currentDate = new Date();
+        $scope.currentDate = Date.parse($scope.currentDate);
 
         var bestScores = [];
         var best;
@@ -19,12 +20,12 @@
                 $scope.matches = response.data;
                 console.log(response.data);
                 console.log($scope.matches);
-                $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
-                $scope.matchDuration = $scope.matches[0].template.maxDuration * 1000;
                 $scope.currentDate = new Date();
                 $scope.currentDate = Date.parse($scope.currentDate);
+                $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
+                $scope.matchDuration = $scope.matches[0].template.maxDuration * 1000;
+
                 for (var m in $scope.matches) {
-                    // console.log(m);
                     if ($scope.matches[m].game.type == "POINT") {
                         bestScores.push(parseInt($scope.matches[m].bestScore));
                         $scope.best = Math.max.apply(null, bestScores);
@@ -37,7 +38,7 @@
                         $scope.best = Math.max.apply(null, bestScores);
                     }
                 }
-                // console.log(bestScores);
+                $scope.numberOfMatches = $scope.matches.length;
                 // $scope.best = Math.max.apply(null, bestScores);
                 // console.log($scope.best);
             });
@@ -45,12 +46,26 @@
 
         $scope.getMatches();
 
+        // questo richiama il servizio ogni 60 secondi
+        var timer_id = setInterval($scope.getMatches, 60000);
+
+
         DashboardService.getSession($stateParams.extsessionid).then(function(response){
             $scope.sessions = response.data;
+            console.log($scope.currentDate);
+            console.log(Date.parse($scope.sessions.endDate));
+            console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
+            // console.log($scope.sessions);
+            if ($scope.currentDate > Date.parse($scope.sessions.endDate)) {
+                $scope.stateSessionLabel = 'Terminato';
+            } else {
+                $scope.stateSessionLabel = 'In Corso';
+            };
         });
 
+
+
         var isLevelGame =function (game){
-            // console.log('dentro')
             if (game.game.type === 'LEVEL') {
                 // console.log('level');
                 return true;

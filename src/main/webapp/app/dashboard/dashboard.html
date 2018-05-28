@@ -12,14 +12,14 @@
     <div class="col-lg-6 left flexcol">
         <span>Nome Laboratorio: {{matches[0].session.poRoot}}</span>
         <span>Nome Gioco: {{sessions.game.description}}</span>
-        <div class="state"><span>Stato Appuntamento: </span> <span ng-if="(Date.parse(sessions.endDate)) < (Date.parse(currentDate))">Terminato</span><span ng-if="(Date.parse(sessions.endDate)) > (Date.parse(currentDate))">In corso</span></div>
+        <div class="state"><span>Stato Appuntamento: {{stateSessionLabel}}</span></div>
         <span>Da: {{sessions.startDate | date:'dd/MM/yyyy HH:mm'}}</span>
         <span>A: {{sessions.endDate | date:'dd/MM/yyyy HH:mm'}}</span>
     </div>
     <div class="mid col-lg-3 flexcol">
         <span>Sessioni</span>
         <div class="bigcircle">
-            <h2 class="nomar">{{(matches.elaborated == true).length}}</h2>
+            <h2 class="nomar">{{numberOfMatches}}</h2>
         </div>
     </div>
     <div class="right col-lg-3 flexcol">
