@@ -40,7 +40,12 @@
             <div class="advancement flexaround">
                 <span>Terminato</span>
             </div>
-            <div class="btns">
+            <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
+                <div class="btn btn-primary btn-sm reset"  aria-disabled="true" disabled>Reset</div>
+                <div class="btn btn-warning btn-sm interrupt" aria-disabled="true" disabled>Elabora</div>
+                <div class="btn btn-danger btn-sm"  aria-disabled="true" disabled>Chiudi</div>
+            </div>
+            <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
                 <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)" aria-disabled="true" disabled>Elabora</div>
                 <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)" aria-disabled="true" disabled>Chiudi</div>
@@ -57,7 +62,12 @@
             <div class="advancement flexaround">
                 <span>In corso</span>
             </div>
-            <div class="btns">
+            <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
+                <div class="btn btn-primary btn-sm reset"  aria-disabled="true" disabled>Reset</div>
+                <div class="btn btn-warning btn-sm interrupt" aria-disabled="true" disabled>Elabora</div>
+                <div class="btn btn-danger btn-sm"  aria-disabled="true" disabled>Chiudi</div>
+            </div>
+            <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
                 <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)">Elabora</div>
                 <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)">Chiudi</div>
@@ -72,7 +82,12 @@
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
             <div class="advancement flexaround"><span>Match Appeso</span></div>
-            <div class="btns">
+            <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
+                <div class="btn btn-primary btn-sm reset"  aria-disabled="true" disabled>Reset</div>
+                <div class="btn btn-warning btn-sm interrupt" aria-disabled="true" disabled>Elabora</div>
+                <div class="btn btn-danger btn-sm"  aria-disabled="true" disabled>Chiudi</div>
+            </div>
+            <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
                 <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)" aria-disabled="true" disabled>Elabora</div>
                 <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)">Chiudi</div>
@@ -87,7 +102,12 @@
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
             <div class="advancement flexaround"><span>In Elaborazione</span></div>
-            <div class="btns">
+            <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
+                <div class="btn btn-primary btn-sm reset"  aria-disabled="true" disabled>Reset</div>
+                <div class="btn btn-warning btn-sm interrupt" aria-disabled="true" disabled>Elabora</div>
+                <div class="btn btn-danger btn-sm"  aria-disabled="true" disabled>Chiudi</div>
+            </div>
+            <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
                 <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)">Elabora</div>
                 <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id) " aria-disabled="true" disabled>Chiudi</div>
@@ -102,7 +122,12 @@
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
             <div class="advancement flexaround"><span>Elaborazione Fallita</span></div>
-            <div class="btns">
+            <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
+                <div class="btn btn-primary btn-sm reset"  aria-disabled="true" disabled>Reset</div>
+                <div class="btn btn-warning btn-sm interrupt" aria-disabled="true" disabled>Elabora</div>
+                <div class="btn btn-danger btn-sm"  aria-disabled="true" disabled>Chiudi</div>
+            </div>
+            <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
                 <div class="btn btn-primary btn-sm reset" ng-click="resetMatch(match.id)">Reset</div>
                 <div class="btn btn-warning btn-sm interrupt" ng-click="elaborateMatch(match.id)">Elabora</div>
                 <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)" aria-disabled="true" disabled>Chiudi</div>
