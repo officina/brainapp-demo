@@ -19,7 +19,7 @@
                     controllerAs: 'vm'
                 },
                 'navbar@': {
-                    templateUrl: 'app/layouts/navbar/navbar2.html',
+                    templateUrl: 'app/layouts/navbar/navbardashboard.html',
                     controller: 'NavbarController',
                     controllerAs: 'vm'
                 }
