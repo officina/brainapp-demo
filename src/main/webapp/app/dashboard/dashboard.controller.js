@@ -32,7 +32,7 @@
                     } else if ($scope.matches[m].game.type == "MINPOINT") {
                         bestScores.push(parseInt($scope.matches[m].bestScore));
                         $scope.best = Math.min.apply(null, bestScores);
-                        console.log(highest)
+                        // console.log(highest)
                     } else if ($scope.matches[m].game.type == "LEVEL") {
                         bestScores.push(parseInt($scope.matches[m].bestLevel));
                         $scope.best = Math.max.apply(null, bestScores);
@@ -52,10 +52,10 @@
 
         DashboardService.getSession($stateParams.extsessionid).then(function(response){
             $scope.sessions = response.data;
-            console.log($scope.currentDate);
-            console.log(Date.parse($scope.sessions.endDate));
-            console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
-            // console.log($scope.sessions);
+            // console.log($scope.currentDate);
+            // console.log(Date.parse($scope.sessions.endDate));
+            // console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
+            console.log($scope.sessions);
             if ($scope.currentDate > Date.parse($scope.sessions.endDate)) {
                 $scope.stateSessionLabel = 'Terminato';
             } else {
