@@ -1,12 +1,12 @@
-<div class="navbar">
+<div class="db-navbar">
     <h1 class="white nomar">Dashboard</h1>
 
 </div>
-<div class="col-lg-10 col-lg-offset-1">
+<div class="col-lg-10 col-lg-offset-1 roboto">
     <h2>Session ID {{sessions.id}}</h2>
 </div>
 
-<div class="col-lg-10 col-lg-offset-1 whitebkg flex somepadding box" style="margin-bottom: 20px">
+<div class="col-lg-10 col-lg-offset-1 whitebkg flex somepadding box roboto" style="margin-bottom: 20px">
     <div class="col-lg-6 left flexcol">
         <span>Nome Laboratorio: {{matches[0].session.poRoot}}</span>
         <span>Nome Gioco: {{sessions.game.description}}</span>
@@ -27,11 +27,11 @@
         </div>
     </div>
 </div>
-<div class="col-lg-10 col-lg-offset-1 flexbtw">
+<div class="col-lg-10 col-lg-offset-1 flexbtw roboto">
     <h2>Giocatori</h2>
     <img src="../../content/images/refresh-page-arrow-button.png" alt="" class="img-fix" ng-click="getMatches()">
 </div>
-<div class="col-lg-10 col-lg-offset-1 whitebkg box nopadding brdbot">
+<div class="col-lg-10 col-lg-offset-1 whitebkg box nopadding brdbot roboto">
     <div class="match nobrdbot" ng-repeat="match in matches">
 
         <!--verde - Terminato - reset-->
