@@ -13,7 +13,7 @@ public class Request {
 	private Long score;
 	private String level;
 	private boolean completed;
-	private String sessionid;
+	private Long sessionid;
 	private boolean endmatch;
 	private Long matchtoken;
 	private Attempt attempt;
@@ -83,10 +83,10 @@ public class Request {
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
-	public String getSessionid() {
+	public Long getSessionid() {
 		return sessionid;
 	}
-	public void setSessionid(String sessionId) {
+	public void setSessionid(Long sessionId) {
 		this.sessionid = sessionId;
 	}
 	public boolean isEndmatch() {

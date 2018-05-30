@@ -23,8 +23,8 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Query("select s from Session s where s.extId = :extid and s.game.id = :gameid")
     public Session findByExtId(@Param("extid")String extid, @Param("gameid")Long gameid);
 
-    @Query("select s from Session s where s.extId = :extid and s.endDate > :now and s.startDate < :now and s.game.id = :gameid and s.elaborated = false")
-    public Session findValidByExtId(@Param("extid")String extid,@Param("now")ZonedDateTime now,@Param("gameid") Long gameid);
+    @Query("select s from Session s where s.id = :sessionId and s.endDate > :now and s.startDate < :now and s.game.id = :gameid and s.elaborated = false")
+    public Session findValidById(@Param("sessionId")Long sessionId, @Param("now")ZonedDateTime now, @Param("gameid") Long gameid);
 
     @Query("select s from Session s where s.elaborated = false and s.endDate < :now")
     public List<Session> findPendingSessions(@Param("now")ZonedDateTime now);
@@ -35,6 +35,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Query("select s from Session s where s.id in (select session.id from Match where userId = :userId)")
     public List<Session> findAllByUserId(@Param("userId")String userId);
 
-    @Query("select s from Session s where s.id in (select session.id from Match where userId = :userId) and s.endDate >= :now")
+    @Query("select s from Session s where s.id in (select session.id from Match where userId = :userId) and s.endDate >= :now and s.startDate <= :now")
     public List<Session> findAllActiveByUserId(@Param("userId")String userId, @Param("now")ZonedDateTime now);
 }

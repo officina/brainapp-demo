@@ -69,10 +69,12 @@ public class SessionResource {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidGameId", "Invalid game id")).body(null);
         }
         session.setGame(game);
-        Session oldSession = sessionService.findOneByExtId(session.getExtId());
-        if(oldSession != null)
-        {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidExtId", "extId already used")).body(null);
+        if (session.getId() != null){
+            Session oldSession = sessionService.findOne(session.getId());
+            if(oldSession != null)
+            {
+                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidId", "id already used")).body(null);
+            }
         }
         Session result = sessionService.saveAndSchedule(session.getGame(), session);
         return ResponseEntity.created(new URI("/api/sessions/" + result.getId()))
@@ -98,7 +100,6 @@ public class SessionResource {
             return createSession(session);
         }
         //VALIDATION
-        Session _session = sessionService.findOne(session.getId());
         if(session.getMatches() != null && session.getMatches().size() > 0)
         {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "sessionAlreadyInUse", "Session already in use")).body(null);
@@ -107,10 +108,10 @@ public class SessionResource {
         if(game == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidGameId", "Invalid game id")).body(null);
         }
-        Session oldSession = sessionService.findOneByExtId(session.getExtId());
-        if(oldSession != null && !oldSession.getId().equals(session.getId()))
+        Session oldSession = sessionService.findOne(session.getId());
+        if(oldSession != null)
         {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidExtId", "extId already used")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidId", "id already used")).body(null);
         }
         Session result = sessionService.save(session);
         return ResponseEntity.ok()
@@ -126,6 +127,9 @@ public class SessionResource {
         log.debug("REST request to update Session : {}", session);
 
         //VALIDATION
+        if (id == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("notFound", "SessionNotFound", "Invalid id")).body(null);
+        }
         Session _session = sessionService.findOne(id);
         if (_session == null){
             log.error("Unable to update. Session with id {} not found.", id);
@@ -147,10 +151,10 @@ public class SessionResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidGameId", "Invalid game id")).body(null);
         }
         session.setGame(game);
-        Session oldSession = sessionService.findOneByExtId(session.getExtId());
+        Session oldSession = sessionService.findOne(session.getId());
         if(oldSession != null && !oldSession.getId().equals(session.getId()))
         {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidExtId", "extId already used")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidId", "id already used")).body(null);
         }
 
         //il flag elaborated viene modificato solo dal metodo SessionResource.elaborateSession()
