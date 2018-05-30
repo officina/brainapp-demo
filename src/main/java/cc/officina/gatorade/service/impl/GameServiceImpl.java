@@ -99,7 +99,7 @@ public class GameServiceImpl implements GameService{
 	@Override
 	public MatchResponse startMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
 		//TODO verificare presenza match già aperti e relativa logica da implementare
-        log.info("GameService: request to startMatch for user:"+ playerId+" - session extId: "+session.getExtId()+" - game: "+game.getId());
+        log.info("GameService: request to startMatch for user:"+ playerId+" - session Id: "+session.getId()+" - game: "+game.getId());
         Match oldOne = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
         ZonedDateTime now = ZonedDateTime.now();
         if(oldOne == null || !oldOne.isValid())
@@ -129,7 +129,7 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public MatchResponse replayMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
-        log.info("GameService: request to replayMatch for user:"+ playerId+" - session extId: "+session.getExtId()+" - game: "+game.getId());
+        log.info("GameService: request to replayMatch for user:"+ playerId+" - session Id: "+session.getId()+" - game: "+game.getId());
         //creo un nuovo match con riferimento a oldOne
         Match oldOne = matchRepository.findMainMatch(game.getId(), playerId);
         if (oldOne == null){
@@ -161,7 +161,7 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public MatchResponse cloneMatch(Game game, MatchTemplate template, String playerId, Session session, Long matchToken) {
-        log.info("GameService: request to cloneMatch for user:"+ playerId+" - session extId: "+session.getExtId()+" - game: "+game.getId());
+        log.info("GameService: request to cloneMatch for user:"+ playerId+" - session id: "+session.getId()+" - game: "+game.getId());
         Match mainMatch = matchRepository.findMainMatch(game.getId(), playerId);
         if (mainMatch == null){
             //non ho match da clonare

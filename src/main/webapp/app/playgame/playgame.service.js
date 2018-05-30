@@ -21,10 +21,10 @@ angular.module('gatoradeApp')
   };
 
   //GAME AUTH
-  this.getGameInit =  function getGame(gameId, userid, extid, replay){
+  this.getGameInit =  function getGame(gameId, userid, sessionid, replay){
       return $http({
       	method: 'GET',
-      	url: rootPath + '/api/play/' + gameId +  '/init/' + extid + '/' + userid + '?replay=' + replay
+      	url: rootPath + '/api/play/' + gameId +  '/init/' + sessionid + '/' + userid + '?replay=' + replay
       })
   };
 
