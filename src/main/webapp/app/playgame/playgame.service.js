@@ -12,6 +12,17 @@ angular.module('gatoradeApp')
     // AngularJS will instantiate a singleton by calling "new" on this function
     //noinspection JSAnnotator
   var rootPath = '';
+
+  //IE non supporta i dizionari, soluzione trovata online https://stackoverflow.com/questions/42830257/alternative-version-for-object-values/42830295
+  this.values = function (obj) {
+      if (typeof Object.values === 'function'){
+          return obj;
+      } else {
+          var arrayValues = Object.keys(obj).map(function(itm) { return obj[itm]; });
+          return arrayValues
+      }
+
+  };
     //GET GAME
   this.getGame =  function getGame(gameId, userid, token, sessionid){
       return $http({
@@ -111,6 +122,7 @@ angular.module('gatoradeApp')
 
       //END MATCH
     this.endMatch = function(gameId, playerId, token, matchId, attempt, matchToken, attempts, score, level, attemptsOffline){
+        attemptsOffline = this.values(attemptsOffline);
       return $http({
         method: 'PUT',
         url: rootPath + '/api/play/end',
@@ -124,7 +136,7 @@ angular.module('gatoradeApp')
           score:score,
           level:level,
           attempts: attempts,
-          attemptsOffline: Object.values(attemptsOffline)
+          attemptsOffline: attemptsOffline
         }
       })
     };
@@ -195,12 +207,13 @@ angular.module('gatoradeApp')
     }
 
     this.syncOfflineAttempts = function(attemptsOffline, match){
+        attemptsOffline = this.values(attemptsOffline);
         return $http({
             method: 'POST',
             url: rootPath + '/api/attempts/sync',
             data:{
                 match: match,
-                attemptsOffline: Object.values(attemptsOffline)
+                attemptsOffline: this.values(attemptsOffline)
             }
         })
     }
