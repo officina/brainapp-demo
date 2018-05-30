@@ -39,7 +39,7 @@
                     }
                 }
                 $scope.numberOfMatches = $scope.matches.length;
-              
+
                 // $scope.best = Math.max.apply(null, bestScores);
                 // console.log($scope.best);
             });
