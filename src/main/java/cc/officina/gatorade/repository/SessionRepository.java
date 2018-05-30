@@ -35,6 +35,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Query("select s from Session s where s.id in (select session.id from Match where userId = :userId)")
     public List<Session> findAllByUserId(@Param("userId")String userId);
 
-    @Query("select s from Session s where s.id in (select session.id from Match where userId = :userId) and s.endDate >= :now")
+    @Query("select s from Session s where s.id in (select session.id from Match where userId = :userId) and s.endDate >= :now and s.startDate <= :now")
     public List<Session> findAllActiveByUserId(@Param("userId")String userId, @Param("now")ZonedDateTime now);
 }
