@@ -194,13 +194,18 @@ public class SessionServiceImpl implements SessionService{
 
 	@Override
 	public List<Session> getSessionsByLabs(List<String> labs, Boolean active){
-        String query = "select s from Session s where 1 = 2 ";
+        String query = "select s from Session s where 1 = 2 or (";
         for(String s : labs)
         {
-            query = query + "or s.poRoot = '"+ s + "_aggregate'";
+            if (labs.get(0).equals(s)){
+                query = query + "s.poRoot = '"+ s + "_aggregate'";
+            }else{
+                query = query + "or s.poRoot = '"+ s + "_aggregate'";
+            }
         }
+        query = query + ")";
         if (active != null && active){
-            query = query+" and s.endDate >= now()";
+            query = query+" and s.endDate >= now() and s.startDate <= now()";
             return entityManager.createQuery(query).getResultList();
         }else {
             return entityManager.createQuery(query).getResultList();
