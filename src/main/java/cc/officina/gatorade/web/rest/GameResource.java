@@ -14,10 +14,8 @@ import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -134,10 +132,10 @@ public class GameResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
 
-    @GetMapping("/play/{id}/init/{extid}/{playerid}")
+    @GetMapping("/play/{id}/init/{sessionId}/{playerid}")
     @Timed
-    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable String extid, @PathVariable String playerid, @RequestParam("replay") Boolean replay) {
-        log.info("REST game init for game with id = " + id + ", extId = " + extid + " and playerid = " + playerid);
+    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable Long sessionId, @PathVariable String playerid, @RequestParam("replay") Boolean replay) {
+        log.info("REST game init for game with id = " + id + ", session id = " + sessionId + " and playerid = " + playerid);
         Game game = gameService.findOne(id);
         if(game == null)
         {
@@ -150,9 +148,13 @@ public class GameResource {
         	log.info("Session not valid - not template found for game with id " + id);
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No template founded for game with id "+ id)).body(null);
         }
-        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id);
+        if(sessionId == null)
+        {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute GameInit with a null session id")).body(null);
+        }
+        boolean validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
         if(!validateSession)
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with ext_id " + extid + " is invalid.")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);
         return new ResponseEntity<>(game, null, HttpStatus.OK);
     }
 
@@ -171,7 +173,10 @@ public class GameResource {
     	if(request.getGameid() == null || request.getPlayerid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
         log.info("REST request to startMatch : {} , replay: "+request.isReplay(), request.getGameid());
-        Session session = sessionService.findOneByExtId(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
+        if (request.getSessionid() == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute StartMatch with a null session id")).body(null);
+        }
+        Session session = sessionService.findOne(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
 
@@ -185,7 +190,7 @@ public class GameResource {
         MatchResponse response;
 
         if (session.getPoRoot() != null &&session.getPoRoot().startsWith("top_user_")){
-            log.info("Request ti StartMatch for Top user: "+ request.getPlayerid()+" - extid: "+session.getExtId()+" - gameid: "+session.getGame().getId());
+            log.info("Request ti StartMatch for Top user: "+ request.getPlayerid()+" - session id: "+session.getId()+" - gameid: "+session.getGame().getId());
             response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
             if (response == null){
                 return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
@@ -227,7 +232,10 @@ public class GameResource {
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
 
-        Session session = sessionService.findOneByExtId(request.getSessionid());
+        if (request.getSessionid() == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute StartAttempt with a null session id")).body(null);
+        }
+        Session session = sessionService.findOne(request.getSessionid());
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
 

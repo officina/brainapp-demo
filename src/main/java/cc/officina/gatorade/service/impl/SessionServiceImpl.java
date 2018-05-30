@@ -15,9 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TemporalType;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,18 +98,18 @@ public class SessionServiceImpl implements SessionService{
     }
 
 	@Override
-	public boolean validateSessionAndUser(String extid, String playerid, Long gameid) {
+	public boolean validateSessionAndUser(Long sessionid, String playerid, Long gameid) {
 		// TODO: implementazione logica validaione sessione e player
 		boolean result = false;
-		Session session = sessionRepository.findValidByExtId(extid,ZonedDateTime.now(), gameid);
+		Session session = sessionRepository.findValidById(sessionid,ZonedDateTime.now(), gameid);
 		if(session == null)
 		{
-			log.info("Session not valid - session (by extid) not found");
+			log.info("Session not valid - session (by id) not found");
 			return false;
 		}
 
 		if (session.getPoRoot() != null && session.getPoRoot().startsWith("top_user_")){
-		    log.info("Validate Session for Top user: "+ playerid+" - extid: "+extid+" - gameid: "+gameid);
+		    log.info("Validate Session for Top user: "+ playerid+" - session id: "+sessionid+" - gameid: "+gameid);
 		    return true;
         }else{
             List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
@@ -124,7 +122,7 @@ public class SessionServiceImpl implements SessionService{
                 //se esiste già un match la chiamata viene invaliata
                 if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
                 {
-                    log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
+                    log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with session id " + sessionid);
                     //ha senso verificare se l'utente tenta di riaccedere al match perché in precedenza ha avuto problemi, è un buon trigger per tentare di risolvere l'eventyale pending
                     //chiaramente solo se effettivamente pending
                     if(match.isElaborated() && match.getSendToPo())
