@@ -20,7 +20,8 @@
     <div class="right col-lg-3 flexcol">
         <span>Best Score</span>
         <div class="bigcircle">
-            <h2 class="nomar">{{best}}</h2>
+            <h2 class="nomar" ng-if="best != null">{{best}}</h2>
+            <h2 class="nomar" ng-if="best == null">-</h2>
         </div>
     </div>
 </div>
