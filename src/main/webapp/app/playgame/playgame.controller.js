@@ -49,7 +49,7 @@
                 $state.go("ended", {
                     "gameid": $stateParams.gameid,
                     "playtoken": $stateParams.playtoken,
-                    "sessionid": $stateParams.extsessionid,
+                    "sessionid": $stateParams.sessionid,
                     "why": why
                 });
             }
@@ -201,7 +201,7 @@
         //controllo parametro di rigioco in arrivo da link di gioco
         var replay = $stateParams.replay;
         console.log("REPLAY = " + replay);
-        PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.extsessionid, replay).then(function (response) {
+        PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.sessionid, replay).then(function (response) {
             $scope.game = response.data;
             $scope.wrapperMemory.game = response.data;
             $scope.wrapperMemory.player = {};
@@ -209,7 +209,7 @@
             if ($scope.game.type == 'LEVEL') {
                 useLevels = true;
             }
-            PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.extsessionid, $scope.matchToken, replay)
+            PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.sessionid, $scope.matchToken, replay)
                 .then(function (response) {
                     $scope.wrapperMemory.match = response.data.match;
                     if ($scope.wrapperMemory.match.replayState == 'cloned'){
@@ -218,7 +218,7 @@
                         $state.go("ended", {
                             "gameid": $stateParams.gameid,
                             "playtoken": $stateParams.playtoken,
-                            "sessionid": $stateParams.extsessionid,
+                            "sessionid": $stateParams.sessionid,
                             "why": "cloneSuccessfully"
                         });
                     }
@@ -234,7 +234,7 @@
                         $state.go("ended", {
                             "gameid": $stateParams.gameid,
                             "playtoken": $stateParams.playtoken,
-                            "sessionid": $stateParams.extsessionid,
+                            "sessionid": $stateParams.sessionid,
                             "why": "timeout"
                         });
                     }
@@ -258,7 +258,7 @@
         var startAttempt = function () {
             if ($scope.wrapperMemory.match == undefined) {
                 console.log("creo attempt SENZA match");
-                PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, null, $stateParams.extsessionid, $scope.matchToken)
+                PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, null, $stateParams.sessionid, $scope.matchToken)
                     .then(function (response) {
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
@@ -269,7 +269,7 @@
             }
             else {
                 console.log("creo attempt CON match");
-                PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, $scope.wrapperMemory.match.id, $stateParams.extsessionid, $scope.matchToken)
+                PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, $scope.wrapperMemory.match.id, $stateParams.sessionid, $scope.matchToken)
                     .then(function (response) {
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
@@ -435,7 +435,7 @@
             $scope.wrapperMemory.currAttempt.level = trueLevel;
             $scope.wrapperMemory.currAttempt.levelReached = trueLevel;
             $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
-            PlaygameService.restartAttemptToServer(gameId, $scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken, $stateParams.extsessionid, false)
+            PlaygameService.restartAttemptToServer(gameId, $scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken, $stateParams.sessionid, false)
                 .then(function (response) {
                     $scope.wrapperMemory.currAttempt.sync = 1;
                     $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
@@ -487,7 +487,7 @@
                             $state.go("ended", {
                                 "gameid": $stateParams.gameid,
                                 "playtoken": $stateParams.playtoken,
-                                "sessionid": $stateParams.extsessionid,
+                                "sessionid": $stateParams.sessionid,
                                 "why": "timeout"
                             });
                         })
@@ -497,7 +497,7 @@
                             $state.go("ended", {
                                 "gameid": $stateParams.gameid,
                                 "playtoken": $stateParams.playtoken,
-                                "sessionid": $stateParams.extsessionid,
+                                "sessionid": $stateParams.sessionid,
                                 "why": "genericError"
                             });
                         });

@@ -46,7 +46,7 @@ public interface SessionService {
      */
     void delete(Long id);
 
-	public boolean validateSessionAndUser(String extid, String playerid, Long gameid);
+	public boolean validateSessionAndUser(Long sessionId, String playerid, Long gameid);
 
 	public Session findOneByExtId(String extid);
 
