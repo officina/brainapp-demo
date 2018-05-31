@@ -204,10 +204,9 @@ public class SessionServiceImpl implements SessionService{
         query = query + ")";
         if (active != null && active){
             query = query+" and s.endDate >= now() and s.startDate <= now()";
-            return entityManager.createQuery(query).getResultList();
-        }else {
-            return entityManager.createQuery(query).getResultList();
         }
+        query = query + " order by s.endDate asc";
+        return entityManager.createQuery(query).getResultList();
     }
 
     @Override

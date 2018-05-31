@@ -27,19 +27,38 @@
 
                 for (var m in $scope.matches) {
                     if ($scope.matches[m].game.type == "POINT") {
-                        bestScores.push(parseInt($scope.matches[m].bestScore));
-                        $scope.best = Math.max.apply(null, bestScores);
+                        if (!isNaN($scope.matches[m].bestScore)){
+                            if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined){
+                                $scope.matches[m].bestScore = 0;
+                            }else{
+                                bestScores.push(parseInt($scope.matches[m].bestScore));
+                            }
+                        }
                     } else if ($scope.matches[m].game.type == "MINPOINT") {
-                        bestScores.push(parseInt($scope.matches[m].bestScore));
-                        $scope.best = Math.min.apply(null, bestScores);
-                        console.log(highest)
+                        if (!isNaN($scope.matches[m].bestScore)){
+                            if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined) {
+                                $scope.matches[m].bestScore = 0;
+                            }else{
+                                bestScores.push(parseInt($scope.matches[m].bestScore));
+                            }
+                        }
                     } else if ($scope.matches[m].game.type == "LEVEL") {
-                        bestScores.push(parseInt($scope.matches[m].bestLevel));
-                        $scope.best = Math.max.apply(null, bestScores);
+                        if (!isNaN($scope.matches[m].bestScore)){
+                            if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined){
+                                $scope.matches[m].bestScore = '0';
+                            }else{
+                                bestScores.push(parseInt($scope.matches[m].bestLevel));
+                            }
+                        }
                     }
                 }
+                $scope.best = Math.max.apply(null, bestScores);
+                if ($scope.best === null || $scope.best === undefined || isNaN($scope.best)){
+                    $scope.best = '-'
+                }
                 $scope.numberOfMatches = $scope.matches.length;
-                // $scope.best = Math.max.apply(null, bestScores);
+
+                // $scope.best = 23435;
                 // console.log($scope.best);
             });
         };
@@ -52,10 +71,10 @@
 
         DashboardService.getSession($stateParams.extsessionid).then(function(response){
             $scope.sessions = response.data;
-            console.log($scope.currentDate);
-            console.log(Date.parse($scope.sessions.endDate));
-            console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
-            // console.log($scope.sessions);
+            // console.log($scope.currentDate);
+            // console.log(Date.parse($scope.sessions.endDate));
+            // console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
+            console.log($scope.sessions);
             if ($scope.currentDate > Date.parse($scope.sessions.endDate)) {
                 $scope.stateSessionLabel = 'Terminato';
             } else {
