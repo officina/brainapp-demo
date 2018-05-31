@@ -1,26 +1,26 @@
 
 <div class="col-lg-10 col-lg-offset-1 roboto">
-    <h2>Session ID {{sessions.id}} <small><em style="color: #C4C4C4">{{stateSessionLabel}}</em></small></h2>
+    <h2>Dati Sessione {{sessions.id}} <small><em style="color: #C4C4C4">{{stateSessionLabel}}</em></small></h2>
 </div>
 
 <div class="col-lg-10 col-lg-offset-1 whitebkg flex somepadding box roboto border-radius" style="margin-bottom: 20px">
     <div class="col-lg-6 left flexcol">
-        <span>Nome Laboratorio: {{matches[0].session.poRoot}}</span>
-        <span>Nome Gioco: {{sessions.game.description}}</span>
-        <div class="state"><span>Stato Appuntamento: {{stateSessionLabel}}</span></div>
+        <span>Team: {{matches[0].session.poRoot}}</span>
+        <span>Gioco: {{sessions.game.description}}</span>
+        <div class="state"><span>Stato Sessione: {{stateSessionLabel}}</span></div>
         <span>Da: {{sessions.startDate | date:'dd/MM/yyyy HH:mm'}}</span>
         <span>A: {{sessions.endDate | date:'dd/MM/yyyy HH:mm'}}</span>
     </div>
     <div class="mid col-lg-3 flexcol">
-        <span>Sessioni</span>
+        <span>Giocate effettuate</span>
         <div class="bigcircle">
             <h2 class="nomar">{{numberOfMatches}}</h2>
         </div>
     </div>
     <div class="right col-lg-3 flexcol">
-        <span>Best Score</span>
+        <span>Risultato migliore</span>
         <div class="bigcircle">
-            <h2 class="nomar" ng-if="best != null">{{best}}</h2>
+            <h2 class="nomar" ng-if="best != null">{{best.toLocaleString('it')}}</h2>
             <h2 class="nomar" ng-if="best == null">-</h2>
         </div>
     </div>

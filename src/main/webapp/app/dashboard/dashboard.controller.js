@@ -40,7 +40,7 @@
                 }
                 $scope.numberOfMatches = $scope.matches.length;
 
-                // $scope.best = Math.max.apply(null, bestScores);
+                // $scope.best = 23435;
                 // console.log($scope.best);
             });
         };
