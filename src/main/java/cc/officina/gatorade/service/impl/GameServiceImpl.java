@@ -5,20 +5,16 @@ import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.domain.enumeration.MatchReplayState;
 import cc.officina.gatorade.service.GameService;
 import cc.officina.gatorade.service.GamificationService;
-import cc.officina.gatorade.service.MatchService;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.GameRepository;
 import cc.officina.gatorade.repository.MatchRepository;
-
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

@@ -1,0 +1,215 @@
+/*FONTS */
+.roboto  {
+    font-family: 'Roboto Condensed', sans-serif !important;
+}
+
+/* Main navbar */
+.db-navbar {
+    box-shadow: 0 1px 5px 0 rgba(0,0,0,0.07),0 1px 0 0 rgba(0,0,0,0.03);
+    background: #791911;
+    transition: all 0.3s ease;
+    height: 70px;
+    padding: 0px 30px;
+    display: flex;
+    align-items: center;
+    border-radius: 0px;
+}
+
+
+/*Dashboard*/
+.box {
+    box-shadow: 2px 2px 10px rgba(125,125,125,0.15);
+    min-height: 20vh;
+}
+.whitebkg {
+    background-color: white;
+}
+.white {
+    color: white;
+}
+.flex {
+    display: flex;
+}
+.flexbtw {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.flexaround {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.flexcol {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.somepadding {
+    padding: 20px;
+}
+.nopadding {
+    padding: 0px;
+}
+.nomar {
+    margin: 0px;
+}
+.match {
+    border-bottom: 1px solid #F3F2F2;
+    padding: 5px 15px;
+}
+.statusinfogo {
+    background-color: green;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+.statusinfono {
+    background-color: red;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+.statusinfofo {
+    background-color: #d8c20d;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+}
+.bigcircle {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    border: 2px solid #791911;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.mid {
+    align-items: center;
+}
+.right {
+    align-items: center;
+}
+
+.alias {
+    min-width: 100px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.nobrdbot {
+    border-bottom: none;
+}
+.brdbot {
+border-bottom: 1px solid #F3F2F2;
+}
+.advancement {
+    min-width: 150px;
+    max-width: 150px;
+}
+.btns {
+    min-width: 200px;
+    max-width: 200px;
+}
+.maxpoints {
+    min-width: 100px;
+    max-width: 100px;
+}
+.img-fix {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    height: 20px;
+    width: 20px;
+}
+.somemarright {
+    margin-right: 5px;
+}
+
+.border-radius {
+    border-radius: 5px;
+}
+.brokenbtn {
+    background-color: #A9A9A9;
+    border-color: #A9A9A9;
+}
+
+.brokenbtn[disabled]:hover {
+    background-color: #A9A9A9;
+    border-color: #A9A9A9;
+}
+/*End Dashboard*/
+
+.loader {
+    font-size: 10px;
+    /*margin: 15px auto;*/
+    text-indent: -9999em;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #fbff00;
+    background: -moz-linear-gradient(left, #008000 10%, rgba(70,167,57, 0) 42%);
+    background: -webkit-linear-gradient(left, #008000 10%, rgba(70,167,57, 0) 42%);
+    background: -o-linear-gradient(left, #008000 10%, rgba(70,167,57, 0) 42%);
+    background: -ms-linear-gradient(left, #008000 10%, rgba(70,167,57, 0) 42%);
+    background: linear-gradient(to right, #008000 10%, rgba(70,167,57, 0) 42%);
+    position: relative;
+    -webkit-animation: load3 1.4s infinite linear;
+    animation: load3 1.4s infinite linear;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+}
+.loader:before {
+    width: 50%;
+    height: 50%;
+    background: rgba(70,167,57, 0);
+    border-radius: 100% 0 0 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+}
+.loader:after {
+    /*background: #0dc5c1;*/
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+    content: '';
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+@-webkit-keyframes load3 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes load3 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
