@@ -120,7 +120,7 @@ public class MatchServiceImpl implements MatchService{
 			a.setValid(false);
 		}
 		attemptRepository.save(match.getAttempts());
-        log.info("Match "+match.getId()+" with replay state:" +match.getReplayState().name());
+        log.info("Match "+match.getId()+ (match.getReplayState() == null ? "" : " with replay state:" +match.getReplayState().name()));
         if (match.getReplayState() != MatchReplayState.cloned){
             log.info("Match replay state setted to old");
             match.setReplayState(MatchReplayState.old);
