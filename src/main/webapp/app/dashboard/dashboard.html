@@ -34,7 +34,7 @@
 
         <!--verde - Terminato - reset-->
         <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">
-            <div class="statusinfogo"></div>
+            <div class="statusinfogo">✓  </div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
@@ -77,7 +77,7 @@
 
         <!--rosso - Match Appeso - reset elabora chiudi-->
         <div class="flexbtw match" ng-if="match.anomalous == true && match.elaborated != true && match.sendToPo != true">
-            <div class="statusinfono"></div>
+            <div class="statusinfono"><span style="margin-top: -1px">☓</span></div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <!--<div class="bla">{{currentDate}}</div>-->
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
@@ -117,7 +117,7 @@
 
         <!--rosso -Punteggio non elaborato- reset elabora-->
         <div class="flexbtw match" ng-if="match.anomalous == true && match.elaborated == true && match.sendToPo != true">
-            <div class="statusinfono"></div>
+            <div class="statusinfono"><span style="margin-top: -1px">☓</span></div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <!--<div class="bla">{{currentDate}}</div>-->
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>

@@ -63,12 +63,22 @@
     height: 15px;
     width: 15px;
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
 }
 .statusinfono {
     background-color: red;
     height: 15px;
     width: 15px;
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
 }
 .statusinfofo {
     background-color: #d8c20d;
