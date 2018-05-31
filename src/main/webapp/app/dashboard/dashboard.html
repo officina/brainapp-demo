@@ -55,7 +55,7 @@
 
         <!--giallo - In Corso - reset elabora chiudi-->
         <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated != true && match.sendToPo != true">
-            <div class="statusinfofo"></div>
+            <div class="loader">Loading...</div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <!--<div class="bla">{{currentDate}}</div>-->
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
