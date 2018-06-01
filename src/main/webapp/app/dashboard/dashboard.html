@@ -33,7 +33,7 @@
 
         <!--verde - Terminato - reset-->
         <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">
-            <div class="statusinfogo">✓  </div>
+            <div class="statusinfogo">✓</div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
@@ -52,9 +52,9 @@
             </div>
         </div>
 
-        <!--giallo - In Corso - reset elabora chiudi-->
+        <!--verde - In Corso - reset elabora chiudi-->
         <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated != true && match.sendToPo != true">
-            <div class="loader">Loading...</div>
+            <div class="circle"></div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <!--<div class="bla">{{currentDate}}</div>-->
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
@@ -65,7 +65,7 @@
             <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                 <div class="btn btn-primary btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
                 <div class="btn btn-warning btn-sm interrupt somemarright brokenbtn" aria-disabled="true" disabled>Elabora</div>
-                <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
+                <div class="btn btn-danger btn-sm brokenbtn" aria-disabled="true" disabled>Chiudi</div>
             </div>
             <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
                 <div class="btn btn-primary btn-sm reset somemarright" ng-click="resetMatch(match.id)">Reset</div>
@@ -124,7 +124,7 @@
             <div class="advancement flexaround"><span>Elaborazione Fallita</span></div>
             <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                 <div class="btn btn-primary btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
-                <div class="btn btn-warning btn-sm interrupt somemarright brokenbtn" aria-disabled="true" disabled>Elabora</div>
+                <div class="btn btn-warning btn-sm interrupt somemarright"  aria-disabled="true" disabled>Elabora</div>
                 <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
             </div>
             <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
@@ -133,7 +133,10 @@
                 <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)" aria-disabled="true" disabled>Chiudi</div>
             </div>
         </div>
-
     </div>
+
+    <!--<button type="button" class="" ng-click="openPopup()">-->
+        <!--buttons-->
+    <!--</button>-->
 
 </div>

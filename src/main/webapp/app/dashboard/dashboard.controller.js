@@ -4,17 +4,21 @@
         .module('gatoradeApp')
         .controller('DashboardController', DashboardController);
 
-    DashboardController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'DashboardService', '$stateParams', '$sce', '$interval'];
+    DashboardController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'DashboardService', '$stateParams', '$sce', '$interval','$uibModal'];
 
-    function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams) {
+    function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams, $uibModal) {
 
         var sessionid = $stateParams.sessions;
         var matches = $stateParams.matches;
         $scope.currentDate = new Date();
         $scope.currentDate = Date.parse($scope.currentDate);
-
+        var popupInstance = null;
+        var resetPopup = function () {
+            popupInstance = null;
+        };
         var bestScores = [];
         var best;
+
         $scope.getMatches = function(){
             DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
                 $scope.matches = response.data;
@@ -62,6 +66,25 @@
                 // console.log($scope.best);
             });
         };
+        $scope.openPopup = function() {
+            console.log('popup')
+            if (popupInstance !== null) return;
+            popupInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'app/dashboard/popup.html',
+                controller: 'DashboardController',
+                resolve: {
+                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                        $translatePartialLoader.addPart('popup');
+                        return $translate.refresh();
+                    }]
+                }
+            });
+            popupInstance.result.then(
+                resetPopup,
+                resetPopup
+            );
+        }
 
         $scope.getMatches();
 
