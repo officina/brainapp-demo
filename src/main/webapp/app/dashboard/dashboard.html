@@ -1,6 +1,6 @@
 
-<div class="col-lg-10 col-lg-offset-1 roboto">
-    <h2>Dati Sessione {{sessions.id}} <small><em style="color: #C4C4C4">{{stateSessionLabel}}</em></small></h2>
+<div class="col-lg-10 col-lg-offset-1 roboto flexbtw">
+    <h2>Dati Sessione</h2> <h2><small><em style="color: #C4C4C4">{{stateSessionLabel}}</em></small></h2>
 </div>
 
 <div class="col-lg-10 col-lg-offset-1 whitebkg flex somepadding box roboto border-radius" style="margin-bottom: 20px">
@@ -28,7 +28,7 @@
     <h2>Giocatori</h2>
     <img src="../../content/images/refresh-page-arrow-button.png" alt="" class="img-fix" ng-click="getMatches()">
 </div>
-<div class="col-lg-10 col-lg-offset-1 whitebkg box nopadding roboto border-radius">
+<div class="col-lg-10 col-lg-offset-1 whitebkg box-scores nopadding roboto border-radius">
     <div class="" ng-repeat="match in matches">
 
         <!--verde - Terminato - reset-->

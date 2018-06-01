@@ -179,6 +179,9 @@
                     })
                         .catch(function (error) {
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.error);
+                            if (error.status == 400) {
+                                manageError(null, null, error, 'invalidMatch');
+                            }
                         });
                 }
                 var pushTimer = args.seconds % 10;

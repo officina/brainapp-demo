@@ -20,7 +20,7 @@
                 },
                 'navbar@': {
                     templateUrl: 'app/layouts/navbar/navbardashboard.html',
-                    controller: 'NavbarController',
+                    controller: 'DashboardController',
                     controllerAs: 'vm'
                 }
             },

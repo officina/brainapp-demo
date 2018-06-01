@@ -18,8 +18,8 @@
         $scope.getMatches = function(){
             DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
                 $scope.matches = response.data;
-                console.log(response.data);
-                console.log($scope.matches);
+                // console.log(response.data);
+                // console.log($scope.matches);
                 $scope.currentDate = new Date();
                 $scope.currentDate = Date.parse($scope.currentDate);
                 $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
@@ -53,7 +53,7 @@
                     }
                 }
                 $scope.best = Math.max.apply(null, bestScores);
-                if ($scope.best === null || $scope.best === undefined || isNaN($scope.best)){
+                if ($scope.best === null || $scope.best === undefined || isNaN($scope.best) || $scope.best === -Infinity){
                     $scope.best = '-'
                 }
                 $scope.numberOfMatches = $scope.matches.length;
@@ -69,19 +69,23 @@
         var timer_id = setInterval($scope.getMatches, 60000);
 
 
-        DashboardService.getSession($stateParams.extsessionid).then(function(response){
-            $scope.sessions = response.data;
-            // console.log($scope.currentDate);
-            // console.log(Date.parse($scope.sessions.endDate));
-            // console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
-            console.log($scope.sessions);
-            if ($scope.currentDate > Date.parse($scope.sessions.endDate)) {
-                $scope.stateSessionLabel = 'Terminato';
-            } else {
-                $scope.stateSessionLabel = 'In Corso';
-            };
-        });
-
+        $scope.getSession = function() {
+            DashboardService.getSession($stateParams.extsessionid).then(function (response) {
+                $scope.sessions = response.data;
+                // console.log($scope.currentDate);
+                // console.log(Date.parse($scope.sessions.endDate));
+                // console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
+                // console.log($scope.sessions);
+                if ($scope.currentDate > Date.parse($scope.sessions.endDate)) {
+                    $scope.stateSessionLabel = 'Terminato';
+                } else {
+                    $scope.stateSessionLabel = 'In Corso';
+                }
+                ;
+            });
+        }
+        $scope.getSession();
+        var session_timer = setInterval($scope.getSession, 60000);
 
 
         var isLevelGame =function (game){
