@@ -32,12 +32,16 @@
         var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
         var useLevels = false;
 
-        var setupOffline = function () {
+        var setupOffline = function (showReport) {
             $scope.showGame = false;
             $scope.message1 = "Si è verificato un problema con la tua connessione";
-            $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
-            $scope.errorText = $rootScope.finalError;
-            $scope.reportText = $rootScope.wrapperMemory;
+            if (showReport){
+                $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
+                $scope.errorText = $rootScope.finalError;
+                $scope.reportText = $rootScope.wrapperMemory;
+            }else{
+                $scope.message2 = "Ti preghiamo di controllare la tua connessione";
+            }
         };
 
         var manageError = function (event, attempt, error, why) {
@@ -56,41 +60,35 @@
             else {
                 if (firstAttempt){
                     removeEvent(eventName, $scope.handle);
-                    $state.go("ended", {
-                        "gameid": $stateParams.gameid,
-                        "playtoken": $stateParams.playtoken,
-                        "sessionid": $stateParams.sessionid,
-                        "why": 'offline'
-                    });
-                }else{
-                    switch (event) {
-                        case "START_ATTEMPT":
-                            console.log('MANAGE OFFLINE: START_ATTEMPT');
-                            startLocalAttempt();
-                            break;
-                        case "STOP_ATTEMPT": // è un cancel attempt
-                            console.log('MANAGE OFFLINE: STOP_ATTEMPT');
-                            attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                            break;
-                        case "ATTEMPT_ENDED":
-                            console.log('MANAGE OFFLINE: ATTEMPT_ENDED');
-                            attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                            break;
-                        case "ATTEMPT_RESTARTED":
-                            console.log('MANAGE OFFLINE: ATTEMPT_RESTARTED');
-                            attemptLocalRestarted(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                            break;
-                        case "GAME_LOADED":
-                            console.log('MANAGE OFFLINE: GAME_LOAD');
-                            break;
-                        case "GAME_UNLOADED":
-                            console.log('MANAGE OFFLINE: GAME_UNLOAD');
-                            break;
-                        default:
-                            console.log(event);
-                            setupOffline();
-                            break;
-                    }
+                    setupOffline(false);
+                }
+                switch (event) {
+                    case "START_ATTEMPT":
+                        console.log('MANAGE OFFLINE: START_ATTEMPT');
+                        startLocalAttempt();
+                        break;
+                    case "STOP_ATTEMPT": // è un cancel attempt
+                        console.log('MANAGE OFFLINE: STOP_ATTEMPT');
+                        attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                        break;
+                    case "ATTEMPT_ENDED":
+                        console.log('MANAGE OFFLINE: ATTEMPT_ENDED');
+                        attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                        break;
+                    case "ATTEMPT_RESTARTED":
+                        console.log('MANAGE OFFLINE: ATTEMPT_RESTARTED');
+                        attemptLocalRestarted(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                        break;
+                    case "GAME_LOADED":
+                        console.log('MANAGE OFFLINE: GAME_LOAD');
+                        break;
+                    case "GAME_UNLOADED":
+                        console.log('MANAGE OFFLINE: GAME_UNLOAD');
+                        break;
+                    default:
+                        console.log(event);
+                        setupOffline(true);
+                        break;
                 }
             }
         }
