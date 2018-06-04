@@ -51,9 +51,11 @@
                         }]
                     }
                 }).result.then(function() {
-                    console.log('akelelelumama');
-                    }, function() {
-                    console.log('no')
+                    $state.go('manage', null, { reload: 'manage' });
+                    console.log('si');
+                }, function() {
+                    $state.go('manage');
+                    console.log('no');
                 });
             }]
         })
@@ -69,7 +71,7 @@
                     controller: 'DashboardController',
                     controllerAs: 'vm',
                     backdrop: 'static',
-                    size: 'lg'
+                    size: 'md'
                 }).result.then(function() {
                     $state.go('manage', null, { reload: 'manage' });
                 }, function() {
@@ -89,23 +91,7 @@
                     controller: 'DashboardController',
                     controllerAs: 'vm',
                     backdrop: 'static',
-                    size: 'lg',
-                    // resolve: {
-                    //     entity: function () {
-                    //         return {
-                    //             description: null,
-                    //             url: null,
-                    //             code: null,
-                    //             actionId: null,
-                    //             type: null,
-                    //             useLevels: null,
-                    //             levelsNumber: null,
-                    //             lastAttemptValid: null,
-                    //             defaultScore: null,
-                    //             id: null
-                    //         };
-                    //     }
-                    // }
+                    size: 'md',
                 }).result.then(function() {
                     $state.go('manage', null, { reload: 'manage' });
                 }, function() {
