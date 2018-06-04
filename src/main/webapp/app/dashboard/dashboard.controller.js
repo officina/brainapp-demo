@@ -4,18 +4,15 @@
         .module('gatoradeApp')
         .controller('DashboardController', DashboardController);
 
-    DashboardController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'DashboardService', '$stateParams', '$sce', '$interval','$uibModal'];
+    DashboardController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'DashboardService', '$stateParams', '$sce', '$interval'];
 
-    function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams, $uibModal) {
+    function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams) {
 
         var sessionid = $stateParams.sessions;
         var matches = $stateParams.matches;
         $scope.currentDate = new Date();
         $scope.currentDate = Date.parse($scope.currentDate);
-        var popupInstance = null;
-        var resetPopup = function () {
-            popupInstance = null;
-        };
+        var vm= this;
         var bestScores = [];
         var best;
 
@@ -66,25 +63,6 @@
                 // console.log($scope.best);
             });
         };
-        $scope.openPopup = function() {
-            console.log('popup')
-            if (popupInstance !== null) return;
-            popupInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/dashboard/popup.html',
-                controller: 'DashboardController',
-                resolve: {
-                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                        $translatePartialLoader.addPart('popup');
-                        return $translate.refresh();
-                    }]
-                }
-            });
-            popupInstance.result.then(
-                resetPopup,
-                resetPopup
-            );
-        }
 
         $scope.getMatches();
 
@@ -142,6 +120,7 @@
                     console.log(error)
                 })
         };
+
 
         $scope.closeMatch = function (matchId) {
             console.log('Sending request for close match with id: '+matchId);
