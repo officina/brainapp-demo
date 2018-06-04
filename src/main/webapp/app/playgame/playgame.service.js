@@ -16,7 +16,7 @@ angular.module('gatoradeApp')
   //IE non supporta i dizionari, soluzione trovata online https://stackoverflow.com/questions/42830257/alternative-version-for-object-values/42830295
   this.values = function (obj) {
       if (typeof Object.values === 'function'){
-          return obj;
+          return Object.values(obj);
       } else {
           var arrayValues = Object.keys(obj).map(function(itm) { return obj[itm]; });
           return arrayValues

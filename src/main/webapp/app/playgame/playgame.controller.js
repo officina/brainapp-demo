@@ -22,7 +22,7 @@
         $scope.showReport = true;
         $scope.showError = true;
         // IE + others compatible event handler
-
+        var firstAttempt = true;
         var addEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var removeEventMethod = window.removeEventListener ? "removeEventListener" : "detachEvent";
         var addEvent = window[addEventMethod];
@@ -54,33 +54,43 @@
                 });
             }
             else {
-                switch (event) {
-                    case "START_ATTEMPT":
-                        console.log('MANAGE OFFLINE: START_ATTEMPT');
-                        startLocalAttempt();
-                        break;
-                    case "STOP_ATTEMPT": // è un cancel attempt
-                        console.log('MANAGE OFFLINE: STOP_ATTEMPT');
-                        attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                        break;
-                    case "ATTEMPT_ENDED":
-                        console.log('MANAGE OFFLINE: ATTEMPT_ENDED');
-                        attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                        break;
-                    case "ATTEMPT_RESTARTED":
-                        console.log('MANAGE OFFLINE: ATTEMPT_RESTARTED');
-                        attemptLocalRestarted(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                        break;
-                    case "GAME_LOADED":
-                        console.log('MANAGE OFFLINE: GAME_LOAD');
-                        break;
-                    case "GAME_UNLOADED":
-                        console.log('MANAGE OFFLINE: GAME_UNLOAD');
-                        break;
-                    default:
-                        console.log(event);
-                        setupOffline();
-                        break;
+                if (firstAttempt){
+                    removeEvent(eventName, $scope.handle);
+                    $state.go("ended", {
+                        "gameid": $stateParams.gameid,
+                        "playtoken": $stateParams.playtoken,
+                        "sessionid": $stateParams.sessionid,
+                        "why": 'offline'
+                    });
+                }else{
+                    switch (event) {
+                        case "START_ATTEMPT":
+                            console.log('MANAGE OFFLINE: START_ATTEMPT');
+                            startLocalAttempt();
+                            break;
+                        case "STOP_ATTEMPT": // è un cancel attempt
+                            console.log('MANAGE OFFLINE: STOP_ATTEMPT');
+                            attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                            break;
+                        case "ATTEMPT_ENDED":
+                            console.log('MANAGE OFFLINE: ATTEMPT_ENDED');
+                            attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                            break;
+                        case "ATTEMPT_RESTARTED":
+                            console.log('MANAGE OFFLINE: ATTEMPT_RESTARTED');
+                            attemptLocalRestarted(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                            break;
+                        case "GAME_LOADED":
+                            console.log('MANAGE OFFLINE: GAME_LOAD');
+                            break;
+                        case "GAME_UNLOADED":
+                            console.log('MANAGE OFFLINE: GAME_UNLOAD');
+                            break;
+                        default:
+                            console.log(event);
+                            setupOffline();
+                            break;
+                    }
                 }
             }
         }
@@ -179,9 +189,21 @@
                     })
                         .catch(function (error) {
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.error);
-                            if (error.status == 400) {
-                                manageError(null, null, error, 'invalidMatch');
+                            var why = '';
+                            if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                                why = 'matchInvalid';
+                            }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                                why = 'matchElaborated';
+                            } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                                why = 'matchEnded';
+                            } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                                why = 'matchAnomalous';
+                            } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                                why = 'sessionAlreadyInUse';
+                            }else{
+                                why = 'genericError';
                             }
+                            manageError("START_ATTEMPT", null, error, why);
                         });
                 }
                 var pushTimer = args.seconds % 10;
@@ -263,10 +285,25 @@
                 console.log("creo attempt SENZA match");
                 PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, null, $stateParams.sessionid, $scope.matchToken)
                     .then(function (response) {
+                        firstAttempt = false;
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
                     .catch(function (error) {
-                        manageError("START_ATTEMPT", null, error, "genericError");
+                        var why = '';
+                        if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                            why = 'matchInvalid';
+                        }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                            why = 'matchElaborated';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                            why = 'matchEnded';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                            why = 'matchAnomalous';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                            why = 'sessionAlreadyInUse';
+                        }else{
+                            why = 'genericError';
+                        }
+                        manageError("START_ATTEMPT", null, error, why);
                     });
 
             }
@@ -277,7 +314,21 @@
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
                     .catch(function (error) {
-                        manageError("START_ATTEMPT", null, error, "genericError");
+                        var why = '';
+                        if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                            why = 'matchInvalid';
+                        }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                            why = 'matchElaborated';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                            why = 'matchEnded';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                            why = 'matchAnomalous';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                            why = 'sessionAlreadyInUse';
+                        }else{
+                            why = 'genericError';
+                        }
+                        manageError("START_ATTEMPT", null, error, why);
                     });
             }
             $scope.$broadcast('timer-start');
@@ -359,8 +410,21 @@
                         "level": level,
                         "completed": completed
                     };
-
-                    manageError("ATTEMPT_ENDED", data, error, "genericError");
+                    var why = '';
+                    if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                        why = 'matchInvalid';
+                    }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                        why = 'matchElaborated';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                        why = 'matchEnded';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                        why = 'matchAnomalous';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                        why = 'sessionAlreadyInUse';
+                    }else{
+                        why = 'genericError';
+                    }
+                    manageError("ATTEMPT_ENDED", data, error, why);
                 });
         };
 
@@ -450,7 +514,21 @@
                         "level": level,
                         "completed": completed
                     };
-                    manageError("ATTEMPT_RESTARTED", data, error, "genericError");
+                    var why = '';
+                    if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                        why = 'matchInvalid';
+                    }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                        why = 'matchElaborated';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                        why = 'matchEnded';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                        why = 'matchAnomalous';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                        why = 'sessionAlreadyInUse';
+                    }else{
+                        why = 'genericError';
+                    }
+                    manageError("ATTEMPT_RESTARTED", data, error, why);
                 });
         };
 
