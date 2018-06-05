@@ -207,7 +207,7 @@
 }
 .rectangle {
     height: 10px;
-    width: 50px;
+    width: 70px;
     margin-right: -3px;
     margin-left: -3px;
     position: relative;
@@ -230,7 +230,7 @@
 .firstrectangle {
     position: relative;
     height: 10px;
-    width: 50px;
+    width: 70px;
     margin-right: -3px;
     margin-left: -3px;
     border-radius: 10px 0% 0% 10px;
