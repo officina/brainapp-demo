@@ -22,7 +22,7 @@
         $scope.showReport = true;
         $scope.showError = true;
         // IE + others compatible event handler
-        var firstAttempt = true;
+        var offlineOnFirstAttempt = true;
         var addEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var removeEventMethod = window.removeEventListener ? "removeEventListener" : "detachEvent";
         var addEvent = window[addEventMethod];
@@ -58,7 +58,7 @@
                 });
             }
             else {
-                if (firstAttempt){
+                if (offlineOnFirstAttempt){
                     removeEvent(eventName, $scope.handle);
                     setupOffline(false);
                 }
@@ -184,6 +184,7 @@
                     console.log('score/level update vs server');
                     PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function (response) {
                         console.log('Score/Level updated');
+                        offlineOnFirstAttempt = false;
                     })
                         .catch(function (error) {
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.error);
@@ -283,7 +284,7 @@
                 console.log("creo attempt SENZA match");
                 PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, null, $stateParams.sessionid, $scope.matchToken)
                     .then(function (response) {
-                        firstAttempt = false;
+                        offlineOnFirstAttempt = false;
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
                     .catch(function (error) {
@@ -309,6 +310,7 @@
                 console.log("creo attempt CON match");
                 PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, $scope.wrapperMemory.match.id, $stateParams.sessionid, $scope.matchToken)
                     .then(function (response) {
+                        offlineOnFirstAttempt = false;
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
                     .catch(function (error) {
