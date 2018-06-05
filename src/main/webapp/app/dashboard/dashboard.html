@@ -33,10 +33,17 @@
 
         <!--verde - Terminato - reset-->
         <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">
-            <div class="statusinfogo">✓</div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="progreslight">
+                <div class="firstrectangle green"></div>
+                <div class="statusinfogo"></div>
+                <div class="rectangle green"></div>
+                <div class="statusinfogo"></div>
+                <div class="rectangle green"></div>
+                <div class="statusinfogo"></div>
+            </div>
             <div class="advancement flexaround">
                 <span>Terminato</span>
             </div>
@@ -60,11 +67,18 @@
 
         <!--verde - In Corso - reset elabora chiudi-->
         <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated != true && match.sendToPo != true">
-            <div class="circle"></div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <!--<div class="bla">{{currentDate}}</div>-->
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="progreslight">
+                <div class="firstrectangle green"></div>
+                <div class="statusinfogo"></div>
+                <div class="rectangle gray"></div>
+                <div class="statusinfost"></div>
+                <div class="rectangle gray"></div>
+                <div class="statusinfost"></div>
+            </div>
             <div class="advancement flexaround">
                 <span>In corso</span>
             </div>
@@ -88,11 +102,17 @@
 
         <!--rosso - Match Appeso - reset elabora chiudi-->
         <div class="flexbtw match" ng-if="match.anomalous == true && match.elaborated != true && match.sendToPo != true">
-            <div class="statusinfono"><span style="margin-top: -1px">☓</span></div>
             <div class="alias "><span>{{match.userId}}</span></div>
-            <!--<div class="bla">{{currentDate}}</div>-->
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="progreslight">
+                <div class="firstrectangle red"></div>
+                <div class="statusinfono"></div>
+                <div class="rectangle gray"></div>
+                <div class="statusinfost"></div>
+                <div class="rectangle gray"></div>
+                <div class="statusinfost"></div>
+            </div>
             <div class="advancement flexaround"><span>Match Appeso</span></div>
             <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                 <div class="btn btn-primary btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
@@ -114,10 +134,17 @@
 
         <!--giallo -Punteggio non elaborato / sta aspettando il batch - reset elabora-->
         <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo != true">
-            <div class="statusinfofo"></div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="progreslight">
+                <div class="firstrectangle green"></div>
+                <div class="statusinfogo"></div>
+                <div class="rectangle g2y"></div>
+                <div class="statusinfofo"></div>
+                <div class="rectangle gray"></div>
+                <div class="statusinfost"></div>
+            </div>
             <div class="advancement flexaround"><span>In Elaborazione</span></div>
             <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                 <button type="submit"
@@ -145,11 +172,18 @@
 
         <!--rosso -Punteggio non elaborato- reset elabora-->
         <div class="flexbtw match" ng-if="match.anomalous == true && match.elaborated == true && match.sendToPo != true">
-            <div class="statusinfono"><span style="margin-top: -1px">☓</span></div>
             <div class="alias "><span>{{match.userId}}</span></div>
             <!--<div class="bla">{{currentDate}}</div>-->
             <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
             <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+            <div class="progreslight">
+                <div class="firstrectangle red"></div>
+                <div class="statusinfono"></div>
+                <div class="rectangle red"></div>
+                <div class="statusinfono"></div>
+                <div class="rectangle gray"></div>
+                <div class="statusinfost"></div>
+            </div>
             <div class="advancement flexaround"><span>Elaborazione Fallita</span></div>
             <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                 <div class="btn btn-primary btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
