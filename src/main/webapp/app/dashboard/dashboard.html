@@ -66,15 +66,9 @@
                     <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <!--<div class="btn btn-primary btn-sm reset somemarright" ng-click="resetMatch(match.id)">Reset</div>-->
-                    <button type="submit"
-                            ui-sref="manage.reset({id:match.id})"
-                            class="btn btn-primary btn-sm reset somemarright"
-                    >
-                        Reset
-                    </button>
-                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="elaborateMatch(match.id)" aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)" aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn btn-primary btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="openModal(match.id, 'elabora')" aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn btn-danger btn-sm" ng-click="openModal(match.id, 'chiudi')" aria-disabled="true" disabled>Chiudi</div>
                 </div>
             </div>
 
@@ -101,15 +95,9 @@
                     <div class="btn btn-danger btn-sm brokenbtn" aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <!--<div class="btn btn-primary btn-sm reset somemarright" ng-click="resetMatch(match.id)">Reset</div>-->
-                    <button type="submit"
-                            ui-sref="manage.reset({id:match.id})"
-                            class="btn btn-primary btn-sm reset somemarright"
-                    >
-                        Reset
-                    </button>
-                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="elaborateMatch(match.id)">Elabora</div>
-                    <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)">Chiudi</div>
+                    <div class="btn btn-primary btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="openModal(match.id, 'elabora')">Elabora</div>
+                    <div class="btn btn-danger btn-sm" ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
                 </div>
             </div>
 
@@ -133,15 +121,9 @@
                     <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <!--<div class="btn btn-primary btn-sm reset somemarright" ng-click="resetMatch(match.id)">Reset</div>-->
-                    <button type="submit"
-                            ui-sref="manage.reset({id:match.id})"
-                            class="btn btn-primary btn-sm reset somemarright"
-                    >
-                        Reset
-                    </button>
-                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="elaborateMatch(match.id)" aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)">Chiudi</div>
+                    <div class="btn btn-primary btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="openModal(match.id, 'elabora')" aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn btn-danger btn-sm" ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
                 </div>
             </div>
 
@@ -171,15 +153,15 @@
                     <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <div class="btn btn-primary btn-sm reset somemarright" ng-click="resetMatch(match.id)">Reset</div>
+                    <div class="btn btn-primary btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
                     <!--<button type="submit"-->
                             <!--ui-sref="manage.reset({id:match.id})"-->
                             <!--class="btn btn-primary btn-sm reset somemarright"-->
                     <!--&gt;-->
                         <!--Reset-->
                     <!--</button>-->
-                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="elaborateMatch(match.id)">Elabora</div>
-                    <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id) " aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="openModal(match.id, 'elabora')">Elabora</div>
+                    <div class="btn btn-danger btn-sm" ng-click="openModal(match.id, 'chiudi')" aria-disabled="true" disabled>Chiudi</div>
                 </div>
             </div>
 
@@ -204,15 +186,9 @@
                     <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <!--<div class="btn btn-primary btn-sm reset somemarright" ng-click="resetMatch(match.id)">Reset</div>-->
-                    <button type="submit"
-                            ui-sref="manage.reset({id:match.id})"
-                            class="btn btn-primary btn-sm reset somemarright"
-                    >
-                        Reset
-                    </button>
-                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="elaborateMatch(match.id)">Elabora</div>
-                    <div class="btn btn-danger btn-sm" ng-click="closeMatch(match.id)" aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn btn-primary btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn btn-warning btn-sm interrupt somemarright" ng-click="openModal(match.id, 'elabora')">Elabora</div>
+                    <div class="btn btn-danger btn-sm" ng-click="openModal(match.id, 'chiudi')" aria-disabled="true" disabled>Chiudi</div>
                 </div>
             </div>
         </div>

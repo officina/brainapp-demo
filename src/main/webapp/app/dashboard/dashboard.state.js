@@ -11,7 +11,7 @@
             parent: 'app',
             url: '/manage/sessionid/:extsessionid',
             data: {
-                authorities: ['ROLE_ADMIN'],
+                authorities: ['ROLE_ADMIN']
             },
             views: {
                 'content@': {
@@ -31,73 +31,6 @@
                     return $translate.refresh();
                 }]
             }
-        })
-        .state('manage.reset', {
-            parent: 'manage',
-            url: '/{id}/reset',
-            data: {
-                authorities: ['ROLE_ADMIN']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/dashboard/popup.html',
-                    controller: 'DashboardController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'md',
-                    resolve: {
-                        entity: ['Match', function(Match) {
-                            return Match.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('manage', null, { reload: 'manage' });
-                    console.log('si');
-                }, function() {
-                    $state.go('manage');
-                    console.log('no');
-                });
-            }]
-        })
-        .state('manage.close', {
-            parent: 'manage',
-            url: '/{id}/close',
-            data: {
-                authorities: ['ROLE_ADMIN']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/dashboard/popup.html',
-                    controller: 'DashboardController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'md'
-                }).result.then(function() {
-                    $state.go('manage', null, { reload: 'manage' });
-                }, function() {
-                    $state.go('manage');
-                });
-            }]
-        })
-        .state('manage.elaborate', {
-            parent: 'manage',
-            url: '/{id}/elaborate',
-            data: {
-                authorities: ['ROLE_ADMIN']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/dashboard/popup.html',
-                    controller: 'DashboardController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'md',
-                }).result.then(function() {
-                    $state.go('manage', null, { reload: 'manage' });
-                }, function() {
-                    $state.go('manage');
-                });
-            }]
         })
     }
 })();

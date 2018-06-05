@@ -4,18 +4,14 @@
         .module('gatoradeApp')
         .controller('DashboardController', DashboardController);
 
-    DashboardController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'DashboardService', '$stateParams', '$sce', '$interval'];
+    DashboardController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'DashboardService', '$stateParams', '$uibModal'];
 
-    function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams) {
-
-        var sessionid = $stateParams.sessions;
-        var matches = $stateParams.matches;
+    function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams, $uibModal) {
         $scope.currentDate = new Date();
         $scope.currentDate = Date.parse($scope.currentDate);
         $scope.rightSession = true;
         var vm= this;
         var bestScores = [];
-        var best;
 
         $scope.getMatches = function(){
             DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
@@ -54,7 +50,11 @@
                         }
                     }
                 }
-                $scope.best = Math.max.apply(null, bestScores);
+                if ($scope.matches[m].game.type === "MINPOINT") {
+                    $scope.best = Math.min.apply(null, bestScores);
+                }else{
+                    $scope.best = Math.max.apply(null, bestScores);
+                }
                 if ($scope.best === null || $scope.best === undefined || isNaN($scope.best) || $scope.best === -Infinity){
                     $scope.best = '-'
                 }
@@ -138,8 +138,50 @@
                     console.log(error)
                 })
         };
-         $scope.clear = function () {
-            $uibModalInstance.dismiss('cancel');
-        }
+
+        var $ctrl = this;
+
+        $ctrl.ok = function () {
+            console.log("ok component");
+            $scope.$close();
+        };
+
+        $ctrl.cancel = function () {
+            console.log("cancel component");
+            $scope.$dismiss({$value: 'cancel'});
+        };
+
+        $scope.openModal = function (id, action) {
+            var modalInstance  = $uibModal.open({
+                animation: true,
+                controllerAs: '$ctrl',
+                controller: 'DashboardController',
+                templateUrl: 'app/dashboard/popup.html',
+                resolve: {
+                  action: function () {
+                      $scope.action = action;
+                  },
+                    id: function () {
+                        $scope.id = id;
+                    }
+                },
+                size: 'md'
+            });
+
+            modalInstance.result.then(function (value) {
+                if ($scope.action === 'resetta'){
+                    console.log('Modal reset match with id '+ $scope.id);
+                    $scope.resetMatch($scope.id);
+                }else if ($scope.action === 'elabora'){
+                    console.log('Modal elaborate match with id '+ $scope.id);
+                    $scope.elaborateMatch($scope.id);
+                } else if ($scope.action === 'chiudi'){
+                    console.log('Modal close match with id '+ $scope.id);
+                    $scope.closeMatch($scope.id);
+                }
+            }, function (value) {
+                console.log('fail Modal dismissed at: ' + new Date());
+            });
+        };
     }
 })();

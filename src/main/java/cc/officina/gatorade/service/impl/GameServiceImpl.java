@@ -148,7 +148,7 @@ public class GameServiceImpl implements GameService{
         match.setValid(true);
         match.setReplayState(MatchReplayState.playing);
         match.setParentId(oldOne.getId());
-        oldOne.setReplayState(MatchReplayState.main);
+        oldOne.setReplayState(MatchReplayState.old);
         matchRepository.save(oldOne);
         matchRepository.save(match);
         log.info("GameService: request to replayMatch completed, ex-main match: "+oldOne.getId() + " - new main match: "+match.getId());
