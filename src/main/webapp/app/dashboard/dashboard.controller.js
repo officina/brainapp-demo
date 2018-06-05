@@ -132,5 +132,8 @@
                     console.log(error)
                 })
         };
+         $scope.clear = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
     }
 })();

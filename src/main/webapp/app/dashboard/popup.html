@@ -1,11 +1,17 @@
-<h1>Sei sicuroooo di resettare?</h1>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+            ng-click="clear()">&times;</button>
+    <h4 class="modal-title">conferma</h4>
+</div>
+<h1>Confermi l'azione?</h1>
     <button type="submit"
             class="btn btn-primary btn-sm ">
             <!--ui-sref="manage.reset({id:match.id})"-->
         <span>Conferma</span>
     </button>
     <button type="submit"
-            class="btn btn-warning btn-sm">
+            class="btn btn-warning btn-sm"
+            ng-click="clear()">
         <span>Indietro</span>
     </button>
 
