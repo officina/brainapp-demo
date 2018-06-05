@@ -12,6 +12,7 @@
         var matches = $stateParams.matches;
         $scope.currentDate = new Date();
         $scope.currentDate = Date.parse($scope.currentDate);
+        $scope.rightSession = true;
         var vm= this;
         var bestScores = [];
         var best;
@@ -71,8 +72,10 @@
 
 
         $scope.getSession = function() {
-            DashboardService.getSession($stateParams.extsessionid).then(function (response) {
+            DashboardService.getSession($stateParams.extsessionid)
+                .then(function (response) {
                 $scope.sessions = response.data;
+                    // $scope.rightSession = true;
                 // console.log($scope.currentDate);
                 // console.log(Date.parse($scope.sessions.endDate));
                 // console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
@@ -82,9 +85,12 @@
                 } else {
                     $scope.stateSessionLabel = 'In Corso';
                 }
-                ;
-            });
-        }
+            })
+            .catch(function (error) {
+                console.log(error)
+                $scope.rightSession = false;
+            })
+        };
         $scope.getSession();
         var session_timer = setInterval($scope.getSession, 60000);
 
