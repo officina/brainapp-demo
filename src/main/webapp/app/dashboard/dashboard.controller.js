@@ -88,7 +88,10 @@
             })
             .catch(function (error) {
                 console.log(error)
+                // console.log(timer_id)
                 $scope.rightSession = false;
+                clearInterval(session_timer);
+                clearInterval(timer_id);
             })
         };
         $scope.getSession();
