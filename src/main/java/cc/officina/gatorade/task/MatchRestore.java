@@ -20,6 +20,6 @@ public class MatchRestore
 	@Scheduled(fixedRate = 300000)
     public void reportCurrentTime() {
         log.info("MatchRestore - request to start matchesRestore()");
-        matchService.matchesRestore();
+//        matchService.matchesRestore();
     }
 }

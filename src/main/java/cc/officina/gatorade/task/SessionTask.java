@@ -12,11 +12,12 @@ import cc.officina.gatorade.service.GamificationService;
 public class SessionTask extends TimerTask {
 	private final Logger log = LoggerFactory.getLogger(SessionTask.class);
 	private GamificationService gamificationService;
-	
+
 	public SessionTask(GamificationService gamificationService) {
 		this.gamificationService = gamificationService;
 	}
 
+	@Deprecated
 	@Override
 	@Transactional
 	public void run() {

@@ -1,12 +1,9 @@
 package cc.officina.gatorade.web.rest;
 
-import cc.officina.gatorade.domain.Attempt;
+import cc.officina.gatorade.domain.*;
 import cc.officina.gatorade.service.AttemptService;
 import cc.officina.gatorade.service.dto.MatchDTO;
 import com.codahale.metrics.annotation.Timed;
-import cc.officina.gatorade.domain.Match;
-import cc.officina.gatorade.domain.Report;
-import cc.officina.gatorade.domain.ReportRequest;
 import cc.officina.gatorade.domain.enumeration.ReportType;
 import cc.officina.gatorade.service.GamificationService;
 import cc.officina.gatorade.service.MatchService;
@@ -20,12 +17,15 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import sun.rmi.runtime.Log;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -142,17 +142,16 @@ public class MatchResource {
 
     @PutMapping("/matches/{id}/reset")
     @Timed
+    @Transactional
     public ResponseEntity<Match> resetMatch(@PathVariable Long id) throws URISyntaxException {
         log.info("REST request to reset Match with id " + id);
         Match match = matchService.findOne(id);
         if (match == null) {
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
-        Match result = matchService.resetMatch(match);
-        gamificationService.runResetAction(match);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, match.getId().toString()))
-            .body(result);
+            .body(matchService.resetMatch(match));
     }
 
     @PostMapping(value = "/matches/{id}/report/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -191,5 +190,68 @@ public class MatchResource {
         log.info("REST request to start batch");
         matchService.matchesRestore();
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/matches/by-session/{sessionId}")
+    public ResponseEntity<List<Match>> getMatchesBySessionId(@PathVariable Long sessionId){
+        log.debug("REST request to get a page of Matches by Session id");
+        return ResponseEntity.ok(matchService.findValidBySessionId(sessionId));
+    }
+
+    @PutMapping("/matches/outcome-drainage")
+    @Timed
+    @Transactional
+    public ResponseEntity<Void> startOutcomeDrainage() throws URISyntaxException {
+        log.info("REST request to matches outcome drainage");
+        Page<Match> matches = matchService.findAll(new PageRequest(0, Integer.MAX_VALUE));
+        for (Match match : matches){
+            String score;
+            switch (match.getGame().getType()){
+                case MINPOINT:
+                    score = match.getMinScore();
+                    if (score != null){
+                        match.setBestScore(Long.parseLong(score));
+                    }
+                    break;
+                case POINT:
+                    score = match.getMaxScore();
+                    if (score != null){
+                        match.setBestScore(Long.parseLong(score));
+                    }
+                    break;
+                case LEVEL:
+                    match.setBestLevel(match.getMaxLevel());
+                    break;
+
+            }
+            matchService.save(match);
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/matches/{id}/admin/elaborate")
+    @Timed
+    @Transactional
+    public ResponseEntity<Match> adminElaborateMatch(@PathVariable Long id) throws URISyntaxException {
+        log.info("REST request to admin elaborate match with id: "+ id);
+        Match match = matchService.findOne(id);
+        if (match == null){
+            log.info("Match with id: "+ id+" not found");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(matchService.adminElaborateMatch(match));
+    }
+
+    @PutMapping("/matches/{id}/admin/close")
+    @Timed
+    @Transactional
+    public ResponseEntity<Match> adminCloseMatch(@PathVariable Long id) throws URISyntaxException {
+        log.info("REST request to admin close match with id: "+ id);
+        Match match = matchService.findOne(id);
+        if (match == null){
+            log.info("Match with id: "+ id+" not found");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(matchService.adminCloseMatch(match));
     }
 }

@@ -1,0 +1,19 @@
+select m.user_id, s.game_id, count (*) 
+from match m,
+	session s
+where s.id = m.session_id
+and m.elaborated = true
+and m.valid = true
+group by m.user_id, s.game_id
+having count(*) > 1
+
+select  s.*, m.id as match_id ,m.* 
+from match m,
+	session s
+where s.id = m.session_id	
+ and s.game_id =5651 and user_id like '%fmaffucc%'
+ 
+select * from attempt where match_id = 27516 order by id desc  -- valid
+select * from attempt where match_id = 27510 order by id desc
+
+select * from game where id = 5651

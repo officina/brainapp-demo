@@ -46,7 +46,7 @@ public interface SessionService {
      */
     void delete(Long id);
 
-	public boolean validateSessionAndUser(String extid, String playerid, Long gameid);
+	public boolean validateSessionAndUser(Long sessionId, String playerid, Long gameid);
 
 	public Session findOneByExtId(String extid);
 
@@ -67,11 +67,11 @@ public interface SessionService {
 
 	public void rielaborate(Session session);
 
-	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs);
+	public List<SessionDTO> getUserLabsSession(String userId, List<String> labs, Boolean active);
 
-	public List<Session> getSessionsByLabs(List<String> labs);
+	public List<Session> getSessionsByLabs(List<String> labs, Boolean active);
 
-    List<Session> findAllByUserId(String userId);
+    List<Session> findAllByUserId(String userId, Boolean active);
 
     List<SessionDTO> mapSessionsToDTOS(List<Session> sessions);
 

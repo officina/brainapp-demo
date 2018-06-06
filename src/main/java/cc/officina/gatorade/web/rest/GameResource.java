@@ -137,10 +137,10 @@ public class GameResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
 
-    @GetMapping("/play/{id}/init/{extid}/{playerid}")
+    @GetMapping("/play/{id}/init/{sessionId}/{playerid}")
     @Timed
-    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable String extid, @PathVariable String playerid) {
-        log.info("REST game init for game with id = " + id + ", extId = " + extid + " and playerid = " + playerid);
+    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable Long sessionId, @PathVariable String playerid, @RequestParam("replay") Boolean replay) {
+        log.info("REST game init for game with id = " + id + ", session id = " + sessionId + " and playerid = " + playerid);
         Game game = gameService.findOne(id);
         if(game == null)
         {
@@ -153,10 +153,10 @@ public class GameResource {
         	log.info("Session not valid - not template found for game with id " + id);
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No template founded for game with id "+ id)).body(null);
         }
-        /*boolean validateSession = false;
+        boolean validateSession = false;
         //TODO set hostname and endpoint as properties
         String hostname = "http://gamificationlabcert.generali.it";
-        String endpoint = "/api/gaming/isvalid";
+        String endpoint = "/api/gaming/isvalid?";
         String url = hostname+endpoint;
 
         HttpClient client = HttpClientBuilder.create().build();
@@ -182,7 +182,7 @@ public class GameResource {
             if (response.getStatusLine().getStatusCode() == 200){
                 //TODO verificare la risposta e loggare
                 log.info("Session valid - validation service completed successfully through: " + url);
-                validateSession = sessionService.validateSessionAndUser(extid, playerid, id);
+                validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
             }else{
                 log.info("Session not valid - validation service failed through: " + url);
                 validateSession = false;
@@ -190,10 +190,13 @@ public class GameResource {
         } catch (IOException e) {
             e.printStackTrace();
             validateSession = false;
-        }*/
-        boolean validateSession = sessionService.validateSessionAndUser(extid, playerid, id);
+        }
+        if(sessionId == null)
+        {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute GameInit with a null session id")).body(null);
+        }
         if(!validateSession)
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with ext_id " + extid + " is invalid.")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);
         return new ResponseEntity<>(game, null, HttpStatus.OK);
     }
 
@@ -211,8 +214,11 @@ public class GameResource {
 
     	if(request.getGameid() == null || request.getPlayerid() == null)
 			return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("body", "MalformedBody", "Malformed body")).body(null);
-        log.info("REST request to startMatch : {}", request.getGameid());
-        Session session = sessionService.findOneByExtId(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
+        log.info("REST request to startMatch : {} , replay: "+request.isReplay(), request.getGameid());
+        if (request.getSessionid() == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute StartMatch with a null session id")).body(null);
+        }
+        Session session = sessionService.findOne(request.getSessionid());//TODO: aggiunta della valiudità temporale della sessione chiamata
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
 
@@ -223,8 +229,34 @@ public class GameResource {
         MatchTemplate template = templateService.findOneByGameId(request.getGameid());
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
-        // non passo per ora il matchToken, o meglio passo -1
-        return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+        MatchResponse response;
+
+        if (session.getPoRoot() != null &&session.getPoRoot().startsWith("top_user_")){
+            log.info("Request ti StartMatch for Top user: "+ request.getPlayerid()+" - session id: "+session.getId()+" - gameid: "+session.getGame().getId());
+            response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
+            if (response == null){
+                return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(response, null, HttpStatus.OK);
+        }else{
+            // non passo per ora il matchToken, o meglio passo -1
+            if (request.isReplay()) {
+                //ho il param replay a true.
+                //procedo alla creazione del match
+                response = gameService.replayMatch(game, template, request.getPlayerid(), session, -1l);
+                if (response == null){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "Main match not found", "Match for game with id "+ request.getGameid() + " and user id "+request.getPlayerid()+" not found, cannot replay match")).body(null);
+                }
+            } else {
+                //ho il param replay a false, provo a clonare, se non ho match di riferimento allora creo un nuovo match
+                //procedo alla clonazione
+                response = gameService.cloneMatch(game, template, request.getPlayerid(), session, -1l);
+                if (response == null){
+                    return new ResponseEntity<>(gameService.startMatch(game, template, request.getPlayerid(), session, -1l), null, HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>(response, null, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/play/attempt")
@@ -242,7 +274,10 @@ public class GameResource {
         if(template == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "Template for game with id "+ request.getGameid() + " not found")).body(null);
 
-        Session session = sessionService.findOneByExtId(request.getSessionid());
+        if (request.getSessionid() == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute StartAttempt with a null session id")).body(null);
+        }
+        Session session = sessionService.findOne(request.getSessionid());
         if(session == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionNotFound", "Session with id "+ request.getSessionid() + " not found")).body(null);
 
@@ -260,6 +295,18 @@ public class GameResource {
         	}
         	else
         	{
+                if (!match.isValid()){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchInvalid", "Match with id "+ match.getId() + " is invalid cannot continue")).body(null);
+                }
+                if (match.isElaborated()){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchElaborated", "Match with id "+ match.getId() + " already elaborated cannot continue")).body(null);
+                }
+                if (match.getStop() != null){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
+                }
+                if (match.isAnomalous()){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+                }
                 if (request.getMatchtoken() == null){
                     match.setAnomalous(true);
                     reportService.matchAnomalousToken(request.getMatchid(), request.getPlayerid(), match.toString());
@@ -269,7 +316,7 @@ public class GameResource {
         		matchService.save(match);
         	}
         }
-        match.getAttempts().size();
+        //match.getAttempts().size();
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
 
@@ -297,11 +344,24 @@ public class GameResource {
     @Transactional
     public ResponseEntity<AttemptResponse> updateAttemptScoreV2(@RequestBody Request request) {
         log.info("REST request to update score for game Game with id " + request.getMatch().getGame().getId()+", attempt " + request.getAttempt().getId());
-        log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
+        log.info("Score: " + request.getScore() + " - Level: " + request.getLevel()+" - AttemptScore: "+request.getAttempt().getAttemptScore()+" - AttemptLevel: "+request.getAttempt().getLevelReached()) ;
         Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
 
-        if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
+        Match match = attempt.getMatch();
+        if(!match.getMatchToken().equals(request.getMatchtoken()))
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getMatch().getSession().getId() + " already in use")).body(null);
+        if (!match.isValid()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchInvalid", "Match with id "+ match.getId() + " is invalid cannot continue")).body(null);
+        }
+        if (match.isElaborated()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchElaborated", "Match with id "+ match.getId() + " already elaborated cannot continue")).body(null);
+        }
+        if (match.getStop() != null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
+        }
+        if (match.isAnomalous()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+        }
 
         return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, request.getAttempt().getAttemptScore(), request.getAttempt().getLevelReached()), null, HttpStatus.OK);
     }
@@ -317,11 +377,57 @@ public class GameResource {
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
 
-        if(!attempt.getMatch().getMatchToken().equals(request.getMatchtoken()))
+        Match match = attempt.getMatch();
+        if(!match.getMatchToken().equals(request.getMatchtoken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+        if (!match.isValid()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchInvalid", "Match with id "+ match.getId() + " is invalid cannot continue")).body(null);
+        }
+        if (match.isElaborated()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchElaborated", "Match with id "+ match.getId() + " already elaborated cannot continue")).body(null);
+        }
+        if (match.getStop() != null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
+        }
+        if (match.isAnomalous()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+        }
 
         attempt.getMatch().getAttempts().size();
         return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);
+    }
+
+    @PutMapping("/play/attempt/restart")
+    @Timed
+    @Transactional
+    public ResponseEntity<MatchResponse> restartAttempt(@RequestBody Request request) {
+        log.info("REST request to restart attemtp for game Game with id " + request.getGameid()+", attempt " + (request.getAttempt().getId() != null ? request.getAttempt().getId() : "created offline with localId: "+request.getAttempt().getLocalId()));
+        log.info("Score: " + request.getAttempt().getAttemptScore() + " - Level: " + request.getAttempt().getLevelReached());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
+
+        if(attempt == null)
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
+
+        Match match = attempt.getMatch();
+        if(!match.getMatchToken().equals(request.getMatchtoken()))
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+        if (!match.isValid()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchInvalid", "Match with id "+ match.getId() + " is invalid cannot continue")).body(null);
+        }
+        if (match.isElaborated()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchElaborated", "Match with id "+ match.getId() + " already elaborated cannot continue")).body(null);
+        }
+        if (match.getStop() != null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
+        }
+        if (match.isAnomalous()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+        }
+        //chiudo l'attempt
+        MatchResponse response = gameService.stopAttempt(gameService.findOne(request.getGameid()), attempt, attempt.isCompleted(), attempt.getAttemptScore(), attempt.getLevelReached(), request.isEndmatch());
+
+        //inizio un nuovo attempt
+        return new ResponseEntity<>(gameService.startAttempt(response.getGame(), response.getMatch()), null, HttpStatus.OK);
     }
 
     @PutMapping("/play/end")
@@ -337,6 +443,21 @@ public class GameResource {
         Match match = matchService.findOne(request.getMatchid());
         if(match == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchNotFound", "Match with id "+request.getMatchid() + " not found")).body(null);
+
+        if(!match.getMatchToken().equals(request.getMatchtoken()))
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
+        if (!match.isValid()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchInvalid", "Match with id "+ match.getId() + " is invalid cannot continue")).body(null);
+        }
+        if (match.isElaborated()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchElaborated", "Match with id "+ match.getId() + " already elaborated cannot continue")).body(null);
+        }
+        if (match.getStop() != null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
+        }
+        if (match.isAnomalous()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+        }
         //ottengo la lista di attempt dal client
         Attempt serverAttempt;
         int notSyncCount = 0, syncCount = 0, syncedOnEndMatchCount = 0;
@@ -349,6 +470,7 @@ public class GameResource {
                         //client e server sono allineati
                         //skippo
                         syncCount++;
+                        //sinco lo stesso per allineare il flag. clientAttempt.sync = 1 mentre dbAttempt.sync = 0
                         attemptService.syncAttempt(attempt, match, AttemptSyncState.sync);
                         break;
                     case syncOnEndMatch:
@@ -378,9 +500,6 @@ public class GameResource {
             lastAttempt = attemptService.syncAttempt(request.getAttempt(), match, request.getAttempt().getSync());
             lastAttempt.setSync(AttemptSyncState.syncOnEndMatch);
         }
-
-        if(!match.getMatchToken().equals(request.getMatchtoken()))
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
 
         return new ResponseEntity<>(gameService.endMatch(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
     }

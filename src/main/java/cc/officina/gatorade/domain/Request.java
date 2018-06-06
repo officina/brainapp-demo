@@ -13,12 +13,14 @@ public class Request {
 	private Long score;
 	private String level;
 	private boolean completed;
-	private String sessionid;
+	private Long sessionid;
 	private boolean endmatch;
 	private Long matchtoken;
 	private Attempt attempt;
 	private Match match;
+	private Boolean replay;
 	private List<Attempt> attempts;
+    private List<Attempt> attemptsOffline;
 	public Long getGameid() {
 		return gameid;
 	}
@@ -81,10 +83,10 @@ public class Request {
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
-	public String getSessionid() {
+	public Long getSessionid() {
 		return sessionid;
 	}
-	public void setSessionid(String sessionId) {
+	public void setSessionid(Long sessionId) {
 		this.sessionid = sessionId;
 	}
 	public boolean isEndmatch() {
@@ -122,5 +124,21 @@ public class Request {
 
     public void setAttempts(List<Attempt> attempts) {
         this.attempts = attempts;
+    }
+
+    public Boolean isReplay() {
+        return replay;
+    }
+
+    public void setReplay(Boolean replay) {
+        this.replay = replay;
+    }
+
+    public List<Attempt> getAttemptsOffline() {
+        return attemptsOffline;
+    }
+
+    public void setAttemptsOffline(List<Attempt> attemptsOffline) {
+        this.attemptsOffline = attemptsOffline;
     }
 }
