@@ -12,58 +12,69 @@
         $scope.rightSession = true;
         var vm= this;
         var bestScores = [];
-        $scope.resetMessage = 'reset';
-        $scope.closeMessage = 'close';
-        $scope.elaborateMessage = 'elaborate';
+        $scope.resetMessage = 'Annulla la giocata corrente e permette di avviarne una nuova';
+        $scope.closeMessage = 'Chiude la giocata e invia il punteggio alla leaderboard';
+        $scope.elaborateMessage = 'Invia il punteggio attuale alla leaderboard';
+        $scope.populatedMatches = true;
         $scope.getMatches = function(){
             DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
                 $scope.matches = response.data;
                 // console.log(response.data);
                 // console.log($scope.matches);
                 $scope.currentDate = new Date();
-                $scope.currentDate = Date.parse($scope.currentDate);
-                $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
-                $scope.matchDuration = $scope.matches[0].template.maxDuration * 1000;
-
-                for (var m in $scope.matches) {
-                    if ($scope.matches[m].game.type == "POINT") {
-                        if (!isNaN($scope.matches[m].bestScore)){
-                            if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined){
-                                $scope.matches[m].bestScore = 0;
-                            }else{
-                                bestScores.push(parseInt($scope.matches[m].bestScore));
+                if ($scope.matches.length < 1) {
+                    $scope.populatedMatches = false;
+                } else {
+                    $scope.currentDate = Date.parse($scope.currentDate);
+                    $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
+                    $scope.matchDuration = $scope.matches[0].template.maxDuration * 1000;
+                    for (var m in $scope.matches) {
+                        if ($scope.matches[m].game.type == "POINT") {
+                            if (!isNaN($scope.matches[m].bestScore)) {
+                                if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined) {
+                                    $scope.matches[m].bestScore = 0;
+                                } else {
+                                    bestScores.push(parseInt($scope.matches[m].bestScore));
+                                }
                             }
-                        }
-                    } else if ($scope.matches[m].game.type == "MINPOINT") {
-                        if (!isNaN($scope.matches[m].bestScore)){
-                            if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined) {
-                                $scope.matches[m].bestScore = 0;
-                            }else{
-                                bestScores.push(parseInt($scope.matches[m].bestScore));
+                        } else if ($scope.matches[m].game.type == "MINPOINT") {
+                            if (!isNaN($scope.matches[m].bestScore)) {
+                                if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined) {
+                                    $scope.matches[m].bestScore = 0;
+                                } else {
+                                    bestScores.push(parseInt($scope.matches[m].bestScore));
+                                }
                             }
-                        }
-                    } else if ($scope.matches[m].game.type == "LEVEL") {
-                        if (!isNaN($scope.matches[m].bestLevel)){
-                            if ($scope.matches[m].bestLevel == null || $scope.matches[m].bestLevel == undefined){
-                                $scope.matches[m].bestLevel = 0;
-                            }else{
-                                bestScores.push(parseInt($scope.matches[m].bestLevel));
+                        } else if ($scope.matches[m].game.type == "LEVEL") {
+                            if (!isNaN($scope.matches[m].bestLevel)) {
+                                if ($scope.matches[m].bestLevel == null || $scope.matches[m].bestLevel == undefined) {
+                                    $scope.matches[m].bestLevel = 0;
+                                } else {
+                                    bestScores.push(parseInt($scope.matches[m].bestLevel));
+                                }
                             }
                         }
                     }
+                    if ($scope.matches[m].game.type === "MINPOINT") {
+                        $scope.best = Math.min.apply(null, bestScores);
+                    }else{
+                        $scope.best = Math.max.apply(null, bestScores);
+                    }
+                    if ($scope.best === null || $scope.best === undefined || isNaN($scope.best) || $scope.best === -Infinity){
+                        $scope.best = '-'
+                    }
+                    $scope.numberOfMatches = $scope.matches.length;
                 }
-                if ($scope.matches[m].game.type === "MINPOINT") {
-                    $scope.best = Math.min.apply(null, bestScores);
-                }else{
-                    $scope.best = Math.max.apply(null, bestScores);
-                }
-                if ($scope.best === null || $scope.best === undefined || isNaN($scope.best) || $scope.best === -Infinity){
-                    $scope.best = '-'
-                }
-                $scope.numberOfMatches = $scope.matches.length;
+
 
                 // $scope.best = 23435;
                 // console.log($scope.best);
+            })
+            .catch(function (error) {
+                console.log(error)
+                // console.log(timer_id)
+                $scope.populatedMatches = false;
+
             });
         };
 

@@ -14,13 +14,15 @@
         <div class="mid col-lg-3 flexcol">
             <span>Giocate effettuate</span>
             <div class="bigcircle">
-                <h2 class="nomar">{{numberOfMatches}}</h2>
+                <h2 class="nomar" ng-if="populatedMatches">{{numberOfMatches}}</h2>
+                <h2 class="nomar" ng-if="!populatedMatches">0</h2>
             </div>
         </div>
         <div class="right col-lg-3 flexcol">
             <span>Risultato migliore</span>
             <div class="bigcircle">
-                <h2 class="nomar">{{best}}</h2>
+                <h2 class="nomar" ng-if="!populatedMatches">0</h2>
+                <h2 class="nomar" ng-if="populatedMatches">{{best}}</h2>
             </div>
         </div>
     </div>
@@ -43,7 +45,10 @@
         <div ng-if="stateSessionLabel == 'Terminato'" alt="" class="img-fix"></div>
     </div>
     <div class="col-lg-10 col-lg-offset-1 whitebkg box-scores nopadding roboto border-radius">
-        <div class="" ng-repeat="match in matches track by match.id">
+        <div class="flexaround" ng-hide="populatedMatches">
+            <h4>Nessun match disponibile al momento</h4>
+        </div>
+        <div class="" ng-show="populatedMatches" ng-repeat="match in matches track by match.id">
 
             <!--verde - Terminato - reset-->
             <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">
