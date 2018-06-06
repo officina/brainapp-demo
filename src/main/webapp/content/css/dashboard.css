@@ -17,6 +17,35 @@
 
 
 /*Dashboard*/
+.bluebtn {
+    background-color: #4690d0;
+    color: white;
+}
+.bluebtn:hover {
+    background-color: #2D77B7;
+    color: white;
+}
+
+.yellowbtn {
+    background-color: #ec971f;
+    color: white;
+}
+.yellowbtn:hover {
+    background-color: #d37e06;
+    color: white;
+}
+
+.redbtn {
+    background-color: #ff5e5e;
+    color: white;
+}
+.redbtn:hover {
+    background-color: #e64545;
+    color: white;
+ }
+.btn:focus {
+    color:white;
+}
 .box {
     box-shadow: 2px 2px 10px rgba(125,125,125,0.15);
     min-height: 20vh;
@@ -62,7 +91,7 @@
     padding: 5px 15px;
 }
 .statusinfogo {
-    background-color: green;
+    background-color: #38c738;
     height: 12px;
     width: 12px;
     border-radius: 50%;
@@ -70,7 +99,7 @@
     z-index: 2;
 }
 .statusinfono {
-    background-color: red;
+    background-color: #ff5e5e;
     height: 12px;
     width: 12px;
     border-radius: 50%;
@@ -80,7 +109,7 @@
 }
 
 .statusinfofo {
-    background-color: #d8c20d;
+    background-color: #ffbc5e;
     height: 12px;
     width: 12px;
     border-radius: 50%;
@@ -89,7 +118,7 @@
 }
 
 .statusinfost {
-    background-color: darkgray;
+    background-color: #d6d5d5;
     height: 12px;
     width: 12px;
     border-radius: 50%;
@@ -214,18 +243,18 @@
     z-index: 1;
 }
 .g2y {
-    background: linear-gradient(to right, green, #d8c20d);
+    background: linear-gradient(to right, #38c738, #ffbc5e);
 }
 
 .gray {
-    background-color: darkgray;
+    background-color: #dcdcdc;
 }
 
 .green {
-    background-color: green;
+    background-color: #38c738;
 }
 .red {
-    background-color: red;
+    background-color: #ff5e5e;
 }
 .firstrectangle {
     position: relative;

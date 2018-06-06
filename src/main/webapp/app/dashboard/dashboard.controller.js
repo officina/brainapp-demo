@@ -41,9 +41,9 @@
                             }
                         }
                     } else if ($scope.matches[m].game.type == "LEVEL") {
-                        if (!isNaN($scope.matches[m].bestScore)){
-                            if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined){
-                                $scope.matches[m].bestScore = '0';
+                        if (!isNaN($scope.matches[m].bestLevel)){
+                            if ($scope.matches[m].bestLevel == null || $scope.matches[m].bestLevel == undefined){
+                                $scope.matches[m].bestLevel = 0;
                             }else{
                                 bestScores.push(parseInt($scope.matches[m].bestLevel));
                             }
