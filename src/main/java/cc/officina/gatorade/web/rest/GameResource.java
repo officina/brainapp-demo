@@ -153,10 +153,18 @@ public class GameResource {
         	log.info("Session not valid - not template found for game with id " + id);
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("template", "templateNotFound", "No template founded for game with id "+ id)).body(null);
         }
+        if(sessionId == null)
+        {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute GameInit with a null session id")).body(null);
+        }
+        Session session = sessionService.findOne(sessionId);
+        if (session == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with id "+sessionId+" not found")).body(null);
+        }
         boolean validateSession = false;
         //TODO set hostname and endpoint as properties
         String hostname = "http://gamificationlabcert.generali.it";
-        String endpoint = "/api/gaming/isvalid?";
+        String endpoint = "/api/gaming/isvalid?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
         String url = hostname+endpoint;
 
         HttpClient client = HttpClientBuilder.create().build();
@@ -190,10 +198,6 @@ public class GameResource {
         } catch (IOException e) {
             e.printStackTrace();
             validateSession = false;
-        }
-        if(sessionId == null)
-        {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute GameInit with a null session id")).body(null);
         }
         if(!validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);
