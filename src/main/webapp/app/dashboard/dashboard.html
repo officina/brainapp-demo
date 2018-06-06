@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-10 col-lg-offset-1 flexbtw roboto">
+    <div class="col-lg-10 col-lg-offset-1 flexbtw roboto" ng-show="populatedMatches">
         <h2>Giocatori</h2>
         <div class="flexbtw" style="margin-left: -160px; width: 214px;">
             <div class="flex">
@@ -44,11 +44,12 @@
         <img src="../../content/images/refresh-page-arrow-button.png" ng-if="stateSessionLabel == 'In Corso'" alt="" class="img-fix" ng-click="getMatches()">
         <div ng-if="stateSessionLabel == 'Terminato'" alt="" class="img-fix"></div>
     </div>
-    <div class="col-lg-10 col-lg-offset-1 whitebkg box-scores nopadding roboto border-radius">
-        <div class="flexaround" ng-hide="populatedMatches">
-            <h4>Nessun match disponibile al momento</h4>
-        </div>
-        <div class="" ng-show="populatedMatches" ng-repeat="match in matches track by match.id">
+    <div class="flexaround" ng-hide="populatedMatches">
+
+    </div>
+    <div class="col-lg-10 col-lg-offset-1 whitebkg box-scores nopadding roboto border-radius"  ng-show="populatedMatches" >
+
+        <div class=""ng-repeat="match in matches track by match.id">
 
             <!--verde - Terminato - reset-->
             <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">
