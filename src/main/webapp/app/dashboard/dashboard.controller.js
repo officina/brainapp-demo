@@ -12,7 +12,9 @@
         $scope.rightSession = true;
         var vm= this;
         var bestScores = [];
-
+        $scope.resetMessage = 'reset';
+        $scope.closeMessage = 'close';
+        $scope.elaborateMessage = 'elaborate';
         $scope.getMatches = function(){
             DashboardService.getMatches($stateParams.extsessionid).then(function(response) {
                 $scope.matches = response.data;

@@ -62,14 +62,14 @@
                     <span>Terminato</span>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
-                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn redbtn btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn redbtn btn-sm brokenbtn" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <div class="btn bluebtn btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
-                    <div class="btn yellowbtn brokenbtn btn-sm interrupt somemarright" aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn redbtn brokenbtn btn-sm" aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}"  ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn yellowbtn brokenbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn redbtn brokenbtn btn-sm" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}"  aria-disabled="true" disabled>Chiudi</div>
                 </div>
             </div>
 
@@ -91,14 +91,14 @@
                     <span>In corso</span>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
-                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn redbtn btn-sm brokenbtn" aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}"   aria-disabled="true" disabled>Reset</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn redbtn btn-sm brokenbtn" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}"  aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <div class="btn bluebtn btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright" ng-click="openModal(match.id, 'elabora')">Elabora</div>
-                    <div class="btn redbtn btn-sm" ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}"  ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  ng-click="openModal(match.id, 'elabora')">Elabora</div>
+                    <div class="btn redbtn btn-sm" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}"  ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
                 </div>
             </div>
 
@@ -117,14 +117,14 @@
                 </div>
                 <div class="advancement flexaround"><span>Match Appeso</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
-                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <div class="btn bluebtn btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
-                    <div class="btn yellowbtn brokenbtn btn-sm interrupt somemarright" aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn redbtn btn-sm" ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn yellowbtn brokenbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn redbtn btn-sm" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
                 </div>
             </div>
 
@@ -143,14 +143,14 @@
                 </div>
                 <div class="advancement flexaround"><span>In Elaborazione</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
-                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn redbtn btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn redbtn btn-sm brokenbtn" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <div class="btn bluebtn btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright" ng-click="openModal(match.id, 'elabora')">Elabora</div>
-                    <div class="btn btn-danger btn-sm brokenbtn" aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" ng-click="openModal(match.id, 'elabora')">Elabora</div>
+                    <div class="btn btn-danger btn-sm brokenbtn" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" aria-disabled="true" disabled>Chiudi</div>
                 </div>
             </div>
 
@@ -169,14 +169,14 @@
                 </div>
                 <div class="advancement flexaround"><span>Elaborazione Fallita</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
-                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn"  aria-disabled="true" disabled>Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn"  aria-disabled="true" disabled>Elabora</div>
-                    <div class="btn btn-danger btn-sm brokenbtn"  aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn btn-danger btn-sm brokenbtn" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <div class="btn bluebtn btn-sm reset somemarright" ng-click="openModal(match.id, 'resetta')">Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright" ng-click="openModal(match.id, 'elabora')">Elabora</div>
-                    <div class="btn btn-danger brokenbtn btn-sm" aria-disabled="true" disabled>Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" ng-click="openModal(match.id, 'elabora')">Elabora</div>
+                    <div class="btn btn-danger brokenbtn btn-sm" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" aria-disabled="true" disabled>Chiudi</div>
                 </div>
             </div>
         </div>
@@ -185,6 +185,7 @@
 <div ng-hide="rightSession" class="container full-width arcade-bg" >
     <h1>La sessione che cerchi non risulta disponibile</h1>
 </div>
+
 
 
 
