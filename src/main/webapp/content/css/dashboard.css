@@ -92,16 +92,16 @@
 }
 .statusinfogo {
     background-color: #38c738;
-    height: 12px;
-    width: 12px;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
     position: relative;
     z-index: 2;
 }
 .statusinfono {
     background-color: #ff5e5e;
-    height: 12px;
-    width: 12px;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
     display: flex;
     position: relative;
@@ -110,8 +110,8 @@
 
 .statusinfofo {
     background-color: #ffbc5e;
-    height: 12px;
-    width: 12px;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
     position: relative;
     z-index: 2;
@@ -119,8 +119,8 @@
 
 .statusinfost {
     background-color: #d6d5d5;
-    height: 12px;
-    width: 12px;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
     position: relative;
     z-index: 2;
