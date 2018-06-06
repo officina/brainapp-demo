@@ -21,6 +21,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -55,6 +56,10 @@ public class GameResource {
     private final MatchTemplateService templateService;
     private final SessionService sessionService;
     private final ReportService reportService;
+    @Value("${validationService.endpoint}")
+    private String replyEndPoint;
+    @Value("${validationService.hostname}")
+    private String hostname;
 
     public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService,
     				ReportService reportService) {
@@ -162,9 +167,7 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with id "+sessionId+" not found")).body(null);
         }
         boolean validateSession = false;
-        //TODO set hostname and endpoint as properties
-        String hostname = "http://gamificationlabcert.generali.it";
-        String endpoint = "/api/gaming/isvalid?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
+        String endpoint = replyEndPoint+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
         String url = hostname+endpoint;
 
         HttpClient client = HttpClientBuilder.create().build();
