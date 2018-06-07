@@ -187,7 +187,6 @@ public class GameResource {
             log.info("Risposta ottenuta: "+response);
             //log.info("StatusCode: "+response.getStatusLine().getStatusCode());
             if (response.getStatusLine().getStatusCode() == 200){
-                //TODO verificare la risposta e loggare
                 BufferedReader rd = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
 
