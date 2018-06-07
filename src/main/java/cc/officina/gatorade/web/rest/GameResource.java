@@ -174,7 +174,7 @@ public class GameResource {
         if (bp != null && bp.matches(bypass)){
             validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
         }else{
-            String endpoint = replyEndPoint;//+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
+            String endpoint = replyEndPoint+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
             String url = hostname+endpoint;
 
             HttpClient client = HttpClientBuilder.create().build();
