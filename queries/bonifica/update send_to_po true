@@ -1,0 +1,445 @@
+select m.id, m.user_id, po.action_id, elaborated,send_to_po,m.best_score,m.best_level, po.po_score, *
+--update match set send_to_po = true where id in (
+
+--select q.id from (
+
+--select m.id
+from match m
+   	, game g
+	, (
+  select 'atomasse' user_id, 'sfida_circle_dot' action_id, 29 po_score
+union  	select 'atomasse' user_id, 'sfida_color_flow' action_id, 18 po_score
+union  	select 'atomasse' user_id, 'sfida_electrio' action_id, 14 po_score
+union  	select 'atomasse' user_id, 'sfida_engineerio' action_id, 11 po_score
+union  	select 'atomasse' user_id, 'sfida_focus' action_id, 135 po_score
+union  	select 'atomasse' user_id, 'sfida_make7' action_id, 763 po_score
+union  	select 'campi2' user_id, 'sfida_make7' action_id, 789 po_score
+union  	select 'ccarneva' user_id, 'sfida_color_flow' action_id, 9999 po_score
+union  	select 'chiappin' user_id, 'sfida_focus' action_id, 120 po_score
+union  	select 'crescenz' user_id, 'sfida_electrio' action_id, 7 po_score
+union  	select 'crisaful' user_id, 'sfida_circle_dot' action_id, 27 po_score
+union  	select 'crisaful' user_id, 'sfida_electrio' action_id, 9 po_score
+union  	select 'crisaful' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'crisaful' user_id, 'sfida_focus' action_id, 435 po_score
+union  	select 'crisaful' user_id, 'sfida_make7' action_id, 514 po_score
+union  	select 'domenich' user_id, 'sfida_circle_dot' action_id, 30 po_score
+union  	select 'domenich' user_id, 'sfida_electrio' action_id, 13 po_score
+union  	select 'domenich' user_id, 'sfida_engineerio' action_id, 5 po_score
+union  	select 'domenich' user_id, 'sfida_make7' action_id, 963 po_score
+union  	select 'ferrario' user_id, 'sfida_circle_dot' action_id, 23 po_score
+union  	select 'ferrario' user_id, 'sfida_color_flow' action_id, 21 po_score
+union  	select 'ferrario' user_id, 'sfida_electrio' action_id, 17 po_score
+union  	select 'ferrario' user_id, 'sfida_engineerio' action_id, 6 po_score
+union  	select 'ferrario' user_id, 'sfida_focus' action_id, 210 po_score
+union  	select 'ferrario' user_id, 'sfida_make7' action_id, 470 po_score
+union  	select 'frigerio' user_id, 'sfida_circle_dot' action_id, 17 po_score
+union  	select 'frigerio' user_id, 'sfida_electrio' action_id, 12 po_score
+union  	select 'frigerio' user_id, 'sfida_make7' action_id, 667 po_score
+union  	select 'fvecchie' user_id, 'sfida_focus' action_id, 105 po_score
+union  	select 'gc0ia' user_id, 'sfida_circle_dot' action_id, 24 po_score
+union  	select 'gc0ia' user_id, 'sfida_engineerio' action_id, 0 po_score
+union  	select 'gc0ia' user_id, 'sfida_focus' action_id, 255 po_score
+union  	select 'gc0ia' user_id, 'sfida_make7' action_id, 518 po_score
+union  	select 'jurkic' user_id, 'sfida_circle_dot' action_id, 18 po_score
+union  	select 'jurkic' user_id, 'sfida_color_flow' action_id, 21 po_score
+union  	select 'jurkic' user_id, 'sfida_electrio' action_id, 14 po_score
+union  	select 'jurkic' user_id, 'sfida_focus' action_id, 45 po_score
+union  	select 'jurkic' user_id, 'sfida_make7' action_id, 485 po_score
+union  	select 'pedrini1' user_id, 'sfida_engineerio' action_id, 11 po_score
+union  	select 'pedrini1' user_id, 'sfida_focus' action_id, 165 po_score
+union  	select 'pedrini1' user_id, 'sfida_make7' action_id, 497 po_score
+union  	select 'r0rq3' user_id, 'sfida_color_flow' action_id, 23 po_score
+union  	select 'r0rq3' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'r0rq3' user_id, 'sfida_focus' action_id, 120 po_score
+union  	select 'r0rq3' user_id, 'sfida_make7' action_id, 400 po_score
+union  	select 'r0rs8' user_id, 'sfida_focus' action_id, 225 po_score
+union  	select 'scaramu2' user_id, 'sfida_electrio' action_id, 17 po_score
+union  	select 'scaramu2' user_id, 'sfida_engineerio' action_id, 11 po_score
+union  	select 'scaramu2' user_id, 'sfida_focus' action_id, 720 po_score
+union  	select 't0d94' user_id, 'sfida_color_flow' action_id, 23 po_score
+union  	select 't0d94' user_id, 'sfida_electrio' action_id, 6 po_score
+union  	select 't0d94' user_id, 'sfida_engineerio' action_id, 5 po_score
+union  	select 't0d94' user_id, 'sfida_focus' action_id, 105 po_score
+union  	select 't0d94' user_id, 'sfida_make7' action_id, 803 po_score
+union  	select 'tramonti' user_id, 'sfida_circle_dot' action_id, 38 po_score
+union  	select 'tramonti' user_id, 'sfida_color_flow' action_id, 17 po_score
+union  	select 'tramonti' user_id, 'sfida_electrio' action_id, 18 po_score
+union  	select 'tramonti' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'tramonti' user_id, 'sfida_focus' action_id, 1050 po_score
+union  	select 'tramonti' user_id, 'sfida_make7' action_id, 606 po_score
+union  	select 'vanin_sara' user_id, 'sfida_make7' action_id, 372 po_score
+union  	select 'apulina' user_id, 'sfida_electrio' action_id, 9 po_score
+union  	select 'apulina' user_id, 'sfida_focus' action_id, 240 po_score
+union  	select 'careddu' user_id, 'sfida_engineerio' action_id, 0 po_score
+union  	select 'careddu' user_id, 'sfida_focus' action_id, 195 po_score
+union  	select 'careddu' user_id, 'sfida_make7' action_id, 615 po_score
+union  	select 'csti11' user_id, 'sfida_electrio' action_id, 8 po_score
+union  	select 'frigeri1' user_id, 'sfida_electrio' action_id, 11 po_score
+union  	select 'frigeri1' user_id, 'sfida_focus' action_id, 330 po_score
+union  	select 'frigeri1' user_id, 'sfida_make7' action_id, 799 po_score
+union  	select 'gadei' user_id, 'sfida_electrio' action_id, 3 po_score
+union  	select 'gadei' user_id, 'sfida_engineerio' action_id, 3 po_score
+union  	select 'gadei' user_id, 'sfida_focus' action_id, 75 po_score
+union  	select 'm0mv1' user_id, 'sfida_electrio' action_id, 9 po_score
+union  	select 'm0mv1' user_id, 'sfida_engineerio' action_id, 0 po_score
+union  	select 'm0mv1' user_id, 'sfida_focus' action_id, 270 po_score
+union  	select 'm0mv1' user_id, 'sfida_make7' action_id, 645 po_score
+union  	select 'patane' user_id, 'sfida_electrio' action_id, 7 po_score
+union  	select 'patane' user_id, 'sfida_engineerio' action_id, 0 po_score
+union  	select 'patane' user_id, 'sfida_focus' action_id, 90 po_score
+union  	select 'patane' user_id, 'sfida_make7' action_id, 712 po_score
+union  	select 'rzampolli' user_id, 'sfida_electrio' action_id, 8 po_score
+union  	select 'rzampolli' user_id, 'sfida_engineerio' action_id, 0 po_score
+union  	select 'rzampolli' user_id, 'sfida_focus' action_id, 90 po_score
+union  	select 't0d96' user_id, 'sfida_electrio' action_id, 5 po_score
+union  	select 't0d96' user_id, 'sfida_engineerio' action_id, 0 po_score
+union  	select 't0d96' user_id, 'sfida_focus' action_id, 240 po_score
+union  	select 't0d96' user_id, 'sfida_make7' action_id, 501 po_score
+union  	select 't0mal' user_id, 'sfida_electrio' action_id, 12 po_score
+union  	select 't0qu9' user_id, 'sfida_engineerio' action_id, 0 po_score
+union  	select 't0qu9' user_id, 'sfida_make7' action_id, 457 po_score
+union  	select 't0rd4' user_id, 'sfida_electrio' action_id, 9 po_score
+union  	select 't0rd5' user_id, 'sfida_make7' action_id, 317 po_score
+union  	select 'tedesco1' user_id, 'sfida_electrio' action_id, 9 po_score
+union  	select 'tedesco1' user_id, 'sfida_focus' action_id, 1455 po_score
+union  	select 'tedesco1' user_id, 'sfida_make7' action_id, 363 po_score
+union  	select 'viscuso' user_id, 'sfida_electrio' action_id, 13 po_score
+union  	select 'viscuso' user_id, 'sfida_engineerio' action_id, 0 po_score
+union  	select 'viscuso' user_id, 'sfida_focus' action_id, 375 po_score
+union  	select 'viscuso' user_id, 'sfida_make7' action_id, 686 po_score
+union  	select 'adecrist' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'allegret' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'amoglie' user_id, 'sfida_electrio' action_id, 8 po_score
+union  	select 'amoglie' user_id, 'sfida_engineerio' action_id, 3 po_score
+union  	select 'amoglie' user_id, 'sfida_focus' action_id, 135 po_score
+union  	select 'amoglie' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'b0bk9' user_id, 'sfida_circle_dot' action_id, 18 po_score
+union  	select 'b0bk9' user_id, 'sfida_electrio' action_id, 8 po_score
+union  	select 'b0bk9' user_id, 'sfida_engineerio' action_id, 11 po_score
+union  	select 'b0bk9' user_id, 'sfida_focus' action_id, 135 po_score
+union  	select 'b0bk9' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'bampa1' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'biral1' user_id, 'sfida_engineerio' action_id, 11 po_score
+union  	select 'biral1' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'bolognat' user_id, 'sfida_focus' action_id, 75 po_score
+union  	select 'bolognat' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'curtolil' user_id, 'sfida_circle_dot' action_id, 19 po_score
+union  	select 'curtolil' user_id, 'sfida_color_flow' action_id, 17 po_score
+union  	select 'curtolil' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'dallator' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'flora' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'fmaffucc' user_id, 'sfida_color_flow' action_id, 27 po_score
+union  	select 'fmaffucc' user_id, 'sfida_electrio' action_id, 6 po_score
+union  	select 'fmaffucc' user_id, 'sfida_engineerio' action_id, 3 po_score
+union  	select 'fmaffucc' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'giordan1' user_id, 'sfida_engineerio' action_id, 2 po_score
+union  	select 'giordan1' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'lastra' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'lattuada' user_id, 'sfida_circle_dot' action_id, 2 po_score
+union  	select 'lattuada' user_id, 'sfida_color_flow' action_id, 22 po_score
+union  	select 'lattuada' user_id, 'sfida_electrio' action_id, 17 po_score
+union  	select 'lattuada' user_id, 'sfida_engineerio' action_id, 13 po_score
+union  	select 'lattuada' user_id, 'sfida_focus' action_id, 540 po_score
+union  	select 'lattuada' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'locorotondo' user_id, 'sfida_circle_dot' action_id, 26 po_score
+union  	select 'locorotondo' user_id, 'sfida_color_flow' action_id, 17 po_score
+union  	select 'locorotondo' user_id, 'sfida_electrio' action_id, 14 po_score
+union  	select 'locorotondo' user_id, 'sfida_engineerio' action_id, 12 po_score
+union  	select 'locorotondo' user_id, 'sfida_focus' action_id, 630 po_score
+union  	select 'locorotondo' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'martino3' user_id, 'sfida_engineerio' action_id, 3 po_score
+union  	select 'martino3' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'medizza' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'pelizzar' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'piras5' user_id, 'sfida_circle_dot' action_id, 26 po_score
+union  	select 'piras5' user_id, 'sfida_color_flow' action_id, 21 po_score
+union  	select 'piras5' user_id, 'sfida_electrio' action_id, 17 po_score
+union  	select 'piras5' user_id, 'sfida_engineerio' action_id, 17 po_score
+union  	select 'piras5' user_id, 'sfida_focus' action_id, 1200 po_score
+union  	select 'piras5' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'pstaiano' user_id, 'sfida_color_flow' action_id, 22 po_score
+union  	select 'pstaiano' user_id, 'sfida_focus' action_id, 180 po_score
+union  	select 'scrobogn' user_id, 'sfida_color_flow' action_id, 33 po_score
+union  	select 'scrobogn' user_id, 'sfida_electrio' action_id, 7 po_score
+union  	select 'scrobogn' user_id, 'sfida_engineerio' action_id, 3 po_score
+union  	select 'scrobogn' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'sperone1' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'tedesco' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'vettore4' user_id, 'sfida_circle_dot' action_id, 23 po_score
+union  	select 'vettore4' user_id, 'sfida_color_flow' action_id, 20 po_score
+union  	select 'vettore4' user_id, 'sfida_electrio' action_id, 13 po_score
+union  	select 'vettore4' user_id, 'sfida_engineerio' action_id, 13 po_score
+union  	select 'vettore4' user_id, 'sfida_focus' action_id, 450 po_score
+union  	select 'vettore4' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'vianel16' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'vianel16' user_id, 'sfida_focus' action_id, 345 po_score
+union  	select 'vianel16' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'asimoncini' user_id, 'sfida_circle_dot' action_id, 28 po_score
+union  	select 'asimoncini' user_id, 'sfida_draw_line' action_id, 21 po_score
+union  	select 'asimoncini' user_id, 'sfida_electrio' action_id, 7 po_score
+union  	select 'asimoncini' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'asimoncini' user_id, 'sfida_focus' action_id, 1155 po_score
+union  	select 'asimoncini' user_id, 'sfida_gummy_block' action_id, 311 po_score
+union  	select 'asimoncini' user_id, 'sfida_thief_challenge' action_id, 413 po_score
+union  	select 'asimoncini' user_id, 'sfida_make7' action_id, 691 po_score
+union  	select 'carrar11' user_id, 'sfida_circle_dot' action_id, 27 po_score
+union  	select 'carrar11' user_id, 'sfida_color_flow' action_id, 19 po_score
+union  	select 'carrar11' user_id, 'sfida_draw_line' action_id, 18 po_score
+union  	select 'carrar11' user_id, 'sfida_electrio' action_id, 14 po_score
+union  	select 'carrar11' user_id, 'sfida_engineerio' action_id, 11 po_score
+union  	select 'carrar11' user_id, 'sfida_focus' action_id, 165 po_score
+union  	select 'carrar11' user_id, 'sfida_gummy_block' action_id, 587 po_score
+union  	select 'carrar11' user_id, 'sfida_thief_challenge' action_id, 201 po_score
+union  	select 'carrar11' user_id, 'sfida_make7' action_id, 545 po_score
+union  	select 'cbalestr' user_id, 'sfida_circle_dot' action_id, 22 po_score
+union  	select 'cbalestr' user_id, 'sfida_color_flow' action_id, 19 po_score
+union  	select 'cbalestr' user_id, 'sfida_electrio' action_id, 15 po_score
+union  	select 'cbalestr' user_id, 'sfida_engineerio' action_id, 12 po_score
+union  	select 'cbalestr' user_id, 'sfida_focus' action_id, 480 po_score
+union  	select 'cbalestr' user_id, 'sfida_make7' action_id, 1078 po_score
+union  	select 'chiarand' user_id, 'sfida_circle_dot' action_id, 25 po_score
+union  	select 'chiarand' user_id, 'sfida_color_flow' action_id, 21 po_score
+union  	select 'chiarand' user_id, 'sfida_electrio' action_id, 12 po_score
+union  	select 'chiarand' user_id, 'sfida_engineerio' action_id, 10 po_score
+union  	select 'chiarand' user_id, 'sfida_focus' action_id, 855 po_score
+union  	select 'chiarand' user_id, 'sfida_make7' action_id, 534 po_score
+union  	select 'clemente' user_id, 'sfida_circle_dot' action_id, 21 po_score
+union  	select 'clemente' user_id, 'sfida_draw_line' action_id, 19 po_score
+union  	select 'clemente' user_id, 'sfida_electrio' action_id, 18 po_score
+union  	select 'clemente' user_id, 'sfida_parity_with_number' action_id, 30 po_score
+union  	select 'clemente' user_id, 'sfida_thief_challenge' action_id, 385 po_score
+union  	select 'coghetto_carla' user_id, 'sfida_circle_dot' action_id, 27 po_score
+union  	select 'coghetto_carla' user_id, 'sfida_color_flow' action_id, 18 po_score
+union  	select 'coghetto_carla' user_id, 'sfida_draw_line' action_id, 17 po_score
+union  	select 'coghetto_carla' user_id, 'sfida_electrio' action_id, 11 po_score
+union  	select 'coghetto_carla' user_id, 'sfida_engineerio' action_id, 3 po_score
+union  	select 'coghetto_carla' user_id, 'sfida_make7' action_id, 632 po_score
+union  	select 'fabrizi' user_id, 'sfida_color_flow' action_id, 0 po_score
+union  	select 'fais_francesca' user_id, 'sfida_circle_dot' action_id, 32 po_score
+union  	select 'fais_francesca' user_id, 'sfida_color_flow' action_id, 20 po_score
+union  	select 'fais_francesca' user_id, 'sfida_draw_line' action_id, 21 po_score
+union  	select 'fais_francesca' user_id, 'sfida_electrio' action_id, 14 po_score
+union  	select 'fais_francesca' user_id, 'sfida_engineerio' action_id, 13 po_score
+union  	select 'fais_francesca' user_id, 'sfida_focus' action_id, 135 po_score
+union  	select 'fais_francesca' user_id, 'sfida_gummy_block' action_id, 1228 po_score
+union  	select 'fais_francesca' user_id, 'sfida_thief_challenge' action_id, 445 po_score
+union  	select 'fais_francesca' user_id, 'sfida_make7' action_id, 541 po_score
+union  	select 'gmeli' user_id, 'sfida_thief_challenge' action_id, 306 po_score
+union  	select 'gpaiano' user_id, 'sfida_circle_dot' action_id, 23 po_score
+union  	select 'gpaiano' user_id, 'sfida_color_flow' action_id, 26 po_score
+union  	select 'gpaiano' user_id, 'sfida_electrio' action_id, 8 po_score
+union  	select 'gpaiano' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'gpaiano' user_id, 'sfida_focus' action_id, 15 po_score
+union  	select 'graziade' user_id, 'sfida_circle_dot' action_id, 27 po_score
+union  	select 'graziade' user_id, 'sfida_color_flow' action_id, 18 po_score
+union  	select 'graziade' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'graziade' user_id, 'sfida_make7' action_id, 460 po_score
+union  	select 'levorat1' user_id, 'sfida_circle_dot' action_id, 27 po_score
+union  	select 'levorat1' user_id, 'sfida_color_flow' action_id, 21 po_score
+union  	select 'levorat1' user_id, 'sfida_draw_line' action_id, 16 po_score
+union  	select 'levorat1' user_id, 'sfida_electrio' action_id, 9 po_score
+union  	select 'levorat1' user_id, 'sfida_engineerio' action_id, 11 po_score
+union  	select 'levorat1' user_id, 'sfida_focus' action_id, 120 po_score
+union  	select 'levorat1' user_id, 'sfida_thief_challenge' action_id, 219 po_score
+union  	select 'levorat1' user_id, 'sfida_make7' action_id, 800 po_score
+union  	select 'livieri' user_id, 'sfida_circle_dot' action_id, 29 po_score
+union  	select 'livieri' user_id, 'sfida_color_flow' action_id, 20 po_score
+union  	select 'livieri' user_id, 'sfida_draw_line' action_id, 28 po_score
+union  	select 'livieri' user_id, 'sfida_electrio' action_id, 23 po_score
+union  	select 'livieri' user_id, 'sfida_engineerio' action_id, 18 po_score
+union  	select 'livieri' user_id, 'sfida_focus' action_id, 3615 po_score
+union  	select 'livieri' user_id, 'sfida_gummy_block' action_id, 441 po_score
+union  	select 'livieri' user_id, 'sfida_thief_challenge' action_id, 724 po_score
+union  	select 'livieri' user_id, 'sfida_make7' action_id, 596 po_score
+union  	select 'mmeduri' user_id, 'sfida_circle_dot' action_id, 30 po_score
+union  	select 'mmeduri' user_id, 'sfida_color_flow' action_id, 22 po_score
+union  	select 'mmeduri' user_id, 'sfida_draw_line' action_id, 18 po_score
+union  	select 'mmeduri' user_id, 'sfida_electrio' action_id, 11 po_score
+union  	select 'mmeduri' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'mmeduri' user_id, 'sfida_focus' action_id, 90 po_score
+union  	select 'mmeduri' user_id, 'sfida_make7' action_id, 577 po_score
+union  	select 'murra' user_id, 'sfida_circle_dot' action_id, 29 po_score
+union  	select 'murra' user_id, 'sfida_color_flow' action_id, 18 po_score
+union  	select 'murra' user_id, 'sfida_draw_line' action_id, 21 po_score
+union  	select 'murra' user_id, 'sfida_electrio' action_id, 14 po_score
+union  	select 'murra' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'murra' user_id, 'sfida_focus' action_id, 375 po_score
+union  	select 'murra' user_id, 'sfida_gummy_block' action_id, 1539 po_score
+union  	select 'murra' user_id, 'sfida_thief_challenge' action_id, 597 po_score
+union  	select 'murra' user_id, 'sfida_make7' action_id, 864 po_score
+union  	select 'pirico' user_id, 'sfida_circle_the_dot' action_id, 10 po_score
+union  	select 'pirico' user_id, 'sfida_circle_dot' action_id, 32 po_score
+union  	select 'pirico' user_id, 'sfida_color_flow' action_id, 19 po_score
+union  	select 'pirico' user_id, 'sfida_draw_line' action_id, 25 po_score
+union  	select 'pirico' user_id, 'sfida_electrio' action_id, 20 po_score
+union  	select 'pirico' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'pirico' user_id, 'sfida_focus' action_id, 510 po_score
+union  	select 'pirico' user_id, 'sfida_gummy_block' action_id, 600 po_score
+union  	select 'pirico' user_id, 'sfida_thief_challenge' action_id, 574 po_score
+union  	select 'pirico' user_id, 'sfida_make7' action_id, 634 po_score
+union  	select 'ramazzot' user_id, 'sfida_circle_dot' action_id, 21 po_score
+union  	select 'ramazzot' user_id, 'sfida_color_flow' action_id, 20 po_score
+union  	select 'ramazzot' user_id, 'sfida_draw_line' action_id, 13 po_score
+union  	select 'ramazzot' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'ramazzot' user_id, 'sfida_focus' action_id, 135 po_score
+union  	select 'ramazzot' user_id, 'sfida_thief_challenge' action_id, 192 po_score
+union  	select 'ramazzot' user_id, 'sfida_make7' action_id, 688 po_score
+union  	select 'ruisi1' user_id, 'sfida_circle_dot' action_id, 19 po_score
+union  	select 'ruisi1' user_id, 'sfida_color_flow' action_id, 19 po_score
+union  	select 'ruisi1' user_id, 'sfida_draw_line' action_id, 17 po_score
+union  	select 'ruisi1' user_id, 'sfida_electrio' action_id, 6 po_score
+union  	select 'ruisi1' user_id, 'sfida_engineerio' action_id, 8 po_score
+union  	select 'ruisi1' user_id, 'sfida_focus' action_id, 150 po_score
+union  	select 'ruisi1' user_id, 'sfida_gummy_block' action_id, 648 po_score
+union  	select 'ruisi1' user_id, 'sfida_thief_challenge' action_id, 271 po_score
+union  	select 'ruisi1' user_id, 'sfida_make7' action_id, 538 po_score
+union  	select 'sbarbon' user_id, 'sfida_circle_dot' action_id, 17 po_score
+union  	select 'sbarbon' user_id, 'sfida_color_flow' action_id, 21 po_score
+union  	select 'sbarbon' user_id, 'sfida_electrio' action_id, 9 po_score
+union  	select 'sbarbon' user_id, 'sfida_engineerio' action_id, 5 po_score
+union  	select 'sbarbon' user_id, 'sfida_thief_challenge' action_id, 0 po_score
+union  	select 'sbarbon' user_id, 'sfida_make7' action_id, 0 po_score
+union  	select 'serena_elena' user_id, 'sfida_circle_dot' action_id, 24 po_score
+union  	select 'serena_elena' user_id, 'sfida_color_flow' action_id, 19 po_score
+union  	select 'serena_elena' user_id, 'sfida_draw_line' action_id, 25 po_score
+union  	select 'serena_elena' user_id, 'sfida_electrio' action_id, 11 po_score
+union  	select 'serena_elena' user_id, 'sfida_engineerio' action_id, 12 po_score
+union  	select 'serena_elena' user_id, 'sfida_focus' action_id, 90 po_score
+union  	select 'serena_elena' user_id, 'sfida_parity_with_number' action_id, 22 po_score
+union  	select 'serena_elena' user_id, 'sfida_thief_challenge' action_id, 333 po_score
+union  	select 'serena_elena' user_id, 'sfida_make7' action_id, 756 po_score
+union  	select 'tessaro' user_id, 'sfida_circle_dot' action_id, 23 po_score
+union  	select 'tessaro' user_id, 'sfida_color_flow' action_id, 18 po_score
+union  	select 'tessaro' user_id, 'sfida_draw_line' action_id, 28 po_score
+union  	select 'tessaro' user_id, 'sfida_electrio' action_id, 15 po_score
+union  	select 'tessaro' user_id, 'sfida_engineerio' action_id, 12 po_score
+union  	select 'tessaro' user_id, 'sfida_focus' action_id, 645 po_score
+union  	select 'tessaro' user_id, 'sfida_thief_challenge' action_id, 382 po_score
+union  	select 'tessaro' user_id, 'sfida_make7' action_id, 534 po_score
+	  )  po
+where --user_id not like 'loaderio%'
+ 	m.user_id = po.user_id
+and m.game_id = g.id
+and g.action_id = po.action_id
+and m.user_id in (
+'atomasse'
+,'bertazzo'
+,'campi2'
+,'ccarneva'
+,'cdelucia'
+,'chiappin'
+,'crescenz'
+,'crisaful'
+,'depieri'
+,'dezotti_matteo'
+,'domenich'
+,'ferrario'
+,'finverni'
+,'franzato'
+,'frigerio'
+,'fvecchie'
+,'gc0ia'
+,'giacomet'
+,'gilardon'
+,'jurkic'
+,'m0mk6'
+,'nardi1'
+,'ortolano'
+,'pedrini1'
+,'perissi5'
+,'pietrasa'
+,'r0rq3'
+,'r0rs8'
+,'rainero'
+,'rcarosi'
+,'saviane'
+,'scaramu2'
+,'t0d94'
+,'t0tpn'
+,'tosca1'
+,'tramonti'
+,'vanin_sara'
+,'vian_raoul'
+,'vspoto'
+,'apulina'
+,'avia'
+,'bison1'
+,'careddu'
+,'cpuglisi'
+,'csti11'
+,'frigeri1'
+,'gadei'
+,'m0mv1'
+,'patane'
+,'priano1'
+,'rzampolli'
+,'t0d96'
+,'t0ep9'
+,'t0kg8'
+,'t0mal'
+,'t0me3'
+,'t0q26'
+,'t0qu9'
+,'t0qui'
+,'t0rd4'
+,'t0rd5'
+,'t6a68'
+,'tca44'
+,'tedesco1'
+,'uconrado'
+,'viscuso'
+,'adecrist'
+,'allegret'
+,'amoglie'
+,'b0bk9'
+,'bampa1'
+,'biral1'
+,'bolognat'
+,'curtolil'
+,'dallator'
+,'flora'
+,'fmaffucc'
+,'giordan1'
+,'lastra'
+,'lattuada'
+,'locorotondo'
+,'martino3'
+,'medizza'
+,'pelizzar'
+,'piras5'
+,'pstaiano'
+,'scrobogn'
+,'sperone1'
+,'tedesco'
+,'vettore4'
+,'vianel16'
+,'asimoncini'
+,'aturcisi'
+,'carrar11'
+,'cbalestr'
+,'cciotta'
+,'chiarand'
+,'clemente'
+,'coghetto_carla'
+,'fabrizi'
+,'fais_francesca'
+,'gmeli'
+,'gpaiano'
+,'graziade'
+,'grison'
+,'levorat1'
+,'livieri'
+,'mmeduri'
+,'mterzi'
+,'murra'
+,'pirico'
+,'ramazzot'
+,'rbrunetti'
+,'ruisi1'
+,'sbarbon'
+,'serena_elena'
+,'tessaro'
+)
+--and (m.best_score = po_score or CAST(coalesce(m.best_level, '989898') AS integer) = po_score)
+order by m.id
+	--)
