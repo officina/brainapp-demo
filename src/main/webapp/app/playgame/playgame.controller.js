@@ -225,7 +225,7 @@
         //controllo parametro di rigioco in arrivo da link di gioco
         var replay = $stateParams.replay;
         console.log("REPLAY = " + replay);
-        PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.sessionid, replay).then(function (response) {
+        PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.sessionid, $stateParams.bp).then(function (response) {
             $scope.game = response.data;
             $scope.wrapperMemory.game = response.data;
             $scope.wrapperMemory.player = {};

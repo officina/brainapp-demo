@@ -24,3 +24,5 @@ playoff:
         domain: playoffgenerali.it
         id: N2M2OWM3N2UtNGQ4Yy00NGY3LTlkNjctZTg3ODI5YTMyMDY0
         secret: OGQ4OTcwY2YtYmFiNy00MTNhLTk2Y2YtNDVjZTIyY2I4NDI1NzUyYjliZjAtZGY0MS0xMWU3LWJlNzEtNzcwN2EyNmM2YTY3
+validationBypass:
+    secret: bvfg3vexZDKd
