@@ -6,11 +6,12 @@
     stateConfig.$inject = ['$stateProvider'];
 
     function stateConfig($stateProvider) {
-        $stateProvider.state('manage', {
+        $stateProvider
+            .state('manage', {
             parent: 'app',
             url: '/manage/sessionid/:extsessionid',
             data: {
-                authorities: ['ROLE_ADMIN'],
+                authorities: ['ROLE_ADMIN']
             },
             views: {
                 'content@': {
@@ -20,7 +21,7 @@
                 },
                 'navbar@': {
                     templateUrl: 'app/layouts/navbar/navbardashboard.html',
-                    controller: 'NavbarController',
+                    controller: 'DashboardController',
                     controllerAs: 'vm'
                 }
             },
@@ -30,6 +31,6 @@
                     return $translate.refresh();
                 }]
             }
-        });
+        })
     }
 })();

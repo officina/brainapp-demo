@@ -22,7 +22,7 @@
         $scope.showReport = true;
         $scope.showError = true;
         // IE + others compatible event handler
-
+        var offlineOnFirstAttempt = true;
         var addEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var removeEventMethod = window.removeEventListener ? "removeEventListener" : "detachEvent";
         var addEvent = window[addEventMethod];
@@ -32,12 +32,16 @@
         var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
         var useLevels = false;
 
-        var setupOffline = function () {
+        var setupOffline = function (showReport) {
             $scope.showGame = false;
             $scope.message1 = "Si è verificato un problema con la tua connessione";
-            $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
-            $scope.errorText = $rootScope.finalError;
-            $scope.reportText = $rootScope.wrapperMemory;
+            if (showReport){
+                $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
+                $scope.errorText = $rootScope.finalError;
+                $scope.reportText = $rootScope.wrapperMemory;
+            }else{
+                $scope.message2 = "Ti preghiamo di controllare la tua connessione";
+            }
         };
 
         var manageError = function (event, attempt, error, why) {
@@ -54,6 +58,10 @@
                 });
             }
             else {
+                if (offlineOnFirstAttempt){
+                    removeEvent(eventName, $scope.handle);
+                    setupOffline(false);
+                }
                 switch (event) {
                     case "START_ATTEMPT":
                         console.log('MANAGE OFFLINE: START_ATTEMPT');
@@ -79,7 +87,7 @@
                         break;
                     default:
                         console.log(event);
-                        setupOffline();
+                        setupOffline(true);
                         break;
                 }
             }
@@ -176,9 +184,25 @@
                     console.log('score/level update vs server');
                     PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function (response) {
                         console.log('Score/Level updated');
+                        offlineOnFirstAttempt = false;
                     })
                         .catch(function (error) {
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.error);
+                            var why = '';
+                            if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                                why = 'matchInvalid';
+                            }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                                why = 'matchElaborated';
+                            } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                                why = 'matchEnded';
+                            } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                                why = 'matchAnomalous';
+                            } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                                why = 'sessionAlreadyInUse';
+                            }else{
+                                why = 'genericError';
+                            }
+                            manageError("START_ATTEMPT", null, error, why);
                         });
                 }
                 var pushTimer = args.seconds % 10;
@@ -260,10 +284,25 @@
                 console.log("creo attempt SENZA match");
                 PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, null, $stateParams.sessionid, $scope.matchToken)
                     .then(function (response) {
+                        offlineOnFirstAttempt = false;
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
                     .catch(function (error) {
-                        manageError("START_ATTEMPT", null, error, "genericError");
+                        var why = '';
+                        if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                            why = 'matchInvalid';
+                        }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                            why = 'matchElaborated';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                            why = 'matchEnded';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                            why = 'matchAnomalous';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                            why = 'sessionAlreadyInUse';
+                        }else{
+                            why = 'genericError';
+                        }
+                        manageError("START_ATTEMPT", null, error, why);
                     });
 
             }
@@ -271,10 +310,25 @@
                 console.log("creo attempt CON match");
                 PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, $scope.wrapperMemory.match.id, $stateParams.sessionid, $scope.matchToken)
                     .then(function (response) {
+                        offlineOnFirstAttempt = false;
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
                     .catch(function (error) {
-                        manageError("START_ATTEMPT", null, error, "genericError");
+                        var why = '';
+                        if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                            why = 'matchInvalid';
+                        }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                            why = 'matchElaborated';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                            why = 'matchEnded';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                            why = 'matchAnomalous';
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                            why = 'sessionAlreadyInUse';
+                        }else{
+                            why = 'genericError';
+                        }
+                        manageError("START_ATTEMPT", null, error, why);
                     });
             }
             $scope.$broadcast('timer-start');
@@ -356,8 +410,21 @@
                         "level": level,
                         "completed": completed
                     };
-
-                    manageError("ATTEMPT_ENDED", data, error, "genericError");
+                    var why = '';
+                    if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                        why = 'matchInvalid';
+                    }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                        why = 'matchElaborated';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                        why = 'matchEnded';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                        why = 'matchAnomalous';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                        why = 'sessionAlreadyInUse';
+                    }else{
+                        why = 'genericError';
+                    }
+                    manageError("ATTEMPT_ENDED", data, error, why);
                 });
         };
 
@@ -447,7 +514,21 @@
                         "level": level,
                         "completed": completed
                     };
-                    manageError("ATTEMPT_RESTARTED", data, error, "genericError");
+                    var why = '';
+                    if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                        why = 'matchInvalid';
+                    }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                        why = 'matchElaborated';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                        why = 'matchEnded';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                        why = 'matchAnomalous';
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                        why = 'sessionAlreadyInUse';
+                    }else{
+                        why = 'genericError';
+                    }
+                    manageError("ATTEMPT_RESTARTED", data, error, why);
                 });
         };
 
