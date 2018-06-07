@@ -72,6 +72,32 @@
     			$scope.message1 = 'La tua partita è terminata.';
     	    	$scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
     			break;
+    			//matchInvalid è riferito al caso in cui l'amministratore ha invalidato la giocata dalla dashboard, è diverso da invalidMatch
+            case 'matchInvalid':
+                $scope.message1 = 'La tua partita è stata terminata.';
+                $scope.message2 = 'Ti preghiamo di contattare l\'amministratore';
+                break;
+            case 'matchElaborated':
+                $scope.message1 = 'La tua partita è stata elaborata.';
+                $scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
+                break;
+            case 'matchEnded':
+                $scope.message1 = 'La tua partita è terminata.';
+                $scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
+                break;
+            case 'matchAnomalous':
+                $scope.message1 = 'La tua partita è terminata.';
+                $scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
+                break;
+            case 'sessionAlreadyInUse':
+                $scope.message1 = 'La tua partita è in corso';
+                $scope.message2 = 'Hai una giocata in corso in un\'altra finestra';
+                break;
+            case 'offline':
+                $scope.message1 = 'Non siamo riusciti a contattare il server';
+                $scope.message2 = 'Verifica la connessione';
+                break;
+                //identifica i match resi "problematici" a causa di bug, o errori da parte dell'utente
     		case 'invalidMatch':
     			$scope.message1 = 'La tua partita è stata invalidata. ';
     	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';

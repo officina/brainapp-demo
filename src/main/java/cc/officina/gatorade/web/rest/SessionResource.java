@@ -108,11 +108,11 @@ public class SessionResource {
         if(game == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidGameId", "Invalid game id")).body(null);
         }
-        Session oldSession = sessionService.findOne(session.getId());
+        /*Session oldSession = sessionService.findOne(session.getId());
         if(oldSession != null)
         {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invalidId", "id already used")).body(null);
-        }
+        }*/
         Session result = sessionService.save(session);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, session.getId().toString()))
