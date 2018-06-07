@@ -88,7 +88,7 @@
             DashboardService.getSession($stateParams.extsessionid)
                 .then(function (response) {
                 $scope.sessions = response.data;
-                    // $scope.rightSession = true;
+                $scope.rightSession = true;
                 // console.log($scope.currentDate);
                 // console.log(Date.parse($scope.sessions.endDate));
                 // console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
@@ -105,6 +105,13 @@
                 $scope.rightSession = false;
                 clearInterval(session_timer);
                 clearInterval(timer_id);
+                if (error.status == 404) {
+                    $scope.errorMes = 'La sessione che cerchi non risulta disponibile';
+                } else if (!navigator.onLine) {
+                    $scope.errorMes = 'La sessione che cerchi non risulta disponibile, sembra che tu sia offline!';
+                } else {
+                    $scope.errorMes = 'La sessione che cerchi sembra non essere disponibile, prova a ricaricare la pagina';
+                }
             })
         };
         $scope.getSession();
