@@ -3,7 +3,6 @@ package cc.officina.gatorade.web.rest;
 import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.service.*;
 import com.codahale.metrics.annotation.Timed;
-
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.domain.Game;
 import cc.officina.gatorade.domain.Match;
@@ -14,10 +13,19 @@ import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -26,9 +34,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +51,7 @@ import java.util.Optional;
 public class GameResource {
 
     private final Logger log = LoggerFactory.getLogger(GameResource.class);
-
+    private static final String USER_AGENT = "";
     private static final String ENTITY_NAME = "game";
 
     private final GameService gameService;
@@ -50,6 +60,10 @@ public class GameResource {
     private final MatchTemplateService templateService;
     private final SessionService sessionService;
     private final ReportService reportService;
+    @Value("${validationService.endpoint}")
+    private String replyEndPoint;
+    @Value("${validationService.hostname}")
+    private String hostname;
 
     public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService,
     				ReportService reportService) {
@@ -152,7 +166,47 @@ public class GameResource {
         {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Cannot execute GameInit with a null session id")).body(null);
         }
-        boolean validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
+        Session session = sessionService.findOne(sessionId);
+        if (session == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with id "+sessionId+" not found")).body(null);
+        }
+        boolean validateSession = false;
+        String endpoint = replyEndPoint;//+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
+        String url = hostname+endpoint;
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(url);
+
+        // add request header
+        request.addHeader("User-Agent", USER_AGENT);
+        HttpResponse response = null;
+
+        try {
+            log.info("Requiring validation through: "+url);
+            response = client.execute(request);
+            log.info("Risposta ottenuta: "+response);
+            //log.info("StatusCode: "+response.getStatusLine().getStatusCode());
+            if (response.getStatusLine().getStatusCode() == 200){
+                //TODO verificare la risposta e loggare
+                BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer result = new StringBuffer();
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+                log.info("Session valid - validation service complete with "+ result);
+                JsonNode responseJson = new ObjectMapper().readTree(result.toString()).get("Authorized");
+                if (responseJson.booleanValue()){
+                    validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
+                }
+            }else{
+                log.info("Session not valid - validation service failed. status code: "+ response.getStatusLine().getStatusCode());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if(!validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);
         return new ResponseEntity<>(game, null, HttpStatus.OK);
