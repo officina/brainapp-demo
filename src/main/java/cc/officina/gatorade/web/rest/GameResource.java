@@ -13,6 +13,10 @@ import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.apache.http.HttpResponse;
@@ -167,7 +171,7 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with id "+sessionId+" not found")).body(null);
         }
         boolean validateSession = false;
-        String endpoint = replyEndPoint+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
+        String endpoint = replyEndPoint;//+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
         String url = hostname+endpoint;
 
         HttpClient client = HttpClientBuilder.create().build();
@@ -178,29 +182,30 @@ public class GameResource {
         HttpResponse response = null;
 
         try {
-            log.info("Eseguo chiamata di validazione a: "+url);
+            log.info("Requiring validation through: "+url);
             response = client.execute(request);
             log.info("Risposta ottenuta: "+response);
             //log.info("StatusCode: "+response.getStatusLine().getStatusCode());
-            BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent()));
-
-            StringBuffer result = new StringBuffer();
-            String line = "";
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
             if (response.getStatusLine().getStatusCode() == 200){
                 //TODO verificare la risposta e loggare
-                log.info("Session valid - validation service completed successfully through: " + url);
-                validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
+                BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer result = new StringBuffer();
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+                log.info("Session valid - validation service complete with "+ result);
+                JsonNode responseJson = new ObjectMapper().readTree(result.toString()).get("Authorized");
+                if (responseJson.booleanValue()){
+                    validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
+                }
             }else{
-                log.info("Session not valid - validation service failed through: " + url);
-                validateSession = false;
+                log.info("Session not valid - validation service failed. status code: "+ response.getStatusLine().getStatusCode());
             }
         } catch (IOException e) {
             e.printStackTrace();
-            validateSession = false;
         }
         if(!validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);
