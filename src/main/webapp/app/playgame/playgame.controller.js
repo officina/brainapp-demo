@@ -8,7 +8,23 @@
     PlaygameController.$inject = ['$scope', '$rootScope', 'Principal', 'LoginService', '$state', 'PlaygameService', '$sce', '$stateParams', '$interval'];
 
     function PlaygameController($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams, timer, $interval) {
-
+        $scope.isOnline = true;
+        Offline.on("up", function () {
+            $scope.isOnline = true;
+            console.log("Sending offline attempts for sync: ");
+            console.log($scope.wrapperMemory.attemptsOffline);
+            PlaygameService.syncOfflineAttempts($scope.wrapperMemory.attemptsOffline, $scope.wrapperMemory.match)
+                .then(function(response){
+                    $scope.wrapperMemory.attemptsOffline = {}
+                })
+                .catch(function (error){
+                    console.log('Offline attempts sync failed: ');
+                    console.log(error);
+                })
+        });
+        Offline.on("down", function () {
+            $scope.isOnline = false;
+        });
         $scope.wrapperMemory = {};
         $scope.wrapperMemory.attempts = [];
         $scope.wrapperMemory.attemptsOffline = {};
@@ -58,7 +74,7 @@
 
             $rootScope.wrapperMemory = $scope.wrapperMemory;
             $rootScope.finalError = error;
-            if (checkOffline()) {
+            if (!$scope.isOnline) {
                 removeEvent(eventName, $scope.handle);
                 $state.go("ended", {
                     "gameid": $stateParams.gameid,
@@ -214,19 +230,6 @@
                             }
                             manageError("START_ATTEMPT", null, error, why);
                         });
-                }
-                var pushTimer = args.seconds % 10;
-                if (pushTimer == 0){
-                    console.log("Sending offline attempts for sync: ");
-                    console.log($scope.wrapperMemory.attemptsOffline);
-                    PlaygameService.syncOfflineAttempts($scope.wrapperMemory.attemptsOffline, $scope.wrapperMemory.match)
-                        .then(function(response){
-                            $scope.wrapperMemory.attemptsOffline = {}
-                        })
-                        .catch(function (error){
-                            console.log('Offline attempts sync failed: ');
-                            console.log(error);
-                        })
                 }
             }
 
