@@ -10,7 +10,7 @@
     function stateConfig($stateProvider) {
         $stateProvider.state('play', {
             parent: 'app',
-            url: '/play/gameid/:gameid/playtoken/:playtoken/sessionid/:sessionid/replay/:replay',
+            url: '/play/gameid/:gameid/playtoken/:playtoken/sessionid/:sessionid/replay/:replay?:bp',
             data: {
                 authorities: []
             },

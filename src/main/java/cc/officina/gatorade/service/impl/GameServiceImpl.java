@@ -134,25 +134,28 @@ public class GameServiceImpl implements GameService{
             return null;
         }
         ZonedDateTime now = ZonedDateTime.now();
-        Match match = new Match();
-        match.setTemplate(template);
-        match.setUserId(playerId);
-        match.setStart(now);
-        match.setGame(game);
-        match.setSession(session);
-        match.setLastStart(now);
-        match.setTimeSpent(0l);
-        match.setElaborated(false);
-        match.setMatchToken(matchToken);
-        match.setUsedToPO(false);
-        match.setValid(true);
-        match.setReplayState(MatchReplayState.playing);
-        match.setParentId(oldOne.getId());
-        oldOne.setReplayState(MatchReplayState.old);
+        Match current = matchRepository.findOneByPlayerAndSession(game.getId(), template.getId(), playerId, session.getId());
+        if (current == null){
+            current = new Match();
+            current.setTemplate(template);
+            current.setUserId(playerId);
+            current.setStart(now);
+            current.setGame(game);
+            current.setSession(session);
+            current.setLastStart(now);
+            current.setTimeSpent(0l);
+            current.setElaborated(false);
+            current.setMatchToken(matchToken);
+            current.setUsedToPO(false);
+            current.setValid(true);
+        }
+        current.setReplayState(MatchReplayState.playing);
+        current.setParentId(oldOne.getId());
+        oldOne.setReplayState(MatchReplayState.main);
         matchRepository.save(oldOne);
-        matchRepository.save(match);
-        log.info("GameService: request to replayMatch completed, ex-main match: "+oldOne.getId() + " - new main match: "+match.getId());
-        return new MatchResponse(game,match,template);
+        matchRepository.save(current);
+        log.info("GameService: request to replayMatch completed, ex-main match: "+oldOne.getId() + " - new main match: "+current.getId());
+        return new MatchResponse(game,current,template);
     }
 
     @Override

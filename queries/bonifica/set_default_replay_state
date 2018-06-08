@@ -1,0 +1,7 @@
+update match set replay_state = 2
+
+--update match set replay_state = 1 where id in (select max(m.id)
+--from match m,
+--session s
+--where s.id = m.session_id
+--group by m.user_id, m.game_id)
