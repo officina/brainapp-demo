@@ -15,8 +15,6 @@ import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.apache.http.HttpResponse;
@@ -64,6 +62,8 @@ public class GameResource {
     private String replyEndPoint;
     @Value("${validationService.hostname}")
     private String hostname;
+    @Value("${validationBypass}")
+    private String bypass;
 
     public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService,
     				ReportService reportService) {
@@ -148,7 +148,7 @@ public class GameResource {
 
     @GetMapping("/play/{id}/init/{sessionId}/{playerid}")
     @Timed
-    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable Long sessionId, @PathVariable String playerid, @RequestParam("replay") Boolean replay) {
+    public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable Long sessionId, @PathVariable String playerid, @RequestParam("bp") String bp) {
         log.info("REST game init for game with id = " + id + ", session id = " + sessionId + " and playerid = " + playerid);
         Game game = gameService.findOne(id);
         if(game == null)
@@ -171,41 +171,44 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with id "+sessionId+" not found")).body(null);
         }
         boolean validateSession = false;
-        String endpoint = replyEndPoint;//+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
-        String url = hostname+endpoint;
+        if (bp != null && bp.matches(bypass)){
+            validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
+        }else{
+            String endpoint = replyEndPoint+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
+            String url = hostname+endpoint;
 
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpGet request = new HttpGet(url);
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpGet request = new HttpGet(url);
 
-        // add request header
-        request.addHeader("User-Agent", USER_AGENT);
-        HttpResponse response = null;
+            // add request header
+            request.addHeader("User-Agent", USER_AGENT);
+            HttpResponse response = null;
 
-        try {
-            log.info("Requiring validation through: "+url);
-            response = client.execute(request);
-            log.info("Risposta ottenuta: "+response);
-            //log.info("StatusCode: "+response.getStatusLine().getStatusCode());
-            if (response.getStatusLine().getStatusCode() == 200){
-                //TODO verificare la risposta e loggare
-                BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent()));
+            try {
+                log.info("Requiring validation through: "+url);
+                response = client.execute(request);
+                log.info("Risposta ottenuta: "+response);
+                //log.info("StatusCode: "+response.getStatusLine().getStatusCode());
+                if (response.getStatusLine().getStatusCode() == 200){
+                    BufferedReader rd = new BufferedReader(
+                        new InputStreamReader(response.getEntity().getContent()));
 
-                StringBuffer result = new StringBuffer();
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    result.append(line);
+                    StringBuffer result = new StringBuffer();
+                    String line = "";
+                    while ((line = rd.readLine()) != null) {
+                        result.append(line);
+                    }
+                    log.info("Session valid - validation service complete with "+ result);
+                    JsonNode responseJson = new ObjectMapper().readTree(result.toString()).get("Authorized");
+                    if (responseJson.booleanValue()){
+                        validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
+                    }
+                }else{
+                    log.info("Session not valid - validation service failed. status code: "+ response.getStatusLine().getStatusCode());
                 }
-                log.info("Session valid - validation service complete with "+ result);
-                JsonNode responseJson = new ObjectMapper().readTree(result.toString()).get("Authorized");
-                if (responseJson.booleanValue()){
-                    validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
-                }
-            }else{
-                log.info("Session not valid - validation service failed. status code: "+ response.getStatusLine().getStatusCode());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         if(!validateSession)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);

@@ -32,10 +32,10 @@ angular.module('gatoradeApp')
   };
 
   //GAME AUTH
-  this.getGameInit =  function getGame(gameId, userid, sessionid, replay){
+  this.getGameInit =  function getGame(gameId, userid, sessionid, bp){
       return $http({
       	method: 'GET',
-      	url: rootPath + '/api/play/' + gameId +  '/init/' + sessionid + '/' + userid + '?replay=' + replay
+      	url: rootPath + '/api/play/' + gameId +  '/init/' + sessionid + '/' + userid + '?bp=' + bp
       })
   };
 
@@ -216,6 +216,20 @@ angular.module('gatoradeApp')
                 attemptsOffline: this.values(attemptsOffline)
             }
         })
-    }
+    };
+
+    this.isOnline = function () {
+        var oReq = new XMLHttpRequest();
+        oReq.open("GET", rootPath + '/content/images/hipster.png', false);
+        oReq.onload = function () {
+            return oReq.status;
+        };
+        try {
+            oReq.send();
+        }catch (e) {
+            return false;
+        }
+
+    };
 
   }]);

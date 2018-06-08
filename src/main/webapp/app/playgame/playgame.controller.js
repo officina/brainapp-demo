@@ -44,11 +44,21 @@
             }
         };
 
+        var checkOffline = function () {
+            /* MSIE used to detect old browsers and Trident used to newer ones*/
+            if (navigator.userAgent.indexOf("MSIE ") > -1 || navigator.userAgent.indexOf("Trident/") > -1){
+                console.log("IE check if offline");
+                return PlaygameService.isOnline();
+            }else{
+                console.log("check if offline "+navigator.onLine);
+                return navigator.onLine;
+            }
+        };
         var manageError = function (event, attempt, error, why) {
 
             $rootScope.wrapperMemory = $scope.wrapperMemory;
             $rootScope.finalError = error;
-            if (navigator.onLine) {
+            if (checkOffline()) {
                 removeEvent(eventName, $scope.handle);
                 $state.go("ended", {
                     "gameid": $stateParams.gameid,
@@ -187,7 +197,7 @@
                         offlineOnFirstAttempt = false;
                     })
                         .catch(function (error) {
-                            PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.error);
+                            PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, error);
                             var why = '';
                             if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
                                 why = 'matchInvalid';
@@ -225,7 +235,7 @@
         //controllo parametro di rigioco in arrivo da link di gioco
         var replay = $stateParams.replay;
         console.log("REPLAY = " + replay);
-        PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.sessionid, replay).then(function (response) {
+        PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.sessionid, $stateParams.bp).then(function (response) {
             $scope.game = response.data;
             $scope.wrapperMemory.game = response.data;
             $scope.wrapperMemory.player = {};

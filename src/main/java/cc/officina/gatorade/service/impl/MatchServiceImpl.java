@@ -127,17 +127,17 @@ public class MatchServiceImpl implements MatchService{
             if (match.getSendToPo()){
                 log.info("Match replay reset point to po");
                 gamificationService.runResetAction(match);
+                if (match.getParentId() != null){
+                    log.info("Get parent match with id: "+match.getParentId());
+                    Match parentMatch = matchRepository.findOne(match.getParentId());
+                    log.info("Set parent match replay state to main");
+                    parentMatch.setReplayState(MatchReplayState.main);
+                    log.info("Parent match replay set point to po");
+                    gamificationService.runAction(parentMatch);
+                    matchRepository.save(parentMatch);
+                }
             }else{
                 log.info("Match replay sendToPo == false, runResetAction skipped");
-            }
-            if (match.getParentId() != null){
-                log.info("Get parent match with id: "+match.getParentId());
-                Match parentMatch = matchRepository.findOne(match.getParentId());
-                log.info("Set parent match replay state to main");
-                parentMatch.setReplayState(MatchReplayState.main);
-                log.info("Parent match replay set point to po");
-                gamificationService.runAction(parentMatch);
-                matchRepository.save(parentMatch);
             }
         }
 		matchRepository.save(match);
