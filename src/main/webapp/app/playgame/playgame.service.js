@@ -216,6 +216,20 @@ angular.module('gatoradeApp')
                 attemptsOffline: this.values(attemptsOffline)
             }
         })
-    }
+    };
+
+    this.isOnline = function () {
+        var oReq = new XMLHttpRequest();
+        oReq.open("GET", rootPath + '/content/images/hipster.png', false);
+        oReq.onload = function () {
+            return oReq.status;
+        };
+        try {
+            oReq.send();
+        }catch (e) {
+            return false;
+        }
+
+    };
 
   }]);
