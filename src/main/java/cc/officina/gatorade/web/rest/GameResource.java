@@ -175,7 +175,7 @@ public class GameResource {
             validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
         }else{
             if (session.getPoRoot() == null){
-                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid, no poRoot available")).body(null);
+                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid, empty poRoot")).body(null);
             }
             String endpoint = replyEndPoint+"?idPlayer="+playerid+"&idSession="+sessionId+"&idTeam="+session.getPoRoot().split("_aggregate")[0]+"&idGame="+game.getId();
             String url = hostname+endpoint;
