@@ -78,7 +78,7 @@
 
             $rootScope.wrapperMemory = $scope.wrapperMemory;
             $rootScope.finalError = error;
-            if (!$scope.isOnline) {
+            if ($scope.isOnline) {
                 removeEvent(eventName, $scope.handle);
                 $state.go("ended", {
                     "gameid": $stateParams.gameid,
