@@ -48,15 +48,19 @@
         var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
         var useLevels = false;
 
-        var setupOffline = function (showReport) {
+        var setupOffline = function (showReport, offline) {
             $scope.showGame = false;
-            $scope.message1 = "Si è verificato un problema con la tua connessione";
+            if (offline){
+                $scope.message1 = "Si è verificato un problema con la tua connessione";
+                $scope.message2 = "Ti preghiamo di controllare la tua connessione";
+            }else{
+                $scope.message1 = 'Si è verificato un errore imprevisto. ';
+                $scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
+            }
             if (showReport){
                 $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
                 $scope.errorText = $rootScope.finalError;
                 $scope.reportText = $rootScope.wrapperMemory;
-            }else{
-                $scope.message2 = "Ti preghiamo di controllare la tua connessione";
             }
         };
 
@@ -86,7 +90,7 @@
             else {
                 if (offlineOnFirstAttempt){
                     removeEvent(eventName, $scope.handle);
-                    setupOffline(false);
+                    setupOffline(false, true);
                 }
                 switch (event) {
                     case "START_ATTEMPT":
@@ -113,7 +117,7 @@
                         break;
                     default:
                         console.log(event);
-                        setupOffline(true);
+                        setupOffline(true, false);
                         break;
                 }
             }
