@@ -7,6 +7,13 @@
     DashboardController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'DashboardService', '$stateParams', '$uibModal'];
 
     function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams, $uibModal) {
+        $scope.isOnline = true;
+        Offline.on("up", function () {
+            $scope.isOnline = true;
+        });
+        Offline.on("down", function () {
+            $scope.isOnline = false;
+        });
         $scope.currentDate = new Date();
         $scope.currentDate = Date.parse($scope.currentDate);
         $scope.rightSession = true;
@@ -107,7 +114,7 @@
                 clearInterval(timer_id);
                 if (error.status == 404) {
                     $scope.errorMes = 'La sessione che cerchi non risulta disponibile';
-                } else if (!navigator.onLine) {
+                } else if (!$scope.isOnline) {
                     $scope.errorMes = 'La sessione che cerchi non risulta disponibile, sembra che tu sia offline!';
                 } else {
                     $scope.errorMes = 'La sessione che cerchi sembra non essere disponibile, prova a ricaricare la pagina';
