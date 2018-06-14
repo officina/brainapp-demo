@@ -256,6 +256,9 @@
 .red {
     background-color: #ff5e5e;
 }
+.yellow {
+    background-color: #F8BA00;
+}
 .firstrectangle {
     position: relative;
     height: 10px;

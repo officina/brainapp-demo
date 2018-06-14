@@ -39,10 +39,10 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
 	@Query("select m from Match m where (m.sendToPo = false or m.elaborated = false) and m.matchToken > -1 and m.retry < :maxRetry and m.anomalous = false")
 	public List<Match> fetchPendingMatches(@Param("maxRetry")Long maxRetry);
 
-	@Query("select m from Match m where m.session.id = :sessionId and m.valid = true order by m.userId asc")
+	@Query("select m from Match m where m.session.id = :sessionId and m.valid = true and m.matchToken > -1 order by m.userId asc")
     public List<Match> findValidBySessionId(@Param("sessionId")Long sessionId);
 
-    @Query("select m from Match m where m.session.id = :sessionId and m.valid = true order by m.userId asc")
+    @Query("select m from Match m where m.session.id = :sessionId and m.valid = true and m.matchToken > -1 order by m.start desc")
     public Page<Match> findValidBySessionId(Pageable pageable, @Param("sessionId")Long sessionId);
 
     @Query("select m from Match m where m.game.id = :gameId and m.userId = :playerId and m.replayState = 1 and m.valid = true") //1 = Main

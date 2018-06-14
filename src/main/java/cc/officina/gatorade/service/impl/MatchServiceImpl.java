@@ -15,8 +15,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cc.officina.gatorade.web.response.MatchResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -207,6 +205,12 @@ public class MatchServiceImpl implements MatchService{
     			//per ora lo indico come pending in attesa di eventuale logica per risolverlo
     			//lo marco come anomalo in modo da evidenziarlo lato console admin e non elaborarlo nuovamente alla prossima esecuzione del batch
     			m.setAnomalous(true);
+                m.setBestLevel(m.getMaxLevel());
+                if (m.getGame().getType() == GameType.MINPOINT){
+                    m.setBestScore(Long.parseLong(m.getMinScore()));
+                }else if(m.getGame().getType() == GameType.POINT){
+                    m.setBestScore(Long.valueOf(m.getMaxScore()));
+                }
     			matchRepository.save(m);
     			return TypeOfStillPending.NOT_ELABORATED;
     		}

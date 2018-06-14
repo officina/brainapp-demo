@@ -50,7 +50,6 @@
     <div class="col-lg-10 col-lg-offset-1 whitebkg box-scores nopadding roboto border-radius"  ng-show="populatedMatches" >
 
         <div class=""ng-repeat="match in matches track by match.id">
-
             <!--verde - Terminato - reset-->
             <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">
                 <div class="alias "><span>{{match.userId}}</span></div>
@@ -65,7 +64,7 @@
                     <div class="statusinfogo"></div>
                 </div>
                 <div class="advancement flexaround">
-                    <span>Terminato</span>
+                    <span>Elaborazione conclusa</span>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
@@ -83,8 +82,7 @@
             <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated != true && match.sendToPo != true">
                 <div class="alias "><span>{{match.userId}}</span></div>
                 <!--<div class="bla">{{currentDate}}</div>-->
-                <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
-                <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+                <div class="maxpoints"><span>-</span></div>
                 <div class="progreslight">
                     <div class="firstrectangle green"></div>
                     <div class="statusinfogo"></div>
@@ -94,7 +92,7 @@
                     <div class="statusinfost"></div>
                 </div>
                 <div class="advancement flexaround">
-                    <span>In corso</span>
+                    <span>Sta giocando</span>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}"   aria-disabled="true" disabled>Reset</div>
@@ -103,7 +101,7 @@
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
                     <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}"  ng-click="openModal(match.id, 'resetta')">Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  ng-click="openModal(match.id, 'elabora')">Elabora</div>
+                    <div class="btn yellowbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  disabled>Elabora</div>
                     <div class="btn redbtn btn-sm" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}"  ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
                 </div>
             </div>
@@ -121,7 +119,7 @@
                     <div class="rectangle gray"></div>
                     <div class="statusinfost"></div>
                 </div>
-                <div class="advancement flexaround"><span>Match Appeso</span></div>
+                <div class="advancement flexaround"><span>Giocata Appesa</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
                     <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
@@ -140,14 +138,14 @@
                 <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
                 <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
                 <div class="progreslight">
-                    <div class="firstrectangle green"></div>
-                    <div class="statusinfogo"></div>
-                    <div class="rectangle g2y"></div>
+                    <div class="firstrectangle yellow"></div>
+                    <div class="statusinfofo"></div>
+                    <div class="rectangle yellow"></div>
                     <div class="statusinfofo"></div>
                     <div class="rectangle gray"></div>
                     <div class="statusinfost"></div>
                 </div>
-                <div class="advancement flexaround"><span>In Elaborazione</span></div>
+                <div class="advancement flexaround"><span>Invio dati in corso</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
                     <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
@@ -173,7 +171,7 @@
                     <div class="rectangle gray"></div>
                     <div class="statusinfost"></div>
                 </div>
-                <div class="advancement flexaround"><span>Elaborazione Fallita</span></div>
+                <div class="advancement flexaround"><span>Invio dati fallito</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
                     <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
