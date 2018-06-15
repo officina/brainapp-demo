@@ -91,7 +91,7 @@
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
-                $scope.message2 = 'Hai una giocata in corso in un\'altra finestra';
+                $scope.message2 = 'Hai un\'altra giocata in corso';
                 break;
             case 'offline':
                 $scope.message1 = 'Non siamo riusciti a contattare il server';
