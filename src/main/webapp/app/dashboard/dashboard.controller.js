@@ -69,7 +69,7 @@
                     }else{
                         $scope.best = Math.max.apply(null, bestScores);
                     }
-                    if ($scope.best === null || $scope.best === undefined || isNaN($scope.best) || $scope.best === -Infinity){
+                    if ($scope.best === null || $scope.best === undefined || isNaN($scope.best) || $scope.best === -Infinity || $scope.best === Infinity){
                         $scope.best = '-'
                     }
                     $scope.numberOfMatches = $scope.matches.length;
@@ -96,20 +96,30 @@
         $scope.getSession = function() {
             DashboardService.getSession($stateParams.extsessionid)
                 .then(function (response) {
-                $scope.sessions = response.data;
+                $scope.session = response.data;
+                $scope.teamName = '';
+                var splitted = $scope.session.poRoot.split("_");
+                for (var iWord in splitted){
+                    if (splitted[iWord] !== 'aggregate'){
+                        var firstLetter = splitted[iWord].charAt(0).toUpperCase();
+                        var witoutFirstLetter = splitted[iWord].slice(1)+" ";
+                        $scope.teamName = $scope.teamName + firstLetter+witoutFirstLetter;
+                    }
+                }
+
                 $scope.rightSession = true;
                 // console.log($scope.currentDate);
-                // console.log(Date.parse($scope.sessions.endDate));
-                // console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
-                // console.log($scope.sessions);
-                if ($scope.currentDate > Date.parse($scope.sessions.endDate)) {
+                // console.log(Date.parse($scope.session.endDate));
+                // console.log($scope.currentDate > Date.parse($scope.session.endDate))
+                // console.log($scope.session);
+                if ($scope.currentDate > Date.parse($scope.session.endDate)) {
                     $scope.stateSessionLabel = 'Terminato';
                 } else {
                     $scope.stateSessionLabel = 'In Corso';
                 }
             })
             .catch(function (error) {
-                console.log(error)
+                console.log(error);
                 // console.log(timer_id)
                 $scope.rightSession = false;
                 clearInterval(session_timer);

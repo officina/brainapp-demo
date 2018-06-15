@@ -5,11 +5,11 @@
 
     <div class="col-lg-10 col-lg-offset-1 whitebkg flex somepadding box roboto border-radius" style="margin-bottom: 20px">
         <div class="col-lg-6 left flexcol">
-            <span>Team: {{matches[0].session.poRoot}}</span>
-            <span>Gioco: {{sessions.game.description}}</span>
+            <span>Team: {{teamName}}</span>
+            <span>Gioco: {{session.game.description}}</span>
             <div class="state"><span>Stato Sessione: {{stateSessionLabel}}</span></div>
-            <span>Da: {{sessions.startDate | date:'dd/MM/yyyy HH:mm'}}</span>
-            <span>A: {{sessions.endDate | date:'dd/MM/yyyy HH:mm'}}</span>
+            <span>Da: {{session.startDate | date:'dd/MM/yyyy HH:mm'}}</span>
+            <span>A: {{session.endDate | date:'dd/MM/yyyy HH:mm'}}</span>
         </div>
         <div class="mid col-lg-3 flexcol">
             <span>Giocate effettuate</span>
