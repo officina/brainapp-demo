@@ -98,12 +98,14 @@
                 .then(function (response) {
                 $scope.session = response.data;
                 $scope.teamName = '';
-                var splitted = $scope.session.poRoot.split("_");
-                for (var iWord in splitted){
-                    if (splitted[iWord] !== 'aggregate'){
-                        var firstLetter = splitted[iWord].charAt(0).toUpperCase();
-                        var witoutFirstLetter = splitted[iWord].slice(1)+" ";
-                        $scope.teamName = $scope.teamName + firstLetter+witoutFirstLetter;
+                if ($scope.session.poRoot !== undefined && $scope.session.poRoot !== null){
+                    var splitted = $scope.session.poRoot.split("_");
+                    for (var iWord in splitted){
+                        if (splitted[iWord] !== 'aggregate'){
+                            var firstLetter = splitted[iWord].charAt(0).toUpperCase();
+                            var witoutFirstLetter = splitted[iWord].slice(1)+" ";
+                            $scope.teamName = $scope.teamName + firstLetter+witoutFirstLetter;
+                        }
                     }
                 }
 
