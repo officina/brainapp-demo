@@ -24333,7 +24333,7 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.acts.SetLayerVisible,
 	cr.plugins_.gatorade.prototype.acts.updateLevel,
 	cr.plugins_.LocalStorage.prototype.acts.SetItem,
-	cr.plugins_.Touch.prototype.cnds.OnTapGestureObject,
+	cr.plugins_.Touch.prototype.cnds.OnTapGesture,
 	cr.system_object.prototype.cnds.LayerVisible,
 	cr.system_object.prototype.acts.ResetGlobals,
 	cr.system_object.prototype.acts.RestartLayout,
