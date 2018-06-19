@@ -229,7 +229,9 @@
                                 why = 'matchAnomalous';
                             } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                                 why = 'sessionAlreadyInUse';
-                            }else{
+                            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                                why = 'invalidSitecore';
+                            } else{
                                 why = 'genericError';
                             }
                             manageError("START_ATTEMPT", null, error, why);
@@ -316,7 +318,9 @@
                             why = 'matchAnomalous';
                         } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                             why = 'sessionAlreadyInUse';
-                        }else{
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                            why = 'invalidSitecore';
+                        } else{
                             why = 'genericError';
                         }
                         manageError("START_ATTEMPT", null, error, why);
@@ -342,7 +346,9 @@
                             why = 'matchAnomalous';
                         } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                             why = 'sessionAlreadyInUse';
-                        }else{
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                            why = 'invalidSitecore';
+                        } else{
                             why = 'genericError';
                         }
                         manageError("START_ATTEMPT", null, error, why);
@@ -438,7 +444,9 @@
                         why = 'matchAnomalous';
                     } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                         why = 'sessionAlreadyInUse';
-                    }else{
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                        why = 'invalidSitecore';
+                    } else{
                         why = 'genericError';
                     }
                     manageError("ATTEMPT_ENDED", data, error, why);
@@ -542,7 +550,9 @@
                         why = 'matchAnomalous';
                     } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                         why = 'sessionAlreadyInUse';
-                    }else{
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                        why = 'invalidSitecore';
+                    } else{
                         why = 'genericError';
                     }
                     manageError("ATTEMPT_RESTARTED", data, error, why);

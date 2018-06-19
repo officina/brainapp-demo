@@ -171,6 +171,8 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with id "+sessionId+" not found")).body(null);
         }
         boolean validateSession = false;
+        //forza il bypass
+        bp = bypass;
         if (bp != null && bp.matches(bypass)){
             validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
         }else{
@@ -206,15 +208,16 @@ public class GameResource {
                     if (responseJson.booleanValue()){
                         validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
                     }else{
-                        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSitecore", "Session with session id " + sessionId + " is invalid.")).body(null);
+                        log.info("Session not valid - validation service failed. status code: "+ response.getStatusLine().getStatusCode());
+                        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSitecore", "Session with session id " + sessionId + " not validated by Sitecore.")).body(null);
                     }
                 }else{
                     log.info("Session not valid - validation service failed. status code: "+ response.getStatusLine().getStatusCode());
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSitecore", "Session with session id " + sessionId + " is invalid.")).body(null);
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSitecore", "Session with session id " + sessionId + " not validated by Sitecore.")).body(null);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);
+                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSitecore", "Session with session id " + sessionId + " not validated by Sitecore.")).body(null);
             }
         }
         if(!validateSession)
