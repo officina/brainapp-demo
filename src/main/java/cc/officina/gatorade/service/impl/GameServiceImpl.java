@@ -181,7 +181,7 @@ public class GameServiceImpl implements GameService{
         cloned.setLastStart(now);
         cloned.setTimeSpent(0l);
         cloned.setElaborated(true);
-        cloned.setSendToPo(true);
+        cloned.setSendToPo(mainMatch.getSendToPo() != null ? mainMatch.getSendToPo() : false);
         cloned.setMatchToken(new Date().getTime());
         cloned.setBestLevel(mainMatch.getBestLevel());
         cloned.setBestScore(mainMatch.getBestScore());
