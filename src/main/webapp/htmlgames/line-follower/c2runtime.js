@@ -2047,19 +2047,19 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		gl.compileShader(fragmentShader);
 		if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS))
 		{
-;
+			var compilationlog = gl.getShaderInfoLog(fragmentShader);
 			gl.deleteShader(fragmentShader);
-			return null;
+			throw new Error("error compiling fragment shader: " + compilationlog);
 		}
 		var vertexShader = gl.createShader(gl.VERTEX_SHADER);
 		gl.shaderSource(vertexShader, vsSource);
 		gl.compileShader(vertexShader);
 		if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS))
 		{
-;
+			var compilationlog = gl.getShaderInfoLog(vertexShader);
 			gl.deleteShader(fragmentShader);
 			gl.deleteShader(vertexShader);
-			return null;
+			throw new Error("error compiling vertex shader: " + compilationlog);
 		}
 		var shaderProgram = gl.createProgram();
 		gl.attachShader(shaderProgram, fragmentShader);
@@ -2067,11 +2067,11 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		gl.linkProgram(shaderProgram);
 		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
 		{
-;
+			var compilationlog = gl.getProgramInfoLog(shaderProgram);
 			gl.deleteShader(fragmentShader);
 			gl.deleteShader(vertexShader);
 			gl.deleteProgram(shaderProgram);
-			return null;
+			throw new Error("error linking shader program: " + compilationlog);
 		}
 		gl.useProgram(shaderProgram);
 		gl.deleteShader(fragmentShader);
@@ -3459,12 +3459,6 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			this.isMobile = /(blackberry|bb10|playbook|palm|symbian|nokia|windows\s+ce|phone|mobile|tablet|kindle|silk)/i.test(navigator.userAgent);
 		}
 		this.isWKWebView = !!(this.isiOS && this.isCordova && window["webkit"]);
-		this.httpServer = null;
-		this.httpServerUrl = "";
-		if (this.isWKWebView)
-		{
-			this.httpServer = (cordova && cordova["plugins"] && cordova["plugins"]["CorHttpd"]) ? cordova["plugins"]["CorHttpd"] : null;
-		}
 		if (typeof cr_is_preview !== "undefined" && !this.isNWjs && (window.location.search === "?nw" || /nodewebkit/i.test(navigator.userAgent) || /nwjs/i.test(navigator.userAgent)))
 		{
 			this.isNWjs = true;
@@ -3478,12 +3472,12 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.enableFrontToBack = false;
 		this.earlyz_index = 0;
 		this.ctx = null;
-		this.fullscreenOldMarginCss = "";
 		this.firstInFullscreen = false;
 		this.oldWidth = 0;		// for restoring non-fullscreen canvas after fullscreen
 		this.oldHeight = 0;
 		this.canvas.oncontextmenu = function (e) { if (e.preventDefault) e.preventDefault(); return false; };
 		this.canvas.onselectstart = function (e) { if (e.preventDefault) e.preventDefault(); return false; };
+		this.canvas.ontouchstart = function (e) { if(e.preventDefault) e.preventDefault(); return false; };
 		if (this.isDirectCanvas)
 			window["c2runtime"] = this;
 		if (this.isNWjs)
@@ -3555,6 +3549,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.fps = 0;
 		this.last_fps_time = 0;
 		this.tickcount = 0;
+		this.tickcount_nosave = 0;	// same as tickcount but never saved/loaded
 		this.execcount = 0;
 		this.framecount = 0;        // for fps
 		this.objectcount = 0;
@@ -3618,36 +3613,13 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		var self = this;
 		if (this.isWKWebView)
 		{
-			var loadDataJsFn = function ()
+			this.fetchLocalFileViaCordovaAsText("data.js", function (str)
 			{
-				self.fetchLocalFileViaCordovaAsText("data.js", function (str)
-				{
-					self.loadProject(JSON.parse(str));
-				}, function (err)
-				{
-					alert("Error fetching data.js");
-				});
-			};
-			if (this.httpServer)
+				self.loadProject(JSON.parse(str));
+			}, function (err)
 			{
-				this.httpServer["startServer"]({
-					"port": 0,
-					"localhost_only": true
-				}, function (url)
-				{
-					self.httpServerUrl = url;
-					loadDataJsFn();
-				}, function (err)
-				{
-					console.log("Error starting local server: " + err + ". Video playback will not work.");
-					loadDataJsFn();
-				});
-			}
-			else
-			{
-				console.log("Local server unavailable. Video playback will not work.");
-				loadDataJsFn();
-			}
+				alert("Error fetching data.js");
+			});
 			return;
 		}
 		var xhr;
@@ -4017,11 +3989,6 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 					offy = (h - newh) / 2;
 					h = newh;
 				}
-			}
-			if (isfullscreen && !this.isNWjs)
-			{
-				offx = 0;
-				offy = 0;
 			}
 		}
 		else if (this.isNWjs && this.isNodeFullscreen && this.fullscreen_mode_set === 0)
@@ -4587,6 +4554,32 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.initRendererAndLoader();
 	};
 	var anyImageHadError = false;
+	var MAX_PARALLEL_IMAGE_LOADS = 100;
+	var currentlyActiveImageLoads = 0;
+	var imageLoadQueue = [];		// array of [img, srcToSet]
+	Runtime.prototype.queueImageLoad = function (img_, src_)
+	{
+		var self = this;
+		var doneFunc = function ()
+		{
+			currentlyActiveImageLoads--;
+			self.maybeLoadNextImages();
+		};
+		img_.addEventListener("load", doneFunc);
+		img_.addEventListener("error", doneFunc);
+		imageLoadQueue.push([img_, src_]);
+		this.maybeLoadNextImages();
+	};
+	Runtime.prototype.maybeLoadNextImages = function ()
+	{
+		var next;
+		while (imageLoadQueue.length && currentlyActiveImageLoads < MAX_PARALLEL_IMAGE_LOADS)
+		{
+			currentlyActiveImageLoads++;
+			next = imageLoadQueue.shift();
+			this.setImageSrc(next[0], next[1]);
+		}
+	};
 	Runtime.prototype.waitForImageLoad = function (img_, src_)
 	{
 		img_["cocoonLazyLoad"] = true;
@@ -4619,7 +4612,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			else
 			{
 				img_.crossOrigin = "anonymous";			// required for Arcade sandbox compatibility
-				this.setImageSrc(img_, src_);			// work around WKWebView problems
+				this.queueImageLoad(img_, src_);		// use a queue to avoid requesting all images simultaneously
 			}
 		}
 		this.wait_for_textures.push(img_);
@@ -5008,27 +5001,12 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			if (isfullscreen)
 			{
 				if (!this.firstInFullscreen)
-				{
-					this.fullscreenOldMarginCss = jQuery(this.canvas).css("margin") || "0";
 					this.firstInFullscreen = true;
-				}
-				if (!this.isChrome && !this.isNWjs)
-				{
-					jQuery(this.canvas).css({
-						"margin-left": "" + Math.floor((screen.width - (this.width / this.devicePixelRatio)) / 2) + "px",
-						"margin-top": "" + Math.floor((screen.height - (this.height / this.devicePixelRatio)) / 2) + "px"
-					});
-				}
 			}
 			else
 			{
 				if (this.firstInFullscreen)
 				{
-					if (!this.isChrome && !this.isNWjs)
-					{
-						jQuery(this.canvas).css("margin", this.fullscreenOldMarginCss);
-					}
-					this.fullscreenOldMarginCss = "";
 					this.firstInFullscreen = false;
 					if (this.fullscreen_mode === 0)
 					{
@@ -5078,6 +5056,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		if (!this.hit_breakpoint)
 		{
 			this.tickcount++;
+			this.tickcount_nosave++;
 			this.execcount++;
 			this.framecount++;
 		}
@@ -6540,13 +6519,39 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			return;
 		this.registered_collisions.push([a, b]);
 	};
+	Runtime.prototype.addRegisteredCollisionCandidates = function (inst, otherType, arr)
+	{
+		var i, len, r, otherInst;
+		for (i = 0, len = this.registered_collisions.length; i < len; ++i)
+		{
+			r = this.registered_collisions[i];
+			if (r[0] === inst)
+				otherInst = r[1];
+			else if (r[1] === inst)
+				otherInst = r[0];
+			else
+				continue;
+			if (otherType.is_family)
+			{
+				if (otherType.members.indexOf(otherType) === -1)
+					continue;
+			}
+			else
+			{
+				if (otherInst.type !== otherType)
+					continue;
+			}
+			if (arr.indexOf(otherInst) === -1)
+				arr.push(otherInst);
+		}
+	};
 	Runtime.prototype.checkRegisteredCollision = function (a, b)
 	{
 		var i, len, x;
 		for (i = 0, len = this.registered_collisions.length; i < len; i++)
 		{
 			x = this.registered_collisions[i];
-			if ((x[0] == a && x[1] == b) || (x[0] == b && x[1] == a))
+			if ((x[0] === a && x[1] === b) || (x[0] === b && x[1] === a))
 				return true;
 		}
 		return false;
@@ -7518,7 +7523,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 	};
 	Runtime.prototype.loadInstanceFromJSON = function(inst, o, state_only)
 	{
-		var p, i, len, iv, oivs, world, fxindex, obehs, behindex;
+		var p, i, len, iv, oivs, world, fxindex, obehs, behindex, value;
 		var oldlayer;
 		var type = inst.type;
 		var plugin = type.plugin;
@@ -7543,7 +7548,10 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 					iv = this.getInstanceVarIndexBySid(type, parseInt(p, 10));
 					if (iv < 0 || iv >= inst.instance_vars.length)
 						continue;		// must've gone missing
-					inst.instance_vars[iv] = oivs[p];
+					value = oivs[p];
+					if (value === null)
+						value = NaN;
+					inst.instance_vars[iv] = value;
 				}
 			}
 		}
@@ -7683,9 +7691,21 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 	};
 	Runtime.prototype.fetchLocalFileViaCordovaAsURL = function (filename, successCallback, errorCallback)
 	{
+		var blobType = "";
+		var lowername = filename.toLowerCase();
+		var ext3 = lowername.substr(lowername.length - 4);
+		var ext4 = lowername.substr(lowername.length - 5);
+		if (ext3 === ".mp4")
+			blobType = "video/mp4";
+		else if (ext4 === ".webm")
+			blobType = "video/webm";		// use video type but hopefully works with audio too
+		else if (ext3 === ".m4a")
+			blobType = "audio/mp4";
+		else if (ext3 === ".mp3")
+			blobType = "audio/mpeg";
 		this.fetchLocalFileViaCordovaAsArrayBuffer(filename, function (arrayBuffer)
 		{
-			var blob = new Blob([arrayBuffer]);
+			var blob = new Blob([arrayBuffer], { type: blobType });
 			var url = URL.createObjectURL(blob);
 			successCallback(url);
 		}, errorCallback);
@@ -7912,7 +7932,7 @@ window["cr_setSuspended"] = function(s)
 		this.height = this.originalHeight;
 		this.scrollX = (this.runtime.original_width / 2);
 		this.scrollY = (this.runtime.original_height / 2);
-		var i, k, len, lenk, type, type_instances, inst, iid, t, s, p, q, type_data, layer;
+		var i, k, len, lenk, type, type_instances, initial_inst, inst, iid, t, s, p, q, type_data, layer;
 		for (i = 0, len = this.runtime.types_by_index.length; i < len; i++)
 		{
 			type = this.runtime.types_by_index[i];
@@ -8020,7 +8040,12 @@ window["cr_setSuspended"] = function(s)
 		}
 		for (i = 0, len = this.initial_nonworld.length; i < len; i++)
 		{
-			inst = this.runtime.createInstanceFromInit(this.initial_nonworld[i], null, true);
+			initial_inst = this.initial_nonworld[i];
+			type = this.runtime.types_by_index[initial_inst[1]];
+			if (!type.is_contained)
+			{
+				inst = this.runtime.createInstanceFromInit(this.initial_nonworld[i], null, true);
+			}
 ;
 		}
 		this.runtime.changelayout = null;
@@ -13998,14 +14023,14 @@ cr.system_object.prototype.loadFromJSON = function (o)
 	SysExps.prototype.regexmatchcount = function (ret, str_, regex_, flags_)
 	{
 		var regex = getRegex(regex_, flags_);
-		updateRegexMatches(str_, regex_, flags_);
+		updateRegexMatches(str_.toString(), regex_, flags_);
 		ret.set_int(regexMatches ? regexMatches.length : 0);
 	};
 	SysExps.prototype.regexmatchat = function (ret, str_, regex_, flags_, index_)
 	{
 		index_ = Math.floor(index_);
 		var regex = getRegex(regex_, flags_);
-		updateRegexMatches(str_, regex_, flags_);
+		updateRegexMatches(str_.toString(), regex_, flags_);
 		if (!regexMatches || index_ < 0 || index_ >= regexMatches.length)
 			ret.set_string("");
 		else
@@ -14891,6 +14916,8 @@ cr.system_object.prototype.loadFromJSON = function (o)
 			return false;
 		if (!this.bquad.contains_pt(x, y))
 			return false;
+		if (this.tilemap_exists)
+			return this.testPointOverlapTile(x, y);
 		if (this.collision_poly && !this.collision_poly.is_empty())
 		{
 			this.collision_poly.cache_poly(this.width, this.height, this.angle);
@@ -15598,7 +15625,6 @@ cr.plugins_.Arr = function(runtime)
 			for ( ; x < this.cx; x++)
 				for (y = 0; y < this.cy; y++)
 					a[x][y].reverse();
-			this.cz--;
 			break;
 		}
 	};
@@ -15895,9 +15921,84 @@ cr.plugins_.Audio = function(runtime)
 	var rolloffFactor = 1;
 	var micSource = null;
 	var micTag = "";
-	var isMusicWorkaround = false;
-	var musicPlayNextTouch = [];
+	var useNextTouchWorkaround = false;			// heuristic in case play() does not return a promise and we have to guess if the play was blocked
+	var playOnNextInput = [];					// C2AudioInstances with HTMLAudioElements to play on next input event
 	var playMusicAsSoundWorkaround = false;		// play music tracks with Web Audio API
+	var hasPlayedDummyBuffer = false;			// dummy buffer played to unblock AudioContext on some platforms
+	function addAudioToPlayOnNextInput(a)
+	{
+		var i = playOnNextInput.indexOf(a);
+		if (i === -1)
+			playOnNextInput.push(a);
+	};
+	function tryPlayAudioElement(a)
+	{
+		var audioElem = a.instanceObject;
+		var playRet;
+		try {
+			playRet = audioElem.play();
+		}
+		catch (err) {
+			addAudioToPlayOnNextInput(a);
+			return;
+		}
+		if (playRet)		// promise was returned
+		{
+			playRet.catch(function (err)
+			{
+				addAudioToPlayOnNextInput(a);
+			});
+		}
+		else if (useNextTouchWorkaround && !audRuntime.isInUserInputEvent)
+		{
+			addAudioToPlayOnNextInput(a);
+		}
+	};
+	function playQueuedAudio()
+	{
+		var i, len, m, playRet;
+		if (!hasPlayedDummyBuffer && !isContextSuspended && context)
+		{
+			playDummyBuffer();
+			if (context["state"] === "running")
+				hasPlayedDummyBuffer = true;
+		}
+		var tryPlay = playOnNextInput.slice(0);
+		cr.clearArray(playOnNextInput);
+		if (!silent)
+		{
+			for (i = 0, len = tryPlay.length; i < len; ++i)
+			{
+				m = tryPlay[i];
+				if (!m.stopped && !m.is_paused)
+				{
+					playRet = m.instanceObject.play();
+					if (playRet)
+					{
+						playRet.catch(function (err)
+						{
+							addAudioToPlayOnNextInput(m);
+						});
+					}
+				}
+			}
+		}
+	};
+	function playDummyBuffer()
+	{
+		if (context["state"] === "suspended" && context["resume"])
+			context["resume"]();
+		if (!context["createBuffer"])
+			return;
+		var buffer = context["createBuffer"](1, 220, 22050);
+		var source = context["createBufferSource"]();
+		source["buffer"] = buffer;
+		source["connect"](context["destination"]);
+		startSource(source);
+	};
+	document.addEventListener("touchend", playQueuedAudio, true);
+	document.addEventListener("click", playQueuedAudio, true);
+	document.addEventListener("keydown", playQueuedAudio, true);
 	function dbToLinear(x)
 	{
 		var v = dbToLinear_nocap(x);
@@ -16652,8 +16753,6 @@ cr.plugins_.Audio = function(runtime)
 	ObjectTracker.prototype.tick = function (dt)
 	{
 	};
-	var iOShadtouchstart = false;	// has had touch start input on iOS <=8 to work around web audio API muting
-	var iOShadtouchend = false;		// has had touch end input on iOS 9+ to work around web audio API muting
 	function C2AudioBuffer(src_, is_music)
 	{
 		this.src = src_;
@@ -16689,7 +16788,7 @@ cr.plugins_.Audio = function(runtime)
 				this.supportWebAudioAPI = true;		// can be routed through web audio api
 				this.bufferObject.addEventListener("canplay", function ()
 				{
-					if (!self.mediaSourceNode)		// protect against this event firing twice
+					if (!self.mediaSourceNode && self.bufferObject)
 					{
 						self.mediaSourceNode = context["createMediaElementSource"](self.bufferObject);
 						self.mediaSourceNode["connect"](self.outNode);
@@ -16748,6 +16847,16 @@ cr.plugins_.Audio = function(runtime)
 				++j;		// keep
 		}
 		audioInstances.length = j;
+		if (this.mediaSourceNode)
+		{
+			this.mediaSourceNode["disconnect"]();
+			this.mediaSourceNode = null;
+		}
+		if (this.outNode)
+		{
+			this.outNode["disconnect"]();
+			this.outNode = null;
+		}
 		this.bufferObject = null;
 		this.audioData = null;
 	};
@@ -17131,18 +17240,7 @@ cr.plugins_.Audio = function(runtime)
 ;
 				}
 			}
-			if (this.is_music && isMusicWorkaround && !audRuntime.isInUserInputEvent)
-				musicPlayNextTouch.push(this);
-			else
-			{
-				try {
-					this.instanceObject.play();
-				}
-				catch (e) {		// sometimes throws on WP8.1... try not to kill the app
-					if (console && console.log)
-						console.log("[C2] WARNING: exception trying to play audio '" + this.buffer.src + "': ", e);
-				}
-			}
+			tryPlayAudioElement(this);
 			break;
 		case API_WEBAUDIO:
 			this.muted = false;
@@ -17182,10 +17280,7 @@ cr.plugins_.Audio = function(runtime)
 ;
 					}
 				}
-				if (this.is_music && isMusicWorkaround && !audRuntime.isInUserInputEvent)
-					musicPlayNextTouch.push(this);
-				else
-					instobj.play();
+				tryPlayAudioElement(this);
 			}
 			break;
 		case API_CORDOVA:
@@ -17274,7 +17369,7 @@ cr.plugins_.Audio = function(runtime)
 			return;
 		switch (this.myapi) {
 		case API_HTML5:
-			this.instanceObject.play();
+			tryPlayAudioElement(this);
 			break;
 		case API_WEBAUDIO:
 			if (this.buffer.myapi === API_WEBAUDIO)
@@ -17292,7 +17387,7 @@ cr.plugins_.Audio = function(runtime)
 			}
 			else
 			{
-				this.instanceObject.play();
+				tryPlayAudioElement(this);
 			}
 			break;
 		case API_CORDOVA:
@@ -17650,7 +17745,7 @@ cr.plugins_.Audio = function(runtime)
 			playMusicAsSoundWorkaround = true;
 		if ((this.runtime.isiOS || (this.runtime.isAndroid && (this.runtime.isChrome || this.runtime.isAndroidStockBrowser))) && !this.runtime.isCrosswalk && !this.runtime.isDomFree && !this.runtime.isAmazonWebApp && !playMusicAsSoundWorkaround)
 		{
-			isMusicWorkaround = true;
+			useNextTouchWorkaround = true;
 		}
 		context = null;
 		if (typeof AudioContext !== "undefined")
@@ -17671,57 +17766,6 @@ cr.plugins_.Audio = function(runtime)
 				context = new AudioContext();
 			else if (typeof webkitAudioContext !== "undefined")
 				context = new webkitAudioContext();
-		}
-		var isAndroid = this.runtime.isAndroid;
-		var playDummyBuffer = function ()
-		{
-			if (isContextSuspended || !context["createBuffer"])
-				return;
-			var buffer = context["createBuffer"](1, 220, 22050);
-			var source = context["createBufferSource"]();
-			source["buffer"] = buffer;
-			source["connect"](context["destination"]);
-			startSource(source);
-		};
-		if (isMusicWorkaround)
-		{
-			var playQueuedMusic = function ()
-			{
-				var i, len, m;
-				if (isMusicWorkaround)
-				{
-					if (!silent)
-					{
-						for (i = 0, len = musicPlayNextTouch.length; i < len; ++i)
-						{
-							m = musicPlayNextTouch[i];
-							if (!m.stopped && !m.is_paused)
-								m.instanceObject.play();
-						}
-					}
-					cr.clearArray(musicPlayNextTouch);
-				}
-			};
-			document.addEventListener("touchend", function ()
-			{
-				if (!iOShadtouchend && context)
-				{
-					playDummyBuffer();
-					iOShadtouchend = true;
-				}
-				playQueuedMusic();
-			}, true);
-		}
-		else if (playMusicAsSoundWorkaround)
-		{
-			document.addEventListener("touchend", function ()
-			{
-				if (!iOShadtouchend && context)
-				{
-					playDummyBuffer();
-					iOShadtouchend = true;
-				}
-			}, true);
 		}
 		if (api !== API_WEBAUDIO)
 		{
@@ -17773,7 +17817,7 @@ cr.plugins_.Audio = function(runtime)
 			default:
 ;
 			}
-			this.runtime.tickMe(this);
+		this.runtime.tickMe(this);
 		}
 	};
 	var instanceProto = pluginProto.Instance.prototype;
@@ -19050,7 +19094,7 @@ cr.plugins_.Browser = function(runtime)
 			{
 				var ret = self.runtime.trigger(cr.plugins_.Browser.prototype.cnds.OnBackButton, self);
 				if (ret)
-					e.handled = true;
+					e["handled"] = true;
 		    });
 		}
 		else if (this.runtime.isWinJS && WinJS["Application"])
@@ -19352,7 +19396,7 @@ cr.plugins_.Browser = function(runtime)
 				return;
 			}
 			this.runtime.fullscreen_scaling = (stretchmode >= 2 ? stretchmode : 0);
-			var elem = this.runtime.canvasdiv || this.runtime.canvas;
+			var elem = document.documentElement;
 			if (firstRequestFullscreen)
 			{
 				firstRequestFullscreen = false;
@@ -22015,6 +22059,7 @@ cr.plugins_.Sprite = function(runtime)
 		var rsol = rtype.getCurrentSol();
 		var linstances = lsol.getObjects();
 		var rinstances;
+		var registeredInstances;
 		var l, linst, r, rinst;
 		var curlsol, currsol;
 		var tickcount = this.runtime.tickcount;
@@ -22030,9 +22075,12 @@ cr.plugins_.Sprite = function(runtime)
 				linst.update_bbox();
 				this.runtime.getCollisionCandidates(linst.layer, rtype, linst.bbox, candidates1);
 				rinstances = candidates1;
+				this.runtime.addRegisteredCollisionCandidates(linst, rtype, rinstances);
 			}
 			else
+			{
 				rinstances = rsol.getObjects();
+			}
 			for (r = 0; r < rinstances.length; r++)
 			{
 				rinst = rinstances[r];
@@ -24679,8 +24727,15 @@ cr.plugins_.Touch = function(runtime)
 			return this.orient_gamma;
 	};
 	var noop_func = function(){};
+	function isCompatibilityMouseEvent(e)
+	{
+		return (e["sourceCapabilities"] && e["sourceCapabilities"]["firesTouchEvents"]) ||
+				(e.originalEvent && e.originalEvent["sourceCapabilities"] && e.originalEvent["sourceCapabilities"]["firesTouchEvents"]);
+	};
 	instanceProto.onMouseDown = function(info)
 	{
+		if (isCompatibilityMouseEvent(info))
+			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
 		this.onTouchStart(fakeinfo);
@@ -24689,6 +24744,8 @@ cr.plugins_.Touch = function(runtime)
 	instanceProto.onMouseMove = function(info)
 	{
 		if (!this.mouseDown)
+			return;
+		if (isCompatibilityMouseEvent(info))
 			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
@@ -24699,6 +24756,8 @@ cr.plugins_.Touch = function(runtime)
 		if (info.preventDefault && this.runtime.had_a_click && !this.runtime.isMobile)
 			info.preventDefault();
 		this.runtime.had_a_click = true;
+		if (isCompatibilityMouseEvent(info))
+			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
 		this.onTouchEnd(fakeinfo);
@@ -25168,7 +25227,7 @@ cr.plugins_.Touch = function(runtime)
 		var t = this.touches[index];
 		var dist = cr.distanceTo(t.x, t.y, t.lastx, t.lasty);
 		var timediff = (t.time - t.lasttime) / 1000;
-		if (timediff === 0)
+		if (timediff <= 0)
 			ret.set_float(0);
 		else
 			ret.set_float(dist / timediff);
@@ -25184,7 +25243,7 @@ cr.plugins_.Touch = function(runtime)
 		var touch = this.touches[index];
 		var dist = cr.distanceTo(touch.x, touch.y, touch.lastx, touch.lasty);
 		var timediff = (touch.time - touch.lasttime) / 1000;
-		if (timediff === 0)
+		if (timediff <= 0)
 			ret.set_float(0);
 		else
 			ret.set_float(dist / timediff);
@@ -25591,7 +25650,7 @@ cr.plugins_.gatorade = function(runtime)
         var m = new Gatorade.Message(operations.START_ATTEMPT, currentattempt)
 		window.parent.postMessage(m, domain)
 	};
-	Acts.prototype.restartAttempt = function ()
+	Acts.prototype.restartAttempt = function (score)
 	{
 		console.log("game restarted, sending " +  score + " as end points")
 		currentattempt.completed = true
@@ -26027,14 +26086,17 @@ cr.behaviors.Bullet = function(runtime)
 			this.lastKnownAngle = bounceAngle;
 			this.inst.set_bbox_changed();
 		}
-		if (this.bounceOffSolid)
+		if (s !== 0)		// prevent divide-by-zero
 		{
-			if (!this.runtime.pushOutSolid(this.inst, this.dx / s, this.dy / s, Math.max(s * 2.5 * dt, 30)))
-				this.runtime.pushOutSolidNearest(this.inst, 100);
-		}
-		else if (s !== 0)
-		{
-			this.runtime.pushOut(this.inst, this.dx / s, this.dy / s, Math.max(s * 2.5 * dt, 30), otherinst)
+			if (this.bounceOffSolid)
+			{
+				if (!this.runtime.pushOutSolid(this.inst, this.dx / s, this.dy / s, Math.max(s * 2.5 * dt, 30)))
+					this.runtime.pushOutSolidNearest(this.inst, 100);
+			}
+			else
+			{
+				this.runtime.pushOut(this.inst, this.dx / s, this.dy / s, Math.max(s * 2.5 * dt, 30), otherinst)
+			}
 		}
 	};
 	Acts.prototype.SetDistanceTravelled = function (d)
@@ -27573,7 +27635,7 @@ var b2Vec2 = Box2D.b2Vec2;
 function createPolygonShape(vertices)
 {
     var shape = new Box2D.b2PolygonShape();
-    var buffer = Box2D.allocate(vertices.length * 8, 'float', Box2D.ALLOC_STACK);
+    var buffer = Box2D._malloc(vertices.length * 8);
     var offset = 0;
     for (var i=0;i<vertices.length;i++) {
         Box2D.setValue(buffer+(offset), vertices[i].get_x(), 'float'); // x
@@ -27582,6 +27644,7 @@ function createPolygonShape(vertices)
     }
     var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
     shape.Set(ptr_wrapped, vertices.length);
+	Box2D._free(buffer);
     return shape;
 }
 b2Vec2._freeCache = [];
@@ -27959,19 +28022,9 @@ cr.behaviors.Physics = function(runtime)
 	};
 	behinstProto.onDestroy = function()
 	{
-		this.destroyMyJoints();
+		this.destroyBody();
 		cr.clearArray(this.myCreatedJoints);
 		this.joiningMe.clear();
-		if (this.body)
-		{
-			if (this.fixture)
-			{
-				this.body.DestroyFixture(this.fixture);
-				this.fixture = null;
-			}
-			this.world.DestroyBody(this.body);
-			this.body = null;
-		}
 		this.runtime.removeDestroyCallback(this.myDestroyCallback);
 	};
 	behinstProto.saveToJSON = function ()
@@ -27999,14 +28052,9 @@ cr.behaviors.Physics = function(runtime)
 	};
 	behinstProto.loadFromJSON = function (o)
 	{
-		this.destroyMyJoints();
+		this.destroyBody();
 		cr.clearArray(this.myCreatedJoints);
 		this.joiningMe.clear();
-		if (this.body)
-		{
-			this.world.DestroyBody(this.body);
-			this.body = null;
-		}
 		this.enabled = o["e"];
 		this.immovable = o["im"];
 		this.preventRotation = o["pr"];
@@ -28035,7 +28083,6 @@ cr.behaviors.Physics = function(runtime)
 	{
 		if (this.enabled)
 			this.recreateMyJoints();
-		this.behavior.lastUpdateTick = this.runtime.tickcount - 1;
 	};
 	behinstProto.onInstanceDestroyed = function (inst)
 	{
@@ -28106,40 +28153,33 @@ cr.behaviors.Physics = function(runtime)
 		if (!this.enabled)
 			return;
 		var inst = this.inst;
-		var hadOldBody = false;
-		var oldVelocity = null;
-		var oldOmega = null;
+		inst.update_bbox();
 		var i, len, j, lenj, k, lenk, vec, arr, b, tv, c, rc, pts_cache, pts_count, convexpolys, cp, offx, offy, oldAngle;
-		if (this.body)
+		if (!this.body)
 		{
-			hadOldBody = true;
-			tv = this.body.GetLinearVelocity();
-			oldVelocity = getTempVec2a(tv.get_x(), tv.get_y());
-			oldOmega = this.body.GetAngularVelocity();
-			arr = this.joiningMe.valuesRef();
-			for (i = 0, len = arr.length; i < len; i++)
-			{
-				b = arr[i].extra.box2dbody.c2userdata;
-				b.destroyMyJoints();
-			}
-			this.destroyBody();
+			var bodyDef = new b2BodyDef();
+			bodyDef.set_type(this.immovable ? 0 : 2);		// 0 = b2_staticBody, 2 = b2_dynamicBody
+			bodyDef.set_position(getTempVec2b(inst.bquad.midX() * worldScale, inst.bquad.midY() * worldScale));
+			bodyDef.set_angle(inst.angle);
+			bodyDef.set_fixedRotation(this.preventRotation);
+			bodyDef.set_linearDamping(this.linearDamping);
+			bodyDef.set_angularDamping(this.angularDamping);
+			bodyDef.set_bullet(this.bullet);
+			this.body = this.world.CreateBody(bodyDef);
+			this.body.c2userdata = this;
+			inst.extra.box2dbody = this.body;
+			Box2D.destroy(bodyDef);
+		}
+		if (this.fixture)
+		{
+			this.body.DestroyFixture(this.fixture);
+			this.fixture = null;
 		}
 		var fixDef = new b2FixtureDef();
 		fixDef.set_density(this.density);
 		fixDef.set_friction(this.friction);
 		fixDef.set_restitution(this.restitution);
-		var bodyDef = new b2BodyDef();
-		bodyDef.set_type(this.immovable ? 0 : 2);		// 0 = b2_staticBody, 2 = b2_dynamicBody
-		inst.update_bbox();
-		bodyDef.set_position(getTempVec2b(inst.bquad.midX() * worldScale, inst.bquad.midY() * worldScale));
-		bodyDef.set_angle(inst.angle);
-		bodyDef.set_fixedRotation(this.preventRotation);
-		bodyDef.set_linearDamping(this.linearDamping);
-		bodyDef.set_angularDamping(this.angularDamping);
-		bodyDef.set_bullet(this.bullet);
 		var hasPoly = this.inst.collision_poly && !this.inst.collision_poly.is_empty();
-		this.body = this.world.CreateBody(bodyDef);
-		this.body.c2userdata = this;
 		var usecollisionmask = this.collisionmask;
 		if (!hasPoly && !this.inst.tilemap_exists && this.collisionmask === 0)
 			usecollisionmask = 1;
@@ -28189,8 +28229,10 @@ cr.behaviors.Physics = function(runtime)
 							{
 								arr.push(b2Vec2.Get((rc.left + cp[k].get_x() - offx) * worldScale, (rc.top + cp[k].get_y() - offy) * worldScale));
 							}
-							fixDef.set_shape(createPolygonShape(arr));
+							shape = createPolygonShape(arr);
+							fixDef.set_shape(shape);
 							this.fixture = this.body.CreateFixture(fixDef);
+							Box2D.destroy(shape);
 							for (k = 0, lenk = arr.length; k < lenk; ++k)
 								b2Vec2.Free(arr[k]);
 							cr.clearArray(arr);
@@ -28202,8 +28244,10 @@ cr.behaviors.Physics = function(runtime)
 						arr.push(b2Vec2.Get((rc.right - offx) * worldScale, (rc.top - offy) * worldScale));
 						arr.push(b2Vec2.Get((rc.right - offx) * worldScale, (rc.bottom - offy) * worldScale));
 						arr.push(b2Vec2.Get((rc.left - offx) * worldScale, (rc.bottom - offy) * worldScale));
-						fixDef.set_shape(createPolygonShape(arr));
+						shape = createPolygonShape(arr);
+						fixDef.set_shape(shape);
 						this.fixture = this.body.CreateFixture(fixDef);
+						Box2D.destroy(shape);
 					}
 					for (j = 0, lenj = arr.length; j < lenj; ++j)
 						b2Vec2.Free(arr[j]);
@@ -28246,8 +28290,10 @@ cr.behaviors.Physics = function(runtime)
 							vec.set_x(vec.get_x() * worldScale);
 							vec.set_y(vec.get_y() * worldScale);
 						}
-						fixDef.set_shape(createPolygonShape(arr));
+						shape = createPolygonShape(arr);
+						fixDef.set_shape(shape);
 						this.fixture = this.body.CreateFixture(fixDef);
+						Box2D.destroy(shape);
 						for (j = 0, lenj = arr.length; j < lenj; j++)
 							b2Vec2.Free(arr[j]);
 					}
@@ -28258,6 +28304,7 @@ cr.behaviors.Physics = function(runtime)
 					shape.SetAsBox(instw * worldScale * 0.5, insth * worldScale * 0.5);
 					fixDef.set_shape(shape);
 					this.fixture = this.body.CreateFixture(fixDef);
+					Box2D.destroy(shape);
 				}
 			}
 		}
@@ -28267,6 +28314,7 @@ cr.behaviors.Physics = function(runtime)
 			shape.SetAsBox(instw * worldScale * 0.5, insth * worldScale * 0.5);
 			fixDef.set_shape(shape);
 			this.fixture = this.body.CreateFixture(fixDef);
+			Box2D.destroy(shape);
 		}
 		else
 		{
@@ -28274,22 +28322,11 @@ cr.behaviors.Physics = function(runtime)
 			shape.set_m_radius(Math.min(instw, insth) * worldScale * 0.5);
 			fixDef.set_shape(shape);
 			this.fixture = this.body.CreateFixture(fixDef);
+			Box2D.destroy(shape);
 		}
-		inst.extra.box2dbody = this.body;
 		this.lastWidth = inst.width;
 		this.lastHeight = inst.height;
-		if (hadOldBody)
-		{
-			this.body.SetLinearVelocity(oldVelocity);
-			this.body.SetAngularVelocity(oldOmega);
-			this.recreateMyJoints();
-			arr = this.joiningMe.valuesRef();
-			for (i = 0, len = arr.length; i < len; i++)
-			{
-				b = arr[i].extra.box2dbody.c2userdata;
-				b.recreateMyJoints();
-			}
-		}
+		Box2D.destroy(fixDef);
 		cr.clearArray(collrects);
 	};
 	/*
@@ -28348,14 +28385,14 @@ cr.behaviors.Physics = function(runtime)
 			if (dt > 1 / 30)
 				dt = 1 / 30;
 		}
-		if (this.runtime.tickcount > this.behavior.lastUpdateTick && this.runtime.timescale > 0)
+		if (this.runtime.tickcount_nosave > this.behavior.lastUpdateTick && this.runtime.timescale > 0)
 		{
 			if (dt !== 0)
 			{
 				this.world.Step(dt, this.behavior.velocityIterations, this.behavior.positionIterations);		// still apply timescale
 			}
 			this.world.ClearForces();
-			this.behavior.lastUpdateTick = this.runtime.tickcount;
+			this.behavior.lastUpdateTick = this.runtime.tickcount_nosave;
 		}
 		if (this.recreateBody || inst.width !== this.lastWidth || inst.height !== this.lastHeight
 			|| inst.cur_animation !== this.lastAnimation || inst.cur_frame !== this.lastAnimationFrame
@@ -28618,6 +28655,7 @@ cr.behaviors.Physics = function(runtime)
 		jointDef.set_dampingRatio(damping);
 		jointDef.set_frequencyHz(freq);
 		this.myJoints.push(this.world.CreateJoint(jointDef));
+		Box2D.destroy(jointDef);
 	};
 	Acts.prototype.CreateRevoluteJoint = function (imgpt, obj)
 	{
@@ -28644,6 +28682,7 @@ cr.behaviors.Physics = function(runtime)
 		var jointDef = new b2RevoluteJointDef();
 		jointDef.Initialize(this.body, otherinst.extra.box2dbody, getTempVec2a(myx * worldScale, myy * worldScale));
 		this.myJoints.push(this.world.CreateJoint(jointDef));
+		Box2D.destroy(jointDef);
 	};
 	Acts.prototype.CreateLimitedRevoluteJoint = function (imgpt, obj, lower, upper)
 	{
@@ -28673,6 +28712,7 @@ cr.behaviors.Physics = function(runtime)
 		jointDef.set_lowerAngle(cr.to_radians(lower));
 		jointDef.set_upperAngle(cr.to_radians(upper));
 		this.myJoints.push(this.world.CreateJoint(jointDef));
+		Box2D.destroy(jointDef);
 	};
 	Acts.prototype.SetWorldGravity = function (g)
 	{
@@ -29152,26 +29192,31 @@ var easeInOutElasticArray = [];
 var easeInCircle = [];
 var easeOutCircle = [];
 var easeInOutCircle = [];
+var easeInBack = [];
 var easeOutBack = [];
 var easeInOutBack = [];
 var litetween_precision = 10000;
 var updateLimit = 0; //0.0165;
-function easeOutBounce(t,b,c,d) {
+function easeOutBouncefunc(t) {
+  var b=0.0;
+  var c=1.0;
+  var d=1.0;
 	if ((t/=d) < (1/2.75)) {
-		return c*(7.5625*t*t) + b;
+		result = c*(7.5625*t*t) + b;
 	} else if (t < (2/2.75)) {
-		return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
+		result = c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
 	} else if (t < (2.5/2.75)) {
-		return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
+		result = c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
 	} else {
-		return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
+		result = c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
 	}
+  return result;
 }
 function integerize(t, d)
 {
   return Math.round(t/d*litetween_precision);
 }
-function easeFunc(easing, t, b, c, d, flip)
+function easeFunc(easing, t, b, c, d, flip, param)
 {
   var ret_ease = 0;
   switch (easing) {
@@ -29227,45 +29272,124 @@ function easeFunc(easing, t, b, c, d, flip)
 		  ret_ease = c/2*((t-=2)*t*t*t*t + 2) + b;
     break;
 	case 13:		// easeInCircle
-		ret_ease = easeInCircle[integerize(t,d)];
+    if (param.optimized) {
+		  ret_ease = easeInCircle[integerize(t,d)];
+    } else {
+      ret_ease = -(Math.sqrt(1-t*t) - 1);
+    }
     break;
 	case 14:		// easeOutCircle
-		ret_ease = easeOutCircle[integerize(t,d)];
+    if (param.optimized) {
+  		ret_ease = easeOutCircle[integerize(t,d)];
+    } else {
+      ret_ease = Math.sqrt(1 - ((t-1)*(t-1)));
+    }
     break;
 	case 15:		// easeInOutCircle
-		ret_ease = easeInOutCircle[integerize(t,d)];
+    if (param.optimized) {
+  		ret_ease = easeInOutCircle[integerize(t,d)];
+    } else {
+  		if ((t/=d/2) < 1) ret_ease = -c/2 * (Math.sqrt(1 - t*t) - 1) + b
+      else ret_ease = c/2 * (Math.sqrt(1 - (t-=2)*t) + 1) + b;
+    }
     break;
 	case 16:		// easeInBack
-		var s = 0;
-		if (s==0) s = 1.70158;
-		ret_ease = c*(t/=d)*t*((s+1)*t - s) + b;
+    if (param.optimized) {
+		  ret_ease = easeInBack[integerize(t,d)];
+    } else {
+  		var s = param.s;
+	  	ret_ease = c*(t/=d)*t*((s+1)*t - s) + b;
+    }
     break;
 	case 17:		// easeOutBack
-		ret_ease = easeOutBack[integerize(t,d)];
+    if (param.optimized) {
+		  ret_ease = easeOutBack[integerize(t,d)];
+    } else {
+   		var s = param.s;
+	  	ret_ease = c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+    }
     break;
 	case 18:		// easeInOutBack
-		ret_ease = easeInOutBack[integerize(t,d)];
+    if (param.optimized) {
+		  ret_ease = easeInOutBack[integerize(t,d)];
+    } else {
+      var s = param.s
+  		if ((t/=d/2) < 1)
+        ret_ease = c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b
+      else
+  		  ret_ease = c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
+    }
     break;
 	case 19:	//easeInElastic
-		ret_ease = easeInElasticArray[integerize(t, d)];
+    if (param.optimized) {
+  		ret_ease = easeInElasticArray[integerize(t, d)];
+    } else {
+      var a = param.a;
+      var p = param.p;
+      var s = 0;
+      if (t==0) ret_ease = b; if ((t/=d)==1) ret_ease = b+c;
+      if (p==0) p=d*.3;	if (a==0 || a < Math.abs(c)) { a=c; s=p/4; }
+      else var s = p/(2*Math.PI) * Math.asin (c/a);
+  		ret_ease = -(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
+    }
     break;
 	case 20:	//easeOutElastic
-    ret_ease = easeOutElasticArray[integerize(t,d)];
+    if (param.optimized) {
+      ret_ease = easeOutElasticArray[integerize(t,d)];
+    } else {
+      var a = param.a;
+      var p = param.p;
+      var s = 0;
+  		if (t==0) ret_ease= b;  if ((t/=d)==1) ret_ease= b+c;  if (p == 0) p=d*.3;
+  		if (a==0 || a < Math.abs(c)) { a=c; var s=p/4; }
+  		else var s = p/(2*Math.PI) * Math.asin (c/a);
+  		ret_ease= (a*Math.pow(2,-10*t) * Math.sin( (t*d-s)*(2*Math.PI)/p ) + c + b);
+    }
     break;
 	case 21:	//easeInOutElastic
-    ret_ease = easeInOutElasticArray[integerize(t,d)];
+    if (param.optimized) {
+      ret_ease = easeInOutElasticArray[integerize(t,d)];
+    } else {
+      var a = param.a;
+      var p = param.p;
+      var s = 0;
+  		if (t==0) ret_ease = b;
+  		if ((t/=d/2)==2) ret_ease = b+c;
+  		if (p==0) p=d*(.3*1.5);
+  		if (a==0 || a < Math.abs(c)) { a=c; var s=p/4; }
+  		else var s = p/(2*Math.PI) * Math.asin (c/a);
+  		if (t < 1)
+        ret_ease = -.5*(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b
+      else
+  		  ret_ease = a*Math.pow(2,-10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )*.5 + c + b;
+    }
     break;
 	case 22:	//easeInBounce
-		ret_ease = c - easeOutBounceArray[integerize(d-t, d)] + b;
+    if (param.optimized) {
+  		ret_ease = c - easeOutBounceArray[integerize(d-t, d)] + b;
+    } else {
+  		ret_ease = c - easeOutBouncefunc(d-t/d) + b;
+    }
     break;
 	case 23:	//easeOutBounce
-		ret_ease = easeOutBounceArray[integerize(t, d)];
+    if (param.optimized) {
+  		ret_ease = easeOutBounceArray[integerize(t, d)];
+    } else {
+  		ret_ease = easeOutBouncefunc(t/d);
+    }
     break;
 	case 24:	//easeInOutBounce
-		if (t < d/2)
-      ret_ease = (c - easeOutBounceArray[integerize(d-(t*2), d)] + b) * 0.5 +b;
-		else
-      ret_ease = easeOutBounceArray[integerize(t*2-d, d)] * .5 + c*.5 + b;
+    if (param.optimized) {
+  		if (t < d/2)
+        ret_ease = (c - easeOutBounceArray[integerize(d-(t*2), d)] + b) * 0.5 +b;
+  		else
+        ret_ease = easeOutBounceArray[integerize(t*2-d, d)] * .5 + c*.5 + b;
+    } else {
+  		if (t < d/2)
+        ret_ease = (c - easeOutBouncefunc(d-(t*2)) + b) * 0.5 +b;
+  		else
+        ret_ease = easeOutBouncefunc((t*2-d)/d) * .5 + c *.5 + b;
+    }
     break;
 	case 25:	//easeInSmoothstep
 		var mt = (t/d) / 2;
@@ -29290,10 +29414,10 @@ function easeFunc(easing, t, b, c, d, flip)
   var b = 0.0;
   var c = 1.0;
   var result = 0.0;
-  var a = 0;
-  var p = 0;
-  var t = 0;
-  var s = 0;
+  var a = 0.0;
+  var p = 0.0;
+  var t = 0.0;
+  var s = 0.0;
   for (var ti = 0; ti <= litetween_precision; ti++) {
     t = ti/litetween_precision;
   	if ((t/=d) < (1/2.75)) {
@@ -29305,7 +29429,7 @@ function easeFunc(easing, t, b, c, d, flip)
   	} else {
   		result = c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
   	}
-    easeOutBounceArray[ti] = easeOutBounce(ti/litetween_precision, b, c, d);
+    easeOutBounceArray[ti] = result;
     t = ti/litetween_precision; a = 0; p = 0;
     if (t==0) result = b; if ((t/=d)==1) result = b+c;
     if (p==0) p=d*.3;	if (a==0 || a < Math.abs(c)) { a=c; var s=p/4; }
@@ -29337,6 +29461,10 @@ function easeFunc(easing, t, b, c, d, flip)
     easeInOutCircle[ti] = result;
     t = ti/litetween_precision; s = 0;
 		if (s==0) s = 1.70158;
+		result = c*(t/=d)*t*((s+1)*t - s) + b;
+    easeInBack[ti] = result;
+    t = ti/litetween_precision; s = 0;
+		if (s==0) s = 1.70158;
 		result = c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
     easeOutBack[ti] = result;
     t = ti/litetween_precision; s = 0; if (s==0) s = 1.70158;
@@ -29346,7 +29474,7 @@ function easeFunc(easing, t, b, c, d, flip)
 		  result = c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
     easeInOutBack[ti] = result;
 	}
-}())
+}());
 var TweenObject = function()
 {
 	var constructor = function (tname, tweened, easefunc, initial, target, duration, enforce)
@@ -29369,6 +29497,16 @@ var TweenObject = function()
     this.enforce = enforce;
     this.pingpong = 1.0;
     this.flipEase = false;
+    this.easingparam = [];
+    this.lastState = 1;
+    for (var i=0; i<28; i++) {
+      this.easingparam[i] = {};
+      this.easingparam[i].a = 0.0;
+      this.easingparam[i].p = 0.0;
+      this.easingparam[i].t = 0.0;
+      this.easingparam[i].s = 0.0;
+      this.easingparam[i].optimized = true;
+    }
 	}
 	return constructor;
 }();
@@ -29443,9 +29581,9 @@ var TweenObject = function()
       return 1.0;
     } else {
       if (this.flipEase) {
-        var factor = easeFunc(this.easefunc, this.duration - this.progress, 0, 1, this.duration, this.flipEase);
+        var factor = easeFunc(this.easefunc, this.duration - this.progress, 0, 1, this.duration, this.flipEase, this.easingparam[this.easefunc]);
       } else {
-        var factor = easeFunc(this.easefunc, this.progress, 0, 1, this.duration, this.flipEase);
+        var factor = easeFunc(this.easefunc, this.progress, 0, 1, this.duration, this.flipEase, this.easingparam[this.easefunc]);
       }
       return factor;
     }
@@ -29564,9 +29702,43 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
   };
 	behinstProto.saveToJSON = function ()
 	{
+    var v = JSON.stringify(this.tween_list["default"]);
+		return {
+			"playmode": this.playmode,
+			"active": this.active,
+			"tweened": this.tweened,
+			"easing": this.easing,
+			"target": this.target,
+			"targetmode": this.targetmode,
+			"useCurrent": this.useCurrent,
+			"duration": this.duration,
+			"enforce": this.enforce,
+			"value": this.value,
+			"tweenlist": JSON.stringify(this.tween_list["default"])
+		};
 	};
+  TweenObject.Load = function(rawObj, tname, tweened, easing, init, targ, duration, enforce)
+  {
+    var obj = new TweenObject(tname, tweened, easing, init, targ, duration, enforce);
+    for(var i in rawObj)
+        obj[i] = rawObj[i];
+    return obj;
+  };
 	behinstProto.loadFromJSON = function (o)
 	{
+    var x = JSON.parse(o["tweenlist"]);
+    var tempObj = TweenObject.Load(x, x.name, x.tweened, x.easefunc, x.initialparam1+","+x.initialparam2, x.targetparam1+","+x.targetparam2, x.duration, x.enforce);
+		this.tween_list["default"] = tempObj;
+	  this.playmode = o["playmode"];
+		this.active = o["active"];
+		this.movement = o["tweened"];
+		this.easing = o["easing"];
+		this.target = o["target"];
+		this.targetmode = o["targetmode"];
+		this.useCurrent = o["useCurrent"];
+		this.duration = o["duration"];
+		this.enforce = o["enforce"];
+		this.value = o["value"];
 	};
 	behinstProto.setProgressTo = function (mark)
 	{
@@ -29600,7 +29772,7 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
         inst.state = 1;
       }
       if (startMode === 1) {
-        inst.state = 1;
+        inst.state = inst.lastState;
       }
       if ((startMode === 2) || (startMode === 4)) {
         inst.progress = 0.000001;
@@ -29623,6 +29795,8 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
 	{
     for (var i in this.tween_list) {
       var inst = this.tween_list[i];
+      if ((inst.state != 3) && (inst.state != 0)) //don't save paused/seek state
+        inst.lastState = inst.state;
       if (stopMode === 1) inst.progress = 0.0;
       if (stopMode === 2) inst.progress = inst.duration;
       inst.state = 3;
@@ -29657,24 +29831,24 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
       }
     } else if (inst.tweened === 1) {
       if (inst.enforce) {
-  			this.inst.width = inst.initialparam1 + (inst.targetparam1 - inst.initialparam1) * factor;
-	   		this.inst.height = inst.initialparam2 + (inst.targetparam2 - inst.initialparam2) * factor;
+  			this.inst.width = (inst.initialparam1 + ((inst.targetparam1 - inst.initialparam1) * (factor)));
+	   		this.inst.height = (inst.initialparam2 + ((inst.targetparam2 - inst.initialparam2) * (factor)));
       } else {
-      	this.inst.width += ((inst.targetparam1 - inst.initialparam1) * factor) - inst.lastKnownValue;
+       	this.inst.width +=  ((inst.targetparam1 - inst.initialparam1) * factor) - inst.lastKnownValue;
       	this.inst.height += ((inst.targetparam2 - inst.initialparam2) * factor) - inst.lastKnownValue2;
         inst.lastKnownValue = ((inst.targetparam1 - inst.initialparam1) * factor);
         inst.lastKnownValue2 = ((inst.targetparam2 - inst.initialparam2) * factor);
       }
     } else if (inst.tweened === 2) {
       if (inst.enforce) {
-      	this.inst.width = inst.initialparam1 + ((inst.targetparam1 - inst.initialparam1) * factor);
+  			this.inst.width = (inst.initialparam1 + ((inst.targetparam1 - inst.initialparam1) * (factor)));
       } else {
       	this.inst.width += ((inst.targetparam1 - inst.initialparam1) * factor) - inst.lastKnownValue;
         inst.lastKnownValue = ((inst.targetparam1 - inst.initialparam1) * factor);
       }
     } else if (inst.tweened === 3) {
       if (inst.enforce) {
-      	this.inst.height = inst.initialparam2 + ((inst.targetparam2 - inst.initialparam2) * factor);
+	   		this.inst.height = (inst.initialparam2 + ((inst.targetparam2 - inst.initialparam2) * (factor)));
       } else {
       	this.inst.height += ((inst.targetparam2 - inst.initialparam2) * factor) - inst.lastKnownValue2;
         inst.lastKnownValue2 = ((inst.targetparam2 - inst.initialparam2) * factor);
@@ -29775,10 +29949,24 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
 	{
 		return (this.tween_list["default"].state !== 0);
 	};
+	cnds.IsReversing = function ()
+	{
+		return (this.tween_list["default"].state == 2);
+	};
 	cnds.CompareProgress = function (cmp, v)
 	{
     var inst = this.tween_list["default"];
 		return cr.do_cmp((inst.progress / inst.duration), cmp, v);
+	};
+	cnds.OnThreshold = function (cmp, v)
+	{
+    var inst = this.tween_list["default"];
+    this.threshold = (cr.do_cmp((inst.progress / inst.duration), cmp, v));
+    var ret = (this.oldthreshold != this.threshold) && (this.threshold);
+    if (ret) {
+      this.oldthreshold = this.threshold;
+    }
+		return ret;
 	};
 	cnds.OnStart = function ()
 	{
@@ -29808,6 +29996,8 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
 	var acts = behaviorProto.acts;
 	acts.Start = function (startmode, current)
 	{
+    this.threshold = false;
+    this.oldthreshold = false;
     this.useCurrent = (current == 1);
     this.startTween(startmode);
 	};
@@ -29817,6 +30007,8 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
 	};
 	acts.Reverse = function (revMode)
 	{
+    this.threshold = false;
+    this.oldthreshold = false;
     this.reverseTween(revMode);
 	};
  	acts.ProgressTo = function (progress)
@@ -29892,6 +30084,20 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
     if (this.tween_list["default"] === undefined) return;
 		this.tween_list["default"].easefunc = x;
 	};
+ 	acts.SetEasingParam = function (x, a, p, t, s)
+	{
+    if (this.tween_list["default"] === undefined) return;
+    this.tween_list["default"].easingparam[x].optimized = false;
+		this.tween_list["default"].easingparam[x].a = a;
+		this.tween_list["default"].easingparam[x].p = p;
+		this.tween_list["default"].easingparam[x].t = t;
+		this.tween_list["default"].easingparam[x].s = s;
+	};
+ 	acts.ResetEasingParam = function ()
+	{
+    if (this.tween_list["default"] === undefined) return;
+    this.tween_list["default"].optimized = true;
+	};
  	acts.SetValue = function (x)
 	{
     var inst = this.tween_list["default"];
@@ -29915,6 +30121,18 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
 	};
 	behaviorProto.exps = {};
 	var exps = behaviorProto.exps;
+	exps.State = function (ret)
+	{
+    var parsed = "N/A";
+    switch (this.tween_list["default"].state) {
+      case 0: parsed = "paused"; break;
+      case 1: parsed = "playing"; break;
+      case 2: parsed = "reversing"; break;
+      case 3: parsed = "seeking"; break;
+      default:  break;
+    }
+    ret.set_string(parsed);
+	};
 	exps.Progress = function (ret)
 	{
     var progress = this.tween_list["default"].progress/this.tween_list["default"].duration;
@@ -29944,6 +30162,12 @@ cr.behaviors.lunarray_LiteTween = function(runtime)
 	{
     var tval = this.value;
     ret.set_float(tval);
+	};
+	exps.Tween = function (ret, a_, b_, x_, easefunc_)
+	{
+    var currX = (x_>1.0?1.0:x_);
+    var factor = easeFunc(easefunc_, currX<0.0?0.0:currX, 0.0, 1.0, 1.0, false, false);
+    ret.set_float(a_ + factor * (b_-a_));
 	};
 }());
 ;
@@ -31428,9 +31652,9 @@ cr.behaviors.scrollto = function(runtime)
 cr.getObjectRefTable = function () { return [
 	cr.plugins_.NinePatch,
 	cr.plugins_.admob,
-	cr.plugins_.Browser,
 	cr.plugins_.Arr,
 	cr.plugins_.Audio,
+	cr.plugins_.Browser,
 	cr.plugins_.Function,
 	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,
