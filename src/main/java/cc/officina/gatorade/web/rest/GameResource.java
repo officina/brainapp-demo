@@ -205,12 +205,16 @@ public class GameResource {
                     JsonNode responseJson = new ObjectMapper().readTree(result.toString()).get("Authorized");
                     if (responseJson.booleanValue()){
                         validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
+                    }else{
+                        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSitecore", "Session with session id " + sessionId + " is invalid.")).body(null);
                     }
                 }else{
                     log.info("Session not valid - validation service failed. status code: "+ response.getStatusLine().getStatusCode());
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSitecore", "Session with session id " + sessionId + " is invalid.")).body(null);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);
             }
         }
         if(!validateSession)
