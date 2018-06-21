@@ -172,7 +172,7 @@ public class GameResource {
         }
         boolean validateSession = false;
         //forza il bypass
-        bp = bypass;
+//        bp = bypass;
         if (bp != null && bp.matches(bypass)){
             validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
         }else{
