@@ -111,6 +111,3 @@ elaboration:
     numCommunityUsers: 15
     safetyMarginInSeconds: 300
     maxRetry: 5
-validationService:
-    hostname: http://gamificationlabcert.generali.it
-    endpoint: /api/gaming/isvalid

@@ -130,3 +130,6 @@ playoff:
         id: MDc4MzUzZTItY2Q5MC00YjNkLWIxMzYtNTM2MjMzNTc0ZTE1
         secret: MmM5MWRlZDktOGVlYS00YzVhLTk5NjMtYzJlNjRkODY4MjVjNzZiZDM3NzAtZGY0Yy0xMWU3LWJlNzEtNzcwN2EyNmM2YTY3
 validationBypass: pain-temple-8
+validationService:
+    hostname: https://gamificationlab.generali.it
+    endpoint: /api/gaming/isvalid

@@ -128,8 +128,7 @@ public class SessionServiceImpl implements SessionService{
                     if(match.isElaborated() && match.getSendToPo())
                     {
                         log.info("IL match è correttamente elaborato, non serve fare altro (match_id = " + match.getId() + ")");
-                    }
-                    {
+                    }else{
                         TypeOfStillPending type = matchService.singleMatchRestore(match);
                         log.info("Tentativo di rielaborare il match (match_id = " + match.getId() + ") con risultato " + type);
                     }

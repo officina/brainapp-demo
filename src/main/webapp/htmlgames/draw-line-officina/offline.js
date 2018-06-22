@@ -1,5 +1,5 @@
 ﻿{
-	"version": 1507038682,
+	"version": 1529414799,
 	"fileList": [
 		"data.js",
 		"c2runtime.js",
@@ -27,6 +27,6 @@
 		"icon-128.png",
 		"icon-256.png",
 		"loading-logo.png",
-		"levels_officina_20171011.txt"
+		"levels.txt"
 	]
 }

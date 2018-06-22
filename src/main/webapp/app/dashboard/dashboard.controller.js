@@ -7,6 +7,13 @@
     DashboardController.$inject = ['$scope', '$rootScope' ,'Principal', 'LoginService', '$state', 'DashboardService', '$stateParams', '$uibModal'];
 
     function DashboardController ($scope, $rootScope, Principal, LoginService, $state, DashboardService, $stateParams, $uibModal) {
+        $scope.isOnline = true;
+        Offline.on("up", function () {
+            $scope.isOnline = true;
+        });
+        Offline.on("down", function () {
+            $scope.isOnline = false;
+        });
         $scope.currentDate = new Date();
         $scope.currentDate = Date.parse($scope.currentDate);
         $scope.rightSession = true;
@@ -29,28 +36,30 @@
                     $scope.levelgame = isLevelGame($scope.matches[0]) ? true : false;
                     $scope.matchDuration = $scope.matches[0].template.maxDuration * 1000;
                     for (var m in $scope.matches) {
-                        if ($scope.matches[m].game.type == "POINT") {
-                            if (!isNaN($scope.matches[m].bestScore)) {
-                                if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined) {
-                                    $scope.matches[m].bestScore = 0;
-                                } else {
-                                    bestScores.push(parseInt($scope.matches[m].bestScore));
+                        if ($scope.matches[m].elaborated === true){
+                            if ($scope.matches[m].game.type === "POINT") {
+                                if (!isNaN($scope.matches[m].bestScore)) {
+                                    if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore === undefined) {
+                                        $scope.matches[m].bestScore = 0;
+                                    } else {
+                                        bestScores.push(parseInt($scope.matches[m].bestScore));
+                                    }
                                 }
-                            }
-                        } else if ($scope.matches[m].game.type == "MINPOINT") {
-                            if (!isNaN($scope.matches[m].bestScore)) {
-                                if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore == undefined) {
-                                    $scope.matches[m].bestScore = 0;
-                                } else {
-                                    bestScores.push(parseInt($scope.matches[m].bestScore));
+                            } else if ($scope.matches[m].game.type === "MINPOINT") {
+                                if (!isNaN($scope.matches[m].bestScore)) {
+                                    if ($scope.matches[m].bestScore == null || $scope.matches[m].bestScore === undefined) {
+                                        $scope.matches[m].bestScore = 0;
+                                    } else {
+                                        bestScores.push(parseInt($scope.matches[m].bestScore));
+                                    }
                                 }
-                            }
-                        } else if ($scope.matches[m].game.type == "LEVEL") {
-                            if (!isNaN($scope.matches[m].bestLevel)) {
-                                if ($scope.matches[m].bestLevel == null || $scope.matches[m].bestLevel == undefined) {
-                                    $scope.matches[m].bestLevel = 0;
-                                } else {
-                                    bestScores.push(parseInt($scope.matches[m].bestLevel));
+                            } else if ($scope.matches[m].game.type === "LEVEL") {
+                                if (!isNaN($scope.matches[m].bestLevel)) {
+                                    if ($scope.matches[m].bestLevel == null || $scope.matches[m].bestLevel === undefined) {
+                                        $scope.matches[m].bestLevel = 0;
+                                    } else {
+                                        bestScores.push(parseInt($scope.matches[m].bestLevel));
+                                    }
                                 }
                             }
                         }
@@ -60,7 +69,7 @@
                     }else{
                         $scope.best = Math.max.apply(null, bestScores);
                     }
-                    if ($scope.best === null || $scope.best === undefined || isNaN($scope.best) || $scope.best === -Infinity){
+                    if ($scope.best === null || $scope.best === undefined || isNaN($scope.best) || $scope.best === -Infinity || $scope.best === Infinity){
                         $scope.best = '-'
                     }
                     $scope.numberOfMatches = $scope.matches.length;
@@ -87,27 +96,39 @@
         $scope.getSession = function() {
             DashboardService.getSession($stateParams.extsessionid)
                 .then(function (response) {
-                $scope.sessions = response.data;
+                $scope.session = response.data;
+                $scope.teamName = '';
+                if ($scope.session.poRoot !== undefined && $scope.session.poRoot !== null){
+                    var splitted = $scope.session.poRoot.split("_");
+                    for (var iWord in splitted){
+                        if (splitted[iWord] !== 'aggregate'){
+                            var firstLetter = splitted[iWord].charAt(0).toUpperCase();
+                            var witoutFirstLetter = splitted[iWord].slice(1)+" ";
+                            $scope.teamName = $scope.teamName + firstLetter+witoutFirstLetter;
+                        }
+                    }
+                }
+
                 $scope.rightSession = true;
                 // console.log($scope.currentDate);
-                // console.log(Date.parse($scope.sessions.endDate));
-                // console.log($scope.currentDate > Date.parse($scope.sessions.endDate))
-                // console.log($scope.sessions);
-                if ($scope.currentDate > Date.parse($scope.sessions.endDate)) {
+                // console.log(Date.parse($scope.session.endDate));
+                // console.log($scope.currentDate > Date.parse($scope.session.endDate))
+                // console.log($scope.session);
+                if ($scope.currentDate > Date.parse($scope.session.endDate)) {
                     $scope.stateSessionLabel = 'Terminato';
                 } else {
                     $scope.stateSessionLabel = 'In Corso';
                 }
             })
             .catch(function (error) {
-                console.log(error)
+                console.log(error);
                 // console.log(timer_id)
                 $scope.rightSession = false;
                 clearInterval(session_timer);
                 clearInterval(timer_id);
                 if (error.status == 404) {
                     $scope.errorMes = 'La sessione che cerchi non risulta disponibile';
-                } else if (!navigator.onLine) {
+                } else if (!$scope.isOnline) {
                     $scope.errorMes = 'La sessione che cerchi non risulta disponibile, sembra che tu sia offline!';
                 } else {
                     $scope.errorMes = 'La sessione che cerchi sembra non essere disponibile, prova a ricaricare la pagina';

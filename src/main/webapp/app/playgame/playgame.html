@@ -16,7 +16,7 @@
     <div class="row arcade">
         <div class="col-md-8">
         	<p class="text-center">
-	        	<h2 class="arcade officina" style="font-family: Arial, Helvetica, sans-serif !important;"> {{message1}}</h2><br /><small class="arcade" style="font-family: Arial, Helvetica, sans-serif !important;">{{message2}}</small>
+	        	<h2 class="arcade officina mobileh2" style="font-family: Arial, Helvetica, sans-serif !important;"> {{message1}}</h2><br /><small class="arcade" style="font-family: Arial, Helvetica, sans-serif !important;">{{message2}}</small>
 	        </p>
         </div>
     </div>
@@ -27,13 +27,24 @@
         </div>
         <div class="col-md-8">
         	<div ng-show="{{showReport}}">
-	        	<h3 class="arcade officina">Match report:</h3>
+	        	<h3 class="arcade officina mobileh3">Match report:</h3>
 	        	<code>{{reportText}}</code>
         	</div>
         	<div ng-show="{{showError}}">
-	        	<h3 class="arcade officina">Error report:</h3>
+	        	<h3 class="arcade officina mobileh3">Error report:</h3>
 	        	<code>{{errorText}}</code>
 	        </div>
         </div>
      </div>
 </div>
+<style>
+    @media only screen and (max-width : 1024px) {
+        .mobileh2 {
+            font-size: 20px;
+        }
+
+        .mobileh3 {
+            font-size: 18px;
+        }
+    }
+</style>

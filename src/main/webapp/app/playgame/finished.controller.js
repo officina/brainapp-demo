@@ -68,6 +68,10 @@
     			$scope.message1 = 'Nessuna sessione di gioco attiva.';
     	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
     			break;
+            case 'invalidSitecore':
+                $scope.message1 = 'Nessuna sessione di gioco attiva.';
+                $scope.message2 = 'Le verifiche di autenticazione sulla sessione corrente hanno dato esito negativo';
+                break;
     		case 'timeout':
     			$scope.message1 = 'La tua partita è terminata.';
     	    	$scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
@@ -91,7 +95,7 @@
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
-                $scope.message2 = 'Hai una giocata in corso in un\'altra finestra';
+                $scope.message2 = 'Hai un\'altra giocata in corso';
                 break;
             case 'offline':
                 $scope.message1 = 'Non siamo riusciti a contattare il server';
