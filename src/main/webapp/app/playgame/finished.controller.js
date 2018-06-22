@@ -51,7 +51,7 @@
 
         var score = 0;
     	if ($rootScope.wrapperMemory.match && $rootScope.wrapperMemory.match.game){
-            if ($rootScope.wrapperMemory.match.game.type == 'LEVEL'){
+            if ($rootScope.wrapperMemory.match.game.type === 'LEVEL'){
                 score = $rootScope.wrapperMemory.match.bestLevel;
             }else{
                 score = $rootScope.wrapperMemory.match.bestScore;
@@ -83,15 +83,15 @@
                 break;
             case 'matchElaborated':
                 $scope.message1 = 'La tua partita è stata elaborata.';
-                $scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
+                $scope.message2 = 'Grazie per aver giocato!';
                 break;
             case 'matchEnded':
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
+                $scope.message2 = 'Grazie per aver giocato!';
                 break;
             case 'matchAnomalous':
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
+                $scope.message2 = 'Grazie per aver giocato!';
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
