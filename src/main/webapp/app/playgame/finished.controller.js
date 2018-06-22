@@ -35,7 +35,7 @@
 	    		.catch(function(error) {
 		    		$scope.showReport = true;
 		    		$scope.showError = true;
-		    		$scope.message2 = 'Ti preghiamo di inviare l\'errore che trovi in calce all\'amministratore del sistema.';
+		    		$scope.message2 = 'Ti preghiamo di inviare l\'errore che trovi in calce a energy4brain@generali.com';
 		    	});
 	    	})
 	    	.catch(function(error) {
@@ -43,7 +43,7 @@
 	    		//solo in questo caso mostro all'utente i messaggi da inviare all'amministratore
 	    		$scope.showReport = true;
 	    		$scope.showError = true;
-	    		$scope.message2 = 'Ti preghiamo di inviare l\'errore che trovi in calce all\'amministratore del sistema.';
+	    		$scope.message2 = 'Ti preghiamo di inviare l\'errore che trovi in calce a energy4brain@generali.com';
 	    		//anche se fallita la prima provo comunque l'invio dell'errore
 	    		PlaygameService.errorAsync(idToUse,$stateParams.playtoken,$scope.errorText);
 	    	});
@@ -66,7 +66,7 @@
                 break;
     		case 'invalidSession':
     			$scope.message1 = 'Nessuna sessione di gioco attiva.';
-    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
+    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
     			break;
             case 'invalidSitecore':
                 $scope.message1 = 'Nessuna sessione di gioco attiva.';
@@ -79,7 +79,7 @@
     			//matchInvalid è riferito al caso in cui l'amministratore ha invalidato la giocata dalla dashboard, è diverso da invalidMatch
             case 'matchInvalid':
                 $scope.message1 = 'La tua partita è stata terminata.';
-                $scope.message2 = 'Ti preghiamo di contattare l\'amministratore';
+                $scope.message2 = 'Ti preghiamo di contattare energy4brain@generali.com';
                 break;
             case 'matchElaborated':
                 $scope.message1 = 'La tua partita è stata elaborata.';
@@ -104,12 +104,12 @@
                 //identifica i match resi "problematici" a causa di bug, o errori da parte dell'utente
     		case 'invalidMatch':
     			$scope.message1 = 'La tua partita è stata invalidata. ';
-    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
+    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
     	    	sendProblem();
     			break;
     		case 'genericError':
     			$scope.message1 = 'Si è verificato un errore imprevisto. ';
-    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
+    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
     	    	sendProblem();
     			break;
     	}
