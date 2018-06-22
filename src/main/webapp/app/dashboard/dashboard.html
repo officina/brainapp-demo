@@ -5,11 +5,11 @@
 
     <div class="col-lg-10 col-lg-offset-1 whitebkg flex somepadding box roboto border-radius" style="margin-bottom: 20px">
         <div class="col-lg-6 left flexcol">
-            <span>Team: {{matches[0].session.poRoot}}</span>
-            <span>Gioco: {{sessions.game.description}}</span>
+            <span>Team: {{teamName}}</span>
+            <span>Gioco: {{session.game.description}}</span>
             <div class="state"><span>Stato Sessione: {{stateSessionLabel}}</span></div>
-            <span>Da: {{sessions.startDate | date:'dd/MM/yyyy HH:mm'}}</span>
-            <span>A: {{sessions.endDate | date:'dd/MM/yyyy HH:mm'}}</span>
+            <span>Da: {{session.startDate | date:'dd/MM/yyyy HH:mm'}}</span>
+            <span>A: {{session.endDate | date:'dd/MM/yyyy HH:mm'}}</span>
         </div>
         <div class="mid col-lg-3 flexcol">
             <span>Giocate effettuate</span>
@@ -26,6 +26,7 @@
             </div>
         </div>
     </div>
+
     <div class="col-lg-10 col-lg-offset-1 flexbtw roboto" ng-show="populatedMatches">
         <h2>Giocatori</h2>
         <div class="flexbtw" style="margin-left: -160px; width: 214px;">
@@ -41,8 +42,92 @@
                 <p class="nomar">Aggiornata</p>
             </div>
         </div>
-        <img src="../../content/images/refresh-page-arrow-button.png" ng-if="stateSessionLabel == 'In Corso'" alt="" class="img-fix" ng-click="getMatches()">
-        <div ng-if="stateSessionLabel == 'Terminato'" alt="" class="img-fix"></div>
+        <div class="flex">
+            <img src="../../content/images/refresh-page-arrow-button.png" ng-if="stateSessionLabel == 'In Corso'" alt="" class="img-fix bitmarright" ng-click="getMatches()">
+            <img src="../../content/images/information1.png" id="myBtn" class="img-fix" alt="">
+
+             <!--The Modal-->
+            <div id="myModal" class="modal">
+
+                 <!--Modal content-->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h1 id="dashboard-sessione" class="h1">Dashboard Sessione</h1>
+                    <p>Interfaccia di monitoraggio delle giocate all&#39;interno di una sessione</p>
+                    <h2 id="informazioni-di-sessione" class="h2">Informazioni di sessione</h2>
+                    <p>L&#39;intestazione riporta alcune informazioni di riepilogo della sessione:</p>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Team</th>
+                            <th>Gioco</th>
+                            <th>Da - A</th>
+                            <th>Giocate Effettuate</th>
+                            <th>Risultato migliore</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Il team che gioca in questa sessione</td>
+                            <td>Il gioco scelto in questa sessione</td>
+                            <td>Date di inizio e termine sessione</td>
+                            <td>Il numero totale di giocate al momento della visualizzazione</td>
+                            <td>Il punteggio o il livello più alto raggiunto tra tutte le giocate all&#39;interno della sessione che si sta visualizzando.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="flexjccenter">
+                        <img src="../../content/images/avanzamento.png" class="" style="height: 400px" alt="">
+                    </div>
+                    <h2 id="lista-giocate" class="h2">Lista Giocate</h2>
+                    <p>La lista giocate riporta tutte le giocate già iniziate al momento in cui viene visualizzata la dashboard, ordinate da quelle iniziate più recentemente (in alto) a quelle iniziate prima (in fondo).</p>
+                    <p>Ogni riga presenta:</p>
+                    <ol>
+                        <li>nome del giocatore</li>
+                        <li>livello o punteggio raggiunto (a chiusura della giocata)</li>
+                        <li>stato della giocata (grafico)</li>
+                        <li>dettaglio stato della giocata (descrizione)</li>
+                        <li>pulsanti di gestione della giocata</li>
+                    </ol>
+                    <h3 id="punteggio-livello-raggiunto" class="h3">Punteggio / livello raggiunto</h3>
+                    <p>Il punteggio viene aggiornato quando la giocata non è più in corso. Fin quando la giocata non sarà conclusa, non verrà riportato nessun valore.</p>
+                    <h3 id="stato-della-giocata-e-dettaglio" class="h3">Stato della giocata e dettaglio</h3>
+                    <p>L&#39;avanzamento della giocata e il processo di elaborazione della stessa viene tracciato tramite una timeline che riporta gli stati:</p>
+                    <ul>
+                        <li>Sta giocando</li>
+                        <li>Giocata conclusa</li>
+                        <li><p>Classifica aggiornata</p>
+                            <h4 id="in-corso" class="h4">Sta giocando</h4>
+                            <p>  La giocata risulta in corso nel momento in cui il giocatore avrà avviato il gioco (ad esempio premendo play dalla schermata iniziale). Il colore per indicare una giocata attualmente in corso è sempre il <strong>verde</strong>. Il dettaglio invece riporterà la scritta <em>&quot;Sta giocando&quot;</em></p>
+                            <img src="../../content/images/Gatorade_good.png" class="" alt="">
+                            <p>  Occasionalmente la giocata potrebbe presentare dei problemi dovuti a diversi possibili fattori.
+                                In tal caso l&#39;indicatore diventerà <em>rosso</em>. Il dettaglio invece riporterà <em>&quot;Giocata appesa&quot;</em>.</p>
+                            <p>  <strong>Giocata appesa</strong>: quando il match è terminato (il tempo di gioco rispetto al tempo di inizio match è passato) ma il segnale di chiusura del match, dal client, non è arrivato. Di conseguenza l&#39;invio dei dati a Playoff e le logiche di elaborazione del match non risultano eseguite e quindi è necessario forzarle.</p>
+                            <img src="../../content/images/Gatorade.png" class="" alt="">
+                            <h4 id="giocata-conclusa" class="h4">Giocata conclusa</h4>
+                            <p>  La giocata è conclusa al termine del tempo a disposizione per effettuare la stessa.
+                                In questo stato i colori dell&#39;indicatore sono il <strong>giallo</strong> nel momento in cui i dati vengono inviati al server, con dettaglio <em>&quot;Invio dati in corso&quot;</em> o <strong>rosso</strong> nel momento in cui l&#39;invo non dovesse riuscire, con dettaglio <em>&quot;Invio dati fallito&quot;</em>.</p>
+                            <p>  <strong>Invio dati in corso</strong>: in questo caso l&#39;elaborazione del match è stata (quindi il client ha inviato il segnale di fine match) ma l&#39;invio dei dati a Playoff non risulta essere completata.</p>
+                            <img src="../../content/images/Gatorade_3.png" class="" alt="">
+                            <p>  <strong>Invio dati fallito</strong>: quando dalla dashboard è stato eseguito un reinvio dei dati che risulta essere fallito.</p>
+                            <img src="../../content/images/Gatorade_1.png" class="" alt="">
+                            <h4 id="classifica-aggiornata"  class="h4">Classifica aggiornata</h4>
+                            <p>  La classifica viene aggiornata quando i dati della giocata sono stati correttamente inviati al server senza nessun problema. Il colore per indicare che la classifica è stata correttamente aggiornata è il <strong>verde</strong>. Il dettaglio invece riporterà la scritta <em>&quot;Elaborazione conclusa&quot;</em>.</p>
+                            <img src="../../content/images/Gatorade_2.png" class="" alt="">
+                        </li>
+                    </ul>
+                    <h3 id="pulsanti-di-gestione-della-giocata" class="h3">Pulsanti di gestione della giocata</h3>
+                    <ul>
+                        <li class="bitmarbot"><div class="flex"><div class="btn bluebtn btn-sm reset px50 centeralign flexaround bitmarright"><span>Reset</span></div><div class="flexjccenter"><span> Annulla la giocata corrente e permette di avviarne una nuova</span></div></div></li>
+                        <li class="bitmarbot"><div class="flex"><div class="btn yellowbtn btn-sm interrupt px50 centeralign flexaround bitmarright"><span>Elabora</span></div><div class="flexjccenter"><span> Invia il punteggio attuale alla leaderboard, attivo solo su giocata conclusa</span></div></div></li>
+                        <li><div class="flex"><div class="btn redbtn btn-sm interrupt px50 centeralign bitmarright"><span>Chiudi</span></div><div class="flexjccenter"><span> Chiude la giocata e invia il punteggio alla leaderboard, attivo solo su giocata in corso</span></div></div></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div ng-if="stateSessionLabel == 'Terminato'" alt="" class="img-fix"></div>
+        </div>
     </div>
     <div class="flexaround" ng-hide="populatedMatches">
 
@@ -50,10 +135,9 @@
     <div class="col-lg-10 col-lg-offset-1 whitebkg box-scores nopadding roboto border-radius"  ng-show="populatedMatches" >
 
         <div class=""ng-repeat="match in matches track by match.id">
-
             <!--verde - Terminato - reset-->
             <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo == true">
-                <div class="alias "><span>{{match.userId}}</span></div>
+                <div class="alias" data-toggle="tooltip" data-placement="top" title="{{match.userId}}"><span>{{match.userId}}</span></div>
                 <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
                 <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
                 <div class="progreslight">
@@ -65,7 +149,7 @@
                     <div class="statusinfogo"></div>
                 </div>
                 <div class="advancement flexaround">
-                    <span>Terminato</span>
+                    <span>Elaborazione conclusa</span>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
@@ -73,7 +157,7 @@
                     <div class="btn redbtn btn-sm brokenbtn" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}"  ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
                     <div class="btn yellowbtn brokenbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  aria-disabled="true" disabled>Elabora</div>
                     <div class="btn redbtn brokenbtn btn-sm" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}"  aria-disabled="true" disabled>Chiudi</div>
                 </div>
@@ -81,10 +165,9 @@
 
             <!--verde - In Corso - reset elabora chiudi-->
             <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated != true && match.sendToPo != true">
-                <div class="alias "><span>{{match.userId}}</span></div>
+                <div class="alias" data-toggle="tooltip" data-placement="top" title="{{match.userId}}"><span>{{match.userId}}</span></div>
                 <!--<div class="bla">{{currentDate}}</div>-->
-                <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
-                <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
+                <div class="maxpoints"><span>-</span></div>
                 <div class="progreslight">
                     <div class="firstrectangle green"></div>
                     <div class="statusinfogo"></div>
@@ -94,23 +177,23 @@
                     <div class="statusinfost"></div>
                 </div>
                 <div class="advancement flexaround">
-                    <span>In corso</span>
+                    <span>Sta giocando</span>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
-                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}"   aria-disabled="true" disabled>Reset</div>
+                    <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
                     <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  aria-disabled="true" disabled>Elabora</div>
                     <div class="btn redbtn btn-sm brokenbtn" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}"  aria-disabled="true" disabled>Chiudi</div>
                 </div>
                 <div class="btns" ng-if="stateSessionLabel == 'In Corso'">
-                    <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}"  ng-click="openModal(match.id, 'resetta')">Reset</div>
-                    <div class="btn yellowbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  ng-click="openModal(match.id, 'elabora')">Elabora</div>
-                    <div class="btn redbtn btn-sm" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}"  ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
+                    <div class="btn bluebtn btn-sm reset somemarright" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" ng-click="openModal(match.id, 'resetta')">Reset</div>
+                    <div class="btn yellowbtn brokenbtn btn-sm interrupt somemarright" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}"  aria-disabled="true" disabled>Elabora</div>
+                    <div class="btn redbtn btn-sm" data-toggle="tooltip" data-placement="top" title="{{closeMessage}}" ng-click="openModal(match.id, 'chiudi')">Chiudi</div>
                 </div>
             </div>
 
             <!--rosso - Match Appeso - reset elabora chiudi-->
             <div class="flexbtw match" ng-if="match.anomalous == true && match.elaborated != true && match.sendToPo != true">
-                <div class="alias "><span>{{match.userId}}</span></div>
+                <div class="alias" data-toggle="tooltip" data-placement="top" title="{{match.userId}}"><span>{{match.userId}}</span></div>
                 <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
                 <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
                 <div class="progreslight">
@@ -121,7 +204,7 @@
                     <div class="rectangle gray"></div>
                     <div class="statusinfost"></div>
                 </div>
-                <div class="advancement flexaround"><span>Match Appeso</span></div>
+                <div class="advancement flexaround"><span>Giocata Appesa</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
                     <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
@@ -136,18 +219,18 @@
 
             <!--giallo -Punteggio non elaborato / sta aspettando il batch - reset elabora-->
             <div class="flexbtw match" ng-if="match.anomalous != true && match.elaborated == true && match.sendToPo != true">
-                <div class="alias "><span>{{match.userId}}</span></div>
+                <div class="alias" data-toggle="tooltip" data-placement="top" title="{{match.userId}}"><span>{{match.userId}}</span></div>
                 <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
                 <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
                 <div class="progreslight">
-                    <div class="firstrectangle green"></div>
-                    <div class="statusinfogo"></div>
-                    <div class="rectangle g2y"></div>
+                    <div class="firstrectangle yellow"></div>
+                    <div class="statusinfofo"></div>
+                    <div class="rectangle yellow"></div>
                     <div class="statusinfofo"></div>
                     <div class="rectangle gray"></div>
                     <div class="statusinfost"></div>
                 </div>
-                <div class="advancement flexaround"><span>In Elaborazione</span></div>
+                <div class="advancement flexaround"><span>Invio dati in corso</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
                     <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
@@ -162,7 +245,7 @@
 
             <!--rosso -Punteggio non elaborato- reset elabora-->
             <div class="flexbtw match" ng-if="match.anomalous == true && match.elaborated == true && match.sendToPo != true">
-                <div class="alias "><span>{{match.userId}}</span></div>
+                <div class="alias" data-toggle="tooltip" data-placement="top" title="{{match.userId}}"><span>{{match.userId}}</span></div>
                 <div class="maxpoints" ng-if="levelgame == true"><span>{{match.bestLevel}} Liv</span></div>
                 <div class="maxpoints" ng-if="levelgame == false"><span>{{match.bestScore}} Pti</span></div>
                 <div class="progreslight">
@@ -173,7 +256,7 @@
                     <div class="rectangle gray"></div>
                     <div class="statusinfost"></div>
                 </div>
-                <div class="advancement flexaround"><span>Elaborazione Fallita</span></div>
+                <div class="advancement flexaround"><span>Invio dati fallito</span></div>
                 <div class="btns" ng-if="stateSessionLabel == 'Terminato'">
                     <div class="btn bluebtn btn-sm reset somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{resetMessage}}" aria-disabled="true" disabled>Reset</div>
                     <div class="btn yellowbtn btn-sm interrupt somemarright brokenbtn" data-toggle="tooltip" data-placement="top" title="{{elaborateMessage}}" aria-disabled="true" disabled>Elabora</div>
@@ -192,7 +275,30 @@
     <h1>{{errorMes}}</h1>
 </div>
 
+<script>
+    var modal = document.getElementById('myModal');
 
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
 
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
 
+    // When the user clicks on the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
 
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+</script>

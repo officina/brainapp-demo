@@ -8,7 +8,23 @@
     PlaygameController.$inject = ['$scope', '$rootScope', 'Principal', 'LoginService', '$state', 'PlaygameService', '$sce', '$stateParams', '$interval'];
 
     function PlaygameController($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams, timer, $interval) {
-
+        $scope.isOnline = true;
+        Offline.on("up", function () {
+            $scope.isOnline = true;
+            console.log("Sending offline attempts for sync: ");
+            console.log($scope.wrapperMemory.attemptsOffline);
+            PlaygameService.syncOfflineAttempts($scope.wrapperMemory.attemptsOffline, $scope.wrapperMemory.match)
+                .then(function(response){
+                    $scope.wrapperMemory.attemptsOffline = {}
+                })
+                .catch(function (error){
+                    console.log('Offline attempts sync failed: ');
+                    console.log(error);
+                })
+        });
+        Offline.on("down", function () {
+            $scope.isOnline = false;
+        });
         $scope.wrapperMemory = {};
         $scope.wrapperMemory.attempts = [];
         $scope.wrapperMemory.attemptsOffline = {};
@@ -32,15 +48,19 @@
         var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
         var useLevels = false;
 
-        var setupOffline = function (showReport) {
+        var setupOffline = function (showReport, offline) {
             $scope.showGame = false;
-            $scope.message1 = "Si è verificato un problema con la tua connessione";
+            if (offline){
+                $scope.message1 = "Si è verificato un problema con la tua connessione";
+                $scope.message2 = "Ti preghiamo di controllare la tua connessione";
+            }else{
+                $scope.message1 = 'Si è verificato un errore imprevisto. ';
+                $scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
+            }
             if (showReport){
                 $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
                 $scope.errorText = $rootScope.finalError;
                 $scope.reportText = $rootScope.wrapperMemory;
-            }else{
-                $scope.message2 = "Ti preghiamo di controllare la tua connessione";
             }
         };
 
@@ -58,7 +78,7 @@
 
             $rootScope.wrapperMemory = $scope.wrapperMemory;
             $rootScope.finalError = error;
-            if (checkOffline()) {
+            if ($scope.isOnline) {
                 removeEvent(eventName, $scope.handle);
                 $state.go("ended", {
                     "gameid": $stateParams.gameid,
@@ -70,38 +90,39 @@
             else {
                 if (offlineOnFirstAttempt){
                     removeEvent(eventName, $scope.handle);
-                    setupOffline(false);
-                }
-                switch (event) {
-                    case "START_ATTEMPT":
-                        console.log('MANAGE OFFLINE: START_ATTEMPT');
-                        startLocalAttempt();
-                        break;
-                    case "STOP_ATTEMPT": // è un cancel attempt
-                        console.log('MANAGE OFFLINE: STOP_ATTEMPT');
-                        attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                        break;
-                    case "ATTEMPT_ENDED":
-                        console.log('MANAGE OFFLINE: ATTEMPT_ENDED');
-                        attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                        break;
-                    case "ATTEMPT_RESTARTED":
-                        console.log('MANAGE OFFLINE: ATTEMPT_RESTARTED');
-                        attemptLocalRestarted(attempt.score, attempt.level, attempt.completed, attempt.ended);
-                        break;
-                    case "GAME_LOADED":
-                        console.log('MANAGE OFFLINE: GAME_LOAD');
-                        break;
-                    case "GAME_UNLOADED":
-                        console.log('MANAGE OFFLINE: GAME_UNLOAD');
-                        break;
-                    default:
-                        console.log(event);
-                        setupOffline(true);
-                        break;
+                    setupOffline(false, true);
+                }else{
+                    switch (event) {
+                        case "START_ATTEMPT":
+                            console.log('MANAGE OFFLINE: START_ATTEMPT');
+                            startLocalAttempt();
+                            break;
+                        case "STOP_ATTEMPT": // è un cancel attempt
+                            console.log('MANAGE OFFLINE: STOP_ATTEMPT');
+                            attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                            break;
+                        case "ATTEMPT_ENDED":
+                            console.log('MANAGE OFFLINE: ATTEMPT_ENDED');
+                            attemptLocalEnded(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                            break;
+                        case "ATTEMPT_RESTARTED":
+                            console.log('MANAGE OFFLINE: ATTEMPT_RESTARTED');
+                            attemptLocalRestarted(attempt.score, attempt.level, attempt.completed, attempt.ended);
+                            break;
+                        case "GAME_LOADED":
+                            console.log('MANAGE OFFLINE: GAME_LOAD');
+                            break;
+                        case "GAME_UNLOADED":
+                            console.log('MANAGE OFFLINE: GAME_UNLOAD');
+                            break;
+                        default:
+                            console.log(event);
+                            setupOffline(true, false);
+                            break;
+                    }
                 }
             }
-        }
+        };
 
         $scope.handle = function (e) {
             switch (e.data.action) {
@@ -209,24 +230,13 @@
                                 why = 'matchAnomalous';
                             } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                                 why = 'sessionAlreadyInUse';
-                            }else{
+                            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                                why = 'invalidSitecore';
+                            } else{
                                 why = 'genericError';
                             }
                             manageError("START_ATTEMPT", null, error, why);
                         });
-                }
-                var pushTimer = args.seconds % 10;
-                if (pushTimer == 0){
-                    console.log("Sending offline attempts for sync: ");
-                    console.log($scope.wrapperMemory.attemptsOffline);
-                    PlaygameService.syncOfflineAttempts($scope.wrapperMemory.attemptsOffline, $scope.wrapperMemory.match)
-                        .then(function(response){
-                            $scope.wrapperMemory.attemptsOffline = {}
-                        })
-                        .catch(function (error){
-                            console.log('Offline attempts sync failed: ');
-                            console.log(error);
-                        })
                 }
             }
 
@@ -309,7 +319,9 @@
                             why = 'matchAnomalous';
                         } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                             why = 'sessionAlreadyInUse';
-                        }else{
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                            why = 'invalidSitecore';
+                        } else{
                             why = 'genericError';
                         }
                         manageError("START_ATTEMPT", null, error, why);
@@ -335,7 +347,9 @@
                             why = 'matchAnomalous';
                         } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                             why = 'sessionAlreadyInUse';
-                        }else{
+                        } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                            why = 'invalidSitecore';
+                        } else{
                             why = 'genericError';
                         }
                         manageError("START_ATTEMPT", null, error, why);
@@ -431,7 +445,9 @@
                         why = 'matchAnomalous';
                     } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                         why = 'sessionAlreadyInUse';
-                    }else{
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                        why = 'invalidSitecore';
+                    } else{
                         why = 'genericError';
                     }
                     manageError("ATTEMPT_ENDED", data, error, why);
@@ -535,7 +551,9 @@
                         why = 'matchAnomalous';
                     } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                         why = 'sessionAlreadyInUse';
-                    }else{
+                    } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                        why = 'invalidSitecore';
+                    } else{
                         why = 'genericError';
                     }
                     manageError("ATTEMPT_RESTARTED", data, error, why);

@@ -15,8 +15,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cc.officina.gatorade.web.response.MatchResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -192,7 +190,7 @@ public class MatchServiceImpl implements MatchService{
     	{
     		log.info("MATCH RESTORE (match_ID = " + m.getId() + "): no attempts!!");
     		m.setAnomalous(true);
-    		matchRepository.save(m);
+    		//matchRepository.save(m);
     		return TypeOfStillPending.NO_ATTEMPT;
     	}
     	//devo verificare se il match può essere potenzialmente ancora in corso
@@ -207,7 +205,19 @@ public class MatchServiceImpl implements MatchService{
     			//per ora lo indico come pending in attesa di eventuale logica per risolverlo
     			//lo marco come anomalo in modo da evidenziarlo lato console admin e non elaborarlo nuovamente alla prossima esecuzione del batch
     			m.setAnomalous(true);
-    			matchRepository.save(m);
+                m.setBestLevel(m.getMaxLevel());
+                if (m.getGame().getType() == GameType.MINPOINT){
+                    String minScore = m.getMinScore();
+                    if (minScore != null){
+                        m.setBestScore(Long.parseLong(minScore));
+                    }
+                }else if(m.getGame().getType() == GameType.POINT){
+                    String maxScore = m.getMaxScore();
+                    if (maxScore != null){
+                        m.setBestScore(Long.parseLong(maxScore));
+                    }
+                }
+//    			matchRepository.save(m);
     			return TypeOfStillPending.NOT_ELABORATED;
     		}
 
@@ -232,7 +242,7 @@ public class MatchServiceImpl implements MatchService{
     				result = TypeOfStillPending.TO_PO_FAIL;
     			}
     			//salvo il match
-    			matchRepository.save(m);
+    			//matchRepository.save(m);
     			return result;
     		}
 
@@ -243,7 +253,7 @@ public class MatchServiceImpl implements MatchService{
     			//l'unica cosa che posso fare è marcarlo come ancora pending
     			//lo marco come anomalo in modo da evidenziarlo lato console admin e non elaborarlo nuovamente alla prossima esecuzione del batch
     			m.setAnomalous(true);
-    			matchRepository.save(m);
+    			//matchRepository.save(m);
     			return TypeOfStillPending.SENT_TO_PO_NOT_ELABORATED;
     		}
     	}

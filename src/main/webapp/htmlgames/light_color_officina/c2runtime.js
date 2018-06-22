@@ -3477,6 +3477,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.oldHeight = 0;
 		this.canvas.oncontextmenu = function (e) { if (e.preventDefault) e.preventDefault(); return false; };
 		this.canvas.onselectstart = function (e) { if (e.preventDefault) e.preventDefault(); return false; };
+		this.canvas.ontouchstart = function (e) { if(e.preventDefault) e.preventDefault(); return false; };
 		if (this.isDirectCanvas)
 			window["c2runtime"] = this;
 		if (this.isNWjs)
@@ -3548,6 +3549,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		this.fps = 0;
 		this.last_fps_time = 0;
 		this.tickcount = 0;
+		this.tickcount_nosave = 0;	// same as tickcount but never saved/loaded
 		this.execcount = 0;
 		this.framecount = 0;        // for fps
 		this.objectcount = 0;
@@ -5054,6 +5056,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 		if (!this.hit_breakpoint)
 		{
 			this.tickcount++;
+			this.tickcount_nosave++;
 			this.execcount++;
 			this.framecount++;
 		}
@@ -6516,13 +6519,39 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 			return;
 		this.registered_collisions.push([a, b]);
 	};
+	Runtime.prototype.addRegisteredCollisionCandidates = function (inst, otherType, arr)
+	{
+		var i, len, r, otherInst;
+		for (i = 0, len = this.registered_collisions.length; i < len; ++i)
+		{
+			r = this.registered_collisions[i];
+			if (r[0] === inst)
+				otherInst = r[1];
+			else if (r[1] === inst)
+				otherInst = r[0];
+			else
+				continue;
+			if (otherType.is_family)
+			{
+				if (otherType.members.indexOf(otherType) === -1)
+					continue;
+			}
+			else
+			{
+				if (otherInst.type !== otherType)
+					continue;
+			}
+			if (arr.indexOf(otherInst) === -1)
+				arr.push(otherInst);
+		}
+	};
 	Runtime.prototype.checkRegisteredCollision = function (a, b)
 	{
 		var i, len, x;
 		for (i = 0, len = this.registered_collisions.length; i < len; i++)
 		{
 			x = this.registered_collisions[i];
-			if ((x[0] == a && x[1] == b) || (x[0] == b && x[1] == a))
+			if ((x[0] === a && x[1] === b) || (x[0] === b && x[1] === a))
 				return true;
 		}
 		return false;
@@ -7494,7 +7523,7 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 	};
 	Runtime.prototype.loadInstanceFromJSON = function(inst, o, state_only)
 	{
-		var p, i, len, iv, oivs, world, fxindex, obehs, behindex;
+		var p, i, len, iv, oivs, world, fxindex, obehs, behindex, value;
 		var oldlayer;
 		var type = inst.type;
 		var plugin = type.plugin;
@@ -7519,7 +7548,10 @@ quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"};
 					iv = this.getInstanceVarIndexBySid(type, parseInt(p, 10));
 					if (iv < 0 || iv >= inst.instance_vars.length)
 						continue;		// must've gone missing
-					inst.instance_vars[iv] = oivs[p];
+					value = oivs[p];
+					if (value === null)
+						value = NaN;
+					inst.instance_vars[iv] = value;
 				}
 			}
 		}
@@ -13991,14 +14023,14 @@ cr.system_object.prototype.loadFromJSON = function (o)
 	SysExps.prototype.regexmatchcount = function (ret, str_, regex_, flags_)
 	{
 		var regex = getRegex(regex_, flags_);
-		updateRegexMatches(str_, regex_, flags_);
+		updateRegexMatches(str_.toString(), regex_, flags_);
 		ret.set_int(regexMatches ? regexMatches.length : 0);
 	};
 	SysExps.prototype.regexmatchat = function (ret, str_, regex_, flags_, index_)
 	{
 		index_ = Math.floor(index_);
 		var regex = getRegex(regex_, flags_);
-		updateRegexMatches(str_, regex_, flags_);
+		updateRegexMatches(str_.toString(), regex_, flags_);
 		if (!regexMatches || index_ < 0 || index_ >= regexMatches.length)
 			ret.set_string("");
 		else
@@ -15181,9 +15213,84 @@ cr.plugins_.Audio = function(runtime)
 	var rolloffFactor = 1;
 	var micSource = null;
 	var micTag = "";
-	var isMusicWorkaround = false;
-	var musicPlayNextTouch = [];
+	var useNextTouchWorkaround = false;			// heuristic in case play() does not return a promise and we have to guess if the play was blocked
+	var playOnNextInput = [];					// C2AudioInstances with HTMLAudioElements to play on next input event
 	var playMusicAsSoundWorkaround = false;		// play music tracks with Web Audio API
+	var hasPlayedDummyBuffer = false;			// dummy buffer played to unblock AudioContext on some platforms
+	function addAudioToPlayOnNextInput(a)
+	{
+		var i = playOnNextInput.indexOf(a);
+		if (i === -1)
+			playOnNextInput.push(a);
+	};
+	function tryPlayAudioElement(a)
+	{
+		var audioElem = a.instanceObject;
+		var playRet;
+		try {
+			playRet = audioElem.play();
+		}
+		catch (err) {
+			addAudioToPlayOnNextInput(a);
+			return;
+		}
+		if (playRet)		// promise was returned
+		{
+			playRet.catch(function (err)
+			{
+				addAudioToPlayOnNextInput(a);
+			});
+		}
+		else if (useNextTouchWorkaround && !audRuntime.isInUserInputEvent)
+		{
+			addAudioToPlayOnNextInput(a);
+		}
+	};
+	function playQueuedAudio()
+	{
+		var i, len, m, playRet;
+		if (!hasPlayedDummyBuffer && !isContextSuspended && context)
+		{
+			playDummyBuffer();
+			if (context["state"] === "running")
+				hasPlayedDummyBuffer = true;
+		}
+		var tryPlay = playOnNextInput.slice(0);
+		cr.clearArray(playOnNextInput);
+		if (!silent)
+		{
+			for (i = 0, len = tryPlay.length; i < len; ++i)
+			{
+				m = tryPlay[i];
+				if (!m.stopped && !m.is_paused)
+				{
+					playRet = m.instanceObject.play();
+					if (playRet)
+					{
+						playRet.catch(function (err)
+						{
+							addAudioToPlayOnNextInput(m);
+						});
+					}
+				}
+			}
+		}
+	};
+	function playDummyBuffer()
+	{
+		if (context["state"] === "suspended" && context["resume"])
+			context["resume"]();
+		if (!context["createBuffer"])
+			return;
+		var buffer = context["createBuffer"](1, 220, 22050);
+		var source = context["createBufferSource"]();
+		source["buffer"] = buffer;
+		source["connect"](context["destination"]);
+		startSource(source);
+	};
+	document.addEventListener("touchend", playQueuedAudio, true);
+	document.addEventListener("click", playQueuedAudio, true);
+	document.addEventListener("keydown", playQueuedAudio, true);
 	function dbToLinear(x)
 	{
 		var v = dbToLinear_nocap(x);
@@ -15938,8 +16045,6 @@ cr.plugins_.Audio = function(runtime)
 	ObjectTracker.prototype.tick = function (dt)
 	{
 	};
-	var iOShadtouchstart = false;	// has had touch start input on iOS <=8 to work around web audio API muting
-	var iOShadtouchend = false;		// has had touch end input on iOS 9+ to work around web audio API muting
 	function C2AudioBuffer(src_, is_music)
 	{
 		this.src = src_;
@@ -16427,18 +16532,7 @@ cr.plugins_.Audio = function(runtime)
 ;
 				}
 			}
-			if (this.is_music && isMusicWorkaround && !audRuntime.isInUserInputEvent)
-				musicPlayNextTouch.push(this);
-			else
-			{
-				try {
-					this.instanceObject.play();
-				}
-				catch (e) {		// sometimes throws on WP8.1... try not to kill the app
-					if (console && console.log)
-						console.log("[C2] WARNING: exception trying to play audio '" + this.buffer.src + "': ", e);
-				}
-			}
+			tryPlayAudioElement(this);
 			break;
 		case API_WEBAUDIO:
 			this.muted = false;
@@ -16478,10 +16572,7 @@ cr.plugins_.Audio = function(runtime)
 ;
 					}
 				}
-				if (this.is_music && isMusicWorkaround && !audRuntime.isInUserInputEvent)
-					musicPlayNextTouch.push(this);
-				else
-					instobj.play();
+				tryPlayAudioElement(this);
 			}
 			break;
 		case API_CORDOVA:
@@ -16570,7 +16661,7 @@ cr.plugins_.Audio = function(runtime)
 			return;
 		switch (this.myapi) {
 		case API_HTML5:
-			this.instanceObject.play();
+			tryPlayAudioElement(this);
 			break;
 		case API_WEBAUDIO:
 			if (this.buffer.myapi === API_WEBAUDIO)
@@ -16588,7 +16679,7 @@ cr.plugins_.Audio = function(runtime)
 			}
 			else
 			{
-				this.instanceObject.play();
+				tryPlayAudioElement(this);
 			}
 			break;
 		case API_CORDOVA:
@@ -16946,7 +17037,7 @@ cr.plugins_.Audio = function(runtime)
 			playMusicAsSoundWorkaround = true;
 		if ((this.runtime.isiOS || (this.runtime.isAndroid && (this.runtime.isChrome || this.runtime.isAndroidStockBrowser))) && !this.runtime.isCrosswalk && !this.runtime.isDomFree && !this.runtime.isAmazonWebApp && !playMusicAsSoundWorkaround)
 		{
-			isMusicWorkaround = true;
+			useNextTouchWorkaround = true;
 		}
 		context = null;
 		if (typeof AudioContext !== "undefined")
@@ -16967,59 +17058,6 @@ cr.plugins_.Audio = function(runtime)
 				context = new AudioContext();
 			else if (typeof webkitAudioContext !== "undefined")
 				context = new webkitAudioContext();
-		}
-		var isAndroid = this.runtime.isAndroid;
-		var playDummyBuffer = function ()
-		{
-			if (context["state"] === "suspended" && context["resume"])
-				context["resume"]();
-			if (isContextSuspended || !context["createBuffer"])
-				return;
-			var buffer = context["createBuffer"](1, 220, 22050);
-			var source = context["createBufferSource"]();
-			source["buffer"] = buffer;
-			source["connect"](context["destination"]);
-			startSource(source);
-		};
-		if (isMusicWorkaround)
-		{
-			var playQueuedMusic = function ()
-			{
-				var i, len, m;
-				if (isMusicWorkaround)
-				{
-					if (!silent)
-					{
-						for (i = 0, len = musicPlayNextTouch.length; i < len; ++i)
-						{
-							m = musicPlayNextTouch[i];
-							if (!m.stopped && !m.is_paused)
-								m.instanceObject.play();
-						}
-					}
-					cr.clearArray(musicPlayNextTouch);
-				}
-			};
-			document.addEventListener("touchend", function ()
-			{
-				if (!iOShadtouchend && context)
-				{
-					playDummyBuffer();
-					iOShadtouchend = true;
-				}
-				playQueuedMusic();
-			}, true);
-		}
-		else if (playMusicAsSoundWorkaround)
-		{
-			document.addEventListener("touchend", function ()
-			{
-				if (!iOShadtouchend && context)
-				{
-					playDummyBuffer();
-					iOShadtouchend = true;
-				}
-			}, true);
 		}
 		if (api !== API_WEBAUDIO)
 		{
@@ -17071,7 +17109,7 @@ cr.plugins_.Audio = function(runtime)
 			default:
 ;
 			}
-			this.runtime.tickMe(this);
+		this.runtime.tickMe(this);
 		}
 	};
 	var instanceProto = pluginProto.Instance.prototype;
@@ -20175,6 +20213,7 @@ cr.plugins_.Sprite = function(runtime)
 		var rsol = rtype.getCurrentSol();
 		var linstances = lsol.getObjects();
 		var rinstances;
+		var registeredInstances;
 		var l, linst, r, rinst;
 		var curlsol, currsol;
 		var tickcount = this.runtime.tickcount;
@@ -20190,9 +20229,12 @@ cr.plugins_.Sprite = function(runtime)
 				linst.update_bbox();
 				this.runtime.getCollisionCandidates(linst.layer, rtype, linst.bbox, candidates1);
 				rinstances = candidates1;
+				this.runtime.addRegisteredCollisionCandidates(linst, rtype, rinstances);
 			}
 			else
+			{
 				rinstances = rsol.getObjects();
+			}
 			for (r = 0; r < rinstances.length; r++)
 			{
 				rinst = rinstances[r];
@@ -21864,8 +21906,15 @@ cr.plugins_.Touch = function(runtime)
 			return this.orient_gamma;
 	};
 	var noop_func = function(){};
+	function isCompatibilityMouseEvent(e)
+	{
+		return (e["sourceCapabilities"] && e["sourceCapabilities"]["firesTouchEvents"]) ||
+				(e.originalEvent && e.originalEvent["sourceCapabilities"] && e.originalEvent["sourceCapabilities"]["firesTouchEvents"]);
+	};
 	instanceProto.onMouseDown = function(info)
 	{
+		if (isCompatibilityMouseEvent(info))
+			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
 		this.onTouchStart(fakeinfo);
@@ -21874,6 +21923,8 @@ cr.plugins_.Touch = function(runtime)
 	instanceProto.onMouseMove = function(info)
 	{
 		if (!this.mouseDown)
+			return;
+		if (isCompatibilityMouseEvent(info))
 			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
@@ -21884,6 +21935,8 @@ cr.plugins_.Touch = function(runtime)
 		if (info.preventDefault && this.runtime.had_a_click && !this.runtime.isMobile)
 			info.preventDefault();
 		this.runtime.had_a_click = true;
+		if (isCompatibilityMouseEvent(info))
+			return;
 		var t = { pageX: info.pageX, pageY: info.pageY, "identifier": 0 };
 		var fakeinfo = { changedTouches: [t] };
 		this.onTouchEnd(fakeinfo);
@@ -22551,7 +22604,7 @@ cr.plugins_.gatorade = function(runtime)
         var m = new Gatorade.Message(operations.START_ATTEMPT, currentattempt)
 		window.parent.postMessage(m, domain)
 	};
-	Acts.prototype.restartAttempt = function ()
+	Acts.prototype.restartAttempt = function (score)
 	{
 		console.log("game restarted, sending " +  score + " as end points")
 		currentattempt.completed = true
@@ -22636,8 +22689,8 @@ cr.plugins_.gatorade = function(runtime)
 	pluginProto.exps = new Exps();
 }());
 cr.getObjectRefTable = function () { return [
-	cr.plugins_.Browser,
 	cr.plugins_.Audio,
+	cr.plugins_.Browser,
 	cr.plugins_.gatorade,
 	cr.plugins_.LocalStorage,
 	cr.plugins_.Sprite,
