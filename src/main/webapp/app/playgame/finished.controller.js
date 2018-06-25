@@ -50,40 +50,54 @@
     	}
 
         var score = 0;
-    	if ($rootScope.wrapperMemory.match && $rootScope.wrapperMemory.match.game){
+    	if ($rootScope.wrapperMemory !== undefined && $rootScope.wrapperMemory.match && $rootScope.wrapperMemory.match.game){
             if ($rootScope.wrapperMemory.match.game.type === 'LEVEL'){
                 score = $rootScope.wrapperMemory.match.bestLevel;
             }else{
                 score = $rootScope.wrapperMemory.match.bestScore;
             }
         }
-    	switch($stateParams.why)
-    	{
+        switch($stateParams.why)
+        {
 
             case 'cloneSuccessfully':
                 $scope.message1 = 'La tua ultima giocata è stata salvata con successo';
                 $scope.message2 = 'Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
                 break;
-    		case 'invalidSession':
-    			$scope.message1 = 'Nessuna sessione di gioco attiva.';
-    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
-    			break;
+            case 'invalidSession':
+                $scope.message1 = 'Nessuna sessione di gioco attiva.';
+                $scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
+                sendProblem();
+                break;
             case 'invalidSitecore':
                 $scope.message1 = 'Nessuna sessione di gioco attiva.';
                 $scope.message2 = 'Le verifiche di autenticazione sulla sessione corrente hanno dato esito negativo';
+                sendProblem();
                 break;
-    		case 'timeout':
-    			$scope.message1 = 'La tua partita è terminata.';
-    	    	$scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
-    			break;
-    			//matchInvalid è riferito al caso in cui l'amministratore ha invalidato la giocata dalla dashboard, è diverso da invalidMatch
+            case 'timeout':
+                $scope.message1 = 'La tua partita è terminata.';
+                $scope.message2 = 'Grazie per aver giocato! Il punteggio riportato per '+$rootScope.wrapperMemory.match.game.description+' è '+score;
+                break;
+            //matchInvalid è riferito al caso in cui l'amministratore ha invalidato la giocata dalla dashboard, è diverso da invalidMatch
             case 'matchInvalid':
                 $scope.message1 = 'La tua partita è stata terminata.';
                 $scope.message2 = 'Ti preghiamo di contattare energy4brain@generali.com';
+                sendProblem();
                 break;
             case 'matchElaborated':
                 $scope.message1 = 'La tua partita è stata elaborata.';
                 $scope.message2 = 'Grazie per aver giocato!';
+                sendProblem();
+                break;
+            case 'failToSend':
+                $scope.message1 = 'Partita conclusa, invio punteggio a classifica fallito.';
+                $scope.message2 = 'Purtroppo non siamo riusciti ad aggiornare le classifiche! Ti preghiamo di contattare energy4brain@generali.com per risolvere.';
+                sendProblem();
+                break;
+            case 'sendingData':
+                $scope.message1 = 'Partita conclusa, aggiornamento classifiche in corso.';
+                $scope.message2 = 'Se la classifica non dovesse essere corretamente aggiornata, ti preghiamo di segnalare l\'accaduto a energy4brain@generali.com';
+                sendProblem();
                 break;
             case 'matchEnded':
                 $scope.message1 = 'La tua partita è terminata.';
@@ -92,6 +106,7 @@
             case 'matchAnomalous':
                 $scope.message1 = 'La tua partita è terminata.';
                 $scope.message2 = 'Grazie per aver giocato!';
+                sendProblem();
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
@@ -101,17 +116,21 @@
                 $scope.message1 = 'Non siamo riusciti a contattare il server';
                 $scope.message2 = 'Verifica la connessione';
                 break;
-                //identifica i match resi "problematici" a causa di bug, o errori da parte dell'utente
-    		case 'invalidMatch':
-    			$scope.message1 = 'La tua partita è stata invalidata. ';
-    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
-    	    	sendProblem();
-    			break;
-    		case 'genericError':
-    			$scope.message1 = 'Si è verificato un errore imprevisto. ';
-    	    	$scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
-    	    	sendProblem();
-    			break;
-    	}
+            case 'missingSession':
+                $scope.message1 = 'Non siamo riusciti a trovare l\'appuntamento richiesto';
+                $scope.message2 = 'Ti preghiamo di contattare energy4brain@generali.com e comunicare l\'errore riscontrato';
+                break;
+            //identifica i match resi "problematici" a causa di bug, o errori da parte dell'utente
+            case 'invalidMatch':
+                $scope.message1 = 'La tua partita è stata invalidata. ';
+                $scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
+                sendProblem();
+                break;
+            case 'genericError':
+                $scope.message1 = 'Si è verificato un errore imprevisto. ';
+                $scope.message2 = 'Ti preghiamo di segnalare la cosa a energy4brain@generali.com';
+                sendProblem();
+                break;
+        }
     }
 })();

@@ -98,28 +98,33 @@ public class SessionServiceImpl implements SessionService{
     }
 
 	@Override
-	public boolean validateSessionAndUser(Long sessionid, String playerid, Long gameid) {
+	public Map<Boolean, String> validateSessionAndUser(Long sessionid, String playerid, Long gameid) {
 		// TODO: implementazione logica validaione sessione e player
+        Map<Boolean, String> resultMap = new HashMap<>();
 		boolean result = false;
 		Session session = sessionRepository.findValidById(sessionid,ZonedDateTime.now(), gameid);
 		if(session == null)
 		{
 			log.info("Session not valid - session (by id) not found");
-			return false;
+            resultMap.put(false, "missingSession");
+			return resultMap;
 		}
 
 		if (session.getPoRoot() != null && session.getPoRoot().startsWith("top_user_")){
 		    log.info("Validate Session for Top user: "+ playerid+" - session id: "+sessionid+" - gameid: "+gameid);
-		    return true;
+            resultMap.put(true, "topUserSession");
+		    return resultMap;
         }else{
             List<Match> matches = matchService.findByUserAndId(playerid, session.getId());
 
-            if(matches == null || matches.size() == 0)
-                return true;
+            if(matches == null || matches.size() == 0){
+                resultMap.put(true, "");
+                return resultMap;
+            }
 
             for(Match match : matches)
             {
-                //se esiste già un match la chiamata viene invaliata
+                //se esiste già un match la chiamata viene invalidata
                 if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
                 {
                     log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with session id " + sessionid);
@@ -128,17 +133,44 @@ public class SessionServiceImpl implements SessionService{
                     if(match.isElaborated() && match.getSendToPo())
                     {
                         log.info("IL match è correttamente elaborato, non serve fare altro (match_id = " + match.getId() + ")");
+                        resultMap.put(false, "matchElaborated");
                     }else{
                         TypeOfStillPending type = matchService.singleMatchRestore(match);
                         log.info("Tentativo di rielaborare il match (match_id = " + match.getId() + ") con risultato " + type);
+                        if (type != null){
+                            switch (type){
+                                case NO_ATTEMPT:
+                                    //non dovrebbe mai succedere
+                                    break;
+                                case RESTORE_FAIL:
+                                    //non dovrebbe mai succedere
+                                    break;
+                                case NOT_ELABORATED:
+                                    //match appeso
+                                    resultMap.put(false, "matchAnomalous");
+                                    break;
+                                case TO_PO_FAIL:
+                                    if (match.isAnomalous()){
+                                        resultMap.put(false, "failToSend");
+                                    }else{
+                                        resultMap.put(false, "sendingData");
+                                    }
+                                    break;
+                                case SENT_TO_PO_NOT_ELABORATED:
+                                    //non dovrebbe mai succedere
+                                    break;
+                            }
+                        }else{
+                            resultMap.put(false, "sessionAlreadyInUse");
+                        }
                     }
-                    return false;
+                    return resultMap;
                 }
             }
 
             if(session != null)
-                result = true;
-            return result;
+                resultMap.put(true, "");
+            return resultMap;
         }
 	}
 
