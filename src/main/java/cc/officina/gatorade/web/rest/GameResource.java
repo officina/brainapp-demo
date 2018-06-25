@@ -329,14 +329,14 @@ public class GameResource {
                 if (match.getStop() != null){
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
                 }
-                if (match.isAnomalous()){
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
-                }
                 if (request.getMatchtoken() == null){
                     match.setAnomalous(true);
                     reportService.matchAnomalousToken(request.getMatchid(), request.getPlayerid(), match.toString());
                 }else{
                     match.setMatchToken(request.getMatchtoken());
+                }
+                if (match.isAnomalous()){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
                 }
         		matchService.save(match);
         	}
