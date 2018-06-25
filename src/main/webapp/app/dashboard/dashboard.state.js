@@ -11,7 +11,7 @@
             parent: 'app',
             url: '/manage/sessionid/:extsessionid',
             data: {
-                authorities: ['ROLE_ADMIN']
+                authorities: ['ROLE_GENERALI']
             },
             views: {
                 'content@': {
