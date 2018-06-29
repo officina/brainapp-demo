@@ -141,8 +141,7 @@
                                 anomalous: null,
                                 replayState: null,
                                 parentId: null,
-                                bestLevel: null,
-                                bestScore: null,
+                                timeAFK: null,
                                 id: null
                             };
                         }

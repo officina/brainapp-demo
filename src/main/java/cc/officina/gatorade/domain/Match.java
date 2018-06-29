@@ -88,6 +88,9 @@ public class Match implements Serializable {
     @Column(name = "parent_id")
     private Long parentId;
 
+    @Column(name = "time_AFK")
+    private Long timeAFK;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -350,6 +353,14 @@ public class Match implements Serializable {
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
+    }
+
+    public Long getTimeAFK() {
+        return timeAFK;
+    }
+
+    public void setTimeAFK(Long timeAFK) {
+        this.timeAFK = timeAFK;
     }
 
     @Override

@@ -87,6 +87,10 @@
         {
             "fieldName": "parentId",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "timeAFK",
+            "fieldType": "Long"
         }
     ],
     "changelogDate": "20170627083527",
