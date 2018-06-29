@@ -6,6 +6,7 @@ import cc.officina.gatorade.service.dto.SessionDTO;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +47,7 @@ public interface SessionService {
      */
     void delete(Long id);
 
-	public boolean validateSessionAndUser(Long sessionId, String playerid, Long gameid);
+	public Map<Boolean, String> validateSessionAndUser(Long sessionId, String playerid, Long gameid);
 
 	public Session findOneByExtId(String extid);
 

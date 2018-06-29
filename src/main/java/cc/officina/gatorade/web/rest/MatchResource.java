@@ -161,8 +161,12 @@ public class MatchResource {
         log.info("END MATCH - INIZIO REPORT userid = " + userid + " - match_id = " + id);
         log.info(request.toString());
         log.info("END MATCH - FINE REPORT userid = " + userid + " - match_id = " + id);
-        reportService.matchReport(id, userid, request);
-        return ResponseEntity.ok().build();
+        report = reportService.matchReport(id, userid, request);
+        if (report == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "nullinfo", "Cannot create report, missing info")).body(null);
+        }else{
+            return ResponseEntity.ok().build();
+        }
     }
 
     @PostMapping(value = "/matches/{id}/error/{userid}", consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -172,8 +176,12 @@ public class MatchResource {
         log.info("INIZIO ERROR userid = " + userid + " - match_id = " + id);
         log.info(request.toString());
         log.info("FINE ERROR userid = " + userid + " - match_id = " + id);
-        reportService.matchError(id, userid, request);
-        return ResponseEntity.ok().build();
+        report = reportService.matchError(id, userid, request);
+        if (report == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "nullinfo", "Cannot create report, missing info")).body(null);
+        }else{
+            return ResponseEntity.ok().build();
+        }
     }
 
     @DeleteMapping("/player-activities/user/{userId}")

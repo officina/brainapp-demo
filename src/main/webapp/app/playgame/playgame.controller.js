@@ -52,28 +52,44 @@
             $scope.showGame = false;
             if (offline){
                 $scope.message1 = "Si è verificato un problema con la tua connessione";
-                $scope.message2 = "Ti preghiamo di controllare la tua connessione";
+                $scope.message2 = "Ti preghiamo di controllare la tua connessione e rieffettuare la giocata";
             }else{
                 $scope.message1 = 'Si è verificato un errore imprevisto. ';
-                $scope.message2 = 'Ti preghiamo di segnalare la cosa all\'amministratore del sistema.';
+                $scope.message2 = $sce.trustAsHtml("Ti preghiamo di segnalare la cosa a <a href=\"mailto:energy4brain@generali.com\">energy4brain@generali.com</a>");
             }
             if (showReport){
-                $scope.message2 = "Ti preghiamo di inviare le informazioni che trovi in calce all\'amministratore del sistema.";
+                $scope.message2 = $sce.trustAsHtml("Ti preghiamo di inviare le informazioni che trovi in calce a  <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
                 $scope.errorText = $rootScope.finalError;
                 $scope.reportText = $rootScope.wrapperMemory;
             }
         };
 
-        var checkOffline = function () {
-            /* MSIE used to detect old browsers and Trident used to newer ones*/
-            if (navigator.userAgent.indexOf("MSIE ") > -1 || navigator.userAgent.indexOf("Trident/") > -1){
-                console.log("IE check if offline");
-                return PlaygameService.isOnline();
-            }else{
-                console.log("check if offline "+navigator.onLine);
-                return navigator.onLine;
+        var getWhy = function (error) {
+            var why = '';
+            if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+                why = 'matchInvalid';
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+                why = 'matchElaborated';
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+                why = 'matchEnded';
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+                why = 'matchAnomalous';
+            } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
+                why = 'sessionAlreadyInUse';
+            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+                why = 'invalidSitecore';
+            } else if (error.headers('X-gatoradeApp-error') === 'error.missingSession') {
+                why = 'missingSession';
+            } else if (error.headers('X-gatoradeApp-error') === 'error.sendingData') {
+                why = 'sendingData';
+            } else if (error.headers('X-gatoradeApp-error') === 'error.failToSend') {
+                why = 'failToSend';
+            } else{
+                why = 'genericError';
             }
+            return why;
         };
+
         var manageError = function (event, attempt, error, why) {
 
             $rootScope.wrapperMemory = $scope.wrapperMemory;
@@ -219,22 +235,6 @@
                     })
                         .catch(function (error) {
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, error);
-                            var why = '';
-                            if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
-                                why = 'matchInvalid';
-                            }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
-                                why = 'matchElaborated';
-                            } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
-                                why = 'matchEnded';
-                            } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
-                                why = 'matchAnomalous';
-                            } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
-                                why = 'sessionAlreadyInUse';
-                            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
-                                why = 'invalidSitecore';
-                            } else{
-                                why = 'genericError';
-                            }
                             manageError("START_ATTEMPT", null, error, why);
                         });
                 }
@@ -283,20 +283,11 @@
                         });
                     }
                 }).catch(function (error) {
-                var why = "genericError";
-                if (error.status == 400) {
-                    why = "invalidSession";
-                }
-                manageError("CREATE_MATCH", null, error, why);
+                    manageError("CREATE_MATCH", null, error, getWhy(error));
             });
         })
             .catch(function (error) {
-                var why = "genericError";
-                if (error.status == 400) {
-                    why = "invalidSession";
-                }
-
-                manageError("GAME_INIT", null, error, why);
+                manageError("GAME_INIT", null, error, getWhy(error));
             });
 
         var startAttempt = function () {
@@ -308,23 +299,7 @@
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
                     .catch(function (error) {
-                        var why = '';
-                        if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
-                            why = 'matchInvalid';
-                        }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
-                            why = 'matchElaborated';
-                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
-                            why = 'matchEnded';
-                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
-                            why = 'matchAnomalous';
-                        } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
-                            why = 'sessionAlreadyInUse';
-                        } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
-                            why = 'invalidSitecore';
-                        } else{
-                            why = 'genericError';
-                        }
-                        manageError("START_ATTEMPT", null, error, why);
+                        manageError("START_ATTEMPT", null, error, getWhy(error));
                     });
 
             }
@@ -336,23 +311,7 @@
                         refreshWrapperMemory(response.data.match, response.data.attempt);
                     })
                     .catch(function (error) {
-                        var why = '';
-                        if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
-                            why = 'matchInvalid';
-                        }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
-                            why = 'matchElaborated';
-                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
-                            why = 'matchEnded';
-                        } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
-                            why = 'matchAnomalous';
-                        } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
-                            why = 'sessionAlreadyInUse';
-                        } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
-                            why = 'invalidSitecore';
-                        } else{
-                            why = 'genericError';
-                        }
-                        manageError("START_ATTEMPT", null, error, why);
+                        manageError("START_ATTEMPT", null, error, getWhy(error));
                     });
             }
             $scope.$broadcast('timer-start');
@@ -434,23 +393,7 @@
                         "level": level,
                         "completed": completed
                     };
-                    var why = '';
-                    if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
-                        why = 'matchInvalid';
-                    }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
-                        why = 'matchElaborated';
-                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
-                        why = 'matchEnded';
-                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
-                        why = 'matchAnomalous';
-                    } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
-                        why = 'sessionAlreadyInUse';
-                    } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
-                        why = 'invalidSitecore';
-                    } else{
-                        why = 'genericError';
-                    }
-                    manageError("ATTEMPT_ENDED", data, error, why);
+                    manageError("ATTEMPT_ENDED", data, error, getWhy(error));
                 });
         };
 
@@ -540,23 +483,7 @@
                         "level": level,
                         "completed": completed
                     };
-                    var why = '';
-                    if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
-                        why = 'matchInvalid';
-                    }else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
-                        why = 'matchElaborated';
-                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
-                        why = 'matchEnded';
-                    } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
-                        why = 'matchAnomalous';
-                    } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
-                        why = 'sessionAlreadyInUse';
-                    } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
-                        why = 'invalidSitecore';
-                    } else{
-                        why = 'genericError';
-                    }
-                    manageError("ATTEMPT_RESTARTED", data, error, why);
+                    manageError("ATTEMPT_RESTARTED", data, error, getWhy(error));
                 });
         };
 
@@ -612,7 +539,7 @@
                         });
                 })
                 .catch(function (error) {
-                    manageError("MATCH_ENDED", null, error, "genericError");
+                    manageError("MATCH_ENDED", null, error, getWhy(error));
                 });
         };
 
