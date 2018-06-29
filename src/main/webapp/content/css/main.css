@@ -405,7 +405,8 @@ ui bootstrap tweaks
     height: 100%;
 }
 .arcade{
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
 }
 .officina{
     color: #990000;
