@@ -20,8 +20,8 @@
         var vm= this;
         var bestScores = [];
         $scope.resetMessage = 'Annulla la giocata corrente e permette di avviarne una nuova';
-        $scope.closeMessage = 'Chiude la giocata e invia il punteggio alla leaderboard';
-        $scope.elaborateMessage = 'Invia il punteggio attuale alla leaderboard';
+        $scope.closeMessage = 'Chiude la giocata e invia il risultato alla leaderboard';
+        $scope.elaborateMessage = 'Invia il risultato attuale alla leaderboard';
         $scope.populatedMatches = true;
         $scope.getMatches = function(){
             DashboardService.getMatches($stateParams.extsessionid).then(function(response) {

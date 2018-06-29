@@ -15,6 +15,7 @@ import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.apache.http.HttpResponse;
@@ -38,7 +39,9 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -170,7 +173,7 @@ public class GameResource {
         if (session == null){
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with id "+sessionId+" not found")).body(null);
         }
-        boolean validateSession = false;
+        Map<Boolean, String> validateSession = new HashMap<>();
         //forza il bypass
 //        bp = bypass;
         if (bp != null && bp.matches(bypass)){
@@ -220,8 +223,21 @@ public class GameResource {
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSitecore", "Session with session id " + sessionId + " not validated by Sitecore.")).body(null);
             }
         }
-        if(!validateSession)
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "invalidSession", "Session with session id " + sessionId + " is invalid.")).body(null);
+
+        if (validateSession.get(false) != null){
+            switch (validateSession.get(false)){
+                case "missingSession":
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with session id " + sessionId + " doesn't exist.")).body(null);
+                case "matchElaborated":
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "matchElaborated", "User "+playerid+" can't play, an elaborated match for session "+sessionId+" already exist")).body(null);
+                case "matchAnomalous":
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "matchAnomalous", "User "+playerid+" can't play, an anomalous match for session "+sessionId+" already exist")).body(null);
+                case "failToSend":
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "failToSend", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
+                case "sendingData":
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sendingData", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
+            }
+        }
         return new ResponseEntity<>(game, null, HttpStatus.OK);
     }
 
@@ -329,14 +345,14 @@ public class GameResource {
                 if (match.getStop() != null){
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
                 }
-                if (match.isAnomalous()){
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
-                }
                 if (request.getMatchtoken() == null){
                     match.setAnomalous(true);
                     reportService.matchAnomalousToken(request.getMatchid(), request.getPlayerid(), match.toString());
                 }else{
                     match.setMatchToken(request.getMatchtoken());
+                }
+                if (match.isAnomalous()){
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
                 }
         		matchService.save(match);
         	}

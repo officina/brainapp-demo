@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -259,9 +260,11 @@ public class SessionResource {
     @GetMapping("/sessions/user/{userId}/labs/{labs}")
     @Timed
     public ResponseEntity<List<SessionDTO>> getUserLabsSession(@PathVariable String userId, @PathVariable String labs, @RequestParam(value = "active", required = false)Boolean active) {
+        long now = System.currentTimeMillis();
         log.debug("REST request to get Sessions for user " + userId + " and labs " + labs);
         //TODO aggiungere controlli su validità stringa
         List<SessionDTO> sessionDTOs = sessionService.getUserLabsSession(userId, Arrays.asList(labs.split("\\s*,\\s*")), active);
+        log.debug("Response elaborated in "+ String.valueOf(System.currentTimeMillis() - now));
         return new ResponseEntity<>(sessionDTOs, null, HttpStatus.OK);
     }
 

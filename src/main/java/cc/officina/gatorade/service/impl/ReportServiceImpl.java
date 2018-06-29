@@ -89,6 +89,9 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
 	public Report matchReport(Long id, String userid, ReportRequest request) {
+        if (request.getInfo() == null){
+            return null;
+        }
 		Report report = new Report();
 		report.setJson(request.getInfo().toString());
         report.setUserAgent(request.getUserAgent().toString());
@@ -102,6 +105,9 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
 	public Report matchError(Long id, String userid, ReportRequest request) {
+        if (request.getInfo() == null){
+            return null;
+        }
 		Report report = new Report();
         report.setJson(request.getInfo().toString());
         report.setUserAgent(request.getUserAgent().toString());
