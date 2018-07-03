@@ -75,13 +75,13 @@
                 break;
             case 'invalidSession':
                 $scope.message1 = 'Sessione non attivabile';
-                $scope.message2 = 'La sessione di gioco non risulta associata al team di riferimento.\n' +
-                    'Ti preghiamo di segnalare la cosa a '+mailTo;
+                $scope.message2 = $sce.trustAsHtml('La sessione di gioco non risulta associata al team di riferimento.\n' +
+                    'Ti preghiamo di segnalare la cosa a '+mailTo);
                 sendProblem();
                 break;
             case 'invalidSitecore':
                 $scope.message1 = 'Nessuna sessione di gioco attiva.';
-                $scope.message2 = 'Le verifiche di autenticazione sulla sessione corrente hanno dato esito negativo. Ti preghiamo di segnalare la cosa a '+mailTo;
+                $scope.message2 = $sce.trustAsHtml('Le verifiche di autenticazione sulla sessione corrente hanno dato esito negativo. Ti preghiamo di segnalare la cosa a '+mailTo);
                 sendProblem();
                 break;
             case 'timeout':
@@ -108,7 +108,7 @@
                 break;
             case 'failToSend':
                 $scope.message1 = 'Partita conclusa, invio risultato a classifica fallito.';
-                $scope.message2 = 'Si sono verificati dei problemi nella fase di aggiornamento delle le classifiche! Ti preghiamo di segnalare l\'accaduto a '+mailTo;
+                $scope.message2 = $sce.trustAsHtml('Si sono verificati dei problemi nella fase di aggiornamento delle le classifiche! Ti preghiamo di segnalare l\'accaduto a '+mailTo);
                 sendProblem();
                 break;
             case 'sendingData':
@@ -130,9 +130,9 @@
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
-                $scope.message2 = 'Se desideri prendere il controllo da questsa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
+                $scope.message2 = $sce.trustAsHtml('Se desideri prendere il controllo da questsa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
                     ' "REINIZIA" </br>' +
-                    'Selezionando "REINIZIA" il risultato già raggiunto verrà sostituito';
+                    'Selezionando "REINIZIA" il risultato già raggiunto verrà sostituito');
                 $scope.showReinizia = true;
                 $scope.showConcludi = false;
                 break;
@@ -148,12 +148,12 @@
             //identifica i match resi "problematici" a causa di bug, o errori da parte dell'utente
             case 'invalidMatch':
                 $scope.message1 = 'La tua partita è stata invalidata. ';
-                $scope.message2 = 'Ti preghiamo di segnalare la cosa a' +mailTo;
+                $scope.message2 = $sce.trustAsHtml('Ti preghiamo di segnalare la cosa a ' +mailTo);
                 sendProblem();
                 break;
             case 'genericError':
                 $scope.message1 = 'Si è verificato un errore imprevisto. ';
-                $scope.message2 = 'Ti preghiamo di segnalare la cosa a' +mailTo;
+                $scope.message2 = $sce.trustAsHtml('Ti preghiamo di segnalare la cosa a ' +mailTo);
                 sendProblem();
                 break;
             case 'matchAppesoRestartable':
@@ -185,17 +185,17 @@
         $scope.completePendingMatch = function () {
             PlaygameService.completePendingMatch($stateParams.sessionid, $stateParams.playtoken)
                 .then(function(response){
-                    $state.go("play", {
-                        "gameid": $stateParams.gameid,
-                        "playtoken": $stateParams.playtoken,
-                        "sessionid": $stateParams.sessionid,
-                        "bp": $rootScope.wrapperMemory.bp,
-                        "replay": $rootScope.wrapperMemory.replay
-                    });
+                    $scope.message1 = 'La tua partita è stata elaborata.';
+                    $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br>La tua giocata risulta già effettuata.</br>Le classifiche sono state aggiornate');
+                    $scope.showReinizia = false;
+                    $scope.showConcludi = false;
+                    sendProblem();
                 })
                 .catch(function(error) {
                     $scope.message1 = 'Si è verificato un errore imprevisto.';
-                    $scope.message2 = mailTo;
+                    $scope.message2 = $sce.trustAsHtml('Ti preghiamo di segnalare la cosa a ' +mailTo);
+                    $scope.showReinizia = false;
+                    $scope.showConcludi = false;
                     sendProblem();
                 });
         };

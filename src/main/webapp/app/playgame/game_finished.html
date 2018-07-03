@@ -4,13 +4,13 @@
             <div class="row arcade">
                 <div class="col-md-8">
                     <p class="text-center">
-                    <h1 class="arcade officina mobileh2"> {{message1}}</h1><br /><h3 class="arcade mobileh2" ng-bind-html="message2"></h3>
+                    <h1 class="arcade officina mobileh2"> {{message1}}</h1><br /><h3 class="arcade mobileh2 line-height" ng-bind-html="message2"></h3>
                     </p>
                 </div>
                 <div class="col-md-2 text-center">
                     <p>
                         <button ng-show="{{showReinizia}}" type="button" class="text-left btn btn-danger" ng-click="resetMatch()">REINIZIA</button>
-                        <button ng-show="{{showCompleta}}" type="button" class="text-right btn btn-danger" ng-click="completePendingMatch()">COMPLETA</button>
+                        <button ng-show="{{showConcludi}}" type="button" class="text-right btn btn-danger" ng-click="completePendingMatch()">COMPLETA</button>
                     </p>
                 </div>
             </div>
@@ -44,4 +44,10 @@
         font-size: 18px;
     }
 }
+    .btn {
+        width: 200px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 10px;
+    }
 </style>

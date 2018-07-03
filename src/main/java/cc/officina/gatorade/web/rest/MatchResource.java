@@ -281,7 +281,7 @@ public class MatchResource {
     @Transactional
     public ResponseEntity<Match> completePendingMatch(@RequestBody Request request){
         log.info("REST request to complete pending match for player: "+ request.getPlayerid()+" on session with id "+request.getSessionid());
-        Match match = matchService.restartMatch(request.getSessionid(), request.getPlayerid());
+        Match match = matchService.completeMatch(request.getSessionid(), request.getPlayerid());
         if (match == null) {
             log.info("No restartable match found for user: "+request.getPlayerid()+" on session: "+request.getSessionid());
             return ResponseEntity.badRequest().body(null);
