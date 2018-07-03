@@ -142,6 +142,7 @@
                                 replayState: null,
                                 parentId: null,
                                 timeAFK: null,
+                                restartable: null,
                                 id: null
                             };
                         }

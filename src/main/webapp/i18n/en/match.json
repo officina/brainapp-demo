@@ -31,6 +31,7 @@
             "replayState": "Replay State",
             "parentId": "Parent Id",
             "timeAFK": "Time AFK",
+            "restartable": "Restartable",
             "game": "Game",
             "template": "Template",
             "attempts": "Attempts",

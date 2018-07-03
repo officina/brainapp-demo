@@ -246,6 +246,7 @@ public class GameServiceImpl implements GameService{
 
 	@Override
 	public MatchResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, String levelReached, boolean endMatch) {
+        attempt.getMatch().manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), levelReached, scoreReached);
 		attempt.setAttemptScore(scoreReached);
 		attempt.setLevelReached(levelReached);
 		attempt.setCompleted(completed);
@@ -255,8 +256,8 @@ public class GameServiceImpl implements GameService{
 		if(endMatch)
 		{
 			attempt.getMatch().setStop(ZonedDateTime.now());
-			matchRepository.saveAndFlush(attempt.getMatch());
 		}
+        matchRepository.saveAndFlush(attempt.getMatch());
 		MatchResponse response = new MatchResponse(game, attempt.getMatch(), attempt.getMatch().getTemplate());
 		return response;
 	}

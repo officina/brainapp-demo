@@ -111,3 +111,7 @@ elaboration:
     numCommunityUsers: 15
     safetyMarginInSeconds: 300
     maxRetry: 5
+# time interval fot update attempt in seconds
+updateAttempt: 30
+# time threshold for play, in percentage
+timeThreshold: 0.5

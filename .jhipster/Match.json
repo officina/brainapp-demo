@@ -91,6 +91,10 @@
         {
             "fieldName": "timeAFK",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "restartable",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170627083527",

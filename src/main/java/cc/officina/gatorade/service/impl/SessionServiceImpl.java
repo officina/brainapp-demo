@@ -40,7 +40,6 @@ public class SessionServiceImpl implements SessionService{
     private final MatchService matchService;
     @Autowired
     private EntityManager entityManager;
-    private final int numUsers = 5;
     private ModelMapper modelMapper = new ModelMapper();
     public SessionServiceImpl(SessionRepository sessionRepository, GamificationService gamificationService, MatchService matchService) {
         this.sessionRepository = sessionRepository;
@@ -147,7 +146,11 @@ public class SessionServiceImpl implements SessionService{
                                     break;
                                 case NOT_ELABORATED:
                                     //match appeso
-                                    resultMap.put(false, "matchAnomalous");
+                                    if (match.getRestartable()){
+                                        resultMap.put(false, "matchAppesoRestartable");
+                                    }else{
+                                        resultMap.put(false, "matchAnomalous");
+                                    }
                                     break;
                                 case TO_PO_FAIL:
                                     if (match.isAnomalous()){

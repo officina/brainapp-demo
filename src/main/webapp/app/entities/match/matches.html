@@ -35,6 +35,7 @@
                     <th jh-sort-by="replayState"><span data-translate="gatoradeApp.match.replayState">Replay State</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="parentId"><span data-translate="gatoradeApp.match.parentId">Parent Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="timeAFK"><span data-translate="gatoradeApp.match.timeAFK">Time AFK</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="restartable"><span data-translate="gatoradeApp.match.restartable">Restartable</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="game.description"><span data-translate="gatoradeApp.match.game">Game</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="template.description"><span data-translate="gatoradeApp.match.template">Template</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="session.id"><span data-translate="gatoradeApp.match.session">Session</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -60,6 +61,7 @@
                     <td data-translate="{{'gatoradeApp.MatchReplayState.' + match.replayState}}">{{match.replayState}}</td>
                     <td>{{match.parentId}}</td>
                     <td>{{match.timeAFK}}</td>
+                    <td>{{match.restartable}}</td>
                     <td>
                         <a ui-sref="game-detail({id:match.game.id})">{{match.game.description}}</a>
                     </td>

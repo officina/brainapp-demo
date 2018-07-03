@@ -47,4 +47,10 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
 
     @Query("select m from Match m where m.game.id = :gameId and m.userId = :playerId and m.replayState = 1 and m.valid = true") //1 = Main
 	public Match findMainMatch(@Param("gameId")Long gameId, @Param("playerId")String playerId);
+
+    @Query("select m from Match m where m.userId = :playerid and m.session.id = :sessionid and valid = true")
+    public Match findResettableMatchBySessionidAndPlayerid(@Param("sessionid") Long sessionid, @Param("playerid")String playerid);
+
+    @Query("select m from Match m where m.userId = :playerid and m.session.id = :sessionid and m.elaborated = false and m.anomalous = true")
+    public Match findComplitableMatchBySessionidAndPlayerid(@Param("sessionid") Long sessionid, @Param("playerid")String playerid);
 }
