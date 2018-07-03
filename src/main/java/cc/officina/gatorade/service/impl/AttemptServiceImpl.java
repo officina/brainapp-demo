@@ -24,9 +24,11 @@ public class AttemptServiceImpl implements AttemptService{
     private final Logger log = LoggerFactory.getLogger(AttemptServiceImpl.class);
 
     private final AttemptRepository attemptRepository;
+    private final MatchRepository matchRepository;
 
     public AttemptServiceImpl(AttemptRepository attemptRepository, MatchRepository matchRepository) {
         this.attemptRepository = attemptRepository;
+        this.matchRepository = matchRepository;
     }
 
     /**
@@ -99,6 +101,7 @@ public class AttemptServiceImpl implements AttemptService{
             attempt = attemptRepository.findOne(reqAttempt.getId());
             origLevel = attempt.getLevelReached();
             origScore = attempt.getAttemptScore();
+            match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
             attempt.setLevelReached(reqAttempt.getLevelReached());
             attempt.setAttemptScore(reqAttempt.getAttemptScore());
         }else{
@@ -119,13 +122,14 @@ public class AttemptServiceImpl implements AttemptService{
             }else{
                 origLevel = attempt.getLevelReached();
                 origScore = attempt.getAttemptScore();
+                match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
                 attempt.setAttemptScore(reqAttempt.getAttemptScore());
-                // risolve
                 attempt.setLevelReached(reqAttempt.getLevelReached());
             }
         }
         attempt.setSync(syncState);
         attemptRepository.save(attempt);
+        matchRepository.save(match);
         log.info("Attempt: "+attempt.getId()+" from Match id: "+match.getId()+" - SyncState: "+syncState.name());
         log.debug("SyncAttempt for attempt "+attempt.getId()+": for Original score: "+origScore+" - Updated score: "+attempt.getAttemptScore()+" - Original level: "+origLevel+" - Updated level: "+attempt.getLevelReached());
         return attempt;

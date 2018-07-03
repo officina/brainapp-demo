@@ -72,4 +72,6 @@ public interface MatchService {
 	public Match findMainMatch(Long gameId, String userId);
 	public Match adminElaborateMatch(Match match);
     public Match adminCloseMatch(Match match);
+    public Match restartMatch(Long sessionid, String playerid);
+    public Match completeMatch(Long sessionid, String playerid);
 }

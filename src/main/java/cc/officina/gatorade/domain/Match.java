@@ -1,7 +1,11 @@
 package cc.officina.gatorade.domain;
 
 import cc.officina.gatorade.domain.enumeration.MatchReplayState;
+import cc.officina.gatorade.service.impl.AttemptServiceImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,6 +21,12 @@ import java.util.Objects;
 @Table(name = "match")
 public class Match implements Serializable {
 
+    @Transient
+    @Value("${timeThreshold}")
+    private int timeThreshold;
+    @Transient
+    @Value("${updateAttempt}")
+    private long updateAttempt;
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -87,6 +97,12 @@ public class Match implements Serializable {
 
     @Column(name = "parent_id")
     private Long parentId;
+
+    @Column(name = "time_AFK")
+    private Long timeAFK;
+
+    @Column(name = "restartable")
+    private Boolean restartable;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -352,6 +368,22 @@ public class Match implements Serializable {
         this.parentId = parentId;
     }
 
+    public Long getTimeAFK() {
+        return timeAFK;
+    }
+
+    public void setTimeAFK(Long timeAFK) {
+        this.timeAFK = timeAFK;
+    }
+
+    public Boolean getRestartable() {
+        return restartable;
+    }
+
+    public void setRestartable(Boolean restartable) {
+        this.restartable = restartable;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -504,4 +536,34 @@ public class Match implements Serializable {
     }
 
 
+    public void manageAFK(String currLevel, Long currPoint, String newLevel, Long newPoint){
+        if ((currLevel != null && currLevel.equals(newLevel))
+            || (currPoint != null && currPoint.equals(newPoint))){
+            addTimeAFK();
+        }else{
+            resetTimeAFK();
+        }
+    }
+    /**
+     * Aggiunge 30 secondi alla colonna time_afk, una volta arrivata a 7 min (30*7) il match viene marchiato come "RESTARTABLE"
+     */
+    private void addTimeAFK(){
+        System.out.println("Match - addTimeAFK result doesn't change in the last 30 sec");
+        if (getTimeAFK() == null){
+            setTimeAFK(updateAttempt);
+        }else{
+            setTimeAFK(getTimeAFK()+updateAttempt);
+        }
+        this.setRestartable(isRestartable());
+    }
+
+    private void resetTimeAFK(){
+        System.out.println("Match - resetTimeAFK result change in the last 30 sec");
+        setTimeAFK(0L);
+        this.setRestartable(isRestartable());
+    }
+
+    private boolean isRestartable(){
+        return getTimeAFK() >= (getTemplate().getMaxDuration()*timeThreshold);
+    }
 }

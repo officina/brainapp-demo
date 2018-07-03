@@ -118,24 +118,26 @@ public class MatchServiceImpl implements MatchService{
 			a.setValid(false);
 		}
 		attemptRepository.save(match.getAttempts());
-        log.info("Match "+match.getId()+ (match.getReplayState() == null ? "" : " with replay state:" +match.getReplayState().name()));
-        if (match.getReplayState() != MatchReplayState.cloned){
-            log.info("Match replay state setted to old");
-            match.setReplayState(MatchReplayState.old);
-            if (match.getSendToPo()){
-                log.info("Match replay reset point to po");
-                gamificationService.runResetAction(match);
-                if (match.getParentId() != null){
-                    log.info("Get parent match with id: "+match.getParentId());
-                    Match parentMatch = matchRepository.findOne(match.getParentId());
-                    log.info("Set parent match replay state to main");
-                    parentMatch.setReplayState(MatchReplayState.main);
-                    log.info("Parent match replay set point to po");
-                    gamificationService.runAction(parentMatch);
-                    matchRepository.save(parentMatch);
+		if (match.isElaborated()){
+            log.info("Match "+match.getId()+ (match.getReplayState() == null ? "" : " with replay state:" +match.getReplayState().name()));
+            if (match.getReplayState() != MatchReplayState.cloned){
+                log.info("Match replay state setted to old");
+                match.setReplayState(MatchReplayState.old);
+                if (match.getSendToPo()){
+                    log.info("Match replay reset point to po");
+                    gamificationService.runResetAction(match);
+                    if (match.getParentId() != null){
+                        log.info("Get parent match with id: "+match.getParentId());
+                        Match parentMatch = matchRepository.findOne(match.getParentId());
+                        log.info("Set parent match replay state to main");
+                        parentMatch.setReplayState(MatchReplayState.main);
+                        log.info("Parent match replay set point to po");
+                        gamificationService.runAction(parentMatch);
+                        matchRepository.save(parentMatch);
+                    }
+                }else{
+                    log.info("Match replay sendToPo == false, runResetAction skipped");
                 }
-            }else{
-                log.info("Match replay sendToPo == false, runResetAction skipped");
             }
         }
 		matchRepository.save(match);
@@ -205,6 +207,7 @@ public class MatchServiceImpl implements MatchService{
     			//per ora lo indico come pending in attesa di eventuale logica per risolverlo
     			//lo marco come anomalo in modo da evidenziarlo lato console admin e non elaborarlo nuovamente alla prossima esecuzione del batch
     			m.setAnomalous(true);
+    			m.setRestartable(true);
                 m.setBestLevel(m.getMaxLevel());
                 if (m.getGame().getType() == GameType.MINPOINT){
                     String minScore = m.getMinScore();
@@ -356,5 +359,21 @@ public class MatchServiceImpl implements MatchService{
         matchRepository.saveAndFlush(match);
 
         return match;
+    }
+
+    @Override
+    public Match restartMatch(Long sessionid, String playerid) {
+        Match match = matchRepository.findResettableMatchBySessionidAndPlayerid(sessionid, playerid);
+        if (match == null)
+            return null;
+        return resetMatch(match);
+    }
+
+    @Override
+    public Match completeMatch(Long sessionid, String playerid) {
+        Match match = matchRepository.findComplitableMatchBySessionidAndPlayerid(sessionid, playerid);
+        if (match == null)
+            return null;
+        return adminCloseMatch(match);
     }
 }

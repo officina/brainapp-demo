@@ -229,13 +229,17 @@ public class GameResource {
                 case "missingSession":
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with session id " + sessionId + " doesn't exist.")).body(null);
                 case "matchElaborated":
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "matchElaborated", "User "+playerid+" can't play, an elaborated match for session "+sessionId+" already exist")).body(null);
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchElaborated", "User "+playerid+" can't play, an elaborated match for session "+sessionId+" already exist")).body(null);
                 case "matchAnomalous":
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "matchAnomalous", "User "+playerid+" can't play, an anomalous match for session "+sessionId+" already exist")).body(null);
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "User "+playerid+" can't play, an anomalous match for session "+sessionId+" already exist")).body(null);
                 case "failToSend":
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "failToSend", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "failToSend", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
                 case "sendingData":
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sendingData", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "sendingData", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
+                case "matchAppesoRestartable":
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAppesoRestartable", "User "+playerid+" can restart the match for session "+sessionId+" already exist")).body(null);
+                case "sessionAlreadyInUse":
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "sessionAlreadyInUse", "Session with id "+ sessionId + " already in use")).body(null);
             }
         }
         return new ResponseEntity<>(game, null, HttpStatus.OK);
@@ -352,7 +356,7 @@ public class GameResource {
                     match.setMatchToken(request.getMatchtoken());
                 }
                 if (match.isAnomalous()){
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(game, match, template, null));
                 }
         		matchService.save(match);
         	}
@@ -386,9 +390,10 @@ public class GameResource {
     public ResponseEntity<AttemptResponse> updateAttemptScoreV2(@RequestBody Request request) {
         log.info("REST request to update score for game Game with id " + request.getMatch().getGame().getId()+", attempt " + request.getAttempt().getId());
         log.info("Score: " + request.getScore() + " - Level: " + request.getLevel()+" - AttemptScore: "+request.getAttempt().getAttemptScore()+" - AttemptLevel: "+request.getAttempt().getLevelReached()) ;
-        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
+        Match match = matchService.findOne(request.getMatch().getId());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), match, request.getAttempt().getSync());
 
-        Match match = attempt.getMatch();
+
         if(!match.getMatchToken().equals(request.getMatchtoken()))
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getMatch().getSession().getId() + " already in use")).body(null);
         if (!match.isValid()){
@@ -401,7 +406,7 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
         }
         if (match.isAnomalous()){
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(null, match, null, null));
         }
 
         return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, request.getAttempt().getAttemptScore(), request.getAttempt().getLevelReached()), null, HttpStatus.OK);
@@ -413,12 +418,12 @@ public class GameResource {
     public ResponseEntity<MatchResponse> stopAttempt(@RequestBody Request request) {
     	log.info("REST request to end attemtp for game Game with id " + request.getGameid()+", attempt " + (request.getAttemptid() != null ? request.getAttemptid() : "created offline with localId: "+request.getLocalid()));
     	log.info("Score: " + request.getScore() + " - Level: " + request.getLevel());
-        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
+        Match match = matchService.findOne(request.getMatch().getId());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), match, request.getAttempt().getSync());
 
         if(attempt == null)
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
 
-        Match match = attempt.getMatch();
         if(!match.getMatchToken().equals(request.getMatchtoken()))
         	return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
         if (!match.isValid()){
@@ -431,9 +436,8 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
         }
         if (match.isAnomalous()){
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(null, match, null, null));
         }
-
         attempt.getMatch().getAttempts().size();
         return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);
     }
@@ -444,12 +448,12 @@ public class GameResource {
     public ResponseEntity<MatchResponse> restartAttempt(@RequestBody Request request) {
         log.info("REST request to restart attemtp for game Game with id " + request.getGameid()+", attempt " + (request.getAttempt().getId() != null ? request.getAttempt().getId() : "created offline with localId: "+request.getAttempt().getLocalId()));
         log.info("Score: " + request.getAttempt().getAttemptScore() + " - Level: " + request.getAttempt().getLevelReached());
-        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), request.getMatch(), request.getAttempt().getSync());
+        Match match = matchService.findOne(request.getMatch().getId());
+        Attempt attempt = attemptService.syncAttempt(request.getAttempt(), match, request.getAttempt().getSync());
 
         if(attempt == null)
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("attempt", "attemptNotFound", "Attempt with id "+request.getAttemptid() + " not found")).body(null);
 
-        Match match = attempt.getMatch();
         if(!match.getMatchToken().equals(request.getMatchtoken()))
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "sessionAlreadyInUse", "Session with id "+ request.getSessionid() + " already in use")).body(null);
         if (!match.isValid()){
@@ -462,7 +466,7 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
         }
         if (match.isAnomalous()){
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(null, match, null, null));
         }
         //chiudo l'attempt
         MatchResponse response = gameService.stopAttempt(gameService.findOne(request.getGameid()), attempt, attempt.isCompleted(), attempt.getAttemptScore(), attempt.getLevelReached(), request.isEndmatch());
@@ -497,7 +501,7 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchEnded", "Match with id "+ match.getId() + " ended at "+match.getStop()+"  cannot continue")).body(null);
         }
         if (match.isAnomalous()){
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(null, match, null, null));
         }
         //ottengo la lista di attempt dal client
         Attempt serverAttempt;
@@ -541,7 +545,6 @@ public class GameResource {
             lastAttempt = attemptService.syncAttempt(request.getAttempt(), match, request.getAttempt().getSync());
             lastAttempt.setSync(AttemptSyncState.syncOnEndMatch);
         }
-
         return new ResponseEntity<>(gameService.endMatch(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
     }
 

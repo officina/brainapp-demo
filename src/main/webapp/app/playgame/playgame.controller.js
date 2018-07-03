@@ -66,17 +66,17 @@
 
         var getWhy = function (error) {
             var why = '';
-            if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+            if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid') {
                 why = 'matchInvalid';
-            } else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated') {
                 why = 'matchElaborated';
-            } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded') {
                 why = 'matchEnded';
-            } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous') {
                 why = 'matchAnomalous';
             } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                 why = 'sessionAlreadyInUse';
-            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore') {
                 why = 'invalidSitecore';
             } else if (error.headers('X-gatoradeApp-error') === 'error.missingSession') {
                 why = 'missingSession';
@@ -84,7 +84,11 @@
                 why = 'sendingData';
             } else if (error.headers('X-gatoradeApp-error') === 'error.failToSend') {
                 why = 'failToSend';
-            } else{
+            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSession'){
+                why = 'invalidSession';
+            }else if (error.headers('X-gatoradeApp-error') === 'error.matchAppesoRestartable'){
+                why = 'matchAppesoRestartable';
+            } else {
                 why = 'genericError';
             }
             return why;
@@ -178,34 +182,36 @@
                 default:
                     break;
             }
-        }
+        };
         // Listen to message from child window
         addEvent(eventName, $scope.handle, false);
 
         $scope.$on('$locationChangeStart', function (event, next, current) {
             console.log('locationChangeStart');
-            PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
-            if ($scope.wrapperMemory.currAttempt == undefined) {
-                PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
-                    $stateParams.playtoken,
-                    $scope.wrapperMemory.match.id,
-                    undefined,
-                    undefined,
-                    undefined,
-                    $scope.matchToken,
-                    $scope.wrapperMemory.attempts);
+            if (next.includes("#/finished")){
+                PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+                if ($scope.wrapperMemory.currAttempt == undefined) {
+                    PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
+                        $stateParams.playtoken,
+                        $scope.wrapperMemory.match.id,
+                        undefined,
+                        undefined,
+                        undefined,
+                        $scope.matchToken,
+                        $scope.wrapperMemory.attempts);
+                }
+                else {
+                    PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
+                        $stateParams.playtoken,
+                        $scope.wrapperMemory.match.id,
+                        $scope.wrapperMemory.currAttempt,
+                        $scope.wrapperMemory.currAttempt.attemptScore,
+                        $scope.wrapperMemory.currAttempt.level,
+                        $scope.matchToken,
+                        $scope.wrapperMemory.attempts);
+                }
+                removeEvent(eventName, $scope.handle);
             }
-            else {
-                PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
-                    $stateParams.playtoken,
-                    $scope.wrapperMemory.match.id,
-                    $scope.wrapperMemory.currAttempt,
-                    $scope.wrapperMemory.currAttempt.attemptScore,
-                    $scope.wrapperMemory.currAttempt.level,
-                    $scope.matchToken,
-                    $scope.wrapperMemory.attempts);
-            }
-            removeEvent(eventName, $scope.handle);
         });
 
         $scope.game = {url: "htmlgames/loading.html"}
@@ -243,8 +249,8 @@
         });
 
         //controllo parametro di rigioco in arrivo da link di gioco
-        var replay = $stateParams.replay;
-        console.log("REPLAY = " + replay);
+        $scope.wrapperMemory.replay = $stateParams.replay;
+        $scope.wrapperMemory.bp = $stateParams.bp;
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.sessionid, $stateParams.bp).then(function (response) {
             $scope.game = response.data;
             $scope.wrapperMemory.game = response.data;
@@ -253,7 +259,7 @@
             if ($scope.game.type == 'LEVEL') {
                 useLevels = true;
             }
-            PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.sessionid, $scope.matchToken, replay)
+            PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.sessionid, $scope.matchToken, $scope.wrapperMemory.replay)
                 .then(function (response) {
                     $scope.wrapperMemory.match = response.data.match;
                     if ($scope.wrapperMemory.match.replayState == 'cloned'){
@@ -530,12 +536,12 @@
                         .catch(function (error) {
                             //se l'invio del report non va a buon fine redirect alla pagina di errore
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.errorText);
-                            $state.go("ended", {
-                                "gameid": $stateParams.gameid,
-                                "playtoken": $stateParams.playtoken,
-                                "sessionid": $stateParams.sessionid,
-                                "why": "genericError"
-                            });
+                                $state.go("ended", {
+                                    "gameid": $stateParams.gameid,
+                                    "playtoken": $stateParams.playtoken,
+                                    "sessionid": $stateParams.sessionid,
+                                    "why": "genericError"
+                                });
                         });
                 })
                 .catch(function (error) {
