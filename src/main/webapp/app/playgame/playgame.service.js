@@ -151,7 +151,7 @@ angular.module('gatoradeApp')
       	http.setRequestHeader("Content-type", "application/json");
       	console.log(JSON.stringify(content));
 		http.send(JSON.stringify(content));
-    }
+    };
 
     this.reportAsync = function(matchId, userId, json){
     	console.log(json);
@@ -175,7 +175,7 @@ angular.module('gatoradeApp')
       	http.open("POST", '/api/matches/'+matchId+'/error/'+userId, false);
       	http.setRequestHeader("Content-type", "application/json");
 		http.send(JSON.stringify(content));
-    }
+    };
 
     this.errorAsync = function(matchId, userId, json){
     	var internalUserAgent = navigator.userAgent;
