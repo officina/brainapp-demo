@@ -245,7 +245,7 @@
                     })
                         .catch(function (error) {
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, error);
-                            manageError("START_ATTEMPT", null, error, getWhy(error));
+                            manageError("START_ATTEMPT", null, error, why);
                         });
                 }
             }

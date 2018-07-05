@@ -1,8 +1,7 @@
 <div class="container full-width arcade-bg">
-    <div class="row box">
+    <div class="row box box-mobile">
         <div class="col-md-12">
             <div class="row arcade">
-                <!--<div class="col-md-2"></div>-->
                 <div class="col-md-8">
                     <p class="text-center">
                     <h1 class="arcade officina mobileh2"> {{message1}}</h1><br /><h3 class="arcade mobileh2 line-height" ng-bind-html="message2"></h3>
@@ -45,8 +44,8 @@
         font-size: 18px;
     }
 
-    .box {
-        padding: 0;
+    .box-mobile {
+        padding: 0 !important;
         margin: 0 !important;
     }
 }
@@ -62,6 +61,5 @@
         border: 1px solid #e6e6e6;
         padding: 30px;
         border-radius: 5px;
-        position: center;
     }
 </style>
