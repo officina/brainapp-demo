@@ -1,10 +1,7 @@
 package cc.officina.gatorade.domain;
 
 import cc.officina.gatorade.domain.enumeration.MatchReplayState;
-import cc.officina.gatorade.service.impl.AttemptServiceImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
@@ -22,11 +19,9 @@ import java.util.Objects;
 public class Match implements Serializable {
 
     @Transient
-    @Value("${timeThreshold}")
-    private int timeThreshold;
+    private static double TIMETHRESHOLD = 0.5;
     @Transient
-    @Value("${updateAttempt}")
-    private long updateAttempt;
+    private static long UPDATEATTEMPT = 30L;
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -550,9 +545,9 @@ public class Match implements Serializable {
     private void addTimeAFK(){
         System.out.println("Match - addTimeAFK result doesn't change in the last 30 sec");
         if (getTimeAFK() == null){
-            setTimeAFK(updateAttempt);
+            setTimeAFK(UPDATEATTEMPT);
         }else{
-            setTimeAFK(getTimeAFK()+updateAttempt);
+            setTimeAFK(getTimeAFK()+ UPDATEATTEMPT);
         }
         this.setRestartable(isRestartable());
     }
@@ -564,6 +559,6 @@ public class Match implements Serializable {
     }
 
     private boolean isRestartable(){
-        return getTimeAFK() >= (getTemplate().getMaxDuration()*timeThreshold);
+        return getTimeAFK() >= (getTemplate().getMaxDuration() * TIMETHRESHOLD);
     }
 }

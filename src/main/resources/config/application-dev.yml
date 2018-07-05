@@ -88,7 +88,7 @@ liquibase:
 
 # ===================================================================
 server:
-    port: 8080
+    port: 8888
 #    ssl:
 #        key-store: nowr.pfx
 #        key-store-password: officina001
