@@ -188,6 +188,7 @@
 
         $scope.$on('$locationChangeStart', function (event, next, current) {
             console.log('locationChangeStart');
+<<<<<<< HEAD
             if (next.includes("#/finished")){
                 PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
                 if ($scope.wrapperMemory.currAttempt == undefined) {
@@ -211,6 +212,35 @@
                         $scope.wrapperMemory.attempts);
                 }
                 removeEvent(eventName, $scope.handle);
+=======
+            try {
+                if (next.includes("#/finished")) {
+                    PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+                    if ($scope.wrapperMemory.currAttempt === undefined) {
+                        PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
+                            $stateParams.playtoken,
+                            $scope.wrapperMemory.match.id,
+                            undefined,
+                            undefined,
+                            undefined,
+                            $scope.matchToken,
+                            $scope.wrapperMemory.attempts);
+                    } else {
+                        PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
+                            $stateParams.playtoken,
+                            $scope.wrapperMemory.match.id,
+                            $scope.wrapperMemory.currAttempt,
+                            $scope.wrapperMemory.currAttempt.attemptScore,
+                            $scope.wrapperMemory.currAttempt.level,
+                            $scope.matchToken,
+                            $scope.wrapperMemory.attempts);
+                    }
+                    removeEvent(eventName, $scope.handle);
+                }
+            } catch (e) {
+                $scope.wrapperMemory.exception = e;
+                PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+>>>>>>> master
             }
         });
 
@@ -563,33 +593,37 @@
         });
 
         $(window).bind('unload', function () {
-            $scope.wrapperMemory.match.stop = new Date(Date.now());
-            PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
-            if ($scope.wrapperMemory.currAttempt == undefined) {
-                PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
-                    $stateParams.playtoken,
-                    $scope.wrapperMemory.match.id,
-                    undefined,
-                    undefined,
-                    undefined,
-                    $scope.matchToken,
-                    $scope.wrapperMemory.attempts);
-            }
-            else {
-                PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
-                    $stateParams.playtoken,
-                    $scope.wrapperMemory.match.id,
-                    $scope.wrapperMemory.currAttempt,
-                    $scope.wrapperMemory.currAttempt.attemptScore,
-                    $scope.wrapperMemory.currAttempt.level,
-                    $scope.matchToken,
-                    $scope.wrapperMemory.attempts);
-            }
+            try {
+                $scope.wrapperMemory.match.stop = new Date(Date.now());
+                PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+                if ($scope.wrapperMemory.currAttempt === undefined) {
+                    PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
+                        $stateParams.playtoken,
+                        $scope.wrapperMemory.match.id,
+                        undefined,
+                        undefined,
+                        undefined,
+                        $scope.matchToken,
+                        $scope.wrapperMemory.attempts);
+                } else {
+                    PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
+                        $stateParams.playtoken,
+                        $scope.wrapperMemory.match.id,
+                        $scope.wrapperMemory.currAttempt,
+                        $scope.wrapperMemory.currAttempt.attemptScore,
+                        $scope.wrapperMemory.currAttempt.level,
+                        $scope.matchToken,
+                        $scope.wrapperMemory.attempts);
+                }
 
-            if (typeof beforeUnloadTimeout != 'undefined' && beforeUnloadTimeout != 0) {
-                clearTimeout(beforeUnloadTimeout);
+                if (typeof beforeUnloadTimeout != 'undefined' && beforeUnloadTimeout != 0) {
+                    clearTimeout(beforeUnloadTimeout);
+                }
+                removeEvent(eventName, $scope.handle)
+            } catch (e) {
+                $scope.wrapperMemory.exception = e;
+                PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
             }
-            removeEvent(eventName, $scope.handle)
         });
     }
 })();
