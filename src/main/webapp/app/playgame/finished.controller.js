@@ -75,13 +75,13 @@
                 break;
             case 'invalidSession':
                 $scope.message1 = 'Sessione non attivabile';
-                $scope.message2 = $sce.trustAsHtml('La sessione di gioco non risulta associata al team di riferimento.\n' +
+                $scope.message2 = $sce.trustAsHtml('La sessione di gioco non risulta associata al team di riferimento.</br>' +
                     'Ti preghiamo di segnalare la cosa a '+mailTo);
                 sendProblem();
                 break;
             case 'invalidSitecore':
                 $scope.message1 = 'Nessuna sessione di gioco attiva.';
-                $scope.message2 = $sce.trustAsHtml('Le verifiche di autenticazione sulla sessione corrente hanno dato esito negativo. Ti preghiamo di segnalare la cosa a '+mailTo);
+                $scope.message2 = $sce.trustAsHtml('Le verifiche di autenticazione sulla sessione corrente hanno dato esito negativo.');
                 sendProblem();
                 break;
             case 'timeout':
@@ -120,25 +120,25 @@
             case 'matchEnded':
                 $scope.message1 = 'La tua partita è terminata.';
                 $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br>' +
-                    'La tua giocata risulta già effettuata; le classifiche sono in corso di aggiornamento');
+                    'La tua giocata risulta già effettuata; le classifiche sono in corso di aggiornamento.');
                 break;
             case 'matchAnomalous':
                 $scope.message1 = 'La tua partita è terminata.';
                 $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br>' +
-                    'La tua giocate si è interrotta anticipatamente.');
+                    'La tua giocate si è interrotta anticipatamente. </br> Contatta '+mailTo+' per chiudere la giocata o rieseguirla');
                 sendProblem();
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
-                $scope.message2 = $sce.trustAsHtml('Se desideri prendere il controllo da questsa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
+                $scope.message2 = $sce.trustAsHtml('Hai un\'altra giocata in corso in questa sessione </br></br>Se desideri prendere il controllo da questsa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
                     ' "REINIZIA" </br>' +
                     'Selezionando "REINIZIA" il risultato già raggiunto verrà sostituito');
                 $scope.showReinizia = true;
                 $scope.showConcludi = false;
                 break;
             case 'offline':
-                $scope.message1 = 'Non siamo riusciti a contattare il server';
-                $scope.message2 = 'Verifica la connessione';
+                $scope.message1 = 'Si è verificato un problema con la tua connessione';
+                $scope.message2 = 'Ti preghiamo di controllare la tua connessione e rieffettuare la giocata';
                 break;
             case 'missingSession':
                 $scope.message1 = 'Sessione non disponibile';
@@ -160,7 +160,7 @@
                 $scope.showReinizia = true;
                 $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = $scope.message2 + $sce.trustAsHtml('<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! Il risultato riportato per '+descr+' è '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
                 break;
         }
 
