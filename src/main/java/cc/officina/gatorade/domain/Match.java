@@ -558,7 +558,7 @@ public class Match implements Serializable {
         this.setRestartable(isRestartable());
     }
 
-    private boolean isRestartable(){
+    public boolean isRestartable(){
         return getTimeAFK() >= (getTemplate().getMaxDuration() * TIMETHRESHOLD);
     }
 }

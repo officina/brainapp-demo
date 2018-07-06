@@ -10,6 +10,8 @@ import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.GameRepository;
 import cc.officina.gatorade.repository.MatchRepository;
+
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -223,6 +225,13 @@ public class GameServiceImpl implements GameService{
 		attempt.setValid(true);
 		attempt.setSync(AttemptSyncState.notSync);
 		attemptRepository.saveAndFlush(attempt);
+		Attempt lastAttempt = attemptRepository.getLastFinished(attempt.getMatch().getId());
+		if (lastAttempt != null){
+            Duration duration = Duration.between(lastAttempt.getStopAttempt(), attempt.getStartAttempt());
+            match.setTimeAFK(duration.getSeconds());
+            match.setRestartable(match.isRestartable());
+            matchRepository.saveAndFlush(match);
+        }
 		log.info("New attempt created with id = " + attempt.getId());
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;
@@ -246,7 +255,7 @@ public class GameServiceImpl implements GameService{
 
 	@Override
 	public MatchResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, String levelReached, boolean endMatch) {
-        attempt.getMatch().manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), levelReached, scoreReached);
+        attempt.getMatch().manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), null, null);
 		attempt.setAttemptScore(scoreReached);
 		attempt.setLevelReached(levelReached);
 		attempt.setCompleted(completed);
@@ -278,7 +287,14 @@ public class GameServiceImpl implements GameService{
 			lastAttempt.setCompleted(false);
 			lastAttempt.setLastUpdate(now);
 			lastAttempt.setStopAttempt(now);
-		}
+		}else{
+            lastAttempt = attemptRepository.getLastFinished(match.getId());
+            if (lastAttempt != null){
+                Duration duration = Duration.between(lastAttempt.getStopAttempt(), ZonedDateTime.now());
+                match.setTimeAFK(duration.getSeconds());
+                match.setRestartable(match.isRestartable());
+            }
+        }
         match.setBestLevel(match.getMaxLevel());
         if (match.getGame().getType() == GameType.MINPOINT){
             match.setBestScore(Long.parseLong(match.getMinScore()));

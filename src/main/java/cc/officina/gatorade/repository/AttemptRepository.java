@@ -21,4 +21,7 @@ public interface AttemptRepository extends JpaRepository<Attempt,Long> {
 	@Query("select a from Attempt a where a.localId = :localId")
     public Attempt getOneByLocalId(@Param("localId")Long localId);
 
+	@Query("select a from Attempt a where a.stopAttempt = (select max(aa.stopAttempt) from Attempt aa where aa.match.id = :matchId)")
+	public Attempt getLastFinished(@Param("matchId")Long matchId);
+
 }

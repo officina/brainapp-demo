@@ -101,7 +101,9 @@ public class AttemptServiceImpl implements AttemptService{
             attempt = attemptRepository.findOne(reqAttempt.getId());
             origLevel = attempt.getLevelReached();
             origScore = attempt.getAttemptScore();
-            match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
+            if (attempt.getStopAttempt() == null){
+                match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
+            }
             attempt.setLevelReached(reqAttempt.getLevelReached());
             attempt.setAttemptScore(reqAttempt.getAttemptScore());
         }else{
@@ -122,7 +124,9 @@ public class AttemptServiceImpl implements AttemptService{
             }else{
                 origLevel = attempt.getLevelReached();
                 origScore = attempt.getAttemptScore();
-                match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
+                if (attempt.getStopAttempt() == null){
+                    match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
+                }
                 attempt.setAttemptScore(reqAttempt.getAttemptScore());
                 attempt.setLevelReached(reqAttempt.getLevelReached());
             }

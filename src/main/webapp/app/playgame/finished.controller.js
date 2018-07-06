@@ -29,7 +29,10 @@
 	    		idToUse = $rootScope.wrapperMemory.match.id;
 	    	}
 	    	//invio il report di giocata
-            var mailWithBody = $sce.trustAsHtml("Ti preghiamo di inviare le informazioni che trovi in calce a  <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
+            var mailWithBody = $sce.trustAsHtml("Ti preghiamo di segnalare la cosa a <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
+	    	if ($scope.showReport){
+                mailWithBody = $sce.trustAsHtml("Ti preghiamo di inviare le informazioni che trovi in calce a  <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
+            }
 	    	PlaygameService.reportAsync(idToUse,$stateParams.playtoken,$rootScope.wrapperMemory)
 	    	.then(function(response){
 	    		//se l'invio di report giocata va a buon fine invio anche l'errore che mi ha portato a questo genericError
