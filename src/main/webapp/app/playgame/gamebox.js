@@ -15,7 +15,6 @@ angular.module('gatoradeApp')
                 var myIframe = element.find("iframe")[0];
                 <!-- iframe resizer-->
                 myIframe.onload = function(){
-                    myIframe.contentWindow.document.body.appendChild(script);
                     jQuery(document).ready(function () {
 
                         jQuery('#maingameframe').iFrameResize( [{
