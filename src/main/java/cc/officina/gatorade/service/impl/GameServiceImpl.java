@@ -297,9 +297,16 @@ public class GameServiceImpl implements GameService{
         }
         match.setBestLevel(match.getMaxLevel());
         if (match.getGame().getType() == GameType.MINPOINT){
-            match.setBestScore(Long.parseLong(match.getMinScore()));
+            String minScore = match.getMinScore();
+            if (minScore != null){
+                match.setBestScore(Long.parseLong(minScore));
+            }
+
         }else if(match.getGame().getType() == GameType.POINT){
-            match.setBestScore(Long.valueOf(match.getMaxScore()));
+            String bestScore = match.getMaxScore();
+            if (bestScore != null){
+                match.setBestScore(Long.parseLong(bestScore));
+            }
         }
 
         match.setElaborated(true);
