@@ -1,14 +1,9 @@
 package cc.officina.gatorade.web.rest;
 
+import cc.officina.gatorade.domain.*;
 import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.service.*;
 import com.codahale.metrics.annotation.Timed;
-import cc.officina.gatorade.domain.Attempt;
-import cc.officina.gatorade.domain.Game;
-import cc.officina.gatorade.domain.Match;
-import cc.officina.gatorade.domain.MatchTemplate;
-import cc.officina.gatorade.domain.Request;
-import cc.officina.gatorade.domain.Session;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.web.rest.util.HeaderUtil;
@@ -237,9 +232,18 @@ public class GameResource {
                 case "sendingData":
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "sendingData", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
                 case "matchAppesoRestartable":
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAppesoRestartable", "User "+playerid+" can restart the match for session "+sessionId+" already exist")).body(null);
+                    HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "matchAppesoRestartable", "User "+playerid+" can restart the match for session "+sessionId+" already exist");
+                    Match match = matchService.findMatchAppeso(sessionId, playerid);
+                    if (match != null){
+                        if (game.getType() == GameType.LEVEL){
+                            httpHeaders.add("bestLevel", match.getBestLevel());
+                        }else{
+                            httpHeaders.add("bestScore", String.valueOf(match.getBestScore()));
+                        }
+                    }
+                    return ResponseEntity.badRequest().headers(httpHeaders).body(game);
                 case "sessionAlreadyInUse":
-                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "sessionAlreadyInUse", "Session with id "+ sessionId + " already in use")).body(null);
+                    return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "sessionAlreadyInUse", "Session with id "+ sessionId + " already in use")).body(game);
             }
         }
         return new ResponseEntity<>(game, null, HttpStatus.OK);

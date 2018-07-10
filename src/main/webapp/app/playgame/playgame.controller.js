@@ -88,6 +88,10 @@
                 why = 'invalidSession';
             }else if (error.headers('X-gatoradeApp-error') === 'error.matchAppesoRestartable'){
                 why = 'matchAppesoRestartable';
+                $scope.wrapperMemory.match = {};
+                $scope.wrapperMemory.match.game = error.data;
+                $scope.wrapperMemory.match.bestLevel = error.headers("bestLevel");
+                $scope.wrapperMemory.match.bestScore = error.headers("bestScore");
             } else {
                 why = 'genericError';
             }

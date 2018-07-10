@@ -376,4 +376,9 @@ public class MatchServiceImpl implements MatchService{
             return null;
         return adminCloseMatch(match);
     }
+
+    @Override
+    public Match findMatchAppeso(Long sessionid, String playerid) {
+        return matchRepository.findComplitableMatchBySessionidAndPlayerid(sessionid, playerid);
+    }
 }
