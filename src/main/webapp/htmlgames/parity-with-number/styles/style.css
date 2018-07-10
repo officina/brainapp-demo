@@ -13,7 +13,6 @@ html {
 
 body {
   background-color:#333;
-  margin:0;
   max-height:100%;
   overflow:hidden;
 
@@ -68,7 +67,7 @@ a:hover {
     font-family: Comic Sans MS;
     font-size: 6vh;
     font-weight: bold;
-   
+
 }
 
 #loader {
