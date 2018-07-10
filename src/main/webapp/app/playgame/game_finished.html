@@ -9,22 +9,22 @@
                 </div>
                 <div class="col-md-2 text-center">
                     <p>
-                        <button ng-show="{{showReinizia}}" type="button" class="text-left btn btn-danger" ng-click="resetMatch()">REINIZIA</button>
-                        <button ng-show="{{showConcludi}}" type="button" class="text-right btn btn-danger" ng-click="completePendingMatch()">COMPLETA</button>
+                        <button ng-show="showReinizia" type="button" class="text-left btn btn-danger" ng-click="resetMatch()">REINIZIA</button>
+                        <button ng-show="showConcludi" type="button" class="text-right btn btn-danger" ng-click="completePendingMatch()">COMPLETA</button>
                     </p>
                 </div>
             </div>
             <br/>
             <div class="row">
-                <div class="col-md-4" ng-hide="{{showReinizia}}">
+                <div class="col-md-4" ng-hide="showReinizia">
                     <span class="hipster img-responsive img-rounded"></span>
                 </div>
                 <div class="col-md-8">
-                    <div ng-show="{{showReport}}">
+                    <div ng-show="showReport">
                         <h3 class="arcade officina mobileh3">Match report:</h3>
                         <code>{{reportText}}</code>
                     </div>
-                    <div ng-show="{{showError}}">
+                    <div ng-show="showError">
                         <h3 class="arcade officina mobileh3">Error report:</h3>
                         <code>{{errorText}}</code>
                     </div>
