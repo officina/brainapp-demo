@@ -1,4 +1,4 @@
-<div ng-show="showGame" id="game-header" ng-show="true">
+<div ng-show="showGame" id="game-header" style="position: fixed !important;">
     <timer interval="1000" countdown="99999" autostart="false" finish-callback="matchEnded()" >
         <div class="progress progress-striped">
             <div class="progress-bar progress-bar-custom" role="progressbar" aria-valuenow="{{progressBar}}" aria-valuemin="0" aria-valuemax="100"
@@ -8,11 +8,11 @@
         </div>
     </timer>
 </div>
-<div ng-show="showGame" id="gamecontainer" class="embed-container">
+<div ng-show="showGame" id="gamecontainer" class="embed-container" style="position: fixed !important;">
     <gamebox game="{{game}}" ></gamebox>
 </div>
 <!-- <div ng-hide="showGame" id="offlinecontainer" class="embed-container" ng-include="'./game_finished.html'"></div> -->
-<div ng-hide="showGame" id="offlinecontainer" class="container full-width arcade-bg" >
+<div ng-hide="showGame" id="offlinecontainer" class="container full-width arcade-bg">
     <div class="row arcade">
         <div class="col-md-8">
         	<p class="text-center">
