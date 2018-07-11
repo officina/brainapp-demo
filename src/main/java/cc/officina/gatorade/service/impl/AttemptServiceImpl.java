@@ -1,5 +1,6 @@
 package cc.officina.gatorade.service.impl;
 
+import cc.officina.gatorade.domain.GameType;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.repository.MatchRepository;
@@ -104,8 +105,16 @@ public class AttemptServiceImpl implements AttemptService{
             if (attempt.getStopAttempt() == null){
                 match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
             }
+            if (match.getGame().getType() == GameType.MINPOINT){
+                if (reqAttempt.getAttemptScore() < origScore && reqAttempt.getAttemptScore() != 0){
+                    attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                }
+            }else{
+                if (reqAttempt.getAttemptScore() > origScore){
+                    attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                }
+            }
             attempt.setLevelReached(reqAttempt.getLevelReached());
-            attempt.setAttemptScore(reqAttempt.getAttemptScore());
         }else{
             //Cerco un attempt creato "offline" che sia già stato creato su gatorade
             attempt = attemptRepository.getOneByLocalId(reqAttempt.getLocalId());
@@ -127,7 +136,15 @@ public class AttemptServiceImpl implements AttemptService{
                 if (attempt.getStopAttempt() == null){
                     match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
                 }
-                attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                if (match.getGame().getType() == GameType.MINPOINT){
+                    if (reqAttempt.getAttemptScore() < origScore && reqAttempt.getAttemptScore() != 0){
+                        attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                    }
+                }else{
+                    if (reqAttempt.getAttemptScore() > origScore){
+                        attempt.setAttemptScore(reqAttempt.getAttemptScore());
+                    }
+                }
                 attempt.setLevelReached(reqAttempt.getLevelReached());
             }
         }
