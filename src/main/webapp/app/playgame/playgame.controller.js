@@ -542,14 +542,18 @@
             console.log('Inside end match');
             removeEvent(eventName, $scope.handle);
             //eseguo prima endmatch
-            var tmlLevel = '';
+            var tmpLevel = '';
             var tmpScore = 0;
-            if ($scope.wrapperMemory.currAttempt != undefined){
-                tmpScore = $scope.wrapperMemory.currAttempt.attemptScore;
-                tmlLevel = $scope.wrapperMemory.currAttempt.level;
+            if ($scope.wrapperMemory.currAttempt !== undefined) {
+                if ($scope.wrapperMemory.game.type === 'MINPOINT' && $scope.wrapperMemory.currAttempt.attemptScore === 0) {
+                    tmpScore = 9999;
+                } else {
+                    tmpScore = $scope.wrapperMemory.currAttempt.attemptScore;
+                }
+                tmpLevel = $scope.wrapperMemory.currAttempt.level;
             }
             PlaygameService.endMatch($scope.wrapperMemory.game.id, "", $stateParams.playtoken, $scope.wrapperMemory.match.id, $scope.wrapperMemory.currAttempt, $scope.matchToken, $scope.wrapperMemory.attempts, tmpScore,
-                tmlLevel, $scope.wrapperMemory.attemptsOffline)
+                tmpLevel, $scope.wrapperMemory.attemptsOffline)
                 .then(function (response) {
                     // se endmatch va a buon fine eseguo l'invio del report
                     $scope.wrapperMemory.match = response.data.match;
@@ -594,29 +598,28 @@
 
         $(window).bind('unload', function () {
             try {
+                var tmpScore = 0;
+                var tmpLevel = '';
+                if ($scope.wrapperMemory.currAttempt !== undefined){
+                    if ($scope.wrapperMemory.game.type === 'MINPOINT' && $scope.wrapperMemory.currAttempt.attemptScore === 0) {
+                        tmpScore = 9999;
+                    }else{
+                        tmpScore = $scope.wrapperMemory.currAttempt.attemptScore;
+                    }
+                    tmpLevel = $scope.wrapperMemory.currAttempt.level;
+                }
                 $scope.wrapperMemory.match.stop = new Date(Date.now());
                 PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
-                if ($scope.wrapperMemory.currAttempt === undefined) {
-                    PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
-                        $stateParams.playtoken,
-                        $scope.wrapperMemory.match.id,
-                        undefined,
-                        undefined,
-                        undefined,
-                        $scope.matchToken,
-                        $scope.wrapperMemory.attempts);
-                } else {
-                    PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
-                        $stateParams.playtoken,
-                        $scope.wrapperMemory.match.id,
-                        $scope.wrapperMemory.currAttempt,
-                        $scope.wrapperMemory.currAttempt.attemptScore,
-                        $scope.wrapperMemory.currAttempt.level,
-                        $scope.matchToken,
-                        $scope.wrapperMemory.attempts);
-                }
+                PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
+                    $stateParams.playtoken,
+                    $scope.wrapperMemory.match.id,
+                    $scope.wrapperMemory.currAttempt,
+                    tmpScore,
+                    tmpLevel,
+                    $scope.matchToken,
+                    $scope.wrapperMemory.attempts);
 
-                if (typeof beforeUnloadTimeout != 'undefined' && beforeUnloadTimeout != 0) {
+                if (typeof beforeUnloadTimeout !== 'undefined' && beforeUnloadTimeout !== 0) {
                     clearTimeout(beforeUnloadTimeout);
                 }
                 removeEvent(eventName, $scope.handle)

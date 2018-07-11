@@ -247,7 +247,11 @@ public class GameServiceImpl implements GameService{
 	@Override
 	public MatchResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, String levelReached, boolean endMatch) {
         attempt.getMatch().manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), levelReached, scoreReached);
-		attempt.setAttemptScore(scoreReached);
+        if (scoreReached == 0 && game.getType() == GameType.MINPOINT){
+            attempt.setAttemptScore(9999L);
+        }else{
+            attempt.setAttemptScore(scoreReached);
+        }
 		attempt.setLevelReached(levelReached);
 		attempt.setCompleted(completed);
 		attempt.setLastUpdate(ZonedDateTime.now());
