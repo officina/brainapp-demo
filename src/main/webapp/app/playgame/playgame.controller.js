@@ -522,10 +522,10 @@
             //eseguo prima endmatch
             var tmpLevel = '';
             var tmpScore = 0;
-            if ($scope.wrapperMemory.currAttempt !== undefined){
+            if ($scope.wrapperMemory.currAttempt !== undefined) {
                 if ($scope.wrapperMemory.game.type === 'MINPOINT' && $scope.wrapperMemory.currAttempt.attemptScore === 0) {
                     tmpScore = 9999;
-                }else{
+                } else {
                     tmpScore = $scope.wrapperMemory.currAttempt.attemptScore;
                 }
                 tmpLevel = $scope.wrapperMemory.currAttempt.level;
