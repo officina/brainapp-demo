@@ -126,14 +126,15 @@
                     'La tua giocata risulta già effettuata; le classifiche sono in corso di aggiornamento.');
                 break;
             case 'matchAnomalous':
+                $scope.showReinizia = true;
+                $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br>' +
-                    'La tua giocate si è interrotta anticipatamente. </br> Contatta '+mailTo+' per chiudere la giocata o rieseguirla');
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! Il risultato riportato per '+descr+' è '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
                 sendProblem();
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
-                $scope.message2 = $sce.trustAsHtml('Hai un\'altra giocata in corso in questa sessione </br></br>Se desideri prendere il controllo da questsa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
+                $scope.message2 = $sce.trustAsHtml('Hai un\'altra giocata in corso in questa sessione </br></br>Se desideri prendere il controllo da questa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
                     ' "REINIZIA" </br>' +
                     'Selezionando "REINIZIA" il risultato già raggiunto verrà sostituito');
                 $scope.showReinizia = true;

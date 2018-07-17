@@ -558,7 +558,12 @@ public class Match implements Serializable {
         this.setRestartable(isRestartable());
     }
 
-    public boolean isRestartable(){
-        return getTimeAFK() >= (getTemplate().getMaxDuration() * TIMETHRESHOLD);
+    /**
+     * Determina se il match e restartable, calcolando il tempo non-giocato o se questo risulta già anomalo
+     *
+     * @return restartable
+     */
+    public boolean isRestartable() {
+        return this.isAnomalous() || getTimeAFK() >= (getTemplate().getMaxDuration() * TIMETHRESHOLD);
     }
 }
