@@ -160,7 +160,7 @@
                 $scope.message2 = $sce.trustAsHtml('Ti preghiamo di segnalare la cosa a ' +mailTo);
                 sendProblem();
                 break;
-            case 'matchAppesoRestartable':
+            case 'matchAnomalousRestartable':
                 $scope.showReinizia = true;
                 $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';

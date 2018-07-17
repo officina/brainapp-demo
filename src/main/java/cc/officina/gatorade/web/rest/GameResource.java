@@ -231,8 +231,8 @@ public class GameResource {
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "failToSend", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
                 case "sendingData":
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "sendingData", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
-                case "matchAppesoRestartable":
-                    HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "matchAppesoRestartable", "User "+playerid+" can restart the match for session "+sessionId+" already exist");
+                case "matchAnomalousRestartable":
+                    HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "matchAnomalousRestartable", "User "+playerid+" can restart the match for session "+sessionId+" already exist");
                     Match match = matchService.findMatchAppeso(sessionId, playerid);
                     if (match != null){
                         if (game.getType() == GameType.LEVEL){
