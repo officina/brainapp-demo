@@ -24599,16 +24599,20 @@ cr.plugins_.gatorade = function(runtime)
 	};
 	Acts.prototype.restartAttempt = function (score)
 	{
-		console.log("game restarted, sending " +  score + " as end points")
-		currentattempt.completed = true
-		currentattempt.score = score
-		currentattempt.ended = new Date()
-		var m = new Gatorade.Message(operations.ATTEMPT_RESTARTED, currentattempt)
-		window.parent.postMessage(m, domain)
-		currentattempt = new Attempt();
-		currentattempt.score = 0
-		currentattempt.started = new Date()
-		currentattempt.completed = false
+        if (currentattempt === null){
+            console.log("warning: attempt has to be created, first")
+            return
+        }
+        console.log("game restarted, sending " +  score + " as end points")
+        currentattempt.completed = true
+        currentattempt.score = score
+        currentattempt.ended = new Date()
+        var m = new Gatorade.Message(operations.ATTEMPT_RESTARTED, currentattempt)
+        window.parent.postMessage(m, domain)
+        currentattempt = new Attempt();
+        currentattempt.score = 0
+        currentattempt.started = new Date()
+        currentattempt.completed = false
 	};
 	Acts.prototype.stopAttempt = function (score)
 	{
@@ -26115,6 +26119,7 @@ cr.getObjectRefTable = function () { return [
 	cr.plugins_.gatorade.prototype.acts.updateScore,
 	cr.system_object.prototype.exps.choose,
 	cr.system_object.prototype.cnds.PickNth,
+	cr.plugins_.Text.prototype.cnds.PickByUID,
 	cr.plugins_.Text.prototype.cnds.CompareText,
 	cr.system_object.prototype.cnds.Every,
 	cr.system_object.prototype.acts.SubVar,
