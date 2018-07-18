@@ -147,7 +147,7 @@ public class SessionServiceImpl implements SessionService{
                                 case NOT_ELABORATED:
                                     //match appeso
                                     if (match.getRestartable()){
-                                        resultMap.put(false, "matchAppesoRestartable");
+                                        resultMap.put(false, "matchAnomalousRestartable");
                                     }else{
                                         resultMap.put(false, "matchAnomalous");
                                     }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -536,34 +537,11 @@ public class Match implements Serializable {
     }
 
 
-    public void manageAFK(String currLevel, Long currPoint, String newLevel, Long newPoint){
-        if ((currLevel != null && currLevel.equals(newLevel))
-            || (currPoint != null && currPoint.equals(newPoint))){
-            addTimeAFK();
-        }else{
-            resetTimeAFK();
-        }
-    }
     /**
-     * Aggiunge 30 secondi alla colonna time_afk, una volta arrivata a 7 min (30*7) il match viene marchiato come "RESTARTABLE"
+     * Indicate if the match max duration is reached
+     * @return true if the {@link MatchTemplate#maxDuration(Long)} is reached (TimedOut); false if not
      */
-    private void addTimeAFK(){
-        System.out.println("Match - addTimeAFK result doesn't change in the last 30 sec");
-        if (getTimeAFK() == null){
-            setTimeAFK(updateAttempt);
-        }else{
-            setTimeAFK(getTimeAFK()+updateAttempt);
-        }
-        this.setRestartable(isRestartable());
-    }
-
-    private void resetTimeAFK(){
-        System.out.println("Match - resetTimeAFK result change in the last 30 sec");
-        setTimeAFK(0L);
-        this.setRestartable(isRestartable());
-    }
-
-    private boolean isRestartable(){
-        return getTimeAFK() >= (getTemplate().getMaxDuration()*timeThreshold);
+    public boolean isTimedOut(){
+        return (getTimeSpent() + ChronoUnit.SECONDS.between(getLastStart(), ZonedDateTime.now())) >= getTemplate().getMaxDuration();
     }
 }
