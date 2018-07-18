@@ -84,7 +84,25 @@
                 why = 'sendingData';
             } else if (error.headers('X-gatoradeApp-error') === 'error.failToSend') {
                 why = 'failToSend';
+<<<<<<< Updated upstream
             } else{
+=======
+            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSession'){
+                why = 'invalidSession';
+            }else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalousRestartable'){
+                why = 'matchAnomalousRestartable';
+                $scope.wrapperMemory.match = {};
+                $scope.wrapperMemory.match.game = error.data;
+                $scope.wrapperMemory.match.bestLevel = error.headers("bestLevel");
+                $scope.wrapperMemory.match.bestScore = error.headers("bestScore");
+            } else if (error.headers('X-gatoradeApp-error') === 'error.timeout') {
+                why = 'timeout';
+                $scope.wrapperMemory.match = {};
+                $scope.wrapperMemory.match = error.data.match;
+                $scope.wrapperMemory.match.bestLevel = error.headers("bestLevel");
+                $scope.wrapperMemory.match.bestScore = error.headers("bestScore");
+            } else {
+>>>>>>> Stashed changes
                 why = 'genericError';
             }
             return why;
@@ -226,23 +244,23 @@
                 var timeToEnd = timestampToEnd/1000;
                 var total = (timeToEnd * 100 / $scope.maxDuration);
                 $scope.progressBar = total <= 100 ? total : 100;
-                /*console.log("now: "+now);
-                console.log("time stamp to end: "+timestampToEnd);
-                console.log("time to end: "+timeToEnd);
-                console.log("total: "+total);
-                console.log("progressbar: "+$scope.progressBar);*/
-                var tk = args.seconds % 30;
-                console.log($scope.wrapperMemory.currAttempt != undefined);
-                if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
-                    console.log('score/level update vs server');
-                    PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function (response) {
-                        console.log('Score/Level updated');
-                        offlineOnFirstAttempt = false;
-                    })
-                        .catch(function (error) {
-                            PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, error);
-                            manageError("START_ATTEMPT", null, error, why);
-                        });
+                if ($scope.timerEndTimestamp <= now){
+                    $scope.matchEnded();
+                    $scope.$broadcast('timer-stop')
+                } else {
+                    var tk = args.seconds % 30;
+                    console.log($scope.wrapperMemory.currAttempt != undefined);
+                    if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
+                        console.log('score/level update vs server');
+                        PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function (response) {
+                            console.log('Score/Level updated');
+                            offlineOnFirstAttempt = false;
+                        })
+                            .catch(function (error) {
+                                PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, error);
+                                manageError("START_ATTEMPT", null, error, getWhy(error));
+                            });
+                    }
                 }
             }
 
