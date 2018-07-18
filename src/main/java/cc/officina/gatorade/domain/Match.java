@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -530,7 +531,6 @@ public class Match implements Serializable {
     	return result;
     }
 
-
     public void manageAFK(String currLevel, Long currPoint, String newLevel, Long newPoint){
         if ((currLevel != null && currLevel.equals(newLevel))
             || (currPoint != null && currPoint.equals(newPoint))){
@@ -565,5 +565,13 @@ public class Match implements Serializable {
      */
     public boolean isRestartable() {
         return this.isAnomalous() || getTimeAFK() >= (getTemplate().getMaxDuration() * TIMETHRESHOLD);
+    }
+
+    /**
+     * Indicate if the match max duration is reached
+     * @return true if the {@link MatchTemplate#maxDuration(Long)} is reached (TimedOut); false if not
+     */
+    public boolean isTimedOut() {
+        return (getTimeSpent() + ChronoUnit.SECONDS.between(getLastStart(), ZonedDateTime.now())) >= getTemplate().getMaxDuration();
     }
 }

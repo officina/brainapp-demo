@@ -10,7 +10,6 @@ import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.apache.http.HttpResponse;
@@ -34,6 +33,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -366,6 +366,15 @@ public class GameResource {
                         return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(game, match, template, null));
                     }
                 }
+                if (match.isTimedOut()){
+                    HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
+                    if (game.getType() == GameType.LEVEL){
+                        httpHeaders.add("bestLevel", match.getBestLevel());
+                    }else{
+                        httpHeaders.add("bestScore", String.valueOf(match.getBestScore()));
+                    }
+                    return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
+                }
         		matchService.save(match);
         	}
         }
@@ -421,6 +430,10 @@ public class GameResource {
             }
         }
 
+        if ((match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), ZonedDateTime.now())) >= match.getTemplate().getMaxDuration()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "timeout", "Match with id "+ match.getId() + " timed out")).body(null);
+        }
+
         return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, request.getAttempt().getAttemptScore(), request.getAttempt().getLevelReached()), null, HttpStatus.OK);
     }
 
@@ -453,6 +466,15 @@ public class GameResource {
             }else{
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
             }
+        }
+        if (match.isTimedOut()){
+            HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
+            if (match.getGame().getType() == GameType.LEVEL){
+                httpHeaders.add("bestLevel", match.getBestLevel());
+            }else{
+                httpHeaders.add("bestScore", String.valueOf(match.getBestScore()));
+            }
+            return ResponseEntity.badRequest().headers(httpHeaders).body(new MatchResponse(match.getGame(), match, match.getTemplate()));
         }
         attempt.getMatch().getAttempts().size();
         return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);

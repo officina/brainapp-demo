@@ -65,9 +65,13 @@
     	if ($rootScope.wrapperMemory !== undefined && $rootScope.wrapperMemory.match !== undefined && $rootScope.wrapperMemory.match.game !== undefined){
     	    descr = $rootScope.wrapperMemory.match.game.description;
             if ($rootScope.wrapperMemory.match.game.type === 'LEVEL'){
-                score = $rootScope.wrapperMemory.match.bestLevel;
+                if ($rootScope.wrapperMemory.match.bestLevel){
+                    score = $rootScope.wrapperMemory.match.bestLevel;
+                }
             }else{
-                score = $rootScope.wrapperMemory.match.bestScore;
+                if ($rootScope.wrapperMemory.match.bestScore) {
+                    score = $rootScope.wrapperMemory.match.bestScore;
+                }
             }
         }
         switch($stateParams.why)
