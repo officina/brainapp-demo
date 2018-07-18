@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -503,5 +504,11 @@ public class Match implements Serializable {
     	return result;
     }
 
-
+    /**
+     * Indicate if the match max duration is reached
+     * @return true if the {@link MatchTemplate#maxDuration(Long)} is reached (TimedOut); false if not
+     */
+    public boolean isTimedOut(){
+        return (getTimeSpent() + ChronoUnit.SECONDS.between(getLastStart(), ZonedDateTime.now())) >= getTemplate().getMaxDuration();
+    }
 }
