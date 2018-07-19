@@ -1,5 +1,5 @@
 ﻿{
-	"version": 1529400800,
+	"version": 1531929047,
 	"fileList": [
 		"data.js",
 		"c2runtime.js",
@@ -13,6 +13,7 @@
 		"images/ui_image-sheet0.png",
 		"images/ui_animation-sheet0.png",
 		"images/ui_animation-sheet1.png",
+		"images/spritefont.png",
 		"media/click.m4a",
 		"media/click.ogg",
 		"media/false.m4a",
