@@ -112,7 +112,7 @@
 
             $rootScope.wrapperMemory = $scope.wrapperMemory;
             $rootScope.finalError = error;
-            if ($scope.isOnline) {
+            if ($scope.isOnline && why !== 'genericError') {
                 removeEvent(eventName, $scope.handle);
                 $state.go("ended", {
                     "gameid": $stateParams.gameid,
@@ -120,12 +120,15 @@
                     "sessionid": $stateParams.sessionid,
                     "why": why
                 });
-            }
-            else {
+            } else {
                 if (offlineOnFirstAttempt){
                     removeEvent(eventName, $scope.handle);
                     setupOffline(false, true);
                 }else{
+                    if (why === 'genericError'){
+                        $scope.wrapperMemory.error = error;
+                        PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+                    }
                     switch (event) {
                         case "START_ATTEMPT":
                             console.log('MANAGE OFFLINE: START_ATTEMPT');
