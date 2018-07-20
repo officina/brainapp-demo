@@ -413,8 +413,14 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(null, match, null, null));
         }
 
-        if ((match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), ZonedDateTime.now())) >= match.getTemplate().getMaxDuration()){
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "timeout", "Match with id "+ match.getId() + " timed out")).body(null);
+        if (match.isTimedOut()){
+            HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
+            if (match.getGame().getType() == GameType.LEVEL){
+                httpHeaders.add("bestLevel", match.getBestLevel());
+            }else{
+                httpHeaders.add("bestScore", String.valueOf(match.getBestScore()));
+            }
+            return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
         }
 
         return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, request.getAttempt().getAttemptScore(), request.getAttempt().getLevelReached()), null, HttpStatus.OK);
