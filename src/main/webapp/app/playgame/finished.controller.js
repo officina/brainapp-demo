@@ -93,7 +93,7 @@
                 break;
             case 'timeout':
                 $scope.message1 = 'Tempo scaduto! La tua partita è terminata.';
-                $scope.message2 = 'Grazie per aver giocato! Il risultato riportato per '+descr+' è '+score;
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br> La tua giocata si è conclusa con il risultato di '+score);
                 if ($rootScope.wrapperMemory !== undefined && $rootScope.wrapperMemory.match.restartable){
                     $scope.showReinizia = true;
                     $scope.showConcludi = false;
@@ -133,7 +133,7 @@
                 $scope.showReinizia = true;
                 $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! Il risultato riportato per '+descr+' è '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! La tua giocata si è interrotta anticipatamente con il risultato di '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
                 sendProblem();
                 break;
             case 'sessionAlreadyInUse':
@@ -168,7 +168,7 @@
                 $scope.showReinizia = true;
                 $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! Il risultato riportato per '+descr+' è '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! La tua giocata si è interrotta anticipatamente con il risultato di '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
                 break;
         }
 

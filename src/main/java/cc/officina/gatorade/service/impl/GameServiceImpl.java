@@ -289,6 +289,9 @@ public class GameServiceImpl implements GameService{
             lastAttempt.setLevelReached(level);
 			//si assume che un attempt chiuso in concomitanza al match risulta non completato
 			lastAttempt.setCompleted(false);
+            Duration duration = Duration.between(lastAttempt.getLastUpdate(), now);
+            match.setTimeAFK(duration.getSeconds());
+            match.setRestartable(match.isRestartable());
 			lastAttempt.setLastUpdate(now);
 			lastAttempt.setStopAttempt(now);
 		}else{
