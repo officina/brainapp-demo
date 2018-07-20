@@ -27578,7 +27578,7 @@ cr.getObjectRefTable = function () { return [
 	cr.system_object.prototype.exps.str,
 	cr.plugins_.Browser.prototype.exps.ExecJS,
 	cr.plugins_.SpriteFontPlus.prototype.cnds.OnCreated,
-	cr.plugins_.Arr.prototype.acts.JSONLoad,
+	cr.plugins_.SpriteFontPlus.prototype.acts.SetCharacterWidth,
 	cr.plugins_.Audio.prototype.cnds.IsTagPlaying,
 	cr.plugins_.Audio.prototype.acts.StopAll,
 	cr.plugins_.Audio.prototype.acts.PlayByName,

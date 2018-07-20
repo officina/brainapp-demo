@@ -9,6 +9,7 @@
 
     function PlaygameController($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams, timer, $interval) {
         $scope.isOnline = true;
+        $scope.progressBar = 100;
         Offline.on("up", function () {
             $scope.isOnline = true;
             console.log("Sending offline attempts for sync: ");
@@ -45,7 +46,7 @@
         var removeEvent = window[removeEventMethod];
         var gameId = $stateParams.gameid;
         var playtoken = $stateParams.playtoken;
-        var eventName = addEventMethod == "attachEvent" ? "onmessage" : "message";
+        var eventName = addEventMethod === "attachEvent" ? "onmessage" : "message";
         var useLevels = false;
 
         var setupOffline = function (showReport, offline) {
@@ -242,7 +243,8 @@
                 var timestampToEnd = $scope.timerEndTimestamp - now;
                 var timeToEnd = timestampToEnd/1000;
                 var total = (timeToEnd * 100 / $scope.maxDuration);
-                $scope.progressBar = total <= 100 ? total : 100;
+                var lastProgressBar = $scope.progressBar;
+                $scope.progressBar = total <= lastProgressBar ? total : lastProgressBar;
                 if ($scope.timerEndTimestamp <= now){
                     $scope.matchEnded();
                     $scope.$broadcast('timer-stop')
@@ -257,7 +259,10 @@
                         })
                             .catch(function (error) {
                                 PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, error);
-                                manageError("START_ATTEMPT", null, error, getWhy(error));
+                                var why = getWhy(error);
+                                if (why !== 'timeout'){
+                                    manageError("START_ATTEMPT", null, error, why);
+                                }
                             });
                     }
                 }
@@ -496,7 +501,9 @@
             $scope.wrapperMemory.currAttempt.attemptScore = trueScore;
             PlaygameService.restartAttemptToServer(gameId, $scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken, $stateParams.sessionid, false)
                 .then(function (response) {
+                    $scope.wrapperMemory.currAttempt.stopAttempt = new Date(Date.now());
                     $scope.wrapperMemory.currAttempt.sync = 1;
+                    $scope.wrapperMemory.currAttempt.completed = true;
                     $scope.wrapperMemory.attempts.push($scope.wrapperMemory.currAttempt);
                     $scope.wrapperMemory.currAttempt = response.data.attempt;
                 })
