@@ -629,10 +629,10 @@
                 });
         };
 
-        $scope.countDownCallbackFunction = function () {
-            console.log("countDownCallbackFunction");
-            $scope.matchEnded('countDownCallbackFunction');
-        };
+        // $scope.countDownCallbackFunction = function () {
+        //     console.log("countDownCallbackFunction");
+        //     $scope.matchEnded('countDownCallbackFunction');
+        // };
 
         var beforeUnloadTimeout = 0;
         $(window).bind('beforeunload', function () {
