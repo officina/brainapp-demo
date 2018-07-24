@@ -368,17 +368,18 @@ public class GameResource {
                 }
                 if (match.isTimedOut()){
                     HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
-                    if (game.getType() == GameType.LEVEL){
+                    if (match.getGame().getType() == GameType.LEVEL){
                         httpHeaders.add("bestLevel", match.getBestLevel());
-                    }else{
-                        httpHeaders.add("bestScore", String.valueOf(match.getBestScore()));
+                    }else if(match.getGame().getType() == GameType.MINPOINT){
+                        httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
+                    } else {
+                        httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
                     }
                     return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
                 }
         		matchService.save(match);
         	}
         }
-        //match.getAttempts().size();
         return new ResponseEntity<>(gameService.startAttempt(game, match), null, HttpStatus.OK);
     }
 
@@ -429,13 +430,14 @@ public class GameResource {
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
             }
         }
-
         if (match.isTimedOut()){
             HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
             if (match.getGame().getType() == GameType.LEVEL){
                 httpHeaders.add("bestLevel", match.getBestLevel());
-            }else{
-                httpHeaders.add("bestScore", String.valueOf(match.getBestScore()));
+            }else if(match.getGame().getType() == GameType.MINPOINT){
+                httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
+            } else {
+                httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
             }
             return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
         }
@@ -477,8 +479,10 @@ public class GameResource {
             HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
             if (match.getGame().getType() == GameType.LEVEL){
                 httpHeaders.add("bestLevel", match.getBestLevel());
-            }else{
-                httpHeaders.add("bestScore", String.valueOf(match.getBestScore()));
+            }else if(match.getGame().getType() == GameType.MINPOINT){
+                httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
+            } else {
+                httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
             }
             return ResponseEntity.badRequest().headers(httpHeaders).body(new MatchResponse(match.getGame(), match, match.getTemplate()));
         }
@@ -515,6 +519,17 @@ public class GameResource {
             }else{
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
             }
+        }
+        if (match.isTimedOut()){
+            HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
+            if (match.getGame().getType() == GameType.LEVEL){
+                httpHeaders.add("bestLevel", match.getBestLevel());
+            }else if(match.getGame().getType() == GameType.MINPOINT){
+                httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
+            } else {
+                httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
+            }
+            return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
         }
         //chiudo l'attempt
         MatchResponse response = gameService.stopAttempt(gameService.findOne(request.getGameid()), attempt, attempt.isCompleted(), attempt.getAttemptScore(), attempt.getLevelReached(), request.isEndmatch());

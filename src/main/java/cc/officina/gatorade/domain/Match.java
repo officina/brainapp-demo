@@ -444,8 +444,9 @@ public class Match implements Serializable {
         {
             try
             {
-                if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
+                if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l)){
                     min = a.getAttemptScore();
+                }
             }
             catch (Exception e)
             {
@@ -453,7 +454,7 @@ public class Match implements Serializable {
             }
         }
         if(min == null)
-            return null;
+            return game.getDefaultScore().toString();
         else
             return min.toString();
     }
@@ -571,7 +572,12 @@ public class Match implements Serializable {
      * Indicate if the match max duration is reached
      * @return true if the {@link MatchTemplate#maxDuration(Long)} is reached (TimedOut); false if not
      */
+    @JsonIgnore
     public boolean isTimedOut() {
-        return (getTimeSpent() + ChronoUnit.SECONDS.between(getLastStart(), ZonedDateTime.now())) >= getTemplate().getMaxDuration();
+        if (this.getAttempts().size() > 0){
+            return (ChronoUnit.SECONDS.between(getFirstStartAttempt(), ZonedDateTime.now())) >= getTemplate().getMaxDuration();
+        }else {
+            return false;
+        }
     }
 }

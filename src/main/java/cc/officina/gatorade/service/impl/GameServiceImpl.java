@@ -257,7 +257,7 @@ public class GameServiceImpl implements GameService{
 	public MatchResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, String levelReached, boolean endMatch) {
         attempt.getMatch().manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), null, null);
         if (scoreReached == 0 && game.getType() == GameType.MINPOINT){
-            attempt.setAttemptScore(9999L);
+            attempt.setAttemptScore(game.getDefaultScore());
         }else{
             attempt.setAttemptScore(scoreReached);
         }
