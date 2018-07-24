@@ -240,12 +240,6 @@
 
         $scope.$on('timer-tick', function (event, args) {
             if (args.seconds !== undefined) {
-<<<<<<< HEAD
-=======
-                if ($scope.timerEndTimestamp === -1){
-                    $scope.timerEndTimestamp = ($scope.maxDuration - $scope.timeSpent)*1000 + Date.now();
-                }
->>>>>>> master
                 var now = Date.now();
                 if ($scope.timerEndTimestamp === -1){
                     $scope.timerEndTimestamp = ($scope.maxDuration - $scope.timeSpent)*1000 + now;
