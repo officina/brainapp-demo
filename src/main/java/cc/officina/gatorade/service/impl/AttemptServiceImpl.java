@@ -102,7 +102,6 @@ public class AttemptServiceImpl implements AttemptService{
             attempt = attemptRepository.findOne(reqAttempt.getId());
             origLevel = attempt.getLevelReached();
             origScore = attempt.getAttemptScore();
-            match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
             attempt.setLevelReached(reqAttempt.getLevelReached());
             if (match.getGame().getType() == GameType.MINPOINT){
                 if (reqAttempt.getAttemptScore() < origScore && reqAttempt.getAttemptScore() != 0){
@@ -131,7 +130,6 @@ public class AttemptServiceImpl implements AttemptService{
             }else{
                 origLevel = attempt.getLevelReached();
                 origScore = attempt.getAttemptScore();
-                match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
                 if (match.getGame().getType() == GameType.MINPOINT){
                     if (reqAttempt.getAttemptScore() < origScore && reqAttempt.getAttemptScore() != 0){
                         attempt.setAttemptScore(reqAttempt.getAttemptScore());
