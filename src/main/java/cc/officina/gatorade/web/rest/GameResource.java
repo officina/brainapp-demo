@@ -10,6 +10,7 @@ import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import cc.officina.gatorade.web.rest.util.PaginationUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.internal.bind.v2.TODO;
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.apache.http.HttpResponse;
@@ -169,9 +170,8 @@ public class GameResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("session", "missingSession", "Session with id "+sessionId+" not found")).body(null);
         }
         Map<Boolean, String> validateSession = new HashMap<>();
-        //forza il bypass
-//        bp = bypass;
-        if (bp != null && bp.matches(bypass)){
+        if ((bp != null && bp.matches(bypass)) || session.getBypassable()){
+            log.info("Skipping external validation service, bp param or bypassable session");
             validateSession = sessionService.validateSessionAndUser(sessionId, playerid, id);
         }else{
             if (session.getPoRoot() == null){

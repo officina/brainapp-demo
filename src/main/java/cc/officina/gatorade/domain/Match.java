@@ -574,10 +574,11 @@ public class Match implements Serializable {
      */
     @JsonIgnore
     public boolean isTimedOut() {
-        if (this.getAttempts().size() > 0){
+        if (this.getAttempts().size() > 0) {
             return (ChronoUnit.SECONDS.between(getFirstStartAttempt(), ZonedDateTime.now())) >= getTemplate().getMaxDuration();
-        }else {
+        } else {
             return false;
         }
     }
+
 }
