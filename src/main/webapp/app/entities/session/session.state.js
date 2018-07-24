@@ -129,6 +129,7 @@
                                 extId: null,
                                 poRoot: null,
                                 elaborated: null,
+                                bypassable: null,
                                 id: null
                             };
                         }
