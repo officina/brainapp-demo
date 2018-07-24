@@ -36,6 +36,10 @@
         {
             "fieldName": "elaborated",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "bypassable",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170705100048",
