@@ -10,6 +10,7 @@
     function PlaygameController($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams, timer, $interval) {
         $scope.isOnline = true;
         $scope.progressBar = 100;
+
         var failedToStopAttempt = false;
         Offline.on("up", function () {
             $scope.isOnline = true;
@@ -239,6 +240,12 @@
 
         $scope.$on('timer-tick', function (event, args) {
             if (args.seconds !== undefined) {
+<<<<<<< HEAD
+=======
+                if ($scope.timerEndTimestamp === -1){
+                    $scope.timerEndTimestamp = ($scope.maxDuration - $scope.timeSpent)*1000 + Date.now();
+                }
+>>>>>>> master
                 var now = Date.now();
                 if ($scope.timerEndTimestamp === -1){
                     $scope.timerEndTimestamp = ($scope.maxDuration - $scope.timeSpent)*1000 + now;
@@ -249,12 +256,14 @@
                 var total = (timeToEnd * 100 / $scope.maxDuration);
                 var lastProgressBar = $scope.progressBar;
                 $scope.progressBar = total <= lastProgressBar ? total : lastProgressBar;
+                document.getElementById("progressbar").setAttribute('aria-valuenow', $scope.progressBar);
+                document.getElementById("progressbar").setAttribute('style', "width: "+$scope.progressBar+"%;");
                 if ($scope.timerEndTimestamp <= now){
                     $scope.matchEnded('timerEndTimestamp < now');
                     $scope.$broadcast('timer-stop')
                 } else {
                     var tk = args.seconds % 30;
-                    console.log($scope.wrapperMemory.currAttempt != undefined);
+                    //console.log($scope.wrapperMemory.currAttempt != undefined);
                     if ($scope.wrapperMemory.currAttempt != undefined && tk == 0) {
                         console.log('score/level update vs server');
                         PlaygameService.updateAttemptScore($scope.wrapperMemory.currAttempt, $scope.wrapperMemory.match, $scope.matchToken).then(function (response) {
@@ -314,7 +323,7 @@
                     if ($scope.timeSpent < $scope.maxDuration) {
                         var myTime = $scope.maxDuration - $scope.timeSpent;
                         console.log('Start a new session with a duration ' + myTime);
-                        $scope.$broadcast('timer-set-countdown-seconds', myTime);
+                        //$scope.$broadcast('timer-set-countdown-seconds', myTime * 2);
                     }
                     else {
                         console.log('Tempo scaduto in quanto il tempo massimo è ' + $scope.maxDuration + ' è quello giocato è ' + timeSpent);
@@ -376,6 +385,7 @@
                             }
                         });
                 }
+                $scope.wrapperMemory.timerStart = Date.now();
                 $scope.$broadcast('timer-start');
             }
         };
@@ -415,6 +425,7 @@
             }
             refreshWrapperMemory($scope.wrapperMemory.match, newAttempt);
             $scope.wrapperMemory.attemptsOffline[$scope.wrapperMemory.currAttempt.localId] = $scope.wrapperMemory.currAttempt;
+            $scope.wrapperMemory.timerStart = Date.now();
             $scope.$broadcast('timer-start');
         };
 
