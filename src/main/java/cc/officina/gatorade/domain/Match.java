@@ -533,39 +533,53 @@ public class Match implements Serializable {
     }
 
     public void manageAFK(String currLevel, Long currPoint, String newLevel, Long newPoint){
-        if ((currLevel != null && currLevel.equals(newLevel))
-            || (currPoint != null && currPoint.equals(newPoint))){
-            addTimeAFK();
+        String score = null, newScore = null;
+        if (this.getGame().getType() == GameType.LEVEL){
+            score = currLevel;
+            newScore = newLevel;
         }else{
+            if (currPoint != null){
+                score = String.valueOf(currPoint);
+            }
+            if (newPoint != null){
+                newScore = String.valueOf(newPoint);
+            }
+        }
+        if (score != null && score.equals(newScore)) {
+            addTimeAFK();
+        } else {
             resetTimeAFK();
         }
     }
+
+
     /**
      * Aggiunge 30 secondi alla colonna time_afk, una volta arrivata a 7 min (30*7) il match viene marchiato come "RESTARTABLE"
      */
     private void addTimeAFK(){
-        System.out.println("Match - addTimeAFK result doesn't change in the last 30 sec");
         if (getTimeAFK() == null){
             setTimeAFK(UPDATEATTEMPT);
         }else{
             setTimeAFK(getTimeAFK()+ UPDATEATTEMPT);
         }
+
         this.setRestartable(isRestartable());
+        System.out.println("Match: "+this.getId()+" - addTimeAFK result doesn't change in the last 30 sec, restartable: "+this.getRestartable());
     }
 
     private void resetTimeAFK(){
-        System.out.println("Match - resetTimeAFK result change in the last 30 sec");
         setTimeAFK(0L);
         this.setRestartable(isRestartable());
+        System.out.println("Match: "+this.getId()+" - resetTimeAFK result change in the last 30 sec, restartable: "+this.getRestartable());
     }
 
     /**
-     * Determina se il match e restartable, calcolando il tempo non-giocato o se questo risulta già anomalo
+     * Determina se il match e restartable, calcolando il tempo non-giocato o se questo risulta già anomalo o restartable
      *
      * @return restartable
      */
     public boolean isRestartable() {
-        return this.isAnomalous() || getTimeAFK() >= (getTemplate().getMaxDuration() * TIMETHRESHOLD);
+        return this.isAnomalous() || (this.getRestartable() != null && this.getRestartable()) || getTimeAFK() >= (getTemplate().getMaxDuration() * TIMETHRESHOLD);
     }
 
     /**

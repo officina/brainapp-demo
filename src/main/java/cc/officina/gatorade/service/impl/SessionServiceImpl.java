@@ -190,6 +190,9 @@ public class SessionServiceImpl implements SessionService{
 	@Override
 	public Session saveAndSchedule(Game game, Session session) {
 		session.setElaborated(false);
+        if (session.getBypassable() == null){
+            session.setBypassable(false);
+        }
 //		gamificationService.schedule(game, session);
 		return sessionRepository.save(session);
 	}
