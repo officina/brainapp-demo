@@ -29,7 +29,7 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
 	@Query("select m from Match m where m.session.id=:sessionId and m.userId = :userId")
 	public List<Match> findByUserAndSessionId(@Param("userId")String userId, @Param("sessionId")Long sessionId);
 
-	@Query("select m from Match m where m.userId = :userId and m.valid = true and m.matchToken > -1 and m.anomalous = false")
+	@Query("select m from Match m where m.userId = :userId and m.valid = true and m.matchToken > -1 and m.anomalous = false and m.stop is not null")
 	public List<Match> findValidByUserId(@Param("userId")String userId);
 
 	@Modifying

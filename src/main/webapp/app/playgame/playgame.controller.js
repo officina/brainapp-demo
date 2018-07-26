@@ -60,7 +60,12 @@
                 $scope.message2 = $sce.trustAsHtml("Ti preghiamo di segnalare la cosa a <a href=\"mailto:energy4brain@generali.com\">energy4brain@generali.com</a>");
             }
             if (showReport){
-                $scope.message2 = $sce.trustAsHtml("Ti preghiamo di inviare le informazioni che trovi in calce a  <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
+                //non mostro errore in calce perchè lo imposto nella mail
+                $scope.showReport = false;
+                $scope.showError = false;
+                var wrapper = JSON.stringify($rootScope.wrapperMemory);
+                var error = JSON.stringify($rootScope.finalError);
+                $scope.message2 = $sce.trustAsHtml("Ti preghiamo di segnalare la cosa a  <a href='mailto:energy4brain@generali.com?body="+wrapper+"%0D%0A%0D%0A"+error+"'>energy4brain@generali.com</a>");
                 $scope.errorText = $rootScope.finalError;
                 $scope.reportText = $rootScope.wrapperMemory;
             }
@@ -119,13 +124,17 @@
                     "why": why
                 });
             } else {
-                if (offlineOnFirstAttempt){
+                if (offlineOnFirstAttempt && why !== 'genericError'){
                     removeEvent(eventName, $scope.handle);
                     setupOffline(false, true);
                 }else{
                     if (why === 'genericError'){
                         $scope.wrapperMemory.error = error;
-                        PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+                        if ($scope.wrapperMemory.match !== undefined){
+                            PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+                        } else {
+                            PlaygameService.errorAsync(-1, $stateParams.playtoken, $scope.wrapperMemory);
+                        }
                     }
                     switch (event) {
                         case "START_ATTEMPT":
