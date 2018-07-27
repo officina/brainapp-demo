@@ -15,11 +15,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cc.officina.gatorade.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -375,5 +378,23 @@ public class MatchServiceImpl implements MatchService{
         if (match == null)
             return null;
         return adminCloseMatch(match);
+    }
+
+    @Override
+    public Match findMatchAppeso(Long sessionid, String playerid) {
+        return matchRepository.findComplitableMatchBySessionidAndPlayerid(sessionid, playerid);
+    }
+
+    @Override
+    public HttpHeaders getBestHeaders(Match match, String errorKey, String defaultMessage) {
+        HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", errorKey, defaultMessage);
+        if (match.getGame().getType() == GameType.LEVEL){
+            httpHeaders.add("bestLevel", match.getBestLevel());
+        }else if(match.getGame().getType() == GameType.MINPOINT){
+            httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
+        } else {
+            httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
+        }
+        return httpHeaders;
     }
 }

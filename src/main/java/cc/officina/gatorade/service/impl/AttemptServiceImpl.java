@@ -102,7 +102,9 @@ public class AttemptServiceImpl implements AttemptService{
             attempt = attemptRepository.findOne(reqAttempt.getId());
             origLevel = attempt.getLevelReached();
             origScore = attempt.getAttemptScore();
-            attempt.setLevelReached(reqAttempt.getLevelReached());
+            if (attempt.getStopAttempt() == null){
+                match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
+            }
             if (match.getGame().getType() == GameType.MINPOINT){
                 if (reqAttempt.getAttemptScore() < origScore && reqAttempt.getAttemptScore() != 0){
                     attempt.setAttemptScore(reqAttempt.getAttemptScore());
@@ -112,6 +114,7 @@ public class AttemptServiceImpl implements AttemptService{
                     attempt.setAttemptScore(reqAttempt.getAttemptScore());
                 }
             }
+            attempt.setLevelReached(reqAttempt.getLevelReached());
         }else{
             //Cerco un attempt creato "offline" che sia già stato creato su gatorade
             attempt = attemptRepository.getOneByLocalId(reqAttempt.getLocalId());
@@ -130,6 +133,9 @@ public class AttemptServiceImpl implements AttemptService{
             }else{
                 origLevel = attempt.getLevelReached();
                 origScore = attempt.getAttemptScore();
+                if (attempt.getStopAttempt() == null){
+                    match.manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), reqAttempt.getLevelReached(), reqAttempt.getAttemptScore());
+                }
                 if (match.getGame().getType() == GameType.MINPOINT){
                     if (reqAttempt.getAttemptScore() < origScore && reqAttempt.getAttemptScore() != 0){
                         attempt.setAttemptScore(reqAttempt.getAttemptScore());

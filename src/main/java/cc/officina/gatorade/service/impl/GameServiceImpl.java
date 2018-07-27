@@ -10,6 +10,8 @@ import cc.officina.gatorade.web.response.MatchResponse;
 import cc.officina.gatorade.repository.AttemptRepository;
 import cc.officina.gatorade.repository.GameRepository;
 import cc.officina.gatorade.repository.MatchRepository;
+
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -112,6 +114,7 @@ public class GameServiceImpl implements GameService{
             match.setMatchToken(matchToken);
             match.setUsedToPO(false);
             match.setValid(true);
+            match.setRestartable(false);
             matchRepository.save(match);
             return new MatchResponse(game,match,template);
         }
@@ -223,6 +226,13 @@ public class GameServiceImpl implements GameService{
 		attempt.setValid(true);
 		attempt.setSync(AttemptSyncState.notSync);
 		attemptRepository.saveAndFlush(attempt);
+		Attempt lastAttempt = attemptRepository.getLastFinished(attempt.getMatch().getId());
+		if (lastAttempt != null){
+            Duration duration = Duration.between(lastAttempt.getStopAttempt(), attempt.getStartAttempt());
+            match.setTimeAFK(duration.getSeconds());
+            match.setRestartable(match.isRestartable());
+            matchRepository.saveAndFlush(match);
+        }
 		log.info("New attempt created with id = " + attempt.getId());
 		AttemptResponse response = new AttemptResponse(game, match, null,attempt);
 		return response;
@@ -246,8 +256,9 @@ public class GameServiceImpl implements GameService{
 
 	@Override
 	public MatchResponse stopAttempt(Game game, Attempt attempt, boolean completed, Long scoreReached, String levelReached, boolean endMatch) {
+        attempt.getMatch().manageAFK(attempt.getLevelReached(), attempt.getAttemptScore(), null, null);
         if (scoreReached == 0 && game.getType() == GameType.MINPOINT){
-            attempt.setAttemptScore(9999L);
+            attempt.setAttemptScore(game.getDefaultScore());
         }else{
             attempt.setAttemptScore(scoreReached);
         }
@@ -279,18 +290,40 @@ public class GameServiceImpl implements GameService{
             lastAttempt.setLevelReached(level);
 			//si assume che un attempt chiuso in concomitanza al match risulta non completato
 			lastAttempt.setCompleted(false);
+            Duration duration = Duration.between(lastAttempt.getLastUpdate(), now);
+            match.setTimeAFK(duration.getSeconds());
+            match.setRestartable(match.isRestartable());
 			lastAttempt.setLastUpdate(now);
 			lastAttempt.setStopAttempt(now);
-		}
+		}else{
+            lastAttempt = attemptRepository.getLastFinished(match.getId());
+            if (lastAttempt != null){
+                Duration duration = Duration.between(lastAttempt.getStopAttempt(), ZonedDateTime.now());
+                match.setTimeAFK(duration.getSeconds());
+                match.setRestartable(match.isRestartable());
+            } else {
+                //sono nel caso di un match che non ha attempt completed == true; si assume che quindi  il giocatore non abbia partecipato attivamente alla partita e quindi può ricominciare
+                match.setRestartable(true);
+            }
+        }
         match.setBestLevel(match.getMaxLevel());
         if (match.getGame().getType() == GameType.MINPOINT){
-            match.setBestScore(Long.parseLong(match.getMinScore()));
+            String minScore = match.getMinScore();
+            if (minScore != null){
+                match.setBestScore(Long.parseLong(minScore));
+            }
+
         }else if(match.getGame().getType() == GameType.POINT){
-            match.setBestScore(Long.valueOf(match.getMaxScore()));
+            String bestScore = match.getMaxScore();
+            if (bestScore != null){
+                match.setBestScore(Long.parseLong(bestScore));
+            }
         }
 
         match.setElaborated(true);
-        match.setStop(now);
+        if (match.getStop() == null){
+            match.setStop(now);
+        }
         match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 
         Match mainMatch = matchRepository.findMainMatch(match.getGame().getId(), match.getUserId());

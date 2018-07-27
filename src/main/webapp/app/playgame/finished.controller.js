@@ -29,7 +29,10 @@
 	    		idToUse = $rootScope.wrapperMemory.match.id;
 	    	}
 	    	//invio il report di giocata
-            var mailWithBody = $sce.trustAsHtml("Ti preghiamo di inviare le informazioni che trovi in calce a  <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
+            var mailWithBody = $sce.trustAsHtml("Ti preghiamo di segnalare la cosa a <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
+	    	if ($scope.showReport){
+                mailWithBody = $sce.trustAsHtml("Ti preghiamo di inviare le informazioni che trovi in calce a  <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
+            }
 	    	PlaygameService.reportAsync(idToUse,$stateParams.playtoken,$rootScope.wrapperMemory)
 	    	.then(function(response){
 	    		//se l'invio di report giocata va a buon fine invio anche l'errore che mi ha portato a questo genericError
@@ -59,15 +62,43 @@
         var mailTo = $sce.trustAsHtml("<a href=\"mailto:energy4brain@generali.com?subject="+subject+"\">energy4brain@generali.com</a>")
         var score = 0;
         var descr = '...';
-    	if ($rootScope.wrapperMemory !== undefined && $rootScope.wrapperMemory.match !== undefined && $rootScope.wrapperMemory.match.game !== undefined){
+    	if ($rootScope.wrapperMemory !== undefined && $rootScope.wrapperMemory.match !== undefined){
     	    descr = $rootScope.wrapperMemory.match.game.description;
             if ($rootScope.wrapperMemory.match.game.type === 'LEVEL'){
                 if ($rootScope.wrapperMemory.match.bestLevel){
-                    score = $rootScope.wrapperMemory.match.bestLevel;
+                    if ($scope.wrapperMemory.currAttempt !== undefined){
+                        if ($rootScope.wrapperMemory.match.bestLevel > $rootScope.wrapperMemory.currAttempt.levelReached){
+                            score = $rootScope.wrapperMemory.match.bestLevel;
+                        } else {
+                            score = $rootScope.wrapperMemory.currAttempt.levelReached;
+                        }
+                    } else {
+                        score = $rootScope.wrapperMemory.match.bestLevel;
+                    }
                 }
-            }else{
+            } else if ($rootScope.wrapperMemory.match.game.type === 'MINPOINT') {
                 if ($rootScope.wrapperMemory.match.bestScore) {
-                    score = $rootScope.wrapperMemory.match.bestScore;
+                    if ($scope.wrapperMemory.currAttempt !== undefined){
+                        if ($rootScope.wrapperMemory.match.bestScore < $rootScope.wrapperMemory.currAttempt.attemptScore){
+                            score = $rootScope.wrapperMemory.match.bestScore;
+                        } else {
+                            score = $rootScope.wrapperMemory.currAttempt.attemptScore;
+                        }
+                    } else {
+                        score = $rootScope.wrapperMemory.match.bestScore;
+                    }
+                }
+            } else {
+                if ($rootScope.wrapperMemory.match.bestScore) {
+                    if ($scope.wrapperMemory.currAttempt !== undefined){
+                        if ($rootScope.wrapperMemory.match.bestScore > $rootScope.wrapperMemory.currAttempt.attemptScore){
+                            score = $rootScope.wrapperMemory.match.bestScore;
+                        } else {
+                            score = $rootScope.wrapperMemory.currAttempt.attemptScore;
+                        }
+                    } else {
+                        score = $rootScope.wrapperMemory.match.bestScore;
+                    }
                 }
             }
         }
@@ -79,24 +110,24 @@
                 break;
             case 'invalidSession':
                 $scope.message1 = 'Sessione non attivabile';
-                $scope.message2 = $sce.trustAsHtml('La sessione di gioco non risulta associata al team di riferimento.\n' +
+                $scope.message2 = $sce.trustAsHtml('La sessione di gioco non risulta associata al team di riferimento.</br>' +
                     'Ti preghiamo di segnalare la cosa a '+mailTo);
                 sendProblem();
                 break;
             case 'invalidSitecore':
                 $scope.message1 = 'Nessuna sessione di gioco attiva.';
-                $scope.message2 = $sce.trustAsHtml('Le verifiche di autenticazione sulla sessione corrente hanno dato esito negativo. Ti preghiamo di segnalare la cosa a '+mailTo);
+                $scope.message2 = $sce.trustAsHtml('Le verifiche di autenticazione sulla sessione corrente hanno dato esito negativo.');
                 sendProblem();
                 break;
             case 'timeout':
                 $scope.message1 = 'Tempo scaduto! La tua partita è terminata.';
-                $scope.message2 = 'Grazie per aver giocato! Il risultato riportato per '+descr+' è '+score;
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br> La tua giocata si è conclusa con il risultato di '+score);
                 if ($rootScope.wrapperMemory !== undefined && $rootScope.wrapperMemory.match.restartable){
                     $scope.showReinizia = true;
                     $scope.showConcludi = false;
                     $scope.message2 = $scope.message2 + $sce.trustAsHtml('<br>Hai giocato meno del 50% del tempo che avevi a disposizione.</br>' +
                         '</br>' +
-                        'Seleziona "REINIZIA" per annullare e rieffettuare la giocata')
+                        'Seleziona "RICOMINCIA" per annullare e rieffettuare la giocata')
                 }
                 break;
             //matchInvalid è riferito al caso in cui l'amministratore ha invalidato la giocata dalla dashboard, è diverso da invalidMatch
@@ -124,25 +155,26 @@
             case 'matchEnded':
                 $scope.message1 = 'La tua partita è terminata.';
                 $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br>' +
-                    'La tua giocata risulta già effettuata; le classifiche sono in corso di aggiornamento');
+                    'La tua giocata risulta già effettuata; le classifiche sono in corso di aggiornamento.');
                 break;
             case 'matchAnomalous':
+                $scope.showReinizia = true;
+                $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br>' +
-                    'La tua giocate si è interrotta anticipatamente.');
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! La tua giocata si è interrotta anticipatamente con il risultato di '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "RICOMINCIA" per annullare e rieffettuare la giocata');
                 sendProblem();
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
-                $scope.message2 = $sce.trustAsHtml('Se desideri prendere il controllo da questsa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
-                    ' "REINIZIA" </br>' +
-                    'Selezionando "REINIZIA" il risultato già raggiunto verrà sostituito');
+                $scope.message2 = $sce.trustAsHtml('Hai un\'altra giocata in corso in questa sessione </br></br>Se desideri prendere il controllo da questa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
+                    ' "RICOMINCIA" </br>' +
+                    'Selezionando "RICOMINCIA" il risultato già raggiunto verrà sostituito');
                 $scope.showReinizia = true;
                 $scope.showConcludi = false;
                 break;
             case 'offline':
-                $scope.message1 = 'Non siamo riusciti a contattare il server';
-                $scope.message2 = 'Verifica la connessione';
+                $scope.message1 = 'Si è verificato un problema con la tua connessione';
+                $scope.message2 = 'Ti preghiamo di controllare la tua connessione e rieffettuare la giocata';
                 break;
             case 'missingSession':
                 $scope.message1 = 'Sessione non disponibile';
@@ -164,7 +196,7 @@
                 $scope.showReinizia = true;
                 $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = $scope.message2 + $sce.trustAsHtml('<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! La tua giocata si è interrotta anticipatamente con il risultato di '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "RICOMINCIA" per annullare e rieffettuare la giocata');
                 break;
         }
 
@@ -181,7 +213,11 @@
                 })
                 .catch(function(error) {
                     $scope.message1 = 'Si è verificato un errore imprevisto.';
-                    $scope.message2 = mailTo;
+                    $scope.message2 = $sce.trustAsHtml('La tua richiesta non è andata a buon fine.</br>Ti preghiamo di segnalare l\'accaduto a '+mailTo);
+                    $scope.showReinizia = false;
+                    $scope.showConcludi = false;
+                    $scope.showError = false;
+                    $scope.showReport = false;
                     sendProblem();
                 });
         };
@@ -193,13 +229,17 @@
                     $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br>La tua giocata risulta già effettuata.</br>Le classifiche sono state aggiornate');
                     $scope.showReinizia = false;
                     $scope.showConcludi = false;
+                    $scope.showError = false;
+                    $scope.showReport = false;
                     sendProblem();
                 })
                 .catch(function(error) {
                     $scope.message1 = 'Si è verificato un errore imprevisto.';
-                    $scope.message2 = $sce.trustAsHtml('Ti preghiamo di segnalare la cosa a ' +mailTo);
+                    $scope.message2 = $sce.trustAsHtml('La tua richiesta non è andata a buon fine.</br>Ti preghiamo di segnalare la cosa a ' +mailTo);
                     $scope.showReinizia = false;
                     $scope.showConcludi = false;
+                    $scope.showError = false;
+                    $scope.showReport = false;
                     sendProblem();
                 });
         };

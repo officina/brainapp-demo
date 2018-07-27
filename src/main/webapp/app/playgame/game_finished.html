@@ -9,14 +9,14 @@
                 </div>
                 <div class="col-md-2 text-center">
                     <p>
-                        <button ng-show="{{showReinizia}}" type="button" class="text-left btn btn-danger" ng-click="resetMatch()">REINIZIA</button>
-                        <button ng-show="{{showConcludi}}" type="button" class="text-right btn btn-danger" ng-click="completePendingMatch()">COMPLETA</button>
+                        <button ng-show="showReinizia" type="button" class="text-left btn btn-danger" ng-click="resetMatch()">RICOMINCIA</button>
+                        <button ng-show="showConcludi" type="button" class="text-right btn btn-danger" ng-click="completePendingMatch()">COMPLETA</button>
                     </p>
                 </div>
             </div>
             <br/>
             <div class="row">
-                <div class="col-md-4" ng-hide="{{showReinizia}}">
+                <div class="col-md-4" ng-hide="showReinizia">
                     <span class="hipster img-responsive img-rounded"></span>
                 </div>
                 <div class="col-md-8">
@@ -55,8 +55,6 @@
         margin-right: 10px;
         margin-top: 10px;
     }
-<<<<<<< HEAD
-=======
 
     .box {
         margin: 40px;
@@ -64,5 +62,4 @@
         padding: 30px;
         border-radius: 5px;
     }
->>>>>>> master
 </style>
