@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -75,4 +76,5 @@ public interface MatchService {
     public Match restartMatch(Long sessionid, String playerid);
     public Match completeMatch(Long sessionid, String playerid);
     public Match findMatchAppeso(Long sessionid, String playerid);
+    public HttpHeaders getBestHeaders(Match match, String errorKey, String defaultMessage);
 }

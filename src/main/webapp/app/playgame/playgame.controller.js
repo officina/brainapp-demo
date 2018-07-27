@@ -10,7 +10,9 @@
     function PlaygameController($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams, timer, $interval) {
         $scope.isOnline = true;
         $scope.progressBar = 100;
-
+        $scope.reloadRoute = function() {
+            $state.reload();
+        };
         var failedToStopAttempt = false;
         Offline.on("up", function () {
             $scope.isOnline = true;
@@ -37,8 +39,8 @@
         $scope.timerEndTimestamp = -1;
         $scope.timeSpent = 0;
         $scope.showGame = true;
-        $scope.showReport = true;
-        $scope.showError = true;
+        $scope.showReport = false;
+        $scope.showError = false;
         // IE + others compatible event handler
         var offlineOnFirstAttempt = true;
         var addEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
@@ -56,8 +58,8 @@
                 $scope.message1 = "Si è verificato un problema con la tua connessione";
                 $scope.message2 = "Ti preghiamo di controllare la tua connessione e rieffettuare la giocata";
             }else{
-                $scope.message1 = 'Si è verificato un errore imprevisto. ';
-                $scope.message2 = $sce.trustAsHtml("Ti preghiamo di segnalare la cosa a <a href=\"mailto:energy4brain@generali.com\">energy4brain@generali.com</a>");
+                $scope.message1 = 'La tua richiesta non è andata a buon fine.';
+                $scope.message2 = $sce.trustAsHtml("Prova a ricaricare la pagina, se il problema persiste ti preghiamo di segnalare la cosa a <a href=\"mailto:energy4brain@generali.com\">energy4brain@generali.com</a>");
             }
             if (showReport){
                 //non mostro errore in calce perchè lo imposto nella mail
@@ -65,7 +67,7 @@
                 $scope.showError = false;
                 var wrapper = JSON.stringify($rootScope.wrapperMemory);
                 var error = JSON.stringify($rootScope.finalError);
-                $scope.message2 = $sce.trustAsHtml("Ti preghiamo di segnalare la cosa a  <a href='mailto:energy4brain@generali.com?body="+wrapper+"%0D%0A%0D%0A"+error+"'>energy4brain@generali.com</a>");
+                $scope.message2 = $sce.trustAsHtml("Prova a ricaricare la pagina, se il problema persiste ti preghiamo di segnalare la cosa a <a href='mailto:energy4brain@generali.com?body="+wrapper+"%0D%0A%0D%0A"+error+"'>energy4brain@generali.com</a>");
                 $scope.errorText = $rootScope.finalError;
                 $scope.reportText = $rootScope.wrapperMemory;
             }
@@ -96,7 +98,15 @@
             }else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalousRestartable'){
                 why = 'matchAnomalousRestartable';
                 $scope.wrapperMemory.match = {};
-                $scope.wrapperMemory.match.game = error.data;
+                //gestisco la response in base al servizio chiamato
+                if (error.config.url.includes("init")){
+                    $scope.wrapperMemory.match.game = error.data;
+                } else if (error.config.url.includes("end") || error.config.url.includes("restart")){
+                    $scope.wrapperMemory.match = error.data.match;
+                    $scope.wrapperMemory.match.game = error.data.game;
+                } else if (error.config.url.includes("/play/attempt") || error.config.url.includes("/play/attempt") || error.config.url.includes("v2")) {
+                    $scope.wrapperMemory.match = error.data.match;
+                }
                 $scope.wrapperMemory.match.bestLevel = error.headers("bestLevel");
                 $scope.wrapperMemory.match.bestScore = error.headers("bestScore");
             } else if (error.headers('X-gatoradeApp-error') === 'error.timeout') {
@@ -106,7 +116,12 @@
                 $scope.wrapperMemory.match.bestLevel = error.headers("bestLevel");
                 $scope.wrapperMemory.match.bestScore = error.headers("bestScore");
             } else {
-                why = 'genericError';
+                if (offlineOnFirstAttempt){
+                    why = '';
+                } else {
+                    why = 'genericError';
+                }
+
             }
             return why;
         };
@@ -245,7 +260,7 @@
             }
         });
 
-        $scope.game = {url: "htmlgames/loading.html"}
+        $scope.game = {url: "htmlgames/loading.html"};
 
         $scope.$on('timer-tick', function (event, args) {
             if (args.seconds !== undefined) {
@@ -276,9 +291,7 @@
                             .catch(function (error) {
                                 PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, error);
                                 var why = getWhy(error);
-                                if (why !== 'timeout'){
-                                    manageError("START_ATTEMPT", null, error, why);
-                                } else {
+                                if (why === 'timeout'){
                                     $scope.matchEnded('updateAttemptScore');
                                 }
                             });
@@ -304,14 +317,14 @@
             $scope.wrapperMemory.game = response.data;
             $scope.wrapperMemory.player = {};
             $scope.wrapperMemory.player.playtoken = playtoken;
-            if ($scope.game.type == 'LEVEL') {
+            if ($scope.game.type === 'LEVEL') {
                 useLevels = true;
             }
             $scope.wrapperMemory.startMatchDate = Date.now();
             PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.sessionid, $scope.matchToken, $scope.wrapperMemory.replay)
                 .then(function (response) {
                     $scope.wrapperMemory.match = response.data.match;
-                    if ($scope.wrapperMemory.match.replayState == 'cloned'){
+                    if ($scope.wrapperMemory.match.replayState === 'cloned'){
                         $rootScope.wrapperMemory = $scope.wrapperMemory;
                         console.log('Caso di rigioco "false" match clonato corretamente match id: '+$scope.wrapperMemory.match.id+" match di riferimento: "+$scope.wrapperMemory.match.parentId);
                         $state.go("ended", {

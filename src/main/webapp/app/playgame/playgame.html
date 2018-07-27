@@ -14,9 +14,14 @@
 <div ng-hide="showGame" id="offlinecontainer" class="container full-width arcade-bg">
     <div class="row arcade">
         <div class="col-md-8">
-        	<p class="text-center">
-                <h1 class="arcade officina mobileh2"> {{message1}}</h1><br /><h3 class="arcade mobileh2" ng-bind-html="message2"></h3>
-	        </p>
+            <p class="text-center">
+            <h1 class="arcade officina mobileh2"> {{message1}}</h1><br /><h3 class="arcade mobileh2 line-height" ng-bind-html="message2"></h3>
+            </p>
+        </div>
+        <div class="col-md-2 text-center">
+            <p>
+                <button type="button" class="text-right btn btn-danger" ng-click="reloadRoute()">RICARICA</button>
+            </p>
         </div>
     </div>
     <br/>
@@ -25,11 +30,11 @@
             <span class="hipster img-responsive img-rounded"></span>
         </div>
         <div class="col-md-8">
-        	<div ng-show="showReport">
+        	<div ng-show="{{showReport}}">
 	        	<h3 class="arcade officina mobileh3">Match report:</h3>
 	        	<code>{{reportText}}</code>
         	</div>
-        	<div ng-show="showError">
+        	<div ng-show="{{showError}}">
 	        	<h3 class="arcade officina mobileh3">Error report:</h3>
 	        	<code>{{errorText}}</code>
 	        </div>

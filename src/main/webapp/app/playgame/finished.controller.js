@@ -62,15 +62,43 @@
         var mailTo = $sce.trustAsHtml("<a href=\"mailto:energy4brain@generali.com?subject="+subject+"\">energy4brain@generali.com</a>")
         var score = 0;
         var descr = '...';
-    	if ($rootScope.wrapperMemory !== undefined && $rootScope.wrapperMemory.match !== undefined && $rootScope.wrapperMemory.match.game !== undefined){
+    	if ($rootScope.wrapperMemory !== undefined && $rootScope.wrapperMemory.match !== undefined){
     	    descr = $rootScope.wrapperMemory.match.game.description;
             if ($rootScope.wrapperMemory.match.game.type === 'LEVEL'){
                 if ($rootScope.wrapperMemory.match.bestLevel){
-                    score = $rootScope.wrapperMemory.match.bestLevel;
+                    if ($scope.wrapperMemory.currAttempt !== undefined){
+                        if ($rootScope.wrapperMemory.match.bestLevel > $rootScope.wrapperMemory.currAttempt.levelReached){
+                            score = $rootScope.wrapperMemory.match.bestLevel;
+                        } else {
+                            score = $rootScope.wrapperMemory.currAttempt.levelReached;
+                        }
+                    } else {
+                        score = $rootScope.wrapperMemory.match.bestLevel;
+                    }
                 }
-            }else{
+            } else if ($rootScope.wrapperMemory.match.game.type === 'MINPOINT') {
                 if ($rootScope.wrapperMemory.match.bestScore) {
-                    score = $rootScope.wrapperMemory.match.bestScore;
+                    if ($scope.wrapperMemory.currAttempt !== undefined){
+                        if ($rootScope.wrapperMemory.match.bestScore < $rootScope.wrapperMemory.currAttempt.attemptScore){
+                            score = $rootScope.wrapperMemory.match.bestScore;
+                        } else {
+                            score = $rootScope.wrapperMemory.currAttempt.attemptScore;
+                        }
+                    } else {
+                        score = $rootScope.wrapperMemory.match.bestScore;
+                    }
+                }
+            } else {
+                if ($rootScope.wrapperMemory.match.bestScore) {
+                    if ($scope.wrapperMemory.currAttempt !== undefined){
+                        if ($rootScope.wrapperMemory.match.bestScore > $rootScope.wrapperMemory.currAttempt.attemptScore){
+                            score = $rootScope.wrapperMemory.match.bestScore;
+                        } else {
+                            score = $rootScope.wrapperMemory.currAttempt.attemptScore;
+                        }
+                    } else {
+                        score = $rootScope.wrapperMemory.match.bestScore;
+                    }
                 }
             }
         }
@@ -99,7 +127,7 @@
                     $scope.showConcludi = false;
                     $scope.message2 = $scope.message2 + $sce.trustAsHtml('<br>Hai giocato meno del 50% del tempo che avevi a disposizione.</br>' +
                         '</br>' +
-                        'Seleziona "REINIZIA" per annullare e rieffettuare la giocata')
+                        'Seleziona "RICOMINCIA" per annullare e rieffettuare la giocata')
                 }
                 break;
             //matchInvalid è riferito al caso in cui l'amministratore ha invalidato la giocata dalla dashboard, è diverso da invalidMatch
@@ -133,14 +161,14 @@
                 $scope.showReinizia = true;
                 $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! La tua giocata si è interrotta anticipatamente con il risultato di '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! La tua giocata si è interrotta anticipatamente con il risultato di '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "RICOMINCIA" per annullare e rieffettuare la giocata');
                 sendProblem();
                 break;
             case 'sessionAlreadyInUse':
                 $scope.message1 = 'La tua partita è in corso';
                 $scope.message2 = $sce.trustAsHtml('Hai un\'altra giocata in corso in questa sessione </br></br>Se desideri prendere il controllo da questa scheda e rieffettuare la giocata da capo, trascurando l\'altra giocata in corso, seleziona</br>' +
-                    ' "REINIZIA" </br>' +
-                    'Selezionando "REINIZIA" il risultato già raggiunto verrà sostituito');
+                    ' "RICOMINCIA" </br>' +
+                    'Selezionando "RICOMINCIA" il risultato già raggiunto verrà sostituito');
                 $scope.showReinizia = true;
                 $scope.showConcludi = false;
                 break;
@@ -168,7 +196,7 @@
                 $scope.showReinizia = true;
                 $scope.showConcludi = true;
                 $scope.message1 = 'La tua partita è terminata.';
-                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! La tua giocata si è interrotta anticipatamente con il risultato di '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "REINIZIA" per annullare e rieffettuare la giocata');
+                $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato! La tua giocata si è interrotta anticipatamente con il risultato di '+score+'<br>Seleziona "COMPLETA" per approvare la giocata ed aggiornare le classifiche di conseguenza o "RICOMINCIA" per annullare e rieffettuare la giocata');
                 break;
         }
 
@@ -185,7 +213,11 @@
                 })
                 .catch(function(error) {
                     $scope.message1 = 'Si è verificato un errore imprevisto.';
-                    $scope.message2 = mailTo;
+                    $scope.message2 = $sce.trustAsHtml('La tua richiesta non è andata a buon fine.</br>Ti preghiamo di segnalare l\'accaduto a '+mailTo);
+                    $scope.showReinizia = false;
+                    $scope.showConcludi = false;
+                    $scope.showError = false;
+                    $scope.showReport = false;
                     sendProblem();
                 });
         };
@@ -197,13 +229,17 @@
                     $scope.message2 = $sce.trustAsHtml('Grazie per aver giocato!</br>La tua giocata risulta già effettuata.</br>Le classifiche sono state aggiornate');
                     $scope.showReinizia = false;
                     $scope.showConcludi = false;
+                    $scope.showError = false;
+                    $scope.showReport = false;
                     sendProblem();
                 })
                 .catch(function(error) {
                     $scope.message1 = 'Si è verificato un errore imprevisto.';
-                    $scope.message2 = $sce.trustAsHtml('Ti preghiamo di segnalare la cosa a ' +mailTo);
+                    $scope.message2 = $sce.trustAsHtml('La tua richiesta non è andata a buon fine.</br>Ti preghiamo di segnalare la cosa a ' +mailTo);
                     $scope.showReinizia = false;
                     $scope.showConcludi = false;
+                    $scope.showError = false;
+                    $scope.showReport = false;
                     sendProblem();
                 });
         };

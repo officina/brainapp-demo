@@ -301,6 +301,9 @@ public class GameServiceImpl implements GameService{
                 Duration duration = Duration.between(lastAttempt.getStopAttempt(), ZonedDateTime.now());
                 match.setTimeAFK(duration.getSeconds());
                 match.setRestartable(match.isRestartable());
+            } else {
+                //sono nel caso di un match che non ha attempt completed == true; si assume che quindi  il giocatore non abbia partecipato attivamente alla partita e quindi può ricominciare
+                match.setRestartable(true);
             }
         }
         match.setBestLevel(match.getMaxLevel());
@@ -318,7 +321,9 @@ public class GameServiceImpl implements GameService{
         }
 
         match.setElaborated(true);
-        match.setStop(now);
+        if (match.getStop() == null){
+            match.setStop(now);
+        }
         match.setTimeSpent(match.getTimeSpent() + ChronoUnit.SECONDS.between(match.getLastStart(), now));
 
         Match mainMatch = matchRepository.findMainMatch(match.getGame().getId(), match.getUserId());

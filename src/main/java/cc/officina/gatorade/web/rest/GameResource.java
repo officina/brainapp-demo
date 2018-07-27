@@ -144,6 +144,7 @@ public class GameResource {
 
     @GetMapping("/play/{id}/init/{sessionId}/{playerid}")
     @Timed
+    @Transactional
     public ResponseEntity<Game> getGameInit(@PathVariable Long id, @PathVariable Long sessionId, @PathVariable String playerid, @RequestParam("bp") String bp) {
         log.info("REST game init for game with id = " + id + ", session id = " + sessionId + " and playerid = " + playerid);
         Game game = gameService.findOne(id);
@@ -229,15 +230,9 @@ public class GameResource {
                 case "sendingData":
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "sendingData", "User "+playerid+" can't play, a match for session "+sessionId+" already exist")).body(null);
                 case "matchAnomalousRestartable":
-                    HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "matchAnomalousRestartable", "User "+playerid+" can restart the match for session "+sessionId+" already exist");
                     Match match = matchService.findMatchAppeso(sessionId, playerid);
-                    if (match != null){
-                        if (game.getType() == GameType.LEVEL){
-                            httpHeaders.add("bestLevel", match.getBestLevel());
-                        }else{
-                            httpHeaders.add("bestScore", String.valueOf(match.getBestScore()));
-                        }
-                    }
+                    match.getAttempts().size();
+                    HttpHeaders httpHeaders = matchService.getBestHeaders(match, "matchAnomalousRestartable", "Match with id "+ match.getId() + " registered as restartable cannot continue, need user action");
                     return ResponseEntity.badRequest().headers(httpHeaders).body(game);
                 case "sessionAlreadyInUse":
                     return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "sessionAlreadyInUse", "Session with id "+ sessionId + " already in use")).body(game);
@@ -356,22 +351,17 @@ public class GameResource {
                 }else{
                     match.setMatchToken(request.getMatchtoken());
                 }
+
                 if (match.isAnomalous()){
                     if (match.getRestartable()){
-                        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalousRestartable", "Match with id "+ match.getId() + " registered as restartable cannot continue, need user action")).body(new AttemptResponse(game, match, template, null));
+                        HttpHeaders httpHeaders = matchService.getBestHeaders(match, "matchAnomalousRestartable", "Match with id "+ match.getId() +" registered as restartable cannot continue, need user action");
+                        return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), request.getAttempt()));
                     }else{
-                        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(game, match, template, null));
+                        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
                     }
                 }
                 if (match.isTimedOut()){
-                    HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
-                    if (match.getGame().getType() == GameType.LEVEL){
-                        httpHeaders.add("bestLevel", match.getBestLevel());
-                    }else if(match.getGame().getType() == GameType.MINPOINT){
-                        httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
-                    } else {
-                        httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
-                    }
+                    HttpHeaders httpHeaders = matchService.getBestHeaders(match, "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
                     return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
                 }
         		matchService.save(match);
@@ -422,23 +412,16 @@ public class GameResource {
         }
         if (match.isAnomalous()){
             if (match.getRestartable()){
-                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalousRestartable", "Match with id "+ match.getId() + " registered as restartable cannot continue, need user action")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
+                HttpHeaders httpHeaders = matchService.getBestHeaders(match, "matchAnomalousRestartable", "Match with id "+ match.getId() +" registered as restartable cannot continue, need user action");
+                return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), request.getAttempt()));
             }else{
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
             }
         }
         if (match.isTimedOut()){
-            HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
-            if (match.getGame().getType() == GameType.LEVEL){
-                httpHeaders.add("bestLevel", match.getBestLevel());
-            }else if(match.getGame().getType() == GameType.MINPOINT){
-                httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
-            } else {
-                httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
-            }
+            HttpHeaders httpHeaders = matchService.getBestHeaders(match, "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
             return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
         }
-
         return new ResponseEntity<>(gameService.updateAttemptScore(attempt.getMatch().getGame(), attempt, request.getAttempt().getAttemptScore(), request.getAttempt().getLevelReached()), null, HttpStatus.OK);
     }
 
@@ -467,21 +450,15 @@ public class GameResource {
         }
         if (match.isAnomalous()){
             if (match.getRestartable()){
-                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalousRestartable", "Match with id "+ match.getId() + " registered as restartable cannot continue, need user action")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
+                HttpHeaders httpHeaders = matchService.getBestHeaders(match, "matchAnomalousRestartable", "Match with id "+ match.getId() +" registered as restartable cannot continue, need user action");
+                return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), request.getAttempt()));
             }else{
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
             }
         }
         if (match.isTimedOut()){
-            HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
-            if (match.getGame().getType() == GameType.LEVEL){
-                httpHeaders.add("bestLevel", match.getBestLevel());
-            }else if(match.getGame().getType() == GameType.MINPOINT){
-                httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
-            } else {
-                httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
-            }
-            return ResponseEntity.badRequest().headers(httpHeaders).body(new MatchResponse(match.getGame(), match, match.getTemplate()));
+            HttpHeaders httpHeaders = matchService.getBestHeaders(match, "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
+            return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
         }
         attempt.getMatch().getAttempts().size();
         return new ResponseEntity<>(gameService.stopAttempt(attempt.getMatch().getGame(), attempt, request.isCompleted(), request.getScore(), request.getLevel(), request.isEndmatch()), null, HttpStatus.OK);
@@ -512,20 +489,14 @@ public class GameResource {
         }
         if (match.isAnomalous()){
             if (match.getRestartable()){
-                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalousRestartable", "Match with id "+ match.getId() + " registered as restartable cannot continue, need user action")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
+                HttpHeaders httpHeaders = matchService.getBestHeaders(match, "matchAnomalousRestartable", "Match with id "+ match.getId() +" registered as restartable cannot continue, need user action");
+                return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), request.getAttempt()));
             }else{
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
             }
         }
         if (match.isTimedOut()){
-            HttpHeaders httpHeaders = HeaderUtil.createFailureAlert("match", "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
-            if (match.getGame().getType() == GameType.LEVEL){
-                httpHeaders.add("bestLevel", match.getBestLevel());
-            }else if(match.getGame().getType() == GameType.MINPOINT){
-                httpHeaders.add("bestScore", String.valueOf(match.getMinScore()));
-            } else {
-                httpHeaders.add("bestScore", String.valueOf(match.getMaxScore()));
-            }
+            HttpHeaders httpHeaders = matchService.getBestHeaders(match, "timeout", "Match with id: "+match.getId()+" cannot continue. Time ran out!");
             return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
         }
         //chiudo l'attempt
@@ -562,7 +533,8 @@ public class GameResource {
         }
         if (match.isAnomalous()){
             if (match.getRestartable()){
-                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalousRestartable", "Match with id "+ match.getId() + " registered as restartable cannot continue, need user action")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
+                HttpHeaders httpHeaders = matchService.getBestHeaders(match, "matchAnomalousRestartable", "Match with id "+ match.getId() +" registered as restartable cannot continue, need user action");
+                return ResponseEntity.badRequest().headers(httpHeaders).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), request.getAttempt()));
             }else{
                 return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("match", "matchAnomalous", "Match with id "+ match.getId() + " registered as anomalous cannot continue")).body(new AttemptResponse(match.getGame(), match, match.getTemplate(), null));
             }
