@@ -3,6 +3,7 @@ package cc.officina.gatorade.web.rest;
 import cc.officina.gatorade.domain.Match;
 import cc.officina.gatorade.domain.Request;
 import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
+import cc.officina.gatorade.service.MatchService;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.domain.Attempt;
 import cc.officina.gatorade.service.AttemptService;
@@ -38,9 +39,11 @@ public class AttemptResource {
     private static final String ENTITY_NAME = "attempt";
 
     private final AttemptService attemptService;
+    private final MatchService matchService;
 
-    public AttemptResource(AttemptService attemptService) {
+    public AttemptResource(AttemptService attemptService, MatchService matchService) {
         this.attemptService = attemptService;
+        this.matchService = matchService;
     }
 
     /**
@@ -133,7 +136,7 @@ public class AttemptResource {
     public ResponseEntity<Void> syncAttempts(@RequestBody Request request){
         if (request.getAttemptsOffline() != null && request.getAttemptsOffline().size() > 0){
             //controllo l'attributo sync degli attempts
-            Match match = request.getMatch();
+            Match match = matchService.findOne(request.getMatch().getId());
             int notSyncCount = 0, syncCount = 0, syncedOnEndMatchCount = 0;
             Attempt serverAttempt;
             for (Attempt attempt : request.getAttemptsOffline()){

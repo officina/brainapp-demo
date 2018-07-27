@@ -10,7 +10,9 @@
     function PlaygameController($scope, $rootScope, Principal, LoginService, $state, PlaygameService, $sce, $stateParams, timer, $interval) {
         $scope.isOnline = true;
         $scope.progressBar = 100;
-
+        $scope.reloadRoute = function() {
+            $state.reload();
+        };
         var failedToStopAttempt = false;
         Offline.on("up", function () {
             $scope.isOnline = true;
@@ -37,8 +39,8 @@
         $scope.timerEndTimestamp = -1;
         $scope.timeSpent = 0;
         $scope.showGame = true;
-        $scope.showReport = true;
-        $scope.showError = true;
+        $scope.showReport = false;
+        $scope.showError = false;
         // IE + others compatible event handler
         var offlineOnFirstAttempt = true;
         var addEventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
@@ -56,11 +58,16 @@
                 $scope.message1 = "Si è verificato un problema con la tua connessione";
                 $scope.message2 = "Ti preghiamo di controllare la tua connessione e rieffettuare la giocata";
             }else{
-                $scope.message1 = 'Si è verificato un errore imprevisto. ';
-                $scope.message2 = $sce.trustAsHtml("Ti preghiamo di segnalare la cosa a <a href=\"mailto:energy4brain@generali.com\">energy4brain@generali.com</a>");
+                $scope.message1 = 'La tua richiesta non è andata a buon fine.';
+                $scope.message2 = $sce.trustAsHtml("Prova a ricaricare la pagina, se il problema persiste ti preghiamo di segnalare la cosa a <a href=\"mailto:energy4brain@generali.com\">energy4brain@generali.com</a>");
             }
             if (showReport){
-                $scope.message2 = $sce.trustAsHtml("Ti preghiamo di inviare le informazioni che trovi in calce a  <a href=\"mailto:energy4brain@generali.com?body=\=\=\=\=\nNON MODIFICARE \=\=\=\=\n\n"+$rootScope.wrapperMemory+"\n\n"+$rootScope.finalError+"\">energy4brain@generali.com</a>");
+                //non mostro errore in calce perchè lo imposto nella mail
+                $scope.showReport = false;
+                $scope.showError = false;
+                var wrapper = JSON.stringify($rootScope.wrapperMemory);
+                var error = JSON.stringify($rootScope.finalError);
+                $scope.message2 = $sce.trustAsHtml("Prova a ricaricare la pagina, se il problema persiste ti preghiamo di segnalare la cosa a <a href='mailto:energy4brain@generali.com?body="+wrapper+"%0D%0A%0D%0A"+error+"'>energy4brain@generali.com</a>");
                 $scope.errorText = $rootScope.finalError;
                 $scope.reportText = $rootScope.wrapperMemory;
             }
@@ -68,17 +75,17 @@
 
         var getWhy = function (error) {
             var why = '';
-            if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid'){
+            if (error.headers('X-gatoradeApp-error') === 'error.matchInvalid') {
                 why = 'matchInvalid';
-            } else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated'){
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchElaborated') {
                 why = 'matchElaborated';
-            } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded'){
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchEnded') {
                 why = 'matchEnded';
-            } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous'){
+            } else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalous') {
                 why = 'matchAnomalous';
             } else if (error.headers('X-gatoradeApp-error') === 'error.sessionAlreadyInUse') {
                 why = 'sessionAlreadyInUse';
-            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore'){
+            } else if (error.headers('X-gatoradeApp-error') === 'error.invalidSitecore') {
                 why = 'invalidSitecore';
             } else if (error.headers('X-gatoradeApp-error') === 'error.missingSession') {
                 why = 'missingSession';
@@ -91,7 +98,15 @@
             }else if (error.headers('X-gatoradeApp-error') === 'error.matchAnomalousRestartable'){
                 why = 'matchAnomalousRestartable';
                 $scope.wrapperMemory.match = {};
-                $scope.wrapperMemory.match.game = error.data;
+                //gestisco la response in base al servizio chiamato
+                if (error.config.url.includes("init")){
+                    $scope.wrapperMemory.match.game = error.data;
+                } else if (error.config.url.includes("end") || error.config.url.includes("restart")){
+                    $scope.wrapperMemory.match = error.data.match;
+                    $scope.wrapperMemory.match.game = error.data.game;
+                } else if (error.config.url.includes("/play/attempt") || error.config.url.includes("/play/attempt") || error.config.url.includes("v2")) {
+                    $scope.wrapperMemory.match = error.data.match;
+                }
                 $scope.wrapperMemory.match.bestLevel = error.headers("bestLevel");
                 $scope.wrapperMemory.match.bestScore = error.headers("bestScore");
             } else if (error.headers('X-gatoradeApp-error') === 'error.timeout') {
@@ -101,7 +116,12 @@
                 $scope.wrapperMemory.match.bestLevel = error.headers("bestLevel");
                 $scope.wrapperMemory.match.bestScore = error.headers("bestScore");
             } else {
-                why = 'genericError';
+                if (offlineOnFirstAttempt){
+                    why = '';
+                } else {
+                    why = 'genericError';
+                }
+
             }
             return why;
         };
@@ -119,13 +139,17 @@
                     "why": why
                 });
             } else {
-                if (offlineOnFirstAttempt){
+                if (offlineOnFirstAttempt && why !== 'genericError'){
                     removeEvent(eventName, $scope.handle);
                     setupOffline(false, true);
                 }else{
                     if (why === 'genericError'){
                         $scope.wrapperMemory.error = error;
-                        PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+                        if ($scope.wrapperMemory.match !== undefined){
+                            PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
+                        } else {
+                            PlaygameService.errorAsync(-1, $stateParams.playtoken, $scope.wrapperMemory);
+                        }
                     }
                     switch (event) {
                         case "START_ATTEMPT":
@@ -197,13 +221,16 @@
                 default:
                     break;
             }
-        }
+        };
         // Listen to message from child window
         addEvent(eventName, $scope.handle, false);
 
         $scope.$on('$locationChangeStart', function (event, next, current) {
             console.log('locationChangeStart');
             try {
+                $scope.wrapperMemory.endFrom = 'locationChangeStart';
+                //salvo la data di richiesta di fine match, verrà inoltrata nel report
+                $scope.wrapperMemory.endMatchDate = Date.now();
                 if (next.includes("#/finished")) {
                     PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
                     if ($scope.wrapperMemory.currAttempt === undefined) {
@@ -233,14 +260,15 @@
             }
         });
 
-        $scope.game = {url: "htmlgames/loading.html"}
+        $scope.game = {url: "htmlgames/loading.html"};
 
         $scope.$on('timer-tick', function (event, args) {
             if (args.seconds !== undefined) {
-                if ($scope.timerEndTimestamp === -1){
-                    $scope.timerEndTimestamp = ($scope.maxDuration - $scope.timeSpent)*1000 + Date.now();
-                }
                 var now = Date.now();
+                if ($scope.timerEndTimestamp === -1){
+                    $scope.timerEndTimestamp = ($scope.maxDuration - $scope.timeSpent)*1000 + now;
+                    console.log('Its '+now+' match end at '+$scope.timerEndTimestamp);
+                }
                 var timestampToEnd = $scope.timerEndTimestamp - now;
                 var timeToEnd = timestampToEnd/1000;
                 var total = (timeToEnd * 100 / $scope.maxDuration);
@@ -249,7 +277,7 @@
                 document.getElementById("progressbar").setAttribute('aria-valuenow', $scope.progressBar);
                 document.getElementById("progressbar").setAttribute('style', "width: "+$scope.progressBar+"%;");
                 if ($scope.timerEndTimestamp <= now){
-                    $scope.matchEnded();
+                    $scope.matchEnded('timerEndTimestamp < now');
                     $scope.$broadcast('timer-stop')
                 } else {
                     var tk = args.seconds % 30;
@@ -263,8 +291,8 @@
                             .catch(function (error) {
                                 PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, error);
                                 var why = getWhy(error);
-                                if (why !== 'timeout'){
-                                    manageError("START_ATTEMPT", null, error, why);
+                                if (why === 'timeout'){
+                                    $scope.matchEnded('updateAttemptScore');
                                 }
                             });
 
@@ -282,20 +310,21 @@
         });
 
         //controllo parametro di rigioco in arrivo da link di gioco
-        var replay = $stateParams.replay;
-        console.log("REPLAY = " + replay);
+        $scope.wrapperMemory.replay = $stateParams.replay;
+        $scope.wrapperMemory.bp = $stateParams.bp;
         PlaygameService.getGameInit(gameId, $stateParams.playtoken, $stateParams.sessionid, $stateParams.bp).then(function (response) {
             $scope.game = response.data;
             $scope.wrapperMemory.game = response.data;
             $scope.wrapperMemory.player = {};
             $scope.wrapperMemory.player.playtoken = playtoken;
-            if ($scope.game.type == 'LEVEL') {
+            if ($scope.game.type === 'LEVEL') {
                 useLevels = true;
             }
-            PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.sessionid, $scope.matchToken, replay)
+            $scope.wrapperMemory.startMatchDate = Date.now();
+            PlaygameService.createMatch($stateParams.gameid, null, $stateParams.playtoken, $stateParams.playtoken, $stateParams.sessionid, $scope.matchToken, $scope.wrapperMemory.replay)
                 .then(function (response) {
                     $scope.wrapperMemory.match = response.data.match;
-                    if ($scope.wrapperMemory.match.replayState == 'cloned'){
+                    if ($scope.wrapperMemory.match.replayState === 'cloned'){
                         $rootScope.wrapperMemory = $scope.wrapperMemory;
                         console.log('Caso di rigioco "false" match clonato corretamente match id: '+$scope.wrapperMemory.match.id+" match di riferimento: "+$scope.wrapperMemory.match.parentId);
                         $state.go("ended", {
@@ -336,6 +365,10 @@
                     attemptRestarted($scope.wrapperMemory.currAttempt.attemptScore, $scope.wrapperMemory.currAttempt.levelReached, $scope.wrapperMemory.currAttempt.completed, Date.now())
                 }
             } else {
+                if (offlineOnFirstAttempt){
+                    //salvo la data di avvio primo attempt, verrà inoltrata nel report
+                    $scope.wrapperMemory.firstAttemptStartDate = Date.now();
+                }
                 if ($scope.wrapperMemory.match === undefined) {
                     console.log("creo attempt SENZA match");
                     PlaygameService.createAttempt(gameId, $stateParams.templateid, "", playtoken, null, $stateParams.sessionid, $scope.matchToken)
@@ -344,7 +377,12 @@
                             refreshWrapperMemory(response.data.match, response.data.attempt);
                         })
                         .catch(function (error) {
-                            manageError("START_ATTEMPT", null, error, getWhy(error));
+                            var why = getWhy(error);
+                            if (why !== 'timeout'){
+                                manageError("START_ATTEMPT", null, error, why);
+                            }else{
+                                $scope.matchEnded('timeout from createAttempt');
+                            }
                         });
 
                 } else {
@@ -355,7 +393,12 @@
                             refreshWrapperMemory(response.data.match, response.data.attempt);
                         })
                         .catch(function (error) {
-                            manageError("START_ATTEMPT", null, error, getWhy(error));
+                            var why = getWhy(error);
+                            if (why !== 'timeout'){
+                                manageError("START_ATTEMPT", null, error, why);
+                            }else{
+                                $scope.matchEnded('timeout from createAttempt');
+                            }
                         });
                 }
                 $scope.wrapperMemory.timerStart = Date.now();
@@ -441,7 +484,12 @@
                         "level": level,
                         "completed": completed
                     };
-                    manageError("ATTEMPT_ENDED", data, error, getWhy(error));
+                    var why = getWhy(error);
+                    if (why !== 'timeout'){
+                        manageError("ATTEMPT_ENDED", data, error, why);
+                    }else{
+                        $scope.matchEnded('timeout from endAttempt');
+                    }
                 });
         };
 
@@ -535,7 +583,12 @@
                         "level": level,
                         "completed": completed
                     };
-                    manageError("ATTEMPT_RESTARTED", data, error, getWhy(error));
+                    var why = getWhy(error);
+                    if (why !== 'timeout'){
+                        manageError("ATTEMPT_RESTARTED", data, error, getWhy(error));
+                    }else{
+                        $scope.matchEnded('timeout from restartAttemptToServer');
+                    }
                 });
         };
 
@@ -554,7 +607,7 @@
 //	        $scope.wrapperMemory.attempts.push(attempt);
         };
 
-        $scope.matchEnded = function () {
+        $scope.matchEnded = function (matchendFrom) {
             console.log('Inside end match');
             removeEvent(eventName, $scope.handle);
             //eseguo prima endmatch
@@ -562,12 +615,16 @@
             var tmpScore = 0;
             if ($scope.wrapperMemory.currAttempt !== undefined) {
                 if ($scope.wrapperMemory.game.type === 'MINPOINT' && $scope.wrapperMemory.currAttempt.attemptScore === 0) {
-                    tmpScore = 9999;
+                    tmpScore = $scope.wrapperMemory.game.defaultScore;
                 } else {
                     tmpScore = $scope.wrapperMemory.currAttempt.attemptScore;
                 }
                 tmpLevel = $scope.wrapperMemory.currAttempt.level;
             }
+            //salvo la data di richiesta di fine match, verrà inoltrata nel report
+            $scope.wrapperMemory.endMatchDate = Date.now();
+            //salvo da dove viene fatta la richiesta di fine match
+            $scope.wrapperMemory.endFrom = matchendFrom;
             PlaygameService.endMatch($scope.wrapperMemory.game.id, "", $stateParams.playtoken, $scope.wrapperMemory.match.id, $scope.wrapperMemory.currAttempt, $scope.matchToken, $scope.wrapperMemory.attempts, tmpScore,
                 tmpLevel, $scope.wrapperMemory.attemptsOffline)
                 .then(function (response) {
@@ -586,12 +643,12 @@
                         .catch(function (error) {
                             //se l'invio del report non va a buon fine redirect alla pagina di errore
                             PlaygameService.errorAsync($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.errorText);
-                            $state.go("ended", {
-                                "gameid": $stateParams.gameid,
-                                "playtoken": $stateParams.playtoken,
-                                "sessionid": $stateParams.sessionid,
-                                "why": "genericError"
-                            });
+                                $state.go("ended", {
+                                    "gameid": $stateParams.gameid,
+                                    "playtoken": $stateParams.playtoken,
+                                    "sessionid": $stateParams.sessionid,
+                                    "why": "genericError"
+                                });
                         });
                 })
                 .catch(function (error) {
@@ -599,9 +656,10 @@
                 });
         };
 
-        $scope.countDownCallbackFunction = function () {
-            $scope.matchEnded();
-        };
+        // $scope.countDownCallbackFunction = function () {
+        //     console.log("countDownCallbackFunction");
+        //     $scope.matchEnded('countDownCallbackFunction');
+        // };
 
         var beforeUnloadTimeout = 0;
         $(window).bind('beforeunload', function () {
@@ -618,13 +676,16 @@
                 var tmpLevel = '';
                 if ($scope.wrapperMemory.currAttempt !== undefined){
                     if ($scope.wrapperMemory.game.type === 'MINPOINT' && $scope.wrapperMemory.currAttempt.attemptScore === 0) {
-                        tmpScore = 9999;
+                        tmpScore = $scope.wrapperMemory.game.defaultScore;
                     }else{
                         tmpScore = $scope.wrapperMemory.currAttempt.attemptScore;
                     }
                     tmpLevel = $scope.wrapperMemory.currAttempt.level;
                 }
                 $scope.wrapperMemory.match.stop = new Date(Date.now());
+                $scope.wrapperMemory.endFrom = 'unload';
+                //salvo la data di richiesta di fine match, verrà inoltrata nel report
+                $scope.wrapperMemory.endMatchDate = Date.now();
                 PlaygameService.report($scope.wrapperMemory.match.id, $stateParams.playtoken, $scope.wrapperMemory);
                 PlaygameService.syncEndMatch($scope.wrapperMemory.game.id, "",
                     $stateParams.playtoken,

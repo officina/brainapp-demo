@@ -50,6 +50,9 @@ public class Session implements Serializable {
     @JoinColumn(unique = true)
     private Game game;
 
+    @Column(name = "bypassable")
+    private Boolean bypassable;
+
     public Long getId() {
         return id;
     }
@@ -159,6 +162,14 @@ public class Session implements Serializable {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public Boolean getBypassable() {
+        return bypassable;
+    }
+
+    public void setBypassable(Boolean bypassable) {
+        this.bypassable = bypassable;
     }
 
     @Override

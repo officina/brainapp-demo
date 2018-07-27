@@ -407,6 +407,7 @@ ui bootstrap tweaks
 .arcade{
     font-family: 'Nunito', sans-serif;
     font-weight: bold;
+    line-height: 1.6;
 }
 .officina{
     color: #990000;

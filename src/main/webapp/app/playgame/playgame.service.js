@@ -204,7 +204,7 @@ angular.module('gatoradeApp')
     	dataPut.matchtoken = matchToken;
     	dataPut.attempts = attempts;
 		http.send(JSON.stringify(dataPut));
-    }
+    };
 
     this.syncOfflineAttempts = function(attemptsOffline, match){
         attemptsOffline = this.values(attemptsOffline);
@@ -218,18 +218,32 @@ angular.module('gatoradeApp')
         })
     };
 
-    this.isOnline = function () {
-        var oReq = new XMLHttpRequest();
-        oReq.open("GET", rootPath + '/content/images/hipster.png', false);
-        oReq.onload = function () {
-            return oReq.status;
-        };
-        try {
-            oReq.send();
-        }catch (e) {
-            return false;
-        }
-
+    this.resetMatch = function(matchid){
+        return $http({
+            method: 'PUT',
+            url: rootPath + '/api/matches/'+matchid+'/reset'
+        })
     };
 
+    this.resetPendingMatch = function(sessionid, playerid){
+        return $http({
+            method: 'PUT',
+            url: rootPath + '/api/matches/reset-pending',
+            data:{
+                sessionid: sessionid,
+                playerid: playerid
+            }
+          })
+      };
+
+      this.completePendingMatch = function(sessionid, playerid){
+          return $http({
+              method: 'PUT',
+              url: rootPath + '/api/matches/complete-pending',
+              data:{
+                  sessionid: sessionid,
+                  playerid: playerid
+              }
+          })
+      };
   }]);

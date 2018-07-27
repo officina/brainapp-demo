@@ -2,6 +2,7 @@ package cc.officina.gatorade.domain;
 
 import cc.officina.gatorade.domain.enumeration.MatchReplayState;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +19,10 @@ import java.util.Objects;
 @Table(name = "match")
 public class Match implements Serializable {
 
+    @Transient
+    private static double TIMETHRESHOLD = 0.5;
+    @Transient
+    private static long UPDATEATTEMPT = 30L;
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -88,6 +93,12 @@ public class Match implements Serializable {
 
     @Column(name = "parent_id")
     private Long parentId;
+
+    @Column(name = "time_AFK")
+    private Long timeAFK;
+
+    @Column(name = "restartable")
+    private Boolean restartable;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -353,6 +364,22 @@ public class Match implements Serializable {
         this.parentId = parentId;
     }
 
+    public Long getTimeAFK() {
+        return timeAFK;
+    }
+
+    public void setTimeAFK(Long timeAFK) {
+        this.timeAFK = timeAFK;
+    }
+
+    public Boolean getRestartable() {
+        return restartable;
+    }
+
+    public void setRestartable(Boolean restartable) {
+        this.restartable = restartable;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -417,8 +444,9 @@ public class Match implements Serializable {
         {
             try
             {
-                if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l))
+                if((a.isCompleted() || this.game.isLastAttemptValid()) && (min == null || a.getAttemptScore() < min && a.getAttemptScore()!=0l)){
                     min = a.getAttemptScore();
+                }
             }
             catch (Exception e)
             {
@@ -426,7 +454,7 @@ public class Match implements Serializable {
             }
         }
         if(min == null)
-            return null;
+            return game.getDefaultScore().toString();
         else
             return min.toString();
     }
@@ -504,11 +532,67 @@ public class Match implements Serializable {
     	return result;
     }
 
+    public void manageAFK(String currLevel, Long currPoint, String newLevel, Long newPoint){
+        String score = null, newScore = null;
+        if (this.getGame().getType() == GameType.LEVEL){
+            score = currLevel;
+            newScore = newLevel;
+        }else{
+            if (currPoint != null){
+                score = String.valueOf(currPoint);
+            }
+            if (newPoint != null){
+                newScore = String.valueOf(newPoint);
+            }
+        }
+        if (score != null && score.equals(newScore)) {
+            addTimeAFK();
+        } else {
+            resetTimeAFK();
+        }
+    }
+
+
+    /**
+     * Aggiunge 30 secondi alla colonna time_afk, una volta arrivata a 7 min (30*7) il match viene marchiato come "RESTARTABLE"
+     */
+    private void addTimeAFK(){
+        if (getTimeAFK() == null){
+            setTimeAFK(UPDATEATTEMPT);
+        }else{
+            setTimeAFK(getTimeAFK()+ UPDATEATTEMPT);
+        }
+
+        this.setRestartable(isRestartable());
+        System.out.println("Match: "+this.getId()+" - addTimeAFK result doesn't change in the last 30 sec, restartable: "+this.getRestartable());
+    }
+
+    private void resetTimeAFK(){
+        setTimeAFK(0L);
+        this.setRestartable(isRestartable());
+        System.out.println("Match: "+this.getId()+" - resetTimeAFK result change in the last 30 sec, restartable: "+this.getRestartable());
+    }
+
+    /**
+     * Determina se il match e restartable, calcolando il tempo non-giocato o se questo risulta già anomalo o restartable
+     *
+     * @return restartable
+     */
+    public boolean isRestartable() {
+        return this.isAnomalous() || (this.getRestartable() != null && this.getRestartable()) || getTimeAFK() >= (getTemplate().getMaxDuration() * TIMETHRESHOLD);
+    }
+
     /**
      * Indicate if the match max duration is reached
      * @return true if the {@link MatchTemplate#maxDuration(Long)} is reached (TimedOut); false if not
      */
-    public boolean isTimedOut(){
-        return (getTimeSpent() + ChronoUnit.SECONDS.between(getLastStart(), ZonedDateTime.now())) >= getTemplate().getMaxDuration();
+    @JsonIgnore
+    public boolean isTimedOut() {
+        if (this.getAttempts().size() > 0) {
+            return (ChronoUnit.SECONDS.between(getFirstStartAttempt(), ZonedDateTime.now())) >= getTemplate().getMaxDuration();
+        } else {
+            return false;
+        }
     }
+
 }
