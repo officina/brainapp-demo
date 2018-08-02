@@ -119,6 +119,10 @@ function matchEnded (score)
 		currentattempt = null
 	}
 function restartAttempt(score) {
+	if (currentattempt === null){
+			console.log("warning: attempt has to be created, first")
+			return
+	}
 	console.log("game restarted, sending " +  score + " as end points")
 	currentattempt.completed = true
 	currentattempt.score = score
