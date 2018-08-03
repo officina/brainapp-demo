@@ -13,7 +13,6 @@ function CEndPanel(iMode){
 
     this._init = function(){
         _iMode = iMode;
-        attemptEnded(s_iTotalScore);
         _oContainer = new createjs.Container();
         s_oStage.addChild(_oContainer);
 
@@ -73,12 +72,12 @@ function CEndPanel(iMode){
     this._onExit = function(){
         _oThis.unload();
         s_oMain.gotoMenu();
+        attemptEnded(s_iTotalScore);
     };
 
     this._onRestart = function(){
         _oThis.unload();
         s_oGame.restart();
-        startAttempt();
     };
 
     s_oEndPanel = this;

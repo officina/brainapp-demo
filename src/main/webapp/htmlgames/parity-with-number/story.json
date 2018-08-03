@@ -1,23 +1,23 @@
 [
   {
     "type": "instruction",
-    "title": "How to play",
-    "text": "Parity with number is a numbers puzzle game.\nThe aim of the game is to get each number on a 3x3 board of numbers to be exactly the same.",
-    "button": "Play",
+    "title": "Come giocare",
+    "text": "Parity with number è un puzzle game.\nLo scopo del gioco è quello di portare ogni numero nella griglia 3x3 allo stesso valore.",
+    "button": "Ho capito",
     "id": 0
   },
   {
     "type": "instruction",
-    "title": "How to play",
-    "text": "One of the numbers is always selected. This number can be moved by using the arrow keys",
-    "button": "sounds easy",
+    "title": "Come giocare",
+    "text": "Uno delle caselle è sempre selezionata. Questa può essere spostata usando le frecce della tastiera o trascinandola da mobile",
+    "button": "Sembra facile!",
     "id": 1
   },
   {
     "type": "instruction",
-    "title": "How to play",
-    "text": "Each time you move the selector, the number you select will increase in number by one.",
-    "button": "I got this!",
+    "title": "Come giocare",
+    "text": "Ogni volta che muovi la casella, il numero della casella selezionata aumenterà di uno.",
+    "button": "Ce la posso fare!",
     "id": 2
   },
   {
