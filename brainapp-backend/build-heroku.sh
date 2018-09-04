@@ -5,5 +5,5 @@ if [ $# -eq 0 ]
 	exit 1
 fi
 ./gradlew -Pprod bootRepackage -x test
-heroku deploy:jar --jar build/libs/*$1.war
-heroku logs --tail
+heroku deploy:jar --jar build/libs/*$1.war --app brainappbackend
+heroku logs --tail --app brainappbackend

@@ -113,11 +113,13 @@ public class SessionServiceImpl implements SessionService{
 			//se esiste già un match la chiamata viene invaliata
 			if(match != null && match.getValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
 			{
-                log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
 			    if (match.getUserId().equals("atomasse")){
+                    log.info("Demo exception: found match for user atomasse, due to demo purpose the user id will be replaced");
                     match.setUserId(match.getUserId()+"_"+System.currentTimeMillis());
                     matchService.save(match);
                     return true;
+                } else {
+                    log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + extid);
                 }
 				return false;
 			}
