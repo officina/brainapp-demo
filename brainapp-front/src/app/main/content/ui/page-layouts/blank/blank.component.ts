@@ -10,7 +10,7 @@ import {now} from 'moment';
 export class FuseBlankComponent implements OnInit {
   score: GlobalScore  = <GlobalScore>{};
   sub = null;
-  matchUrl = 'https://brainappbackend.herokuapp.com/#/play/gameid/1001/playtoken/atomasse_' + String(now()) + '/sessionid/brainapp-ext';
+  matchUrl = 'https://brainappbackend.herokuapp.com/#/play/gameid/1001/playtoken/atomasse/sessionid/brainapp-ext';
   constructor(private leaderboardService: LeaderboardService) {}
     ngOnInit(){
       this.sub = Observable.interval(5000)
