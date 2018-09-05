@@ -4,7 +4,6 @@ import { MailFakeDb } from './mail';
 import { ChatFakeDb } from './chat';
 import { CalendarFakeDb } from './calendar';
 import { TodoFakeDb } from './todo';
-import { ProfileFakeDb } from './profile';
 import { ContactsFakeDb } from './contacts';
 import { InvoiceFakeDb } from './invoice';
 import { SearchFakeDb } from './search';
@@ -14,7 +13,7 @@ import { ProjectsDashboardDb } from './projects-dashboard';
 import { ScrumboardFakeDb } from './scrumboard';
 import { FaqFakeDb } from './faq';
 import { KnowledgeBaseFakeDb } from './knowledge-base';
-// import { LeaderboardDb } from './leaderboard';
+import {ProfileFakeDb} from './profile';
 
 export class FuseFakeDbService implements InMemoryDbService
 {
@@ -32,9 +31,12 @@ export class FuseFakeDbService implements InMemoryDbService
             'todo-todos'                 : TodoFakeDb.todos,
             'todo-filters'               : TodoFakeDb.filters,
             'todo-tags'                  : TodoFakeDb.tags,
-            'profile-timeline'           : ProfileFakeDb.timeline,
-            'profile-photos-videos'      : ProfileFakeDb.photosVideos,
-            'profile-about'              : ProfileFakeDb.about,
+            'profile-timeline-it'        : ProfileFakeDb.timelineIt,
+            'profile-timeline-en'        : ProfileFakeDb.timelineEn,
+            'profile-photos-videos-it'   : ProfileFakeDb.photosVideosIt,
+            'profile-photos-videos-en'   : ProfileFakeDb.photosVideosEn,
+            'profile-about-it'           : ProfileFakeDb.aboutIt,
+            'profile-about-en'           : ProfileFakeDb.aboutEn,
             'contacts-contacts'          : ContactsFakeDb.contacts,
             'contacts-user'              : ContactsFakeDb.user,
             'invoice'                    : InvoiceFakeDb.invoice,
