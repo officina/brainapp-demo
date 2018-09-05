@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProfileService } from '../../profile.service';
 import { fuseAnimations } from '../../../../../../core/animations';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector   : 'fuse-profile-timeline',
@@ -11,12 +12,14 @@ import { fuseAnimations } from '../../../../../../core/animations';
 export class FuseProfileTimelineComponent implements OnInit
 {
     timeline: any;
-
-    constructor(private profileService: ProfileService)
+    constructor(private translationService: TranslateService, private profileService: ProfileService)
     {
-        this.profileService.timelineOnChanged.subscribe(timeline => {
-            this.timeline = timeline;
-        });
+      translationService.onLangChange.subscribe(value => {
+        this.profileService.getTimeline(value.lang);
+      });
+      this.profileService.timelineOnChanged.subscribe(timeline => {
+        this.timeline = timeline;
+      });
     }
 
     ngOnInit()

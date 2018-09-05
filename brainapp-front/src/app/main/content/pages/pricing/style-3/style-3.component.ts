@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {FuseTranslationLoaderService} from '../../../../../core/services/translation-loader.service';
+import { locale as english } from '../i18n/en';
+import { locale as italian } from '../i18n/it';
 
 @Component({
     selector   : 'fuse-pricing-style-3',
@@ -7,9 +10,11 @@ import { Component } from '@angular/core';
 })
 export class FusePricingStyle3Component
 {
-    constructor()
+    constructor(
+      private translationLoader: FuseTranslationLoaderService
+    )
     {
-
+      this.translationLoader.loadTranslations(english, italian);
     }
 
 }

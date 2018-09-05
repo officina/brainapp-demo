@@ -5,7 +5,7 @@
          *fuseIfOnDom [@animate]="{value:'*',params:{delay:'200ms',y:'100%'}}">
 
         <header class="mat-accent-bg" fxLayout="row" fxLayoutAlign="space-between center">
-          <div class="title">IL TUO IMPEGNO</div>
+          <div class="title">{{ 'PROFILE.YOUR_PROGRESS' | translate }}</div>
             <!--<div class="more secondary-text">See All</div>-->
         </header>
         <div class="stats">
@@ -78,14 +78,14 @@
           <div class="bonus">
             <div  class="perf">
               <div class="spacear">
-                <span>Achievement della settimana</span>
+                <span>{{ 'PROFILE.WEEKLY_ACHIEVEMENT' | translate }}</span>
               </div>
                 <div class="image-star" [ngStyle]="{'background-image':'url(assets/images/starperformer.png)'}"></div>
             </div>
 
             <div class="logo">
             <div class="spacear">
-                <span>Sfida della settimana</span>
+                <span>{{ 'PROFILE.WEEKLY_CHALLENGE' | translate }}</span>
             </div>
               <div class="image-logo" [ngStyle]="{'background-image':'url(assets/images/Make7Logo.png)'}"></div>
             </div>
@@ -156,11 +156,11 @@
                     </div>
                     <div class="post-down">
                       <div>
-                        <span class="username">Dino</span>
-                        <span>ha ricevuto un riconoscimento per il suo contributo</span>
+                        <span class="username"> {{ 'PROFILE.USERNAME' | translate }} </span>
+                        <span> {{ 'PROFILE.USER_RECEIVE_REWARD' | translate }} </span>
                       </div>
                       <br><br>
-                      <div class="time">30 minuti fa da <span class="username">Mario Bianchi</span></div>
+                      <div class="time">{{ 'PROFILE.THIRTY_MIN_AGO' | translate}} <span class="username">{{ 'PROFILE.FOLLOWER_USERNAME' | translate }}</span></div>
                     </div>
                   </div>
                 </div>
@@ -174,7 +174,7 @@
 
         <div class="content">
           <div class="rowbuttons" fxLayout="row" fxLayoutAlign="end center">
-            <div class="confirm-btn"><span>CONFERMA</span></div>
+            <div class="confirm-btn"><span>{{ 'PROFILE.CONFIRM' | translate }}</span></div>
           </div>
         </div>
 
@@ -286,7 +286,7 @@
 
             <header class="mat-accent-bg" fxLayout="row" fxLayoutAlign="space-between center">
                 <div class="title">SALES LAB</div>
-                <div class="more secondary-text" [routerLink]="['/lab']">Apri</div>
+                <div class="more secondary-text" [routerLink]="['/lab']">{{ 'PROFILE.OPEN' | translate }}</div>
             </header>
 
             <div class="content" fxLayout="row" fxLayoutWrap>

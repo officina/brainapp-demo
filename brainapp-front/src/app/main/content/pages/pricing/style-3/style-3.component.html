@@ -5,7 +5,7 @@
 
         <div class="hero-text" fxLayout="column" fxLayoutAlign="center center" fxFlex>
           <br><br><br>
-            <div class="h1">Sfida della settimana!</div>
+            <div class="h1">{{'PRICING.WEEKLY_CHALLENGE' | translate}}!</div>
         </div>
       <div class="content" fxLayout="column">
         <div class="price-tables" fxLayout="row" fxLayoutAlign="end center" fxLayoutWrap>
@@ -26,10 +26,7 @@
               <div class="terms" fxLayout="column" fxLayoutAlign="start center">
               <div class="term">
                 <p>
-                  Le regole di Draw Line sono semplici: riempi tutte le caselle
-                  dello schema creando percorsi che collegano i due puntini dello
-                  stesso colore, senza limiti di tempo. Esplora le varie alternative
-                  e se non sei soddisfatto puoi sempre tornare sui tuoi passi
+                  {{ 'PRICING.RULE_DRAWLINE' | translate }}
                 </p>
               </div>
             </div>
@@ -55,12 +52,7 @@
             <div class="terms" fxLayout="column" fxLayoutAlign="start center">
               <div class="term">
                 <p>
-                  I poli opposti si attraggono, è una legge universale. Electrio
-                  ti sfida ad unire gli elettroni con cariche diverse per formare
-                  atomi sempre più complessi. Nessun limite di tempo, l'unico
-                  vincolo per superare i 25 livelli è non sovrapporre i collegamenti.
-                  Mano mano che proseguirai, diventerà sempre più difficile costruire
-                  il tuo atomo.
+                  {{ 'PRICING.RULE_ELECTRIO' | translate }}
                 </p>
               </div>
             </div>
@@ -87,13 +79,7 @@
             <div class="terms" fxLayout="column" fxLayoutAlign="center center">
               <div class="term">
                 <p>
-                  Make 7! è un puzzle game in cui ti è richiesto di spostare le tessere per
-                  creare combinazioni ottenendo tre numeri uguali in fila. Tre tessere uguali
-                  affiancate infatti si fondono ed originano il numero più grande successivo.
-                  L’obiettivo finale è arrivare a ottenere quanti più 7 possibile: più volte
-                  riuscirai a comporre triplette di numeri elevati maggiore sarà il punteggio
-                  guadagnato. Non ci sono limiti di tempo. Un suggerimento prima di cimentarti
-                  nella sfida: ricorda di tenere spazio libero per muovere le tessere!
+                  {{ 'PRICING.RULE_MAKE7' | translate }}
                 </p>
                 <button mat-raised-button class="cta-button btn" color="accent" [routerLink]="['/lab/id']">VAI ALLA SFIDA</button>
               </div>
@@ -120,15 +106,7 @@
             <div class="terms" fxLayout="column" fxLayoutAlign="start center">
               <div class="term">
                 <p>
-                  Per superare la sfida con Engineerio dovrai rispolverare le tue
-                  conoscenze di fisica e della legge della gravità! Lo scopo della
-                  Sfida è far arrivare la pallina rossa alla zona verde. Per riuscirci,
-                  dovrai esplodere i cerchi grigi che sostengono i piani di rimbalzo
-                  e creare la strada migliore per arrivare al traguardo finale. Non
-                  ci sono limiti di tempo; il tuo obiettivo è completare più livelli
-                  possibili. Attento però: man mano che avanzerai, lo scenario si
-                  complicherà, rendendo sempre più difficile progettare il percorso
-                  della pallina verso la zona verde.
+                  {{ 'PRICING.RULE_ENGINEERIO' | translate }}
                 </p>
               </div>
             </div>

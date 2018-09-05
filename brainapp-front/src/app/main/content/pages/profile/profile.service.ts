@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Observable } from 'rxjs/Observable';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class ProfileService implements Resolve<any>
@@ -15,8 +16,9 @@ export class ProfileService implements Resolve<any>
     aboutOnChanged: BehaviorSubject<any> = new BehaviorSubject({});
     photosVideosOnChanged: BehaviorSubject<any> = new BehaviorSubject({});
 
-    constructor(private http: HttpClient)
+    constructor(private http: HttpClient, private translationService: TranslateService)
     {
+
     }
 
     /**
@@ -29,9 +31,9 @@ export class ProfileService implements Resolve<any>
     {
         return new Promise((resolve, reject) => {
             Promise.all([
-                this.getTimeline(),
-                this.getAbout(),
-                this.getPhotosVideos()
+                this.getTimeline(this.translationService.currentLang),
+                this.getAbout(this.translationService.currentLang),
+                this.getPhotosVideos(this.translationService.currentLang)
             ]).then(
                 () => {
                     resolve();
@@ -44,11 +46,11 @@ export class ProfileService implements Resolve<any>
     /**
      * Get timeline
      */
-    getTimeline(): Promise<any[]>
+    getTimeline(lang: string): Promise<any[]>
     {
         return new Promise((resolve, reject) => {
 
-            this.http.get('api/profile-timeline')
+            this.http.get('api/profile-timeline-' + lang)
                 .subscribe((timeline: any) => {
                     this.timeline = timeline;
                     this.timelineOnChanged.next(this.timeline);
@@ -60,11 +62,11 @@ export class ProfileService implements Resolve<any>
     /**
      * Get about
      */
-    getAbout(): Promise<any[]>
+    getAbout(lang: string): Promise<any[]>
     {
         return new Promise((resolve, reject) => {
 
-            this.http.get('api/profile-about')
+            this.http.get('api/profile-about-' + lang)
                 .subscribe((about: any) => {
                     this.about = about;
                     this.aboutOnChanged.next(this.about);
@@ -76,11 +78,11 @@ export class ProfileService implements Resolve<any>
     /**
      * Get photos & videos
      */
-    getPhotosVideos(): Promise<any[]>
+    getPhotosVideos(lang: string): Promise<any[]>
     {
         return new Promise((resolve, reject) => {
 
-            this.http.get('api/profile-photos-videos')
+            this.http.get('api/profile-photos-videos-' + lang)
                 .subscribe((photosVideos: any) => {
                     this.photosVideos = photosVideos;
                     this.photosVideosOnChanged.next(this.photosVideos);

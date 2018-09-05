@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaderboardService } from './leaderboard.service';
 import { Observable } from 'rxjs/Observable';
-import {now} from 'moment';
+import {FuseTranslationLoaderService} from '../../../../../core/services/translation-loader.service';
+import {locale as italian} from '../../../pages/pricing/i18n/it';
+import {locale as english} from '../../../pages/pricing/i18n/en';
+
 @Component({
     selector   : 'fuse-blank',
     templateUrl: './blank.component.html',
@@ -11,7 +14,9 @@ export class FuseBlankComponent implements OnInit {
   score: GlobalScore  = <GlobalScore>{};
   sub = null;
   matchUrl = 'https://brainappbackend.herokuapp.com/#/play/gameid/1001/playtoken/atomasse/sessionid/brainapp-ext';
-  constructor(private leaderboardService: LeaderboardService) {}
+  constructor(private leaderboardService: LeaderboardService, private translationLoader: FuseTranslationLoaderService) {
+    this.translationLoader.loadTranslations(english, italian);
+  }
     ngOnInit(){
       this.sub = Observable.interval(5000)
         .subscribe((val) => {
