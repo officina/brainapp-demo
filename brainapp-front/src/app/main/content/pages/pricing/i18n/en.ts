@@ -18,7 +18,13 @@ export const locale = {
                                 'You have to pop the green circles....',
       'RULE_THIEF_CHALLENGE'  : 'Control this white-collar thief and try to solve the puzzles to complete his crimes! Find out credit card passwords, ' +
                                 'match keys and try to open locks before running out of time! ',
-      'GO_CHALLENGE'          : 'GO TO THE CHALLENGE'
+      'GO_CHALLENGE'          : 'GO TO THE CHALLENGE',
+      'LAB_RANKING'           : 'LAB RANKING',
+      'GLOBAL_RANKING'        : 'GLOBAL RANKING',
+      'TAB_COMPLESSIVE'       : 'OVERALL',
+      'TAB_LOGIC'             : 'LOGIC',
+      'TAB_CREATIVITY'        : 'CREATIVITY',
+      'TAB_PROB_SOLV'         : 'PROBLEM SOLVING'
     }
   }
 };

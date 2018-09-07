@@ -151,21 +151,21 @@
     <div class="content" fxLayout="column">
         <div class="leaderboards" fxLayout="row" fxLayoutWrap>
           <div class="table-users">
-            <div class="capo">CLASSIFICA LABORATORIO</div>
+            <div class="capo">{{ 'PRICING.LAB_RANKING' | translate }}</div>
 
             <table cellspacing="0">
 
                 <mat-tab-group dynamicHeight="true">
-                    <mat-tab label="COMPLESSIVA">
+                    <mat-tab [label]="'PRICING.TAB_COMPLESSIVE' | translate">
                       <app-labcomplessiva></app-labcomplessiva>
                     </mat-tab>
-                    <mat-tab label="LOGICA">
+                    <mat-tab [label]="'PRICING.TAB_LOGIC' | translate">
                       <app-lablogica></app-lablogica>
                     </mat-tab>
-                    <mat-tab label="CREATIVITÁ">
+                    <mat-tab [label]="'PRICING.TAB_CREATIVITY' | translate">
                       <app-labcreativita></app-labcreativita>
                     </mat-tab>
-                    <mat-tab label="PROBLEM SOLVING" class="last-label">
+                    <mat-tab [label]="'PRICING.TAB_PROB_SOLV' | translate" class="last-label">
                       <app-labproblemsolving></app-labproblemsolving>
                     </mat-tab>
                 </mat-tab-group>
@@ -174,38 +174,30 @@
             </table>
           </div>
           <div class="table-users">
-            <div class="capo">CLASSIFICA GLOBALE</div>
+            <div class="capo">{{ 'PRICING.GLOBAL_RANKING' | translate }}</div>
 
             <table cellspacing="0">
               <tr>
                 <mat-tab-group dynamicHeight="true">
                   <th>
-                    <mat-tab label="COMPLESSIVA">
+                    <mat-tab [label]="'PRICING.TAB_COMPLESSIVE' | translate">
                       <app-complessiva></app-complessiva>
                     </mat-tab>
-                  </th>
-                  <th>
-                    <mat-tab label="LOGICA">
+                    <mat-tab [label]="'PRICING.TAB_LOGIC' | translate">
                       <app-logica></app-logica>
                     </mat-tab>
-                  </th>
-                  <th>
-                    <mat-tab label="CREATIVITÁ">
+                    <mat-tab [label]="'PRICING.TAB_CREATIVITY' | translate">
                       <app-creativita></app-creativita>
                     </mat-tab>
-                  </th>
-                  <th>
-                    <mat-tab label="PROBLEM SOLVING">
+                    <mat-tab [label]="'PRICING.TAB_PROB_SOLV' | translate" class="last-label">
                       <app-problemsolving></app-problemsolving>
                     </mat-tab>
                   </th>
                 </mat-tab-group>
               </tr>
-
             </table>
           </div>
         </div>
     </div>
-
 </div>
 

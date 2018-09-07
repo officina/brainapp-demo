@@ -17,7 +17,8 @@ export const locale = {
                                     'riuscire a formare le triplette e prefigurarti tutti gli eventuali scenari che potrebbero presentarsi. ' +
                                     'A volte però, anche la migliore strategia deve fare i conti con l’imprevedibile: ' +
                                     'tieniti pronto a cambiare i tuoi piani e ad essere flessibile durante la partita. ' +
-                                    'Non dimenticare un pizzico di creatività: non sempre la mossa più facile non è la mossa migliore…'
+                                    'Non dimenticare un pizzico di creatività: non sempre la mossa più facile non è la mossa migliore…',
+      'CHALLENGE_RANKING'     : 'CLASSIFICA SFIDA'
     }
   }
 };
