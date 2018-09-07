@@ -48,7 +48,7 @@ export class ProfileFakeDb
                     'avatar': 'assets/images/avatars/james.jpg'
                 },
                 'message': 'has totalized 800 pts',
-                'time'   : '1th November, 2017'
+                'time'   : '1st November, 2017'
             },
             {
                 'user'   : {

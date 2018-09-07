@@ -25,7 +25,7 @@
 
               <div class="terms" fxLayout="column" fxLayoutAlign="start center">
               <div class="term">
-                <p>
+                <p style="text-overflow: ellipsis !important;">
                   {{ 'PRICING.RULE_DRAWLINE' | translate }}
                 </p>
               </div>
@@ -51,7 +51,7 @@
 
             <div class="terms" fxLayout="column" fxLayoutAlign="start center">
               <div class="term">
-                <p>
+                <p style="text-overflow: ellipsis !important;">
                   {{ 'PRICING.RULE_ELECTRIO' | translate }}
                 </p>
               </div>
@@ -81,7 +81,7 @@
                 <p>
                   {{ 'PRICING.RULE_MAKE7' | translate }}
                 </p>
-                <button mat-raised-button class="cta-button btn" color="accent" [routerLink]="['/lab/id']">VAI ALLA SFIDA</button>
+                <button mat-raised-button class="cta-button btn" style="width: 180px !important;" color="accent" [routerLink]="['/lab/id']">{{ 'PRICING.GO_CHALLENGE' | translate }}</button>
               </div>
             </div>
 
@@ -105,7 +105,7 @@
 
             <div class="terms" fxLayout="column" fxLayoutAlign="start center">
               <div class="term">
-                <p>
+                <p style="text-overflow: ellipsis !important;">
                   {{ 'PRICING.RULE_ENGINEERIO' | translate }}
                 </p>
               </div>
@@ -131,12 +131,8 @@
 
             <div class="terms" fxLayout="column" fxLayoutAlign="start center">
               <div class="term">
-                <p>
-                  Mettiti nei panni di un ladro professionista e cimentati con
-                  le prove di Thief Challenge! In questa sfida il tempo è tiranno:
-                  supera lil mix di prove nel minor tempo possibile per guadagnare
-                  punti, passare ai livelli successivi e... non farti beccare con
-                  le mani nel sacco!
+                <p style="text-overflow: ellipsis !important;">
+                  {{ 'PRICING.RULE_THIEF_CHALLENGE' | translate }}
                 </p>
               </div>
             </div>

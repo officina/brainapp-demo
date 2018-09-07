@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { LeaderboardService } from './leaderboard.service';
 import { Observable } from 'rxjs/Observable';
 import {FuseTranslationLoaderService} from '../../../../../core/services/translation-loader.service';
-import {locale as italian} from '../../../pages/pricing/i18n/it';
-import {locale as english} from '../../../pages/pricing/i18n/en';
+import {locale as italian} from './i18n/it';
+import {locale as english} from './i18n/en';
 
 @Component({
     selector   : 'fuse-blank',
