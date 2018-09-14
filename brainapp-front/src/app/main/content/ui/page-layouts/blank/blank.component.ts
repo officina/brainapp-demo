@@ -13,7 +13,7 @@ import {locale as english} from './i18n/en';
 export class FuseBlankComponent implements OnInit {
   score: GlobalScore  = <GlobalScore>{};
   sub = null;
-  matchUrl = 'https://brainappbackend.herokuapp.com/#/play/gameid/1001/playtoken/atomasse/sessionid/brainapp-ext';
+  matchUrl = 'https://brainappbackend.herokuapp.com/#/play/gameid/1001/playtoken/atomasse/sessionid/16601/replay/false';
   constructor(private leaderboardService: LeaderboardService, private translationLoader: FuseTranslationLoaderService) {
     this.translationLoader.loadTranslations(english, italian);
   }
