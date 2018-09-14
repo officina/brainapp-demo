@@ -126,7 +126,15 @@ public class SessionServiceImpl implements SessionService{
                 //se esiste già un match la chiamata viene invalidata
                 if(match != null && match.isValid() && match.getAttempts() != null && match.getAttempts().size() > 0)
                 {
-                    log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with session id " + sessionid);
+                    if (match.getUserId().equals("atomasse")){
+                        log.info("Demo exception: found match for user atomasse, due to demo purpose the user id will be replaced");
+                        match.setUserId(match.getUserId()+"_"+System.currentTimeMillis());
+                        matchService.save(match);
+                        resultMap.put(true, "");
+                        return resultMap;
+                    } else {
+                        log.info("Session not valid - A valid match for user " + playerid + " already exists inside session with extid " + sessionid);
+                    }
                     //ha senso verificare se l'utente tenta di riaccedere al match perché in precedenza ha avuto problemi, è un buon trigger per tentare di risolvere l'eventyale pending
                     //chiaramente solo se effettivamente pending
                     if(match.isElaborated() && match.getSendToPo())

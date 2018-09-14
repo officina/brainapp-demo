@@ -12,7 +12,7 @@
 
 eureka:
     instance:
-        hostname: gatoradeapp.herokuapp.com
+        hostname: brainappbackend.herokuapp.com
         non-secure-port: 80
         prefer-ip-address: false
     client:
@@ -30,6 +30,6 @@ spring:
 playoff:
     client:
         domain: playoff.cc
-        id: MDQ2ZGJmMjMtZWNhZC00OWM3LTk2NjAtOTdhODc4ZjkwOTBj
-        secret: Yzg1MmNkMjEtYWI2Yi00YzA1LTk0MTktNWZhZDhhZTk2NDg2MTNhNTBiOTAtNzFmMS0xMWU3LThjMTYtMWI0ZDkyY2E5Yjli
+        id: ZTFiNjJmYmItOTljOS00ZGU2LWJhNjctZTZkMTk5NDZhZWUz
+        secret: ZWMyMDU1NDgtZTE3OC00MzE2LTg0N2UtN2JjMjE2NTZlN2UyNmZjMzJmYzAtYzg0OS0xMWU3LWE2MjMtODU5YjhjNzcwNTMx
 validationBypass: officinapower
