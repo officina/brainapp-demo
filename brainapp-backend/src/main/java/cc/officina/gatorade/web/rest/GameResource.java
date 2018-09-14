@@ -60,6 +60,12 @@ public class GameResource {
     private String hostname;
     @Value("${validationBypass}")
     private String bypass;
+    @Value("${playoff.client.id}")
+    private String poClientId;
+    @Value("${playoff.client.secret}")
+    private String poClientSecret;
+    @Value("${playoff.client.domain}")
+    private String poDomain;
 
     public GameResource(GameService gameService, MatchService matchService, AttemptService attemptService, MatchTemplateService templateService, SessionService sessionService,
     				ReportService reportService) {
@@ -608,5 +614,30 @@ public class GameResource {
 
         return new ResponseEntity<>(gameService.endMatchRestore(match.getGame(), match, lastAttempt, new Long(request.getScore()), request.getLevel()), null, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/games/leaderboards/{leaderboardid}")
+    @Timed
+    @CrossOrigin
+    public ResponseEntity<Object> getLeaderboard(@PathVariable String leaderboardid, @RequestParam String userid){
+
+        PlayOff pl = new PlayOff(poClientId,poClientSecret, null, "v2", poDomain);
+        try {
+            HashMap<String, String> query = new HashMap<String, String>();
+            query.put("player_id", userid);
+            query.put("detailed", "false");
+            query.put("cycle", "alltime");
+            query.put("sort", "descending");
+            query.put("limit", "0");
+            if(leaderboardid.indexOf("team_") > -1)
+                query.put("team_instance_id", "laboratorio_somma");
+            Object response = pl.get("/runtime/leaderboards/"+leaderboardid, query);
+
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
     }
 }

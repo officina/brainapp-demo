@@ -123,7 +123,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/sessions/**").hasAnyAuthority(AuthoritiesConstants.GENERALI, AuthoritiesConstants.ADMIN)
             .antMatchers("/matches/start-batch").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/**").authenticated()
-
+            .antMatchers("/api/games/leaderboards/**").permitAll()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/v2/api-docs/**").permitAll()
