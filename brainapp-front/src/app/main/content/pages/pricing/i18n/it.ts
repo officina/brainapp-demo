@@ -18,7 +18,13 @@ export const locale = {
       'RULE_THIEF_CHALLENGE' : 'Mettiti nei panni di un ladro professionista e cimentati con le prove di Thief Challenge! ' +
                           'In questa sfida il tempo è tiranno: supera il mix di prove nel minor tempo possibile per guadagnare punti, ' +
                           'passare ai livelli successivi',
-      'GO_CHALLENGE'    : 'VAI ALLA SFIDA'
+      'GO_CHALLENGE'    : 'VAI ALLA SFIDA',
+      'LAB_RANKING'     : 'CLASSIFICA LABORATORIO',
+      'GLOBAL_RANKING'  : 'CLASSIFICA GLOBALE',
+      'TAB_COMPLESSIVE' : 'COMPLESSIVA',
+      'TAB_LOGIC'       : 'LOGICA',
+      'TAB_CREATIVITY'  : 'CREATIVITÀ',
+      'TAB_PROB_SOLV'   : 'PROBLEM SOLVING'
     }
   }
 };
