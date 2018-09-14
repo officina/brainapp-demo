@@ -3,6 +3,7 @@ package cc.officina.gatorade.web.rest;
 import cc.officina.gatorade.domain.*;
 import cc.officina.gatorade.domain.enumeration.AttemptSyncState;
 import cc.officina.gatorade.service.*;
+import cc.playoff.sdk.PlayOff;
 import com.codahale.metrics.annotation.Timed;
 import cc.officina.gatorade.web.response.AttemptResponse;
 import cc.officina.gatorade.web.response.MatchResponse;
@@ -629,7 +630,7 @@ public class GameResource {
             query.put("cycle", "alltime");
             query.put("sort", "descending");
             query.put("limit", "0");
-            if(leaderboardid.indexOf("team_") > -1)
+            if(leaderboardid.contains("team_"))
                 query.put("team_instance_id", "laboratorio_somma");
             Object response = pl.get("/runtime/leaderboards/"+leaderboardid, query);
 
