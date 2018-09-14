@@ -1,0 +1,15 @@
+{
+    "home": {
+        "title": "Welcome to GATORADE, the game integrator!",
+        "subtitle": "This is the admin page",
+        "logged": {
+            "message": "Autenticato come \"{{username}}\"."
+        },
+        "question": "Per qualsiasi domanda:",
+        "link": {
+            "homepage": "Home page"
+        },
+        "like": "",
+        "github": ""
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "gatoradeApp": {
+        "attempt" : {
+            "home": {
+                "title": "Attempts",
+                "createLabel": "Genera un nuovo Attempt",
+                "createOrEditLabel": "Genera o modifica un Attempt"
+            },
+            "created": "&Egrave; stato generato un nuovo Attempt con identificatore {{ param }}",
+            "updated": "&Egrave; stato aggiornato Attempt identificato da {{ param }}",
+            "deleted": "&Egrave; stato eliminato Attempt con identificatore {{ param }}",
+            "delete": {
+                "question": "Sei sicuro di volere eliminare Attempt {{ id }}?"
+            },
+            "detail": {
+                "title": "Attempt"
+            },
+            "attemptScore": "Attempt Score",
+            "startAttempt": "Start Attempt",
+            "stopAttempt": "Stop Attempt",
+            "levelReached": "Level Reached",
+            "lastUpdate": "Last Update",
+            "cancelled": "Cancelled",
+            "completed": "Completed",
+            "valid": "Valid",
+            "localId": "Local Id",
+            "sync": "Sync",
+            "match": "Match"
+        }
+    }
+}

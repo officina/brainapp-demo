@@ -1,0 +1,59 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "match",
+            "otherEntityName": "match",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "attemptScore",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "startAttempt",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "stopAttempt",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "levelReached",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "lastUpdate",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "cancelled",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "completed",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "valid",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "localId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "sync",
+            "fieldType": "AttemptSyncState",
+            "fieldValues": "notSync,sync,syncOnEndMatch"
+        }
+    ],
+    "changelogDate": "20170627085006",
+    "dto": "no",
+    "service": "serviceImpl",
+    "entityTableName": "attempt",
+    "pagination": "pager"
+}

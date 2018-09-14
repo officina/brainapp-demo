@@ -1,0 +1,43 @@
+
+<div>
+    <h2><span data-translate="gatoradeApp.report.detail.title">Report</span> {{vm.report.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="gatoradeApp.report.userid">Userid</span></dt>
+        <dd>
+            <span>{{vm.report.userid}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.report.timestamp">Timestamp</span></dt>
+        <dd>
+            <span>{{vm.report.timestamp | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.report.json">Json</span></dt>
+        <dd>
+            <span>{{vm.report.json}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.report.type">Type</span></dt>
+        <dd>
+            <span data-translate="{{'gatoradeApp.ReportType.' + vm.report.type}}">{{vm.report.type}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.report.match_id">Match Id</span></dt>
+        <dd>
+            <span>{{vm.report.match_id}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.report.userAgent">User Agent</span></dt>
+        <dd>
+            <span>{{vm.report.userAgent}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="report-detail.edit({id:vm.report.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

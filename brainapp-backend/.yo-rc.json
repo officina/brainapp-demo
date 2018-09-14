@@ -1,0 +1,53 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "cc.officina.gatorade",
+      "nativeLanguage": "it"
+    },
+    "jhipsterVersion": "4.5.4",
+    "baseName": "Gatorade",
+    "packageName": "cc.officina.gatorade",
+    "packageFolder": "cc/officina/gatorade",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "gradle",
+    "enableSocialSignIn": false,
+    "jwtSecretKey": "1f4d77d5e6037560766255af481a78157623189b",
+    "clientFramework": "angular1",
+    "useSass": false,
+    "clientPackageManager": "npm",
+    "applicationType": "monolith",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "otherModules": [
+      {
+        "name": "generator-jhipster-bootstrap-material-design",
+        "version": "3.5.1"
+      },
+      {
+        "name": "generator-jhipster-swagger2markup",
+        "version": "1.2.0"
+      },
+      {
+        "name": "generator-jhipster-transasia",
+        "version": "1.0.6"
+      }
+    ],
+    "enableTranslation": true,
+    "nativeLanguage": "it",
+    "languages": [
+      "it",
+      "en"
+    ],
+    "herokuAppName": "gatoradeapp"
+  }
+}

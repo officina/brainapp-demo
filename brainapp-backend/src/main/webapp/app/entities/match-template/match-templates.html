@@ -1,0 +1,70 @@
+<div>
+    <h2 data-translate="gatoradeApp.matchTemplate.home.title">Match Templates</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="match-template.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="gatoradeApp.matchTemplate.home.createLabel">
+                        Create new Match Template
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="maxDuration"><span data-translate="gatoradeApp.matchTemplate.maxDuration">Max Duration</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="maxAttempt"><span data-translate="gatoradeApp.matchTemplate.maxAttempt">Max Attempt</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="description"><span data-translate="gatoradeApp.matchTemplate.description">Description</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="custom"><span data-translate="gatoradeApp.matchTemplate.custom">Custom</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="game.description"><span data-translate="gatoradeApp.matchTemplate.game">Game</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="matchTemplate in vm.matchTemplates track by matchTemplate.id">
+                    <td><a ui-sref="match-template-detail({id:matchTemplate.id})">{{matchTemplate.id}}</a></td>
+                    <td>{{matchTemplate.maxDuration}}</td>
+                    <td>{{matchTemplate.maxAttempt}}</td>
+                    <td>{{matchTemplate.description}}</td>
+                    <td>{{matchTemplate.custom}}</td>
+                    <td>
+                        <a ui-sref="game-detail({id:matchTemplate.game.id})">{{matchTemplate.game.description}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="match-template-detail({id:matchTemplate.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="match-template.edit({id:matchTemplate.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="match-template.delete({id:matchTemplate.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

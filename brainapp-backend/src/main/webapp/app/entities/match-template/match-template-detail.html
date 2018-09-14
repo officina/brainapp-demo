@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="gatoradeApp.matchTemplate.detail.title">Match Template</span> {{vm.matchTemplate.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="gatoradeApp.matchTemplate.maxDuration">Max Duration</span></dt>
+        <dd>
+            <span>{{vm.matchTemplate.maxDuration}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.matchTemplate.maxAttempt">Max Attempt</span></dt>
+        <dd>
+            <span>{{vm.matchTemplate.maxAttempt}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.matchTemplate.description">Description</span></dt>
+        <dd>
+            <span>{{vm.matchTemplate.description}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.matchTemplate.custom">Custom</span></dt>
+        <dd>
+            <span>{{vm.matchTemplate.custom}}</span>
+        </dd>
+        <dt><span data-translate="gatoradeApp.matchTemplate.game">Game</span></dt>
+        <dd>
+            <a ui-sref="game-detail({id:vm.matchTemplate.game.id})">{{vm.matchTemplate.game.description}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="match-template-detail.edit({id:vm.matchTemplate.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,39 @@
+<form name="deleteForm">
+    <div class="modal-header">
+        <h4 class="modal-title">Conferma operazione</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <p>Sei sicuro di voler procedere?</p>
+    </div>
+    <div class="modal-footer flexbtw">
+        <button class="btn graybtn" type="button" ng-click="$ctrl.cancel()">Annulla</button>
+        <button class="btn greenbtn" type="button" ng-click="$ctrl.ok()">Conferma</button>
+    </div>
+</form>
+
+
+<style>
+    .graybtn {
+        background-color: white;
+        border: 1px solid #2e2e2e;
+        color: #2e2e2e;
+    }
+    .graybtn:hover {
+        background-color: #2e2e2e;
+        transition: 0.3s;
+        border: 1px solid #2e2e2e;
+        color: white;
+    }
+
+    .greenbtn {
+        background-color: #66C34F;
+        color: white;
+    }
+
+    .greenbtn:hover {
+        background-color: #59be41;
+        color: white;
+        transition: 0.3s;
+    }
+</style>

@@ -1,0 +1,25 @@
+{
+    "gatoradeApp": {
+        "matchTemplate" : {
+            "home": {
+                "title": "MatchTemplates",
+                "createLabel": "Genera un nuovo Match Template",
+                "createOrEditLabel": "Genera o modifica un Match Template"
+            },
+            "created": "&Egrave; stato generato un nuovo Match Template con identificatore {{ param }}",
+            "updated": "&Egrave; stato aggiornato Match Template identificato da {{ param }}",
+            "deleted": "&Egrave; stato eliminato Match Template con identificatore {{ param }}",
+            "delete": {
+                "question": "Sei sicuro di volere eliminare Match Template {{ id }}?"
+            },
+            "detail": {
+                "title": "Match Template"
+            },
+            "maxDuration": "Max Duration",
+            "maxAttempt": "Max Attempt",
+            "description": "Description",
+            "custom": "Custom",
+            "game": "Game"
+        }
+    }
+}

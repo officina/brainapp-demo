@@ -1,0 +1,30 @@
+# ===================================================================
+# Spring Boot configuration for the "dev" profile.
+#
+# This configuration overrides the application.yml file.
+#
+# More information on profiles: https://jhipster.github.io/profiles/
+# More information on configuration properties: https://jhipster.github.io/common-application-properties/
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+spring:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:postgresql://playoff-public-websites.cdydeu6kq8ue.eu-central-1.rds.amazonaws.com:5432/Gatorade_stag
+        username: gatorade
+        password: q#w$Brnf^9#8&8gdBs255!r
+playoff:
+    client:
+        domain: playoffgenerali.it
+        id: N2M2OWM3N2UtNGQ4Yy00NGY3LTlkNjctZTg3ODI5YTMyMDY0
+        secret: OGQ4OTcwY2YtYmFiNy00MTNhLTk2Y2YtNDVjZTIyY2I4NDI1NzUyYjliZjAtZGY0MS0xMWU3LWJlNzEtNzcwN2EyNmM2YTY3
+validationBypass: money-sound-9
+validationService:
+    hostname: https://gamificationlabcert.generali.it
+    endpoint: /api/gaming/isvalid

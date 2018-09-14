@@ -1,0 +1,28 @@
+{
+    "gatoradeApp": {
+        "session" : {
+            "home": {
+                "title": "Sessions",
+                "createLabel": "Genera un nuovo Session",
+                "createOrEditLabel": "Genera o modifica un Session"
+            },
+            "created": "&Egrave; stato generato un nuovo Session con identificatore {{ param }}",
+            "updated": "&Egrave; stato aggiornato Session identificato da {{ param }}",
+            "deleted": "&Egrave; stato eliminato Session con identificatore {{ param }}",
+            "delete": {
+                "question": "Sei sicuro di volere eliminare Session {{ id }}?"
+            },
+            "detail": {
+                "title": "Session"
+            },
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "extId": "Ext Id",
+            "poRoot": "Po Root",
+            "elaborated": "Elaborated",
+            "bypassable": "Bypassable",
+            "matches": "Matches",
+            "game": "Game"
+        }
+    }
+}

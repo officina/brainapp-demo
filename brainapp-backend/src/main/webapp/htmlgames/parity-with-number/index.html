@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Parity with number</title>
+    <script src="scripts/production.min.js"></script>
+<!--     <link href='http://fonts.googleapis.com/css?family=Poiret+One|Open+Sans' rel='stylesheet' type='text/css'> -->
+    <link href="styles/style.css" rel="stylesheet" type="text/css" />
+    <link href="styles/mobile.css" rel="stylesheet" type="text/css" media="screen and (max-device-width:800px)" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <style>
+    	/* cyrillic-ext */
+		@font-face {
+		  font-family: 'Open Sans';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(http://fonts.gstatic.com/s/opensans/v15/K88pR3goAWT7BTt32Z01m4X0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+		  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+		}
+		/* cyrillic */
+		@font-face {
+		  font-family: 'Open Sans';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(http://fonts.gstatic.com/s/opensans/v15/RjgO7rYTmqiVp7vzi-Q5UYX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+		  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+		}
+		/* greek-ext */
+		@font-face {
+		  font-family: 'Open Sans';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(http://fonts.gstatic.com/s/opensans/v15/LWCjsQkB6EMdfHrEVqA1KYX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+		  unicode-range: U+1F00-1FFF;
+		}
+		/* greek */
+		@font-face {
+		  font-family: 'Open Sans';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(http://fonts.gstatic.com/s/opensans/v15/xozscpT2726on7jbcb_pAoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+		  unicode-range: U+0370-03FF;
+		}
+		/* vietnamese */
+		@font-face {
+		  font-family: 'Open Sans';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(http://fonts.gstatic.com/s/opensans/v15/59ZRklaO5bWGqF5A9baEEYX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+		  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+		}
+		/* latin-ext */
+		@font-face {
+		  font-family: 'Open Sans';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(http://fonts.gstatic.com/s/opensans/v15/u-WUoqrET9fUeobQW7jkRYX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+		  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+		}
+		/* latin */
+		@font-face {
+		  font-family: 'Open Sans';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(http://fonts.gstatic.com/s/opensans/v15/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format('woff2');
+		  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
+		}
+		/* cyrillic */
+		@font-face {
+		  font-family: 'Poiret One';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Poiret One'), local('PoiretOne-Regular'), url(http://fonts.gstatic.com/s/poiretone/v5/cKr_e199f0xMkxMkRbEJXwsYbbCjybiHxArTLjt7FRU.woff2) format('woff2');
+		  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+		}
+		/* latin-ext */
+		@font-face {
+		  font-family: 'Poiret One';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Poiret One'), local('PoiretOne-Regular'), url(http://fonts.gstatic.com/s/poiretone/v5/3Annd_XP-99FcGbOpm6fVAsYbbCjybiHxArTLjt7FRU.woff2) format('woff2');
+		  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+		}
+		/* latin */
+		@font-face {
+		  font-family: 'Poiret One';
+		  font-style: normal;
+		  font-weight: 400;
+		  src: local('Poiret One'), local('PoiretOne-Regular'), url(http://fonts.gstatic.com/s/poiretone/v5/HrI4ZJpJ3Fh0wa5ofYMK8QzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2');
+		  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
+		}
+    </style>
+    <script src="iframeResizer.contentWindow.min.js"></script>
+  </head>
+  <body style="background-color: #C05463">
+    <div id="container" >
+      <p id="title" class="light poiret center">Parity with number</p>
+      <div id="box" style="background-image: url('bg.jpg') !important;">
+        <div id="overlay">
+          <h1></h1>
+          <div id="content"></div>
+          <div id="holder">
+            <button> </button>
+          </div>
+        </div>
+        <div id="swipeArea"></div>
+        <div class="dSelected" id="selector"></div>
+        <div id="introtutorial"></div>
+        <table id="board">
+          <tbody id="board_body">
+            <tr>
+              <td class="cell center" data-x="0" data-y="0">4</td>
+              <td class="cell center" data-x="1" data-y="0">4</td>
+              <td class="cell center" data-x="2" data-y="0">4</td>
+            </tr>
+            <tr>
+              <td class="cell center" data-x="0" data-y="1">4</td>
+              <td class="cell center" data-x="1" data-y="1">4</td>
+              <td class="cell center" data-x="2" data-y="1">4</td>
+            </tr>
+            <tr>
+              <td class="cell center" data-x="0" data-y="2">4</td>
+              <td class="cell center selected" data-x="1" data-y="2">4</td>
+              <td class="cell center" data-x="2" data-y="2">4</td>
+            </tr>
+            <tr>
+              <td colspan="2"><a id="level" href="#" class="light poiret left">level #</a></td>
+              <td colspan="2" class="right">
+                <a id="reset" href="#" class="poiret"><img src="images/reset.png" style="width:7vh;" /></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="text-align:center;margin:1vh;">
+      </div>
+    </div>
+  </body>
+</html>

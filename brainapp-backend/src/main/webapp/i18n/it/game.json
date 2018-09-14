@@ -1,0 +1,30 @@
+{
+    "gatoradeApp": {
+        "game" : {
+            "home": {
+                "title": "Games",
+                "createLabel": "Genera un nuovo Game",
+                "createOrEditLabel": "Genera o modifica un Game"
+            },
+            "created": "&Egrave; stato generato un nuovo Game con identificatore {{ param }}",
+            "updated": "&Egrave; stato aggiornato Game identificato da {{ param }}",
+            "deleted": "&Egrave; stato eliminato Game con identificatore {{ param }}",
+            "delete": {
+                "question": "Sei sicuro di volere eliminare Game {{ id }}?"
+            },
+            "detail": {
+                "title": "Game"
+            },
+            "description": "Description",
+            "url": "Url",
+            "code": "Code",
+            "actionId": "Action Id",
+            "type": "Type",
+            "useLevels": "Use Levels",
+            "levelsNumber": "Levels Number",
+            "lastAttemptValid": "Last Attempt Valid",
+            "defaultScore": "Default Score",
+            "matches": "Matches"
+        }
+    }
+}

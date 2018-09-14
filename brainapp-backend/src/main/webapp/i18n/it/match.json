@@ -1,0 +1,41 @@
+{
+    "gatoradeApp": {
+        "match" : {
+            "home": {
+                "title": "Matches",
+                "createLabel": "Genera un nuovo Match",
+                "createOrEditLabel": "Genera o modifica un Match"
+            },
+            "created": "&Egrave; stato generato un nuovo Match con identificatore {{ param }}",
+            "updated": "&Egrave; stato aggiornato Match identificato da {{ param }}",
+            "deleted": "&Egrave; stato eliminato Match con identificatore {{ param }}",
+            "delete": {
+                "question": "Sei sicuro di volere eliminare Match {{ id }}?"
+            },
+            "detail": {
+                "title": "Match"
+            },
+            "start": "Start",
+            "stop": "Stop",
+            "diffLevel": "Diff Level",
+            "userId": "User Id",
+            "lastStart": "Last Start",
+            "timeSpent": "Time Spent",
+            "usedToPO": "Used To PO",
+            "elaborated": "Elaborated",
+            "matchToken": "Match Token",
+            "valid": "Valid",
+            "sendToPo": "Send To Po",
+            "retry": "Retry",
+            "anomalous": "Anomalous",
+            "replayState": "Replay State",
+            "parentId": "Parent Id",
+            "timeAFK": "Time AFK",
+            "restartable": "Restartable",
+            "game": "Game",
+            "template": "Template",
+            "attempts": "Attempts",
+            "session": "Session"
+        }
+    }
+}

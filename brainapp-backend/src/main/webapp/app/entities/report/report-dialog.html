@@ -1,0 +1,66 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myReportLabel" data-translate="gatoradeApp.report.home.createOrEditLabel">Create or edit a Report</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.report.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.report.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.report.userid" for="field_userid">Userid</label>
+            <input type="text" class="form-control" name="userid" id="field_userid"
+                    ng-model="vm.report.userid"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.report.timestamp" for="field_timestamp">Timestamp</label>
+                <div class="input-group">
+                    <input id="field_timestamp" type="text" class="form-control" name="timestamp" datetime-picker="{{dateformat}}" ng-model="vm.report.timestamp" is-open="vm.datePickerOpenStatus.timestamp"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('timestamp')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.report.json" for="field_json">Json</label>
+            <input type="text" class="form-control" name="json" id="field_json"
+                    ng-model="vm.report.json"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.report.type" for="field_type">Type</label>
+            <select class="form-control" name="type" ng-model="vm.report.type" id="field_type">
+                <option value="Error" data-translate="gatoradeApp.ReportType.Error">Error</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.report.match_id" for="field_match_id">Match Id</label>
+            <input type="number" class="form-control" name="match_id" id="field_match_id"
+                    ng-model="vm.report.match_id"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="gatoradeApp.report.userAgent" for="field_userAgent">User Agent</label>
+            <input type="text" class="form-control" name="userAgent" id="field_userAgent"
+                    ng-model="vm.report.userAgent"
+                    />
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>
